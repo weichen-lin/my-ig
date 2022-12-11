@@ -1,5 +1,11 @@
-import styles from '../styles/Home.module.css'
+import styles from 'styles/global.css'
 
 export default function Home() {
-  return <div className='w-full h-screen bg-black'>12</div>
+  return <div className='w-full h-screen kulo'>12</div>
 }
+
+// sm	640px	@media (min-width: 640px) { ... }
+// md	768px	@media (min-width: 768px) { ... }
+// lg	1024px	@media (min-width: 1024px) { ... }
+// xl	1280px	@media (min-width: 1280px) { ... }
+// 2xl	1536px	@media (min-width: 1536px) { ... }
