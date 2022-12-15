@@ -1,11 +1,6 @@
 import clsx from 'clsx'
 
-interface ButtonProps {
-  active: boolean
-}
-
 export default function LoginButton() {
-  // const { active } = props
   return (
     <div className='relative mx-auto w-full md:w-2/3'>
       <button

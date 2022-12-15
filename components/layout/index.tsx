@@ -5,7 +5,7 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  return <div className={clsx('kulo', 'h-screen', 'w-full')}>{children}</div>
+  return <div className={clsx('h-screen', 'w-full')}>{children}</div>
 }
 
 // sm	640px	@media (min-width: 640px) { ... }

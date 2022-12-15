@@ -2,10 +2,11 @@ import clsx from 'clsx'
 
 interface InputProps {
   label: string
+  type: string
 }
 
 export default function LoginInput(props: InputProps) {
-  const { label } = props
+  const { label, type } = props
   return (
     <div
       className={clsx(
@@ -21,6 +22,7 @@ export default function LoginInput(props: InputProps) {
           'text-gray-600'
         )}
         required
+        type={type}
       ></input>
       <span
         className={clsx(
@@ -37,9 +39,3 @@ export default function LoginInput(props: InputProps) {
     </div>
   )
 }
-
-// sm	640px	@media (min-width: 640px) { ... }
-// md	768px	@media (min-width: 768px) { ... }
-// lg	1024px	@media (min-width: 1024px) { ... }
-// xl	1280px	@media (min-width: 1280px) { ... }
-// 2xl	1536px	@media (min-width: 1536px) { ... }

@@ -1,7 +1,12 @@
-import styles from 'styles/global.css'
+import styles from 'styles/globals.css'
+import Disk from 'components/disk'
+import Layout from 'components/layout'
 
-export default function Home() {
-  return <div className='w-full h-screen kulo'>12</div>
+export default function DiskPage() {
+  return <Disk />
+}
+DiskPage.getLayout = function getLayout(page: JSX.Element) {
+  return <Layout>{page}</Layout>
 }
 
 // sm	640px	@media (min-width: 640px) { ... }
