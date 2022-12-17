@@ -1,4 +1,3 @@
-import styles from 'styles/globals.css'
 import Disk from 'components/disk'
 import Layout from 'components/layout'
 
