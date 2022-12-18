@@ -17,11 +17,8 @@ export default function Disk() {
 
   return (
     <div className='flex h-screen w-full flex-col'>
-      {/* 搜尋框 */}
       <Search />
-      {/* 排序及呈現式 */}
       <Sort listMethod={listMethod} handleListMethod={handleListMethod} />
-      {/* 資料夾 */}
       <div className='grow overflow-scroll'>
         <Files listMethod={listMethod} />
       </div>
