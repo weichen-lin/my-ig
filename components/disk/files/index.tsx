@@ -21,10 +21,11 @@ export default function Files(props: FilesProps) {
           `${
             listMethod === ListMethod.Lattice
               ? 'w-1/2 h-[240px] flex-col lg:w-1/3'
-              : 'w-full h-[72px]'
+              : 'w-full h-[72px] md:m-auto md:w-[90%]'
           }`,
           'flex justify-evenly cursor-pointer',
-          'transition-all duration-300 ease-out'
+          'transition-all duration-300 ease-out',
+          'hover:bg-slate-200'
         )}
       >
         <Folder
@@ -48,12 +49,12 @@ export default function Files(props: FilesProps) {
           </>
         ) : (
           <>
-            <div className='w-full h-full flex justify-center'>
-              <div className='grow flex flex-col h-full p-[9px]'>
+            <div className='grow h-full flex justify-between'>
+              <div className='flex flex-col h-full p-[9px]'>
                 <div className='w-1/2 text-xl mb-[2px]'>測試</div>
                 <div className='text-base'>2022/12/10</div>
               </div>
-              <Dots className='rotate-90 w-1/5 h-[28px] opacity-75 m-[20px]' />
+              <Dots className='rotate-90 h-[28px] opacity-75 my-[20px] md:mx-[10px]' />
             </div>
           </>
         )}
@@ -63,10 +64,11 @@ export default function Files(props: FilesProps) {
           `${
             listMethod === ListMethod.Lattice
               ? 'w-1/2 h-[240px] flex-col lg:w-1/3'
-              : 'w-full h-[72px]'
+              : 'w-full h-[72px] md:m-auto md:w-[90%]'
           }`,
           'flex justify-evenly cursor-pointer',
-          'transition-all duration-300 ease-out'
+          'transition-all duration-300 ease-out',
+          'hover:bg-slate-200'
         )}
       >
         <div
@@ -92,12 +94,12 @@ export default function Files(props: FilesProps) {
           </>
         ) : (
           <>
-            <div className='w-full h-full flex justify-center'>
-              <div className='grow flex flex-col h-full p-[9px]'>
+            <div className='grow h-full flex justify-between'>
+              <div className='flex flex-col h-full p-[9px]'>
                 <div className='w-1/2 text-xl mb-[2px]'>測試</div>
                 <div className='text-base'>2022/12/10</div>
               </div>
-              <Dots className='rotate-90 w-1/5 h-[28px] opacity-75 m-[20px]' />
+              <Dots className='rotate-90 h-[28px] opacity-75 my-[20px] md:mx-[10px]' />
             </div>
           </>
         )}
