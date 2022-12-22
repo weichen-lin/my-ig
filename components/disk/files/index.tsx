@@ -1,22 +1,84 @@
-import { Folder, Dots } from 'public/icon/disk';
-import clsx from 'clsx';
-import { ListMethod } from 'hooks/disk/useDisk';
+import { Folder, Dots } from 'public/icon/disk'
+import clsx from 'clsx'
+import { ListMethod } from 'hooks/disk/useDisk'
 
 interface FilesProps {
-  listMethod: number;
+  listMethod: number
 }
 
 export default function Files(props: FilesProps) {
-  const { listMethod } = props;
+  const { listMethod } = props
 
   return (
     <div
       className={clsx(
-        'w-full flex justify-start',
+        'w-full flex justify-start mt-3',
         `${listMethod === ListMethod.Lattice ? 'flex-wrap' : 'flex-col'}`
       )}
     >
+      <p className='w-full p-5 text-gray-400'>資料夾</p>
       <div
+        className={clsx(
+          `${
+            listMethod === ListMethod.Lattice
+              ? 'w-[225px] h-[45px] flex-col'
+              : 'w-full h-[72px] md:m-auto md:w-[90%]'
+          }`,
+          'border-2 rounded-lg',
+          'cursor-pointer',
+          'transition-all duration-300 ease-out',
+          'hover:bg-slate-200'
+        )}
+      >
+        <div className='flex'>
+          <Folder
+            className={clsx(
+              `${
+                listMethod === ListMethod.Lattice ? 'w-9 p-2 ml-2' : 'w-9 m-5'
+              }`,
+              'transition-all duration-300 ease-out'
+            )}
+          />
+          <div className='flex-1 text-base py-[10px] pl-2 truncate'>
+            測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試
+          </div>
+        </div>
+      </div>
+      <p className='w-full p-5 text-gray-400'>檔案</p>
+      <div
+        className={clsx(
+          `${
+            listMethod === ListMethod.Lattice
+              ? 'w-[225px] h-[225px] flex-col'
+              : 'w-full h-[72px] md:m-auto md:w-[90%]'
+          }`,
+          'flex justify-evenly cursor-pointer bg-red-300',
+          'transition-all duration-300 ease-out',
+          'hover:bg-slate-200'
+        )}
+      >
+        <div
+          className={clsx(
+            'rounded-lg overflow-hidden',
+            `${
+              listMethod === ListMethod.Lattice
+                ? 'w-full h-[200px]'
+                : 'w-[52px] m-[12px]'
+            }`
+          )}
+        >
+          <img src='https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg'></img>
+        </div>
+        <div className='flex-1 text-base py-[10px] pl-2 truncate'>
+          測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * <div
         className={clsx(
           `${
             listMethod === ListMethod.Lattice
@@ -104,6 +166,4 @@ export default function Files(props: FilesProps) {
           </>
         )}
       </div>
-    </div>
-  );
-}
+ */
