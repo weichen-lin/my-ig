@@ -16,7 +16,7 @@ export default function Disk() {
   };
 
   return (
-    <div className='flex h-screen w-full flex-col 2xl:w-[1280px] 2xl:mx-auto'>
+    <div className='flex h-screen w-[90%] flex-col max-w-[1280px] mx-auto'>
       <Search />
       <Sort listMethod={listMethod} handleListMethod={handleListMethod} />
       <div className='grow overflow-y-auto'>
