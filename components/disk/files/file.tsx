@@ -1,9 +1,9 @@
-import clsx from 'clsx';
-import { FilesProps } from 'components/disk/files/type';
-import { ListMethod } from 'hooks/disk/useDisk';
+import clsx from 'clsx'
+import { FilesProps } from 'components/disk/files/type'
+import { ListMethod } from 'hooks/disk/useDisk'
 
 export default function FileType(props: FilesProps) {
-  const { listMethod, imgUrl, fileName } = props;
+  const { listMethod, imgUrl, fileName } = props
 
   return (
     <div
@@ -32,7 +32,7 @@ export default function FileType(props: FilesProps) {
       </div>
       <div
         className={clsx(
-          'truncate text-base py-[10.5px] grow px-2',
+          'truncate py-[10.5px] grow px-2',
           `${listMethod === ListMethod.Lattice ? 'text-center' : 'text-left'}`
         )}
       >
@@ -43,7 +43,7 @@ export default function FileType(props: FilesProps) {
           'absolute h-[2px] w-full bg-slate-100 bottom-0',
           `${listMethod === ListMethod.Lattice ? 'hidden' : ''}`
         )}
-      ></div>{' '}
+      ></div>
     </div>
-  );
+  )
 }

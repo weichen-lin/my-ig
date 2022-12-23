@@ -1,19 +1,20 @@
-import Search from 'components/disk/search';
-import Sort from 'components/disk/sort';
-import Files from 'components/disk/files';
+import Search from 'components/disk/search'
+import Sort from 'components/disk/sort'
+import Files from 'components/disk/files'
+import Operator from 'components/disk/operator'
 
-import useDisk, { ListMethod } from 'hooks/disk/useDisk';
+import useDisk, { ListMethod } from 'hooks/disk/useDisk'
 
 export default function Disk() {
-  const { listMethod, setListMethod } = useDisk();
+  const { listMethod, setListMethod } = useDisk()
 
   const handleListMethod = () => {
     if (listMethod === ListMethod.Lattice) {
-      setListMethod(ListMethod.List);
+      setListMethod(ListMethod.List)
     } else {
-      setListMethod(ListMethod.Lattice);
+      setListMethod(ListMethod.Lattice)
     }
-  };
+  }
 
   return (
     <div className='flex h-screen w-[90%] flex-col max-w-[1280px] mx-auto'>
@@ -22,8 +23,7 @@ export default function Disk() {
       <div className='grow overflow-y-auto'>
         <Files listMethod={listMethod} />
       </div>
-      {/* 手機版右下加號 */}
-      <div></div>
+      <Operator />
     </div>
-  );
+  )
 }

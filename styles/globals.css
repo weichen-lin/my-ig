@@ -6,3 +6,19 @@
 .kulo {
   background-color: #fff6db;
 }
+
+.custom_rotate {
+  animation: rotate 2s infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  50% {
+    transform: translateX(50px) translateY(50px);
+  }
+  100% {
+    transform: translateX(-50px) translateY(0px);
+  }
+}
