@@ -1,10 +1,10 @@
-import clsx from 'clsx';
-import { Folder } from 'public/icon/disk';
-import { FolderProps } from 'components/disk/files/type';
-import { ListMethod } from 'hooks/disk/useDisk';
+import clsx from 'clsx'
+import { Folder } from 'public/icon/disk'
+import { FolderProps } from 'components/disk/files/type'
+import { ListMethod } from 'hooks/disk/useDisk'
 
-export default function FolderType(props: FolderProps) {
-  const { listMethod, folderName } = props;
+export default function FolderTypeElement(props: FolderProps) {
+  const { listMethod, folderName } = props
 
   return (
     <div
@@ -38,5 +38,5 @@ export default function FolderType(props: FolderProps) {
         )}
       ></div>
     </div>
-  );
+  )
 }

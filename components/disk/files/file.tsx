@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { FilesProps } from 'components/disk/files/type'
 import { ListMethod } from 'hooks/disk/useDisk'
 
-export default function FileType(props: FilesProps) {
+export default function FileTypeElement(props: FilesProps) {
   const { listMethod, imgUrl, fileName } = props
 
   return (
@@ -20,19 +20,15 @@ export default function FileType(props: FilesProps) {
     >
       <div
         className={clsx(
-          'overflow-hidden rounded-t-lg',
-          `${
-            listMethod === ListMethod.Lattice
-              ? 'w-full h-[180px]'
-              : 'w-6 h-6 m-3'
-          }`
+          'overflow-hidden rounded-t-lg h-full',
+          `${listMethod === ListMethod.Lattice ? 'm-auto' : 'w-6 h-6 m-3'}`
         )}
       >
         <img src={imgUrl}></img>
       </div>
       <div
         className={clsx(
-          'truncate py-[10.5px] grow px-2',
+          'truncate py-[10.5px] grow px-2 border-t-2',
           `${listMethod === ListMethod.Lattice ? 'text-center' : 'text-left'}`
         )}
       >

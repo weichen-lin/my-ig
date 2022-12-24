@@ -6,7 +6,7 @@ import Operator from 'components/disk/operator'
 import useDisk, { ListMethod } from 'hooks/disk/useDisk'
 
 export default function Disk() {
-  const { listMethod, setListMethod } = useDisk()
+  const { listMethod, setListMethod, data, setData } = useDisk()
 
   const handleListMethod = () => {
     if (listMethod === ListMethod.Lattice) {
@@ -21,9 +21,9 @@ export default function Disk() {
       <Search />
       <Sort listMethod={listMethod} handleListMethod={handleListMethod} />
       <div className='grow overflow-y-auto'>
-        <Files listMethod={listMethod} />
+        <Files listMethod={listMethod} data={data} />
       </div>
-      <Operator />
+      <Operator setData={setData} />
     </div>
   )
 }

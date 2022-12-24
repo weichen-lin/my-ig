@@ -1,11 +1,15 @@
-import clsx from 'clsx';
-import { ListMethod } from 'hooks/disk/useDisk';
-import FileType from 'components/disk/files/file';
-import FolderType from 'components/disk/files/folder';
-import { FormatProp } from 'components/disk/files/type';
+import clsx from 'clsx'
+import { FileType, ListMethod } from 'hooks/disk/useDisk'
+import FileTypeElement from 'components/disk/files/file'
+import FolderTypeElement from 'components/disk/files/folder'
+import { FormatProp } from 'components/disk/files/type'
 
-export default function Files(props: FormatProp) {
-  const { listMethod } = props;
+interface FilesPageProp extends FormatProp {
+  data: any[]
+}
+
+export default function Files(props: FilesPageProp) {
+  const { listMethod, data } = props
 
   return (
     <div
@@ -26,14 +30,11 @@ export default function Files(props: FormatProp) {
       >
         資料夾
       </p>
-      <FolderType
-        listMethod={listMethod}
-        folderName='測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試'
-      />
-      <FolderType
-        listMethod={listMethod}
-        folderName='測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試'
-      />
+      {data
+        ?.filter((e) => e.type === FileType.Folder)
+        .map((e) => (
+          <FolderTypeElement listMethod={listMethod} folderName={e.name} />
+        ))}
       <p
         className={clsx(
           'w-full p-5 text-gray-400',
@@ -42,55 +43,15 @@ export default function Files(props: FormatProp) {
       >
         檔案
       </p>
-      <FileType
-        listMethod={listMethod}
-        fileName='test FILE NAME'
-        imgUrl={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB_lpjTSZzRSWUMhUH6XPZ0VWseidGXdIRnQ&usqp=CAU'
-        }
-      />
-      <FileType
-        listMethod={listMethod}
-        fileName='test FILE NAME'
-        imgUrl={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB_lpjTSZzRSWUMhUH6XPZ0VWseidGXdIRnQ&usqp=CAU'
-        }
-      />
-      <FileType
-        listMethod={listMethod}
-        fileName='test FILE NAME'
-        imgUrl={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHu07nG6F3K81EjL5yAZ69_oZjOPj122YRYg&usqp=CAU'
-        }
-      />
-      <FileType
-        listMethod={listMethod}
-        fileName='test FILE NAME'
-        imgUrl={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB_lpjTSZzRSWUMhUH6XPZ0VWseidGXdIRnQ&usqp=CAU'
-        }
-      />
-      <FileType
-        listMethod={listMethod}
-        fileName='test FILE NAME'
-        imgUrl={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB_lpjTSZzRSWUMhUH6XPZ0VWseidGXdIRnQ&usqp=CAU'
-        }
-      />
-      <FileType
-        listMethod={listMethod}
-        fileName='test FILE NAME'
-        imgUrl={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrpwK0AKVaemlL0GQMmOHJYkCy20VDrGa6n6_pkAQa5YTuBsOPm_QJrnK9RMdHVL4n6xM&usqp=CAU'
-        }
-      />
-      <FileType
-        listMethod={listMethod}
-        fileName='test FILE NAME'
-        imgUrl={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB_lpjTSZzRSWUMhUH6XPZ0VWseidGXdIRnQ&usqp=CAU'
-        }
-      />
+      {data
+        ?.filter((e) => e.type === FileType.File)
+        .map((e) => (
+          <FileTypeElement
+            listMethod={listMethod}
+            fileName={e.name}
+            imgUrl={e.url}
+          />
+        ))}
     </div>
-  );
+  )
 }

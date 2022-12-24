@@ -1,23 +1,42 @@
 import clsx from 'clsx'
-import { Plus } from 'public/icon/disk'
+import { Plus, UploadFolder } from 'public/icon/disk'
 import { useState } from 'react'
 import Option from 'components/disk/operator/option'
-import { AddFile, AddFolder } from 'public/icon/disk'
-export default function Operator() {
+import { UploadFile, AddFolder } from 'public/icon/disk'
+import { Dispatch, SetStateAction } from 'react'
+import { Data, FileType } from 'hooks/disk/useDisk'
+
+interface OperatorProps {
+  setData: Dispatch<SetStateAction<Data[]>>
+}
+
+export default function Operator(props: OperatorProps) {
   const [isOpen, setIsopen] = useState(false)
-  const handleClick = () => {
-    console.log('test')
-    window
-      .showOpenFilePicker({ multiple: true })
-      .then(async ([e]) => {
-        console.log(e)
-        const a = await e.getFile()
-        console.log(a)
+  const { setData } = props
+
+  const handleClick = async () => {
+    const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
+    console.log(FileHandlers)
+    const AllContents = await Promise.all(
+      FileHandlers.map(async (filehandle) => {
+        const file = await filehandle.getFile()
+        const imgReader = new FileReader()
+        imgReader.readAsDataURL(file)
+        imgReader.onloadend = () => {
+          setData((prev) => [
+            ...prev,
+            {
+              type: FileType.File,
+              name: file.name,
+              url: imgReader.result ?? '',
+              last_modified_data: '2022/12/10',
+            },
+          ])
+        }
       })
-      .catch((e) => {
-        console.log(e)
-      })
+    )
   }
+
   return (
     <div
       className={clsx(
@@ -54,14 +73,22 @@ export default function Operator() {
       >
         <Option
           isOpen={isOpen}
-          angle={'rotate-[15deg]'}
-          icon={<AddFile className='w-1/2 h-1/2 m-[25%] -rotate-[15deg]' />}
+          angle={''}
+          icon={<UploadFile className='w-1/2 h-1/2 m-[25%]' />}
           onClick={handleClick}
         />
         <Option
           isOpen={isOpen}
-          angle={'rotate-[75deg]'}
-          icon={<AddFolder className='w-1/2 h-1/2 m-[25%] -rotate-[75deg]' />}
+          angle={'rotate-[45deg]'}
+          icon={
+            <UploadFolder className='w-1/2 h-1/2 m-[25%] -rotate-[45deg]' />
+          }
+          onClick={handleClick}
+        />
+        <Option
+          isOpen={isOpen}
+          angle={'rotate-90'}
+          icon={<AddFolder className='w-1/2 h-1/2 m-[25%] -rotate-90' />}
           onClick={handleClick}
         />
       </ul>

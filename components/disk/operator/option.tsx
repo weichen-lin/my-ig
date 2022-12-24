@@ -1,11 +1,10 @@
-import clsx from 'clsx';
-import { AddFile } from 'public/icon/disk';
+import clsx from 'clsx'
 
 interface OptionProps {
-  isOpen: boolean;
-  angle: string;
-  icon?: JSX.Element;
-  onClick: () => void;
+  isOpen: boolean
+  angle: string
+  icon?: JSX.Element
+  onClick: () => void
 }
 
 export default function Option({ isOpen, angle, icon, onClick }: OptionProps) {
@@ -20,13 +19,13 @@ export default function Option({ isOpen, angle, icon, onClick }: OptionProps) {
           `${isOpen ? angle : ''}`
         )}
         onClick={(e) => {
-          e.preventDefault();
-          onClick();
+          e.preventDefault()
+          onClick()
         }}
       >
         <input className='w-full h-full hidden' type='file' />
         {icon}
       </label>
     </li>
-  );
+  )
 }
