@@ -1,13 +1,23 @@
-import clsx from 'clsx';
-import { Plus } from 'public/icon/disk';
-import { useState } from 'react';
-import Option from 'components/disk/operator/option';
-import { AddFile, AddFolder } from 'public/icon/disk';
+import clsx from 'clsx'
+import { Plus } from 'public/icon/disk'
+import { useState } from 'react'
+import Option from 'components/disk/operator/option'
+import { AddFile, AddFolder } from 'public/icon/disk'
 export default function Operator() {
-  const [isOpen, setIsopen] = useState(false);
+  const [isOpen, setIsopen] = useState(false)
   const handleClick = () => {
-    console.log('test');
-  };
+    console.log('test')
+    window
+      .showOpenFilePicker({ multiple: true })
+      .then(async ([e]) => {
+        console.log(e)
+        const a = await e.getFile()
+        console.log(a)
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
   return (
     <div
       className={clsx(
@@ -28,7 +38,7 @@ export default function Operator() {
           `${isOpen ? 'rotate-[360deg]' : ''}`
         )}
         onClick={() => {
-          setIsopen((prev) => !prev);
+          setIsopen((prev) => !prev)
         }}
       >
         <Plus className='w-1/2 h-1/2 m-[25%] opacity-70' />
@@ -56,5 +66,5 @@ export default function Operator() {
         />
       </ul>
     </div>
-  );
+  )
 }
