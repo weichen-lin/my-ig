@@ -8,7 +8,9 @@
 }
 
 .custom_rotate {
-  animation: rotate 2s infinite;
+  transform: rotate(360deg);
+  box-shadow: 0 6px 8px rgba(255, 255, 255), 0 0 0 2px rgb(105, 105, 105),
+    0 0 0 8px rgb(215, 214, 214);
 }
 
 @keyframes rotate {
@@ -20,5 +22,14 @@
   }
   100% {
     transform: translateX(-50px) translateY(0px);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

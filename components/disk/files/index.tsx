@@ -1,11 +1,11 @@
-import clsx from 'clsx'
-import { ListMethod } from 'hooks/disk/useDisk'
-import FileType from 'components/disk/files/file'
-import FolderType from 'components/disk/files/folder'
-import { FormatProp } from 'components/disk/files/type'
+import clsx from 'clsx';
+import { ListMethod } from 'hooks/disk/useDisk';
+import FileType from 'components/disk/files/file';
+import FolderType from 'components/disk/files/folder';
+import { FormatProp } from 'components/disk/files/type';
 
 export default function Files(props: FormatProp) {
-  const { listMethod } = props
+  const { listMethod } = props;
 
   return (
     <div
@@ -92,5 +92,5 @@ export default function Files(props: FormatProp) {
         }
       />
     </div>
-  )
+  );
 }
