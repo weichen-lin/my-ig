@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import AddFolderPageButton from 'components/disk/addfolder/button'
 
 interface AddFolderPageProps {
   creatFolderOpen: boolean
@@ -41,25 +42,5 @@ export default function AddFolderPage(props: AddFolderPageProps) {
         </div>
       </div>
     </div>
-  )
-}
-
-const AddFolderPageButton = (props: {
-  name: string
-  disable: boolean
-  handleOpen: () => void
-}) => {
-  const { name, disable, handleOpen } = props
-  return (
-    <button
-      className={clsx(
-        'h-9 w-16 ml-6 rounded-md hover:bg-slate-200',
-        'disabled:text-gray-500 disabled:bg-transparent'
-      )}
-      disabled={disable}
-      onClick={handleOpen}
-    >
-      {name}
-    </button>
   )
 }
