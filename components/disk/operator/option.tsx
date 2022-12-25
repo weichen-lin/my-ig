@@ -9,7 +9,6 @@ interface OptionProps {
 
 export default function Option(props: OptionProps) {
   const { operatorOpen, angle, icon, onClick } = props
-  console.log(operatorOpen)
 
   return (
     <li>

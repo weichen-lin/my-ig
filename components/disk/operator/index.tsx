@@ -16,8 +16,6 @@ export default function Operator(props: OperatorProps) {
   const { setData, operatorOpen, toogleCreateFolder, toogleOperatorOpen } =
     props
 
-  console.log(operatorOpen)
-
   const handleClick = async () => {
     const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
     const AllContents = await Promise.all(

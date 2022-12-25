@@ -30,10 +30,10 @@ export default function Disk() {
         operatorOpen={operatorOpen}
         toogleOperatorOpen={toogleOperatorOpen}
       />
-      {/* <AddFolderPage
+      <AddFolderPage
         creatFolderOpen={creatFolderOpen}
         toogleCreateFolder={toogleCreateFolder}
-      /> */}
+      />
     </div>
   )
 }
