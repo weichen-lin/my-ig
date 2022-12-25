@@ -16,6 +16,8 @@ export default function Operator(props: OperatorProps) {
   const { setData, operatorOpen, toogleCreateFolder, toogleOperatorOpen } =
     props
 
+  console.log(operatorOpen)
+
   const handleClick = async () => {
     const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
     const AllContents = await Promise.all(
@@ -66,18 +68,17 @@ export default function Operator(props: OperatorProps) {
           'absolute bottom-[19.5%] right-[35%] w-[16%] h-[16%]',
           'md:right-[40%]',
           'transition-all duration-300 ease-out',
-          'opacity-0',
-          `${operatorOpen ? 'opacity-100' : ''}`
+          `${operatorOpen ? 'opacity-100' : 'opacity-0'}`
         )}
       >
         <Option
-          isOpen={operatorOpen}
+          operatorOpen={operatorOpen}
           angle={''}
           icon={<UploadFile className='w-1/2 h-1/2 m-[25%]' />}
           onClick={handleClick}
         />
         <Option
-          isOpen={operatorOpen}
+          operatorOpen={operatorOpen}
           angle={'rotate-[45deg]'}
           icon={
             <UploadFolder className='w-1/2 h-1/2 m-[25%] -rotate-[45deg]' />
@@ -85,7 +86,7 @@ export default function Operator(props: OperatorProps) {
           onClick={handleClick}
         />
         <Option
-          isOpen={operatorOpen}
+          operatorOpen={operatorOpen}
           angle={'rotate-90'}
           icon={<AddFolder className='w-1/2 h-1/2 m-[25%] -rotate-90' />}
           onClick={toogleCreateFolder}

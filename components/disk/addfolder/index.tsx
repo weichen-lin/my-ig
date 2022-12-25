@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import AddFolderPageButton from 'components/disk/addfolder/button'
+import AddFolderPageButton from 'components/disk/addfolder/addfolderbutton'
 
 interface AddFolderPageProps {
   creatFolderOpen: boolean

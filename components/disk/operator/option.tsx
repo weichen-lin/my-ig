@@ -1,13 +1,16 @@
 import clsx from 'clsx'
 
 interface OptionProps {
-  isOpen: boolean
+  operatorOpen: boolean
   angle: string
   icon?: JSX.Element
   onClick: () => void
 }
 
-export default function Option({ isOpen, angle, icon, onClick }: OptionProps) {
+export default function Option(props: OptionProps) {
+  const { operatorOpen, angle, icon, onClick } = props
+  console.log(operatorOpen)
+
   return (
     <li>
       <label
@@ -16,7 +19,7 @@ export default function Option({ isOpen, angle, icon, onClick }: OptionProps) {
           'origin-[210%] rounded-full cursor-pointer',
           'transition-all duration-300 ease-in-out',
           'active:top-2',
-          `${isOpen ? angle : ''}`
+          `${operatorOpen ? angle : ''}`
         )}
         onClick={(e) => {
           e.preventDefault()

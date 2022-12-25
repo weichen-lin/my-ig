@@ -83,5 +83,13 @@ export default function useDisk() {
   )
   const [data, setData] = useState<Data[]>(fakeData)
 
-  return { listMethod, setListMethod, data, setData }
+  const handleListMethod = () => {
+    if (listMethod === ListMethod.Lattice) {
+      setListMethod(ListMethod.List)
+    } else {
+      setListMethod(ListMethod.Lattice)
+    }
+  }
+
+  return { listMethod, handleListMethod, data, setData }
 }

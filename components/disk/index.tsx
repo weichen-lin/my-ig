@@ -4,19 +4,11 @@ import Files from 'components/disk/files'
 import Operator from 'components/disk/operator'
 import AddFolderPage from 'components/disk/addfolder'
 
-import useDisk, { ListMethod } from 'hooks/disk/useDisk'
+import useDisk from 'hooks/disk/useDisk'
 import useOperator from 'hooks/disk/useOperator'
 
 export default function Disk() {
-  const { listMethod, setListMethod, data, setData } = useDisk()
-
-  const handleListMethod = () => {
-    if (listMethod === ListMethod.Lattice) {
-      setListMethod(ListMethod.List)
-    } else {
-      setListMethod(ListMethod.Lattice)
-    }
-  }
+  const { listMethod, handleListMethod, data, setData } = useDisk()
 
   const {
     creatFolderOpen,
@@ -38,10 +30,10 @@ export default function Disk() {
         operatorOpen={operatorOpen}
         toogleOperatorOpen={toogleOperatorOpen}
       />
-      <AddFolderPage
+      {/* <AddFolderPage
         creatFolderOpen={creatFolderOpen}
         toogleCreateFolder={toogleCreateFolder}
-      />
+      /> */}
     </div>
   )
 }
