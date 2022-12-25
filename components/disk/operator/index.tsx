@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import { Plus, UploadFolder } from 'public/icon/disk'
-import { useState } from 'react'
 import Option from 'components/disk/operator/option'
 import { UploadFile, AddFolder } from 'public/icon/disk'
 import { Dispatch, SetStateAction } from 'react'
@@ -8,15 +7,17 @@ import { Data, FileType } from 'hooks/disk/useDisk'
 
 interface OperatorProps {
   setData: Dispatch<SetStateAction<Data[]>>
+  operatorOpen: boolean
+  toogleCreateFolder: () => void
+  toogleOperatorOpen: () => void
 }
 
 export default function Operator(props: OperatorProps) {
-  const [isOpen, setIsopen] = useState(false)
-  const { setData } = props
+  const { setData, operatorOpen, toogleCreateFolder, toogleOperatorOpen } =
+    props
 
   const handleClick = async () => {
     const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
-    console.log(FileHandlers)
     const AllContents = await Promise.all(
       FileHandlers.map(async (filehandle) => {
         const file = await filehandle.getFile()
@@ -54,11 +55,9 @@ export default function Operator(props: OperatorProps) {
           'transition-all duration-700 ease-in-out',
           'md:right-[10%]',
           'hover:shadow-lg hover:shadow-gray-300 hover:border-none',
-          `${isOpen ? 'rotate-[360deg]' : ''}`
+          `${operatorOpen ? 'rotate-[360deg]' : ''}`
         )}
-        onClick={() => {
-          setIsopen((prev) => !prev)
-        }}
+        onClick={toogleOperatorOpen}
       >
         <Plus className='w-1/2 h-1/2 m-[25%] opacity-70' />
       </div>
@@ -68,17 +67,17 @@ export default function Operator(props: OperatorProps) {
           'md:right-[40%]',
           'transition-all duration-300 ease-out',
           'opacity-0',
-          `${isOpen ? 'opacity-100' : ''}`
+          `${operatorOpen ? 'opacity-100' : ''}`
         )}
       >
         <Option
-          isOpen={isOpen}
+          isOpen={operatorOpen}
           angle={''}
           icon={<UploadFile className='w-1/2 h-1/2 m-[25%]' />}
           onClick={handleClick}
         />
         <Option
-          isOpen={isOpen}
+          isOpen={operatorOpen}
           angle={'rotate-[45deg]'}
           icon={
             <UploadFolder className='w-1/2 h-1/2 m-[25%] -rotate-[45deg]' />
@@ -86,10 +85,10 @@ export default function Operator(props: OperatorProps) {
           onClick={handleClick}
         />
         <Option
-          isOpen={isOpen}
+          isOpen={operatorOpen}
           angle={'rotate-90'}
           icon={<AddFolder className='w-1/2 h-1/2 m-[25%] -rotate-90' />}
-          onClick={handleClick}
+          onClick={toogleCreateFolder}
         />
       </ul>
     </div>

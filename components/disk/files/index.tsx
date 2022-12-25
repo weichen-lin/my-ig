@@ -32,8 +32,12 @@ export default function Files(props: FilesPageProp) {
       </p>
       {data
         ?.filter((e) => e.type === FileType.Folder)
-        .map((e) => (
-          <FolderTypeElement listMethod={listMethod} folderName={e.name} />
+        .map((e, index) => (
+          <FolderTypeElement
+            listMethod={listMethod}
+            folderName={e.name}
+            key={`folder_index_${index}`}
+          />
         ))}
       <p
         className={clsx(
@@ -45,11 +49,12 @@ export default function Files(props: FilesPageProp) {
       </p>
       {data
         ?.filter((e) => e.type === FileType.File)
-        .map((e) => (
+        .map((e, index) => (
           <FileTypeElement
             listMethod={listMethod}
             fileName={e.name}
             imgUrl={e.url}
+            key={`file_index_${index}`}
           />
         ))}
     </div>
