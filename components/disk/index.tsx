@@ -6,26 +6,45 @@ import AddFolderPage from 'components/disk/addfolder'
 
 import useDisk from 'hooks/disk/useDisk'
 import useOperator from 'hooks/disk/useOperator'
+import useDrag from 'hooks/disk/useDrag'
+
+import { FileType } from 'hooks/disk/type'
 
 export default function Disk() {
-  const { listMethod, handleListMethod, data, setData } = useDisk()
+  const { listMethod, handleListMethod, data } = useDisk()
 
   const {
     creatFolderOpen,
     toogleCreateFolder,
     operatorOpen,
-    toogleOperatorOpen,
+    toogleOperatorOpen
   } = useOperator()
+
+  const {
+    isOnDrag,
+    files,
+    folders,
+    handleOndrag,
+    handleDragEnter,
+    handleDragEnd
+  } = useDrag(data)
 
   return (
     <div className='flex h-screen w-[90%] flex-col max-w-[1280px] mx-auto'>
       <Search />
       <Sort listMethod={listMethod} handleListMethod={handleListMethod} />
       <div className='grow overflow-y-auto'>
-        <Files listMethod={listMethod} data={data} />
+        <Files
+          listMethod={listMethod}
+          isOnDrag={isOnDrag}
+          files={files}
+          folders={folders}
+          handleOndrag={() => handleOndrag(FileType.Folder)}
+          handleDragEnter={handleDragEnter}
+          handleDragEnd={handleDragEnd}
+        />
       </div>
       <Operator
-        setData={setData}
         toogleCreateFolder={toogleCreateFolder}
         operatorOpen={operatorOpen}
         toogleOperatorOpen={toogleOperatorOpen}

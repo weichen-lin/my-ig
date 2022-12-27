@@ -1,15 +1,16 @@
 import { useState } from 'react'
+import { DiskData } from './type'
 
 export enum ListMethod {
   Lattice,
-  List,
+  List
 }
 
 type listMethodState = 0 | 1
 
 export enum FileType {
   Folder,
-  File,
+  File
 }
 
 export interface Data {
@@ -17,64 +18,117 @@ export interface Data {
   name: string
   url?: string | ArrayBuffer
   last_modified_data: string
+  index: number
+  isDragHovered: boolean
+  id: number
 }
 
-const fakeData: Data[] = [
+const fakeData: DiskData[] = [
   {
     type: FileType.Folder,
-    name: '測試資料夾',
+    id: 1,
+    name: '測試資料夾 1',
     last_modified_data: '2022/12/10',
+    index: 1,
+    isDragHovered: false,
+    before: null,
+    next: 2
   },
   {
     type: FileType.File,
-    name: '測試圖片',
+    id: 1,
+    name: '測試圖片 1',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
+    index: 1,
+    isDragHovered: false,
+    before: null,
+    next: 2
   },
   {
     type: FileType.Folder,
-    name: 'ascasasd',
+    id: 2,
+    name: '測試資料夾 2',
     last_modified_data: '2022/12/10',
+    index: 2,
+    isDragHovered: false,
+    before: 1,
+    next: 3
   },
   {
     type: FileType.File,
-    name: '測試圖片',
+    id: 2,
+    name: '測試圖片 2',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
+    index: 2,
+    isDragHovered: false,
+    before: 1,
+    next: 3
   },
   {
     type: FileType.Folder,
-    name: 'asdasdasdasdsada qwdq w',
+    id: 3,
+    name: '測試資料夾 3',
     last_modified_data: '2022/12/10',
+    index: 3,
+    isDragHovered: false,
+    before: 2,
+    next: 4
   },
   {
     type: FileType.File,
-    name: '測試圖片',
+    id: 3,
+    name: '測試圖片 3',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
+    index: 3,
+    isDragHovered: false,
+    before: 2,
+    next: 4
   },
   {
     type: FileType.Folder,
-    name: 'asdasdasd adasdas',
+    id: 4,
+    name: '測試資料夾 4',
     last_modified_data: '2022/12/10',
+    index: 4,
+    isDragHovered: false,
+    before: 3,
+    next: 5
   },
   {
     type: FileType.File,
-    name: '測試圖片',
+    id: 4,
+    name: '測試圖片 4',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
+    index: 4,
+    isDragHovered: false,
+    before: 3,
+    next: 5
   },
   {
     type: FileType.Folder,
-    name: '測試資料夾',
+    id: 5,
+    name: '測試資料夾 5',
     last_modified_data: '2022/12/10',
+    index: 5,
+    isDragHovered: false,
+    before: 4,
+    next: null
   },
   {
     type: FileType.File,
-    name: '測試圖片',
+    id: 5,
+    name: '測試圖片 5',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
-  },
+    index: 5,
+    isDragHovered: false,
+    before: 4,
+    next: null
+  }
 ]
 
 export default function useDisk() {
@@ -82,6 +136,12 @@ export default function useDisk() {
     ListMethod.Lattice
   )
   const [data, setData] = useState<Data[]>(fakeData)
+
+  const folderData = fakeData.filter((e) => e.type === FileType.Folder)
+  const fileData = fakeData.filter((e) => e.type === FileType.File)
+
+  const [folders, setFolders] = useState(folderData)
+  const [files, setFiles] = useState(fileData)
 
   const handleListMethod = () => {
     if (listMethod === ListMethod.Lattice) {
@@ -91,5 +151,14 @@ export default function useDisk() {
     }
   }
 
-  return { listMethod, handleListMethod, data, setData }
+  return {
+    listMethod,
+    handleListMethod,
+    data,
+    setData,
+    folders,
+    setFolders,
+    files,
+    setFiles
+  }
 }

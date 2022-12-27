@@ -21,7 +21,7 @@ export default function AddFolderPage(props: AddFolderPageProps) {
         className={clsx(
           'bg-gray-100 m-auto mt-[17%] rounded-xl flex flex-col p-5 gap-y-2',
           'transition-all duration-100 ease-in',
-          `${creatFolderOpen ? 'w-[15%] h-[180px]' : 'w-0 h-0'}`
+          `${creatFolderOpen ? 'w-[20%] h-[180px]' : 'w-0 h-0'}`
         )}
       >
         <p className='w-full text-xl font-bold truncate'>新增資料夾</p>

@@ -1,6 +1,10 @@
 import clsx from 'clsx'
-import { FilesProps } from 'components/disk/files/type'
-import { ListMethod } from 'hooks/disk/useDisk'
+import { FormatProp, ListMethod } from 'hooks/disk/type'
+
+export interface FilesProps extends FormatProp {
+  imgUrl: string
+  fileName: string
+}
 
 export default function FileTypeElement(props: FilesProps) {
   const { listMethod, imgUrl, fileName } = props
@@ -17,6 +21,7 @@ export default function FileTypeElement(props: FilesProps) {
         'transition-all duration-200 ease-out',
         'hover:bg-slate-200'
       )}
+      draggable
     >
       <div
         className={clsx(
@@ -24,7 +29,7 @@ export default function FileTypeElement(props: FilesProps) {
           `${listMethod === ListMethod.Lattice ? 'm-auto' : 'w-6 h-6 m-3'}`
         )}
       >
-        <img src={imgUrl}></img>
+        <img src={imgUrl} draggable={false}></img>
       </div>
       <div
         className={clsx(

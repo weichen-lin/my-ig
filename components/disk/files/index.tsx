@@ -1,15 +1,31 @@
 import clsx from 'clsx'
-import { FileType, ListMethod } from 'hooks/disk/useDisk'
 import FileTypeElement from 'components/disk/files/file'
 import FolderTypeElement from 'components/disk/files/folder'
-import { FormatProp } from 'components/disk/files/type'
+import { FormatProp, ListMethod, DiskData, FileType } from 'hooks/disk/type'
 
 interface FilesPageProp extends FormatProp {
-  data: any[]
+  isOnDrag: boolean
+  files: DiskData[]
+  folders: DiskData[]
+  handleOndrag: (e: number) => void
+  handleDragEnter: () => void
+  handleDragEnd: () => void
+}
+
+const checkIdAtInterval = (id: number, min: number, max: number) => {
+  return id >= min && id <= max
 }
 
 export default function Files(props: FilesPageProp) {
-  const { listMethod, data } = props
+  const {
+    listMethod,
+    isOnDrag,
+    files,
+    folders,
+    handleOndrag,
+    handleDragEnter,
+    handleDragEnd
+  } = props
 
   return (
     <div
@@ -30,15 +46,18 @@ export default function Files(props: FilesPageProp) {
       >
         資料夾
       </p>
-      {data
-        ?.filter((e) => e.type === FileType.Folder)
-        .map((e, index) => (
-          <FolderTypeElement
-            listMethod={listMethod}
-            folderName={e.name}
-            key={`folder_index_${index}`}
-          />
-        ))}
+      {folders.map((e, index) => (
+        <FolderTypeElement
+          id={e.id}
+          listMethod={listMethod}
+          folderName={e.name}
+          isOnDrag={isOnDrag}
+          handleOndrag={() => handleOndrag(FileType.Folder)}
+          handleDragEnter={handleDragEnter}
+          handleDragEnd={handleDragEnd}
+          key={`folder_index_${index}`}
+        />
+      ))}
       <p
         className={clsx(
           'w-full p-5 text-gray-400',
@@ -47,16 +66,14 @@ export default function Files(props: FilesPageProp) {
       >
         檔案
       </p>
-      {data
-        ?.filter((e) => e.type === FileType.File)
-        .map((e, index) => (
-          <FileTypeElement
-            listMethod={listMethod}
-            fileName={e.name}
-            imgUrl={e.url}
-            key={`file_index_${index}`}
-          />
-        ))}
+      {files.map((e, index) => (
+        <FileTypeElement
+          listMethod={listMethod}
+          fileName={e.name}
+          imgUrl={e.url}
+          key={`file_index_${index}`}
+        />
+      ))}
     </div>
   )
 }

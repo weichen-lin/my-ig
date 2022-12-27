@@ -6,37 +6,35 @@ import { Dispatch, SetStateAction } from 'react'
 import { Data, FileType } from 'hooks/disk/useDisk'
 
 interface OperatorProps {
-  setData: Dispatch<SetStateAction<Data[]>>
   operatorOpen: boolean
   toogleCreateFolder: () => void
   toogleOperatorOpen: () => void
 }
 
 export default function Operator(props: OperatorProps) {
-  const { setData, operatorOpen, toogleCreateFolder, toogleOperatorOpen } =
-    props
+  const { operatorOpen, toogleCreateFolder, toogleOperatorOpen } = props
 
-  const handleClick = async () => {
-    const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
-    const AllContents = await Promise.all(
-      FileHandlers.map(async (filehandle) => {
-        const file = await filehandle.getFile()
-        const imgReader = new FileReader()
-        imgReader.readAsDataURL(file)
-        imgReader.onloadend = () => {
-          setData((prev) => [
-            ...prev,
-            {
-              type: FileType.File,
-              name: file.name,
-              url: imgReader.result ?? '',
-              last_modified_data: '2022/12/10',
-            },
-          ])
-        }
-      })
-    )
-  }
+  // const handleClick = async () => {
+  //   const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
+  //   const AllContents = await Promise.all(
+  //     FileHandlers.map(async (filehandle) => {
+  //       const file = await filehandle.getFile()
+  //       const imgReader = new FileReader()
+  //       imgReader.readAsDataURL(file)
+  //       imgReader.onloadend = () => {
+  //         setData((prev) => [
+  //           ...prev,
+  //           {
+  //             type: FileType.File,
+  //             name: file.name,
+  //             url: imgReader.result ?? '',
+  //             last_modified_data: '2022/12/10',
+  //           },
+  //         ])
+  //       }
+  //     })
+  //   )
+  // }
 
   return (
     <div
@@ -73,7 +71,7 @@ export default function Operator(props: OperatorProps) {
           operatorOpen={operatorOpen}
           angle={''}
           icon={<UploadFile className='w-1/2 h-1/2 m-[25%]' />}
-          onClick={handleClick}
+          onClick={() => {}}
         />
         <Option
           operatorOpen={operatorOpen}
@@ -81,7 +79,7 @@ export default function Operator(props: OperatorProps) {
           icon={
             <UploadFolder className='w-1/2 h-1/2 m-[25%] -rotate-[45deg]' />
           }
-          onClick={handleClick}
+          onClick={() => {}}
         />
         <Option
           operatorOpen={operatorOpen}
