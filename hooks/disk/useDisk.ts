@@ -3,24 +3,14 @@ import { DiskData } from './type'
 
 export enum ListMethod {
   Lattice,
-  List
+  List,
 }
 
 type listMethodState = 0 | 1
 
 export enum FileType {
   Folder,
-  File
-}
-
-export interface Data {
-  type: number
-  name: string
-  url?: string | ArrayBuffer
-  last_modified_data: string
-  index: number
-  isDragHovered: boolean
-  id: number
+  File,
 }
 
 const fakeData: DiskData[] = [
@@ -31,8 +21,9 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 1,
     isDragHovered: false,
+    isBeingDragged: false,
     before: null,
-    next: 2
+    next: 2,
   },
   {
     type: FileType.File,
@@ -42,8 +33,9 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 1,
     isDragHovered: false,
+    isBeingDragged: false,
     before: null,
-    next: 2
+    next: 2,
   },
   {
     type: FileType.Folder,
@@ -52,8 +44,9 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 2,
     isDragHovered: false,
+    isBeingDragged: false,
     before: 1,
-    next: 3
+    next: 3,
   },
   {
     type: FileType.File,
@@ -63,8 +56,10 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 2,
     isDragHovered: false,
+    isBeingDragged: false,
+
     before: 1,
-    next: 3
+    next: 3,
   },
   {
     type: FileType.Folder,
@@ -73,8 +68,10 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 3,
     isDragHovered: false,
+    isBeingDragged: false,
+
     before: 2,
-    next: 4
+    next: 4,
   },
   {
     type: FileType.File,
@@ -84,8 +81,10 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 3,
     isDragHovered: false,
+    isBeingDragged: false,
+
     before: 2,
-    next: 4
+    next: 4,
   },
   {
     type: FileType.Folder,
@@ -94,8 +93,10 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 4,
     isDragHovered: false,
+    isBeingDragged: false,
+
     before: 3,
-    next: 5
+    next: 5,
   },
   {
     type: FileType.File,
@@ -105,8 +106,10 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 4,
     isDragHovered: false,
+    isBeingDragged: false,
+
     before: 3,
-    next: 5
+    next: 5,
   },
   {
     type: FileType.Folder,
@@ -115,8 +118,10 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 5,
     isDragHovered: false,
+    isBeingDragged: false,
+
     before: 4,
-    next: null
+    next: null,
   },
   {
     type: FileType.File,
@@ -126,16 +131,18 @@ const fakeData: DiskData[] = [
     last_modified_data: '2022/12/10',
     index: 5,
     isDragHovered: false,
+    isBeingDragged: false,
+
     before: 4,
-    next: null
-  }
+    next: null,
+  },
 ]
 
 export default function useDisk() {
   const [listMethod, setListMethod] = useState<listMethodState>(
     ListMethod.Lattice
   )
-  const [data, setData] = useState<Data[]>(fakeData)
+  const [data, setData] = useState<DiskData[]>(fakeData)
 
   const folderData = fakeData.filter((e) => e.type === FileType.Folder)
   const fileData = fakeData.filter((e) => e.type === FileType.File)
@@ -159,6 +166,6 @@ export default function useDisk() {
     folders,
     setFolders,
     files,
-    setFiles
+    setFiles,
   }
 }

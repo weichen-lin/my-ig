@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { FormatProp, ListMethod } from 'hooks/disk/type'
 
 export interface FilesProps extends FormatProp {
-  imgUrl: string
+  imgUrl: string | undefined
   fileName: string
 }
 
@@ -29,7 +29,7 @@ export default function FileTypeElement(props: FilesProps) {
           `${listMethod === ListMethod.Lattice ? 'm-auto' : 'w-6 h-6 m-3'}`
         )}
       >
-        <img src={imgUrl} draggable={false}></img>
+        <img src={imgUrl} draggable={false}></img>{' '}
       </div>
       <div
         className={clsx(

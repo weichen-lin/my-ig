@@ -16,22 +16,61 @@ export default function useDrag(data: DiskData[]) {
   const [dragObj, setDragObj] = useState(0)
   const [dragEnterObj, setDragEnterObj] = useState(0)
   const [isOnDrag, setIsOnDrag] = useState(false)
-  const [dragType, setDragType] = useState(0)
+  const [dragFileType, setDragFileType] = useState(0)
 
-  const handleOndrag = (e: number) => {
+  const handleOndrag = (dragFileType: number, draggedFile: number) => {
     setIsOnDrag(true)
-    setDragType(0)
+    setDragFileType(dragFileType)
 
-    if (dragType === FileType.Folder) {
-      const newFolders = folders.map( folder => {
-        if(folder.id !== e)
+    if (dragFileType === FileType.Folder) {
+      setDragObj(draggedFile)
+      const getDraggedFolder = folders.map((folder) => {
+        if (folder.id === draggedFile) {
+          return { ...folder, isBeingDragged: true }
+        } else {
+          return folder
+        }
       })
+      setFolders(getDraggedFolder)
     }
   }
 
-  const handleDragEnter = () => {}
+  const handleDragEnter = (
+    dragHoverdFileType: number,
+    dragHoverdFile: number
+  ) => {
+    if (dragHoverdFileType === FileType.Folder) {
+      const beingDraggedFolderMove = folders.map((folder) => {
+        if (folder.id === dragHoverdFile && folder.id !== dragObj) {
+          return { ...folder, isDragHovered: true }
+        } else {
+          return { ...folder, isDragHovered: false }
+        }
+      })
+      setFolders(beingDraggedFolderMove)
+    }
+    setDragEnterObj(dragHoverdFile)
+  }
 
-  const handleDragEnd = () => {}
+  const handleDragEnd = (dragFileType: number) => {
+    let clearDraggedStatus
+    if (dragFileType === FileType.Folder) {
+      clearDraggedStatus = folders.map((e) => ({
+        ...e,
+        isBeingDragged: false,
+        isDragHovered: false,
+      }))
+      setFolders(clearDraggedStatus)
+    } else {
+      clearDraggedStatus = files.map((e) => ({ ...e, isBeingDragged: false }))
+    }
+    console.log(
+      `最後進入的檔案夾是 ${
+        folders.filter((e) => e.id === dragEnterObj)[0].name
+      }`
+    )
+    setIsOnDrag(false)
+  }
 
   return {
     isOnDrag,
@@ -39,6 +78,6 @@ export default function useDrag(data: DiskData[]) {
     files,
     handleOndrag,
     handleDragEnter,
-    handleDragEnd
+    handleDragEnd,
   }
 }

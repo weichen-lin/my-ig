@@ -1,17 +1,18 @@
 import clsx from 'clsx'
 import { Folder } from 'public/icon/disk'
-import { FormatProp } from 'hooks/disk/type'
+import { FileType, FormatProp } from 'hooks/disk/type'
 import { ListMethod } from 'hooks/disk/useDisk'
-//pointer-events-none
+import ReactDom from 'react'
 
 interface FolderProps extends FormatProp {
   id: number
   folderName: string
   isOnDrag: boolean
   isDragHovered: boolean
-  handleOndrag: (e: number) => void
-  handleDragEnter: (e: number) => void
-  handleDragEnd: () => void
+  isBeingDragged: boolean
+  handleOndrag: (dragFileType: number, y: number) => void
+  handleDragEnter: (dragHoverdFileType: number, dragHoverdFile: number) => void
+  handleDragEnd: (dragFileType: number) => void
 }
 
 export default function FolderTypeElement(props: FolderProps) {
@@ -20,9 +21,11 @@ export default function FolderTypeElement(props: FolderProps) {
     listMethod,
     folderName,
     isOnDrag,
+    isDragHovered,
+    isBeingDragged,
     handleOndrag,
     handleDragEnter,
-    handleDragEnd
+    handleDragEnd,
   } = props
 
   return (
@@ -33,8 +36,10 @@ export default function FolderTypeElement(props: FolderProps) {
             ? 'w-[200px] lg:w-[225px] flex-col border-2'
             : 'w-full'
         }`,
-        `${isOnDrag ? 'lg:w-0 opacity-20 border-none gap-x-0' : 'visible'}`,
-        // `${isDragHovered ? 'ml-[249px]' : ''}`,
+        // `${isBeingDragged ? 'lg:w-0 border-none -ml-[24px]' : ''}`,
+        `${isBeingDragged ? 'opacity-70' : ''}`,
+        `${isOnDrag ? 'hover:bg-white' : ''}`,
+        `${isDragHovered ? 'bg-blue-200' : ''}`,
         'rounded-lg h-[48px] relative',
         'cursor-pointer truncate',
         'transition-all duration-200 ease-out',
@@ -42,10 +47,14 @@ export default function FolderTypeElement(props: FolderProps) {
       )}
       draggable
       onDragStart={() => {
-        handleOndrag(id)
+        handleOndrag(FileType.Folder, id)
       }}
-      onDragEnter={() => {}}
-      onDragEnd={() => {}}
+      onDragEnter={() => {
+        handleDragEnter(FileType.Folder, id)
+      }}
+      onDragEnd={() => {
+        handleDragEnd(FileType.Folder)
+      }}
     >
       <div className='flex'>
         <Folder

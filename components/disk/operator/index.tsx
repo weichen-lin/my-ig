@@ -2,8 +2,6 @@ import clsx from 'clsx'
 import { Plus, UploadFolder } from 'public/icon/disk'
 import Option from 'components/disk/operator/option'
 import { UploadFile, AddFolder } from 'public/icon/disk'
-import { Dispatch, SetStateAction } from 'react'
-import { Data, FileType } from 'hooks/disk/useDisk'
 
 interface OperatorProps {
   operatorOpen: boolean

@@ -19,16 +19,17 @@ export interface FilesProps extends FormatProp {
 
 export enum FileType {
   Folder,
-  File
+  File,
 }
 
 export interface DiskData {
   type: number
   name: string
-  url?: string | ArrayBuffer
+  url?: string
   last_modified_data: string
   index: number
   isDragHovered: boolean
+  isBeingDragged: boolean
   id: number
   before: number | null
   next: number | null
@@ -40,5 +41,5 @@ export interface FormatProp {
 
 export enum ListMethod {
   Lattice,
-  List
+  List,
 }

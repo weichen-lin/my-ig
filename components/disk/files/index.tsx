@@ -7,9 +7,9 @@ interface FilesPageProp extends FormatProp {
   isOnDrag: boolean
   files: DiskData[]
   folders: DiskData[]
-  handleOndrag: (e: number) => void
-  handleDragEnter: () => void
-  handleDragEnd: () => void
+  handleOndrag: (dragFileType: number, y: number) => void
+  handleDragEnter: (dragHoverdFileType: number, dragHoverdFile: number) => void
+  handleDragEnd: (dragFileType: number) => void
 }
 
 const checkIdAtInterval = (id: number, min: number, max: number) => {
@@ -24,7 +24,7 @@ export default function Files(props: FilesPageProp) {
     folders,
     handleOndrag,
     handleDragEnter,
-    handleDragEnd
+    handleDragEnd,
   } = props
 
   return (
@@ -52,7 +52,9 @@ export default function Files(props: FilesPageProp) {
           listMethod={listMethod}
           folderName={e.name}
           isOnDrag={isOnDrag}
-          handleOndrag={() => handleOndrag(FileType.Folder)}
+          isDragHovered={e.isDragHovered}
+          isBeingDragged={e.isBeingDragged}
+          handleOndrag={handleOndrag}
           handleDragEnter={handleDragEnter}
           handleDragEnd={handleDragEnd}
           key={`folder_index_${index}`}

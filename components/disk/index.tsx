@@ -8,8 +8,6 @@ import useDisk from 'hooks/disk/useDisk'
 import useOperator from 'hooks/disk/useOperator'
 import useDrag from 'hooks/disk/useDrag'
 
-import { FileType } from 'hooks/disk/type'
-
 export default function Disk() {
   const { listMethod, handleListMethod, data } = useDisk()
 
@@ -17,7 +15,7 @@ export default function Disk() {
     creatFolderOpen,
     toogleCreateFolder,
     operatorOpen,
-    toogleOperatorOpen
+    toogleOperatorOpen,
   } = useOperator()
 
   const {
@@ -26,7 +24,7 @@ export default function Disk() {
     folders,
     handleOndrag,
     handleDragEnter,
-    handleDragEnd
+    handleDragEnd,
   } = useDrag(data)
 
   return (
@@ -39,7 +37,7 @@ export default function Disk() {
           isOnDrag={isOnDrag}
           files={files}
           folders={folders}
-          handleOndrag={() => handleOndrag(FileType.Folder)}
+          handleOndrag={handleOndrag}
           handleDragEnter={handleDragEnter}
           handleDragEnd={handleDragEnd}
         />
