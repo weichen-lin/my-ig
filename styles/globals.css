@@ -33,3 +33,9 @@
     transform: rotate(360deg);
   }
 }
+
+.selection-area {
+  border: 1px solid rgba(20, 20, 20, 0.06);
+  background-color: rgba(20, 20, 20, 0.06);
+  border-radius: 5px;
+}

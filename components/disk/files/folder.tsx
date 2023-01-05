@@ -1,32 +1,16 @@
 import clsx from 'clsx'
 import { Folder } from 'public/icon/disk'
-import { FileType, FormatProp } from 'hooks/disk/type'
+import { FormatProp } from 'hooks/disk/type'
 import { ListMethod } from 'hooks/disk/useDisk'
-import ReactDom from 'react'
 
 interface FolderProps extends FormatProp {
   id: number
   folderName: string
-  isOnDrag: boolean
-  isDragHovered: boolean
-  isBeingDragged: boolean
-  handleOndrag: (dragFileType: number, y: number) => void
-  handleDragEnter: (dragHoverdFileType: number, dragHoverdFile: number) => void
-  handleDragEnd: (dragFileType: number) => void
+  selected: boolean
 }
 
 export default function FolderTypeElement(props: FolderProps) {
-  const {
-    id,
-    listMethod,
-    folderName,
-    isOnDrag,
-    isDragHovered,
-    isBeingDragged,
-    handleOndrag,
-    handleDragEnter,
-    handleDragEnd,
-  } = props
+  const { id, listMethod, folderName, selected } = props
 
   return (
     <div
@@ -36,25 +20,13 @@ export default function FolderTypeElement(props: FolderProps) {
             ? 'w-[200px] lg:w-[225px] flex-col border-2'
             : 'w-full'
         }`,
-        // `${isBeingDragged ? 'lg:w-0 border-none -ml-[24px]' : ''}`,
-        `${isBeingDragged ? 'opacity-70' : ''}`,
-        `${isOnDrag ? 'hover:bg-white' : ''}`,
-        `${isDragHovered ? 'bg-blue-200' : ''}`,
         'rounded-lg h-[48px] relative',
         'cursor-pointer truncate',
         'transition-all duration-200 ease-out',
-        'hover:bg-slate-200'
+        'selectable',
+        `${selected ? 'bg-red-300' : 'hover:bg-slate-200'}`
       )}
-      draggable
-      onDragStart={() => {
-        handleOndrag(FileType.Folder, id)
-      }}
-      onDragEnter={() => {
-        handleDragEnter(FileType.Folder, id)
-      }}
-      onDragEnd={() => {
-        handleDragEnd(FileType.Folder)
-      }}
+      data-key={`selectable-${id}`}
     >
       <div className='flex'>
         <Folder

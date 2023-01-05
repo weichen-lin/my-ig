@@ -2,12 +2,14 @@ import clsx from 'clsx'
 import { FormatProp, ListMethod } from 'hooks/disk/type'
 
 export interface FilesProps extends FormatProp {
+  id: number
   imgUrl: string | undefined
   fileName: string
+  selected: boolean
 }
 
 export default function FileTypeElement(props: FilesProps) {
-  const { listMethod, imgUrl, fileName } = props
+  const { id, listMethod, imgUrl, fileName, selected } = props
 
   return (
     <div
@@ -19,9 +21,10 @@ export default function FileTypeElement(props: FilesProps) {
         }`,
         'flex cursor-pointer rounded-lg relative',
         'transition-all duration-200 ease-out',
-        'hover:bg-slate-200'
+        `${selected ? 'bg-red-300' : 'hover:bg-slate-200'}`,
+        'selectable'
       )}
-      draggable
+      data-key={`selectable-${id}`}
     >
       <div
         className={clsx(

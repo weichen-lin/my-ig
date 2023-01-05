@@ -3,27 +3,27 @@ import { DiskData } from './type'
 
 export enum ListMethod {
   Lattice,
-  List,
+  List
 }
 
 type listMethodState = 0 | 1
 
 export enum FileType {
   Folder,
-  File,
+  File
 }
 
 const fakeData: DiskData[] = [
   {
     type: FileType.Folder,
-    id: 1,
+    id: 0,
     name: '測試資料夾 1',
     last_modified_data: '2022/12/10',
     index: 1,
     isDragHovered: false,
     isBeingDragged: false,
     before: null,
-    next: 2,
+    next: 2
   },
   {
     type: FileType.File,
@@ -35,7 +35,7 @@ const fakeData: DiskData[] = [
     isDragHovered: false,
     isBeingDragged: false,
     before: null,
-    next: 2,
+    next: 2
   },
   {
     type: FileType.Folder,
@@ -46,96 +46,89 @@ const fakeData: DiskData[] = [
     isDragHovered: false,
     isBeingDragged: false,
     before: 1,
-    next: 3,
+    next: 3
   },
   {
     type: FileType.File,
-    id: 2,
+    id: 3,
     name: '測試圖片 2',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
     index: 2,
     isDragHovered: false,
     isBeingDragged: false,
-
     before: 1,
-    next: 3,
+    next: 3
   },
   {
     type: FileType.Folder,
-    id: 3,
+    id: 4,
     name: '測試資料夾 3',
     last_modified_data: '2022/12/10',
     index: 3,
     isDragHovered: false,
     isBeingDragged: false,
-
     before: 2,
-    next: 4,
+    next: 4
   },
   {
     type: FileType.File,
-    id: 3,
+    id: 5,
     name: '測試圖片 3',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
     index: 3,
     isDragHovered: false,
     isBeingDragged: false,
-
     before: 2,
-    next: 4,
+    next: 4
   },
   {
     type: FileType.Folder,
-    id: 4,
+    id: 6,
     name: '測試資料夾 4',
     last_modified_data: '2022/12/10',
     index: 4,
     isDragHovered: false,
     isBeingDragged: false,
-
     before: 3,
-    next: 5,
+    next: 5
   },
   {
     type: FileType.File,
-    id: 4,
+    id: 7,
     name: '測試圖片 4',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
     index: 4,
     isDragHovered: false,
     isBeingDragged: false,
-
     before: 3,
-    next: 5,
+    next: 5
   },
   {
     type: FileType.Folder,
-    id: 5,
+    id: 8,
     name: '測試資料夾 5',
     last_modified_data: '2022/12/10',
     index: 5,
     isDragHovered: false,
     isBeingDragged: false,
-
     before: 4,
-    next: null,
+    next: null
   },
   {
     type: FileType.File,
-    id: 5,
+    id: 9,
     name: '測試圖片 5',
     url: 'https://upload.wikimedia.org/wikipedia/commons/5/58/Shiba_inu_taiki.jpg',
     last_modified_data: '2022/12/10',
     index: 5,
     isDragHovered: false,
     isBeingDragged: false,
-
     before: 4,
-    next: null,
-  },
+    next: null
+  }
 ]
 
 export default function useDisk() {
@@ -166,6 +159,6 @@ export default function useDisk() {
     folders,
     setFolders,
     files,
-    setFiles,
+    setFiles
   }
 }
