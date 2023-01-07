@@ -51,7 +51,7 @@ export default function Operator(props: OperatorProps) {
           'transition-all duration-700 ease-in-out',
           'md:right-[10%]',
           'hover:shadow-lg hover:shadow-gray-300 hover:border-none',
-          `${operatorOpen ? 'rotate-[360deg]' : ''}`
+          `${operatorOpen ? 'rotate-[360deg] z-20' : 'z-[5]'}`
         )}
         onClick={toogleOperatorOpen}
       >

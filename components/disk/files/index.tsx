@@ -3,91 +3,13 @@ import FileTypeElement from 'components/disk/files/file'
 import FolderTypeElement from 'components/disk/files/folder'
 import { FormatProp, ListMethod, DiskData } from 'hooks/disk/type'
 
-import { useState, useEffect, createRef } from 'react'
-import Selectable from 'dist/esm/index'
-
 interface FilesPageProp extends FormatProp {
   files: DiskData[]
   folders: DiskData[]
 }
 
 export default function Files(props: FilesPageProp) {
-  const { listMethod, files, folders } = props
-  const [selected, setSelected] = useState<Set<string>>(new Set())
-  const [dragged, setDragged] = useState<Set<string>>(new Set())
-
-  const root = createRef<HTMLDivElement>()
-  interface SelectionEvent {
-    stored: string[]
-    canSelected: Element[]
-    changed: {
-      added: string[]
-      removed: string[]
-    }
-  }
-
-  const handleSelected = ({
-    stored,
-    changed: { added, removed }
-  }: SelectionEvent) => {
-    const newSelected = new Set<string>(stored)
-    added.forEach((e) => newSelected.add(e))
-    removed.forEach((e) => newSelected.delete(e))
-
-    setSelected(newSelected)
-  }
-
-  const handleDragged = ({
-    stored,
-    changed: { added, removed }
-  }: SelectionEvent) => {
-    const newSelected = new Set<string>(stored)
-    added.forEach((e) => newSelected.add(e))
-    removed.forEach((e) => newSelected.delete(e))
-
-    setDragged(newSelected)
-  }
-
-  const handleTransform = (e: Element) => {
-    return e
-  }
-
-  const handleRevert = (e: Element) => {
-    return e
-  }
-
-  useEffect(() => {
-    console.log('trigger effect')
-
-    const selection = new Selectable({
-      boundary: root?.current as HTMLDivElement,
-      selectAreaClassName: 'selection-area',
-      selectablePrefix: 'selectable',
-      select_cb: handleSelected,
-      drag_cb: handleDragged,
-      transformFunc: {
-        transform: {
-          func: handleTransform,
-          css: {
-            width: 200,
-            margin: 0,
-            height: 80
-          }
-        },
-        revert: {
-          func: handleRevert,
-          css: {
-            width: 108,
-            margin: 30,
-            opacity: '100%',
-            willChange: 'top left width height'
-          }
-        },
-        iconPositionX: 200
-      }
-    })
-    return () => selection.destroy()
-  }, [])
+  const { listMethod, files, folders, selected, dragged } = props
 
   return (
     <div
@@ -99,7 +21,6 @@ export default function Files(props: FilesPageProp) {
             : 'flex-col'
         }`
       )}
-      ref={root}
     >
       <p
         className={clsx(
@@ -116,6 +37,7 @@ export default function Files(props: FilesPageProp) {
           folderName={e.name}
           key={`folder_index_${e.id}`}
           selected={selected.has(`selectable-${e.id}`)}
+          dragged={dragged.has(`selectable-${e.id}`)}
         />
       ))}
       <p
@@ -134,6 +56,7 @@ export default function Files(props: FilesPageProp) {
           imgUrl={e.url}
           key={`file_index_${e.id}`}
           selected={selected.has(`selectable-${e.id}`)}
+          dragged={dragged.has(`selectable-${e.id}`)}
         />
       ))}
     </div>

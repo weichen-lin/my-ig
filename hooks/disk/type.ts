@@ -1,5 +1,7 @@
 export interface FormatProp {
   listMethod: number
+  selected: Set<string>
+  dragged: Set<string>
 }
 
 export interface FolderProps extends FormatProp {
@@ -19,7 +21,7 @@ export interface FilesProps extends FormatProp {
 
 export enum FileType {
   Folder,
-  File,
+  File
 }
 
 export interface DiskData {
@@ -41,5 +43,5 @@ export interface FormatProp {
 
 export enum ListMethod {
   Lattice,
-  List,
+  List
 }

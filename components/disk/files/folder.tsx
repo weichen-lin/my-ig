@@ -7,10 +7,11 @@ interface FolderProps extends FormatProp {
   id: number
   folderName: string
   selected: boolean
+  dragged: boolean
 }
 
 export default function FolderTypeElement(props: FolderProps) {
-  const { id, listMethod, folderName, selected } = props
+  const { id, listMethod, folderName, selected, dragged } = props
 
   return (
     <div
@@ -24,7 +25,8 @@ export default function FolderTypeElement(props: FolderProps) {
         'cursor-pointer truncate',
         'transition-all duration-200 ease-out',
         'selectable',
-        `${selected ? 'bg-red-300' : 'hover:bg-slate-200'}`
+        `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
+        `${dragged ? 'opacity-70' : 'opacity-100'}`
       )}
       data-key={`selectable-${id}`}
     >

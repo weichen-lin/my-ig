@@ -5,11 +5,10 @@ export interface FilesProps extends FormatProp {
   id: number
   imgUrl: string | undefined
   fileName: string
-  selected: boolean
 }
 
 export default function FileTypeElement(props: FilesProps) {
-  const { id, listMethod, imgUrl, fileName, selected } = props
+  const { id, listMethod, imgUrl, fileName, selected, dragged } = props
 
   return (
     <div
@@ -21,7 +20,8 @@ export default function FileTypeElement(props: FilesProps) {
         }`,
         'flex cursor-pointer rounded-lg relative',
         'transition-all duration-200 ease-out',
-        `${selected ? 'bg-red-300' : 'hover:bg-slate-200'}`,
+        `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
+        `${dragged ? 'opacity-70' : 'opacity-100'}`,
         'selectable'
       )}
       data-key={`selectable-${id}`}
