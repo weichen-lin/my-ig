@@ -1,7 +1,7 @@
 import clsx from 'clsx'
-import { FormatProp, ListMethod } from 'hooks/disk/type'
+import { FormatProp, ListMethod, SelectionValue } from 'hooks/disk/type'
 
-export interface FilesProps extends FormatProp {
+export interface FilesProps extends FormatProp, SelectionValue {
   id: number
   imgUrl: string | undefined
   fileName: string

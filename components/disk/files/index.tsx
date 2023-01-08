@@ -1,9 +1,14 @@
 import clsx from 'clsx'
 import FileTypeElement from 'components/disk/files/file'
 import FolderTypeElement from 'components/disk/files/folder'
-import { FormatProp, ListMethod, DiskData } from 'hooks/disk/type'
+import {
+  FormatProp,
+  ListMethod,
+  DiskData,
+  SelectionStringList,
+} from 'hooks/disk/type'
 
-interface FilesPageProp extends FormatProp {
+interface FilesPageProp extends FormatProp, SelectionStringList {
   files: DiskData[]
   folders: DiskData[]
 }

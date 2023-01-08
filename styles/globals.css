@@ -3,6 +3,8 @@
 @tailwind utilities;
 @import '/styles/login.css';
 
+@import './datepicker.css';
+
 .kulo {
   background-color: #fff6db;
 }

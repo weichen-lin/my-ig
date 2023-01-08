@@ -1,0 +1,17 @@
+.glass {
+  /* From https://css.glass */
+  background: rgba(202, 201, 201, 0.64);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(202, 201, 201, 0.46);
+}
+
+.react-datepicker__input-container input {
+  @apply text-gray-600 glass cursor-pointer h-12;
+}
+
+.react-datepicker__input-container input:focus {
+  outline: none;
+}

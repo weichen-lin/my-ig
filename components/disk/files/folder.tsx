@@ -1,13 +1,11 @@
 import clsx from 'clsx'
 import { Folder } from 'public/icon/disk'
-import { FormatProp } from 'hooks/disk/type'
+import { FormatProp, SelectionValue } from 'hooks/disk/type'
 import { ListMethod } from 'hooks/disk/useDisk'
 
-interface FolderProps extends FormatProp {
+interface FolderProps extends FormatProp, SelectionValue {
   id: number
   folderName: string
-  selected: boolean
-  dragged: boolean
 }
 
 export default function FolderTypeElement(props: FolderProps) {

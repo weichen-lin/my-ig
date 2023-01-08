@@ -16,7 +16,7 @@ export default function Disk() {
     creatFolderOpen,
     toogleCreateFolder,
     operatorOpen,
-    toogleOperatorOpen
+    toogleOperatorOpen,
   } = useOperator()
 
   const { root, selected, dragged } = useGdrive()
@@ -34,11 +34,11 @@ export default function Disk() {
           dragged={dragged}
         />
       </div>
-      {/* <Operator
+      <Operator
         toogleCreateFolder={toogleCreateFolder}
         operatorOpen={operatorOpen}
         toogleOperatorOpen={toogleOperatorOpen}
-      /> */}
+      />
       <AddFolderPage
         creatFolderOpen={creatFolderOpen}
         toogleCreateFolder={toogleCreateFolder}
