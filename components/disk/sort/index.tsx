@@ -18,7 +18,7 @@ export default function Sort(props: SortProps) {
       className={clsx(
         'w-full h-12 flex justify-between mb-2',
         'md:mt-2',
-        'lg:w-full bg-green-200'
+        'lg:w-full'
       )}
     >
       <div className='flex'>
