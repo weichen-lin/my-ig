@@ -14,37 +14,47 @@ export default function FolderTypeElement(props: FolderProps) {
   return (
     <div
       className={clsx(
-        `${
-          listMethod === ListMethod.Lattice
-            ? 'w-[200px] lg:w-[225px] flex-col border-2'
-            : 'w-full'
-        }`,
-        'rounded-lg h-[48px] relative',
-        'cursor-pointer truncate',
-        'transition-all duration-200 ease-out',
-        'selectable',
+        'flex hover:bg-slate-200 cursor-pointer rounded-lg',
         `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
-        `${dragged ? 'opacity-70' : 'opacity-100'}`
+        `${dragged ? 'opacity-70' : 'opacity-100'}`,
+        `${listMethod === ListMethod.Lattice ? '' : 'border-b-2'}`
       )}
-      data-key={`selectable-${id}`}
     >
-      <div className='flex'>
-        <Folder
-          className={clsx(
-            `${listMethod === ListMethod.Lattice ? 'w-9 p-2 ml-2' : 'h-6 m-3'}`,
-            'transition-all duration-300 ease-out'
-          )}
-        />
-        <div className='flex-1 text-base py-[10px] px-2 truncate'>
-          {folderName}
-        </div>
-      </div>
       <div
         className={clsx(
-          'absolute h-[2px] w-full bg-slate-100 bottom-0',
-          `${listMethod === ListMethod.Lattice ? 'hidden' : ''}`
+          `${
+            listMethod === ListMethod.Lattice
+              ? 'w-[200px] lg:w-[225px] flex-col border-2'
+              : 'w-full'
+          }`,
+          'h-[48px] relative rounded-lg',
+          'cursor-pointer truncate',
+          'transition-all duration-200 ease-out',
+          'selectable'
         )}
-      ></div>
+        data-key={`selectable-${id}`}
+      >
+        <div className='flex'>
+          <Folder
+            className={clsx(
+              `${
+                listMethod === ListMethod.Lattice ? 'w-9 p-2 ml-2' : 'h-6 m-3'
+              }`,
+              'transition-all duration-300 ease-out'
+            )}
+          />
+          <div className='flex-1 text-base py-[10px] px-2 truncate'>
+            {folderName}
+          </div>
+        </div>
+      </div>
+      {listMethod === ListMethod.Lattice ? (
+        <></>
+      ) : (
+        <div className='w-[400px] p-3 text-gray-400 text-center'>
+          2022年 12月 24日
+        </div>
+      )}
     </div>
   )
 }

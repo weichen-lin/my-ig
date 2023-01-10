@@ -22,23 +22,23 @@ export default function Sort(props: SortProps) {
       )}
     >
       <div className='flex'>
-        <span className='py-[7px] text-lg'>排序方式</span>
+        <span className='py-[10px] text-lg'>排序方式</span>
         <ArrowIcon
           className={clsx(
-            'w-[18px] h-[18px] my-[12px] mx-1 hover:bg-slate-200 rounded-md cursor-pointer'
+            'w-[20px] h-[20px] my-[14px] mx-1 hover:bg-slate-200 rounded-md cursor-pointer'
           )}
         />
       </div>
       <div className='flex'>
         <CustomDatePicker />
         <div
-          className='w-[18px] h-[18px] mt-2 mx-4 rounded-md cursor-pointer'
+          className='w-9 h-9 my-[6px] rounded-md cursor-pointer hover:bg-slate-200'
           onClick={handleListMethod}
         >
           {listMethod > ListMethod.Lattice ? (
-            <Lattice className={clsx('h-[18px] m-[5px]')} />
+            <Lattice className={clsx('w-[20px] h-[20px] m-2 cursor-pointer')} />
           ) : (
-            <List className={clsx('w-[18px] h-[18px] m-[5px]')} />
+            <List className={clsx('w-[20px] h-[20px] m-2 cursor-pointer')} />
           )}
         </div>
       </div>

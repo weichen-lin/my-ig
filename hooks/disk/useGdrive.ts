@@ -40,6 +40,8 @@ export default function useGdrive() {
 
   const handleTransform = (e: Element) => {
     let target = e as HTMLElement
+    target.style.backgroundColor = 'white'
+    target.style.border = '1px solid gray'
     if (e.querySelector('img')) {
       const image = target.querySelector('img')
       if (!image) return e
