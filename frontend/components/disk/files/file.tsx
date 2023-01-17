@@ -13,10 +13,10 @@ export default function FileTypeElement(props: FilesProps) {
   return (
     <div
       className={clsx(
-        'flex cursor-pointer rounded-lg',
+        'flex cursor-pointer',
         `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
         `${dragged ? 'opacity-70' : 'opacity-100'}`,
-        `${listMethod === ListMethod.Lattice ? '' : 'border-b-2'}`
+        `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
     >
       <div
@@ -34,11 +34,11 @@ export default function FileTypeElement(props: FilesProps) {
       >
         <div
           className={clsx(
-            'overflow-hidden rounded-t-lg h-full',
+            'overflow-hidden rounded-t-lg h-full flex items-center',
             `${listMethod === ListMethod.Lattice ? 'm-auto' : 'w-6 h-6 m-3'}`
           )}
         >
-          <img src={imgUrl} draggable={false}></img>
+          <img className='w-full' src={imgUrl} draggable={false}></img>
         </div>
         <div
           className={clsx(

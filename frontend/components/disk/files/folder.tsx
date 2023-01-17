@@ -14,10 +14,10 @@ export default function FolderTypeElement(props: FolderProps) {
   return (
     <div
       className={clsx(
-        'flex hover:bg-slate-200 cursor-pointer rounded-lg',
+        'flex hover:bg-slate-200 cursor-pointer',
         `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
         `${dragged ? 'opacity-70' : 'opacity-100'}`,
-        `${listMethod === ListMethod.Lattice ? '' : 'border-b-2'}`
+        `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
     >
       <div

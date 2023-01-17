@@ -29,7 +29,7 @@ export interface FilesProps extends FormatProp {
 
 export enum FileType {
   Folder,
-  File,
+  File
 }
 
 export interface DiskData {
@@ -43,6 +43,7 @@ export interface DiskData {
   id: number
   before: number | null
   next: number | null
+  tags?: string[]
 }
 
 export interface FormatProp {
@@ -51,5 +52,5 @@ export interface FormatProp {
 
 export enum ListMethod {
   Lattice,
-  List,
+  List
 }

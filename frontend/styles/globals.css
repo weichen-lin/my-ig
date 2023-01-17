@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '/styles/login.css';
+@import './datepicker.css';
+
+.selection-area {
+  border: 1px solid rgba(20, 20, 20, 0.06);
+  background-color: rgba(20, 20, 20, 0.06);
+  border-radius: 5px;
+}
+
+.imageCarouselContainer {
+  perspective: 500px;
+  transform-style: preserve-3d;
+}
+
+.imageCarousel {
+  transform: translateX(calc(var(--direction) * -6rem))
+    rotateY(calc(var(--offset) * 50deg))
+    scaleY(calc(1 + var(--abs-offset) * -0.1))
+    translateZ(calc(var(--abs-offset) * -30rem));
+  filter: blur(calc(var(--abs-offset) * 0.8rem));
+}

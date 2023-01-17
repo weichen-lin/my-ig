@@ -23,11 +23,13 @@ export default function Sort(props: SortProps) {
     >
       <div className='flex'>
         <span className='py-[10px] text-lg'>排序方式</span>
-        <ArrowIcon
-          className={clsx(
-            'w-[20px] h-[20px] my-[14px] mx-1 hover:bg-slate-200 rounded-md cursor-pointer'
-          )}
-        />
+        <div className='w-6 h-6 my-[12px] rounded-md cursor-pointer hover:bg-slate-200 mx-1'>
+          <ArrowIcon
+            className={clsx(
+              'w-[20px] h-[20px] m-[2px] rounded-md cursor-pointer'
+            )}
+          />
+        </div>
       </div>
       <div className='flex'>
         <CustomDatePicker />

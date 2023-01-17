@@ -1,6 +1,7 @@
 interface Props {
   fill?: string
   className?: string
+  onClick?: () => void
 }
 
 export const SearchIcon = (props: Props) => (
@@ -188,3 +189,55 @@ export const ArrowNoLineIcon = (props: Props) => {
     </svg>
   )
 }
+
+export const Cancel = (props: Props) => (
+  <svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' {...props}>
+    <path
+      fillRule='evenodd'
+      d='M12 23C5.925 23 1 18.075 1 12S5.925 1 12 1s11 4.925 11 11-4.925 11-11 11Zm0-2a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-7.586-3.293 3.293-1.414-1.414L10.586 12 7.293 8.707l1.414-1.414L12 10.586l3.293-3.293 1.414 1.414L13.414 12l3.293 3.293-1.414 1.414L12 13.414Z'
+    />
+  </svg>
+)
+
+export const AddLabel = (props: Props) => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 50 50'
+    xmlSpace='preserve'
+    {...props}
+  >
+    <path d='M24.896 9.463a.997.997 0 0 0-.707-.293l-12.957-.001a1 1 0 0 0-1 .996l-.046 13.005a.998.998 0 0 0 .293.711l16.995 16.995a.997.997 0 0 0 1.414 0l13.004-13.004a.999.999 0 0 0 0-1.414L24.896 9.463zm3.285 29.292L12.188 22.761l.041-11.592 11.547.001 15.995 15.995-11.59 11.59z' />
+    <circle cx={20.362} cy={19.346} r={2.61} />
+  </svg>
+)
+
+export const Edit = (props: Props) => (
+  <svg
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+    {...props}
+  >
+    <g stroke='#000' strokeWidth={1.5}>
+      <path d='m18.41 3.651 2.122 2.122a2.25 2.25 0 0 1 0 3.181L9.54 19.947a2.25 2.25 0 0 1-1.347.645l-3.618.395a1.25 1.25 0 0 1-1.378-1.378l.394-3.618a2.25 2.25 0 0 1 .646-1.348l-.53-.53.53.53 10.991-10.99a2.25 2.25 0 0 1 3.182 0Z' />
+      <path d='M15.228 3.651a2.25 2.25 0 0 1 3.182 0l2.122 2.122a2.25 2.25 0 0 1 0 3.181l-1.804 1.804-5.303-5.304 1.803-1.803Z' />
+    </g>
+  </svg>
+)
+
+export const ImageArrow = (props: Props) => (
+  <svg
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+    {...props}
+  >
+    <path
+      d='m20 16-8-8-8 8'
+      stroke='#000'
+      strokeWidth={2}
+      strokeLinecap='round'
+      strokeLinejoin='round'
+    />
+  </svg>
+)
