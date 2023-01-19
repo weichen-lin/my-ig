@@ -6,7 +6,6 @@ const port = '8080'
 app.use((req, res, next) => {
   console.log('Time:', Date.now())
   console.log(res)
-
   next()
 })
 
@@ -15,6 +14,12 @@ app.get('/', (req: Request, res: Response) => {
   console.log(req.rawHeaders)
 
   res.send('Express + TypeScript Server')
+})
+
+app.get('/test', (req: Request, res: Response) => {
+  console.log([Object.entries(req)])
+
+  res.send({ data: [123123123, 123123] })
 })
 
 app.listen(port, () => {

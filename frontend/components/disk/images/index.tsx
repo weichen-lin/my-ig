@@ -34,7 +34,7 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
     >
       <div className='h-[70%] mt-[5%]'>
         <div className='flex h-full'>
-          <div className='bg-slate-300 w-3/5 h-full flex items-center'>
+          <div className='bg-slate-300 w-3/5 h-full flex items-center overflow-clip'>
             <img className='w-full' src={data[currentIndex].url}></img>
           </div>
           <Description />

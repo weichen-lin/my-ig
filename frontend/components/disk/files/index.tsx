@@ -5,7 +5,7 @@ import {
   FormatProp,
   ListMethod,
   DiskData,
-  SelectionStringList,
+  SelectionStringList
 } from 'hooks/disk/type'
 
 interface FilesPageProp extends FormatProp, SelectionStringList {
@@ -19,7 +19,7 @@ export default function Files(props: FilesPageProp) {
   return (
     <div
       className={clsx(
-        'w-full flex justify-start mt-3 select-none',
+        'w-full flex justify-start mt-3 mb-12 select-none',
         `${
           listMethod === ListMethod.Lattice
             ? 'flex-wrap mx-auto gap-x-6 gap-y-4'
