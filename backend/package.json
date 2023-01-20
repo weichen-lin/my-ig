@@ -6,8 +6,9 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon dist/index.js\""
   },
+  "type": "commonjs",
   "author": "WeiChen Lin",
   "license": "ISC",
   "devDependencies": {
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "express": "^4.18.2",
+    "express-jwt": "^8.3.0",
     "pg": "^8.8.0",
     "sequelize": "^6.28.0",
     "sequelize-cli": "^6.5.2"
