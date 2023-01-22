@@ -12,9 +12,11 @@
   "author": "WeiChen Lin",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.15",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.11.18",
+    "@types/uuid": "^9.0.0",
     "@types/validator": "^13.7.10",
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.20",
@@ -27,6 +29,7 @@
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.8.0",
     "sequelize": "^6.28.0",
-    "sequelize-cli": "^6.5.2"
+    "sequelize-cli": "^6.5.2",
+    "uuid": "^9.0.0"
   }
 }

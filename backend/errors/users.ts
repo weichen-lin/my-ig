@@ -1,0 +1,5 @@
+export enum User_CRUD_STATUS {
+  SUCCESS,
+  UNKNOWN_ERROR,
+  EMAIL_DUPLICATED,
+}
