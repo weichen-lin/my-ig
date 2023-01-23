@@ -55,19 +55,7 @@ const auth_cookie_middleware = (
     return
   }
 
-  try {
-    const jwt_payload = <jwt.MYIG_JwtPayload>jwt.verify(token, JWT_TOKEN_SECRET)
-    const { exp } = jwt_payload
-    if (exp * 1000 < Date.now()) {
-      res.clearCookie('_wclig_')
-      res.status(401).send({ status: Auth_STATUS.OUT_DATED })
-      return
-    }
-  } catch {
-    res.clearCookie('_wclig_')
-    res.status(401).send({ status: Auth_STATUS.NOT_AUTHORIZED })
-    return
-  }
+  req.headers.authorization = `Bearer ${token}`
 
   next()
 }
@@ -94,6 +82,7 @@ const auth_bearer_middleware = async (
     const jwt_payload = <jwt.MYIG_JwtPayload>(
       jwt.verify(token[1], JWT_TOKEN_SECRET)
     )
+
     const { exp, email, user_id } = jwt_payload
     if (exp * 1000 < Date.now()) {
       removeCookie(res)
@@ -118,7 +107,7 @@ const auth_bearer_middleware = async (
       },
       JWT_TOKEN_SECRET
     )
-    res.json({ token: jwt_token_with_ID })
+    res.status(201).json({ token: jwt_token_with_ID })
   } catch {
     removeCookie(res)
     return
