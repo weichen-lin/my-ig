@@ -3,3 +3,9 @@ export enum User_CRUD_STATUS {
   UNKNOWN_ERROR,
   EMAIL_DUPLICATED,
 }
+
+export enum Auth_STATUS {
+  NOT_AUTHORIZED,
+  OUT_DATED,
+  AUTHORIZED,
+}

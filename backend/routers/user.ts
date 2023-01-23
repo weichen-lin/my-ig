@@ -2,7 +2,7 @@ import express from 'express'
 import { userCRUD } from '../models'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { User_CRUD_STATUS } from '../errors/users'
+import { User_CRUD_STATUS } from '../errors'
 
 const router = express.Router()
 
@@ -13,7 +13,6 @@ router.post('/', async (req, res) => {
     const { email, password } = req.body
     if (!email || !password) {
       res.status(400).json({ error: 'invalid body format' })
-      return
     }
 
     const salut = await bcrypt.genSalt()

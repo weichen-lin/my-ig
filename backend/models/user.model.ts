@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
 import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
-import { User_CRUD_STATUS } from '../errors/users'
+import { User_CRUD_STATUS } from '../errors'
 
 export const User = db.define('user', {
   user_id: {
@@ -46,7 +46,11 @@ const createUser = async (email: string, password: string, sault: string) => {
 
 const deleteUser = async (uuid: string) => {}
 
-const findUser = async (email: string) => {}
+const findUser = async (email: string) => {
+  return await User.findOne({
+    where: { email: email },
+  })
+}
 
 const updateUser = async (uuid: string) => {}
 
