@@ -19,7 +19,8 @@ export default function LoginInput(props: InputProps) {
           'absolute top-0 left-0 z-10',
           'w-full h-full rounded-xl bg-transparent border-2 p-3 outline-none',
           'peer',
-          'text-gray-600'
+          'text-gray-600',
+          'border-red-200'
         )}
         required
         type={type}

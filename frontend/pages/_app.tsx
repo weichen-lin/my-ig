@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import 'styles/globals.css'
 import type { AppProps } from 'next/app'
 import { NextPage } from 'next'
@@ -13,5 +14,13 @@ type AppPropsWithLayout = AppProps & {
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout || ((page) => page)
 
-  return getLayout(<Component {...pageProps} />)
+  return getLayout(
+    <>
+      <Head>
+        <title>Kushare</title>
+        <link rel='icon' type='image/x-icon' href='static/favicon.png' />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  )
 }

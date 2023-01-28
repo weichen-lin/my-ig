@@ -1,6 +1,5 @@
 import Disk from 'components/disk'
 import Layout from 'components/layout'
-import Script from 'next/script'
 
 export default function DiskPage() {
   return (
