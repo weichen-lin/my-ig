@@ -8,7 +8,6 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "type": "module",
   "dependencies": {
     "@weichen-lin/gdrive-select-and-drag": "^1.0.3",
     "clsx": "^1.2.1",
