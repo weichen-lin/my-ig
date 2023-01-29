@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@weichen-lin/gdrive-select-and-drag": "^1.0.3",
+    "axios": "^1.2.6",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "eslint": "8.29.0",

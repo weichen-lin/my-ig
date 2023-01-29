@@ -8,7 +8,7 @@ export default function LoginButton() {
         className={clsx(
           'w-full bg-gradient-to-r from-gray-500/80 to-gray-700/70 absolute',
           'rounded-xl p-3 text-lg text-yellow-50 font-black',
-          'cursor-pointer active:top-2 flex justify-center'
+          'cursor-pointer active:top-1 flex justify-center'
         )}
       >
         <span className='mr-2'>Login</span>

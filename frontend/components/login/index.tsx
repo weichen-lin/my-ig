@@ -2,8 +2,11 @@ import clsx from 'clsx'
 import LoginInput from 'components/login/input'
 import LoginButton from 'components/login/button'
 import LoginError from 'components/login/loginError'
+import useLogin from 'hooks/login/useLogin'
 
 export default function Login() {
+  const { error, isLogin } = useLogin()
+
   return (
     <div className='w-full h-screen flex flex-col justify-center'>
       <div className='w-full mx-auto'>

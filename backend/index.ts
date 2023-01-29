@@ -1,7 +1,8 @@
 import express, { Express, Request, Response } from 'express'
 import { init_Models, userCRUD } from './models'
 import { User, Auth, Drive } from './routers'
-import { storage } from './gcs'
+// import { storage } from './gcs'
+import cors from 'cors'
 
 const app = express()
 const port = '8080'
@@ -9,7 +10,7 @@ const port = '8080'
 //https://ithelp.ithome.com.tw/articles/10202754
 
 // init_Models()
-
+app.use(cors())
 app.use('/user', User)
 app.use('/auth', Auth)
 app.use('/drive', Drive)

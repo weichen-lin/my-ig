@@ -15,51 +15,6 @@ declare module 'jsonwebtoken' {
   }
 }
 
-const getCookie = (target_name: string, cookie: string) => {
-  const value = `; ${cookie}`
-  const parts = value.split(`; ${target_name}=`)
-  if (parts.length === 2) {
-    return parts.pop()?.split(';').shift()
-  } else {
-    return ''
-  }
-}
-
-const removeCookie = (res: Response) => {
-  res.clearCookie('_wclig_')
-  res.status(401).send({ status: Auth_STATUS.NOT_AUTHORIZED })
-}
-
-const auth_cookie_middleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const bearerHeader = req.headers.authorization
-
-  if (bearerHeader) {
-    next()
-    return
-  }
-
-  const cookie = req.headers.cookie
-
-  if (!cookie) {
-    res.status(401).send({ status: Auth_STATUS.NOT_AUTHORIZED })
-    return
-  }
-
-  const token = getCookie('_wclig_', cookie)
-  if (!token) {
-    res.status(401).send({ status: Auth_STATUS.NOT_AUTHORIZED })
-    return
-  }
-
-  req.headers.authorization = `Bearer ${token}`
-
-  next()
-}
-
 const auth_bearer_middleware = async (
   req: Request,
   res: Response,
@@ -85,7 +40,7 @@ const auth_bearer_middleware = async (
 
     const { exp, email, user_id } = jwt_payload
     if (exp * 1000 < Date.now()) {
-      removeCookie(res)
+      res.status(401).send({ status: Auth_STATUS.NOT_AUTHORIZED })
       return
     }
 
@@ -96,7 +51,7 @@ const auth_bearer_middleware = async (
 
     const user_id_obj = await userCRUD.find(email)
     if (!user_id_obj) {
-      removeCookie(res)
+      res.status(401).send({ status: Auth_STATUS.NOT_AUTHORIZED })
       return
     }
     const jwt_token_with_ID = jwt.sign(
@@ -109,12 +64,12 @@ const auth_bearer_middleware = async (
     )
     res.status(201).json({ token: jwt_token_with_ID })
   } catch {
-    removeCookie(res)
+    res.status(401).send({ status: Auth_STATUS.NOT_AUTHORIZED })
     return
   }
 }
 
-router.use(auth_cookie_middleware, auth_bearer_middleware)
+router.use(auth_bearer_middleware)
 
 router.get('/', (req, res) => {
   res.status(200).json({ status: Auth_STATUS.AUTHORIZED })

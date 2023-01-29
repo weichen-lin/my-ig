@@ -12,13 +12,15 @@ router.post('/', async (req, res) => {
   try {
     const { email, password } = req.body
     if (!email || !password) {
-      res.status(400).json({ error: 'invalid body format' })
+      res.status(400).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
     }
 
-    const salut = await bcrypt.genSalt()
-    const password_hashed = bcrypt.hashSync(password, salut)
+    const sault = await bcrypt.genSalt()
+    const password_hashed = bcrypt.hashSync(password, sault)
 
-    const createSignal = await userCRUD.create(email, password_hashed, salut)
+    const createSignal = await userCRUD.create(email, password_hashed, sault)
+    let return_json: { status: User_CRUD_STATUS | undefined; token?: string } =
+      { status: createSignal }
 
     switch (createSignal) {
       case User_CRUD_STATUS.SUCCESS:
@@ -29,14 +31,14 @@ router.post('/', async (req, res) => {
           },
           'SECRET_TOKEN'
         )
-        res.cookie('_wclIG_', jwt_token)
-        res.status(200).send({ status: 'SUCCESS' })
+        return_json['token'] = jwt_token
+        res.status(200).send({ status: 'SUCCESS', token: jwt_token })
         break
       case User_CRUD_STATUS.UNKNOWN_ERROR:
-        res.status(401).send({ status: 'UNKNOWN ERROR' })
+        res.status(401).send(return_json)
         break
       case User_CRUD_STATUS.EMAIL_DUPLICATED:
-        res.status(401).send({ status: 'Email duplicated' })
+        res.status(401).send(return_json)
         break
       default:
         res.status(200).send()

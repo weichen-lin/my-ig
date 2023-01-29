@@ -2,6 +2,7 @@ export enum User_CRUD_STATUS {
   SUCCESS,
   UNKNOWN_ERROR,
   EMAIL_DUPLICATED,
+  INVALID_BODY_FORMAT,
 }
 
 export enum Auth_STATUS {
