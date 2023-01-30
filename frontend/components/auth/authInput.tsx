@@ -1,12 +1,17 @@
 import clsx from 'clsx'
+import { ChangeEvent } from 'react'
+import type { RegisterKeys } from 'hooks/auth/useRegister'
 
 interface InputProps {
-  label: string
+  isError: boolean
+  label: RegisterKeys
   type: string
+  value: string
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function LoginInput(props: InputProps) {
-  const { label, type } = props
+export default function AuthInput(props: InputProps) {
+  const { isError, label, type, value, onChange } = props
   return (
     <div
       className={clsx(
@@ -20,10 +25,13 @@ export default function LoginInput(props: InputProps) {
           'w-full h-full rounded-xl bg-transparent border-2 p-3 outline-none',
           'peer',
           'text-gray-600',
-          'border-red-200'
+          `${isError ? 'border-red-200' : ''}`
         )}
         required
         type={type}
+        value={value}
+        onChange={onChange}
+        maxLength={label === 'email' ? 60 : 40}
       ></input>
       <span
         className={clsx(

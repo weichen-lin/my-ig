@@ -40,3 +40,6 @@ dist
 
 # npm auth
 .npmrc
+
+.env.production
+.env.development

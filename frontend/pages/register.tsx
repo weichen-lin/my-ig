@@ -7,19 +7,20 @@ import {
   AuthSuccess
 } from 'components/auth'
 import clsx from 'clsx'
-import useLogin from 'hooks/auth/useLogin'
+import useRegister from 'hooks/auth/useRegister'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const {
     isRequest,
-    loginInfo,
+    registerInfo,
     handleRegisterInfo,
-    isError,
+    emailError,
+    pwdError,
     errMsg,
-    handleLogin,
+    handleRegister,
     isSuccess,
     successMsg
-  } = useLogin()
+  } = useRegister()
 
   return (
     <AuthBackBone
@@ -32,32 +33,41 @@ export default function LoginPage() {
             )}
           >
             <AuthInput
+              isError={emailError}
               label='email'
               type='text'
-              value={loginInfo.email}
-              isError={isError}
+              value={registerInfo.email}
               onChange={(e) => {
                 handleRegisterInfo('email', e.target.value)
               }}
             />
             <AuthInput
+              isError={pwdError}
               label='password'
               type='password'
-              value={loginInfo.password}
-              isError={isError}
+              value={registerInfo.password}
               onChange={(e) => {
                 handleRegisterInfo('password', e.target.value)
               }}
             />
+            <AuthInput
+              isError={pwdError}
+              label='confirmed_password'
+              type='password'
+              value={registerInfo.confirmed_password}
+              onChange={(e) => {
+                handleRegisterInfo('confirmed_password', e.target.value)
+              }}
+            />
             <AuthButton
-              label='Login'
+              label='Register'
               isRequest={isRequest}
               onClick={() => {
-                handleLogin(loginInfo)
+                handleRegister(registerInfo)
               }}
             />
           </div>
-          {isError ? (
+          {emailError || pwdError ? (
             <div
               className={clsx(
                 'mx-auto',
@@ -87,6 +97,6 @@ export default function LoginPage() {
   )
 }
 
-LoginPage.getLayout = function getLayout(page: JSX.Element) {
+RegisterPage.getLayout = function getLayout(page: JSX.Element) {
   return <Layout>{page}</Layout>
 }
