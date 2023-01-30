@@ -1,9 +1,9 @@
-import clsx from 'clsx';
-import { SearchIcon } from 'public/icon/disk';
+import clsx from 'clsx'
+import { SearchIcon } from 'public/icon/disk'
 
 export default function Search() {
   return (
-    <div className='w-full relative mb-2'>
+    <div className='relative mb-2 flex-1'>
       <div className={clsx('absolute', 'w-12 h-12 top-3')}>
         <SearchIcon className={clsx('w-6 h-6 m-3')} />
       </div>
@@ -29,5 +29,5 @@ export default function Search() {
         在 KuShare中搜尋...
       </div>
     </div>
-  );
+  )
 }

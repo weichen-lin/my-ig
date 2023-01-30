@@ -19,14 +19,14 @@ export default function CustomDatePicker() {
           className='flex w-[300px]'
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <CalendarIcon className='w-[40px] h-[40px] my-[2px] mr-4' />
-          <span className='whitespace-nowrap py-2 mx-2'>
+          <CalendarIcon className='w-8 h-6 my-3 mr-2' />
+          <span className='whitespace-nowrap py-3 mr-2 text-base'>
             {format(startDate, 'yyyy-MM-dd', { locale: zhTW })}
           </span>
           {endDate ? (
             <>
-              <span className='py-2'> - </span>
-              <span className='whitespace-nowrap py-2 mx-2'>
+              <span className='py-3 text-base'> - </span>
+              <span className='whitespace-nowrap py-3 ml-2 text-base'>
                 {format(endDate, 'yyyy-MM-dd', { locale: zhTW })}
               </span>
             </>

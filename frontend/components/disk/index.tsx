@@ -23,8 +23,7 @@ export default function Disk() {
   const { root, selected, dragged } = useGdrive()
 
   return (
-    <div className='flex h-screen w-[90%] flex-col max-w-[1280px] mx-auto relative'>
-      <Search />
+    <>
       <Sort listMethod={listMethod} handleListMethod={handleListMethod} />
       <div className='grow overflow-y-auto' ref={root}>
         <Files
@@ -44,7 +43,7 @@ export default function Disk() {
         creatFolderOpen={creatFolderOpen}
         toogleCreateFolder={toogleCreateFolder}
       />
-      <ImagePlayground data={data.filter((e) => e.type === FileType.File)} />
-    </div>
+      {/* <ImagePlayground data={data.filter((e) => e.type === FileType.File)} /> */}
+    </>
   )
 }

@@ -1,5 +1,5 @@
 import Disk from 'components/disk'
-import Layout from 'components/layout'
+import { LayoutAuth } from 'components/layout'
 
 export default function DiskPage() {
   return (
@@ -10,7 +10,7 @@ export default function DiskPage() {
   )
 }
 DiskPage.getLayout = function getLayout(page: JSX.Element) {
-  return <Layout>{page}</Layout>
+  return <LayoutAuth>{page}</LayoutAuth>
 }
 
 // sm	640px	@media (min-width: 640px) { ... }
