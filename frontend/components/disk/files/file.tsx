@@ -13,7 +13,12 @@ export default function FileTypeElement(props: FilesProps) {
   return (
     <div
       className={clsx(
-        'flex cursor-pointer',
+        'flex cursor-pointer md:ml-0 z-10',
+        `${
+          listMethod === ListMethod.Lattice
+            ? 'w-[250px] xs:w-[190px] h-[200px] flex-col border-2 xs:mr-4 xs:mb-2 mb-4'
+            : 'w-full h-12'
+        }`,
         `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
         `${dragged ? 'opacity-70' : 'opacity-100'}`,
         `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
@@ -21,12 +26,9 @@ export default function FileTypeElement(props: FilesProps) {
     >
       <div
         className={clsx(
-          `${
-            listMethod === ListMethod.Lattice
-              ? 'w-[200px] lg:w-[225px] h-[200px] lg:h-[225px] flex-col border-2'
-              : 'w-full h-12'
-          }`,
-          'flex relative rounded-lg',
+          'w-full h-[200px] flex',
+          `${listMethod === ListMethod.Lattice ? 'flex-col' : 'flex-row'}`,
+          'relative rounded-lg',
           'transition-all duration-200 ease-out',
           'selectable'
         )}
@@ -34,16 +36,32 @@ export default function FileTypeElement(props: FilesProps) {
       >
         <div
           className={clsx(
-            'overflow-hidden rounded-t-lg h-full flex items-center',
-            `${listMethod === ListMethod.Lattice ? 'm-auto' : 'w-6 h-6 m-3'}`
+            'overflow-hidden bg-yellow-200',
+            `${
+              listMethod === ListMethod.Lattice
+                ? 'rounded-t-lg h-full'
+                : 'rounded-md h-6 m-3'
+            }`
           )}
         >
-          <img className='w-full' src={imgUrl} draggable={false}></img>
+          <img
+            className={`${
+              listMethod === ListMethod.Lattice
+                ? 'min-h-[160px] min-w-full'
+                : 'h-full min-w-[24px] max-w-[24px]'
+            }`}
+            src={imgUrl}
+            draggable={false}
+          ></img>
         </div>
         <div
           className={clsx(
-            'truncate py-[10.5px] grow px-2',
-            `${listMethod === ListMethod.Lattice ? 'text-center' : 'text-left'}`
+            'truncate px-2',
+            `${
+              listMethod === ListMethod.Lattice
+                ? 'text-center h-8 my-2'
+                : 'text-left h-9 my-3'
+            }`
           )}
         >
           {fileName}
@@ -52,7 +70,7 @@ export default function FileTypeElement(props: FilesProps) {
       {listMethod === ListMethod.Lattice ? (
         <></>
       ) : (
-        <div className='w-[400px] p-3 text-gray-400 text-center'>
+        <div className='w-[400px] py-3 px-2 text-gray-400 text-right hidden md:block'>
           2022年 12月 24日
         </div>
       )}

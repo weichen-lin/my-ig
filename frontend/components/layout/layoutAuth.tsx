@@ -12,7 +12,7 @@ export default function LayoutAuth({ children }: LayoutProps) {
   return (
     <div className='flex h-screen w-[90%] flex-col max-w-[1280px] mx-auto relative'>
       <div className='flex'>
-        <div className='w-[20%] mx-auto h-12 mt-3'>
+        <div className='xss:hidden md:block mr-4 h-12 mt-3'>
           <img className='h-full mx-auto' src='/icon/layout/logo.png'></img>
         </div>
         <Search />

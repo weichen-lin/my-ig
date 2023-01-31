@@ -19,51 +19,55 @@ export default function Files(props: FilesPageProp) {
   return (
     <div
       className={clsx(
-        'w-full flex justify-start mt-3 mb-12 select-none',
+        'w-full flex items-center justify-start mt-3 mb-12 select-none',
         `${
           listMethod === ListMethod.Lattice
-            ? 'flex-wrap mx-auto gap-x-6 gap-y-4'
+            ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6'
             : 'flex-col'
         }`
       )}
     >
       <p
         className={clsx(
-          'w-full p-5 text-gray-400',
+          'w-[90%] xs:w-full text-gray-400',
           `${listMethod === ListMethod.Lattice ? '' : 'hidden'}`
         )}
       >
         資料夾
       </p>
-      {folders.map((e) => (
-        <FolderTypeElement
-          id={e.id}
-          listMethod={listMethod}
-          folderName={e.name}
-          key={`folder_index_${e.id}`}
-          selected={selected.has(`selectable-${e.id}`)}
-          dragged={dragged.has(`selectable-${e.id}`)}
-        />
-      ))}
+      <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
+        {folders.map((e) => (
+          <FolderTypeElement
+            id={e.id}
+            listMethod={listMethod}
+            folderName={e.name}
+            key={`folder_index_${e.id}`}
+            selected={selected.has(`selectable-${e.id}`)}
+            dragged={dragged.has(`selectable-${e.id}`)}
+          />
+        ))}
+      </div>
       <p
         className={clsx(
-          'w-full p-5 text-gray-400',
+          'w-[90%] xs:w-full text-gray-400',
           `${listMethod === ListMethod.Lattice ? '' : 'hidden'}`
         )}
       >
         檔案
       </p>
-      {files.map((e) => (
-        <FileTypeElement
-          id={e.id}
-          listMethod={listMethod}
-          fileName={e.name}
-          imgUrl={e.url}
-          key={`file_index_${e.id}`}
-          selected={selected.has(`selectable-${e.id}`)}
-          dragged={dragged.has(`selectable-${e.id}`)}
-        />
-      ))}
+      <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
+        {files.map((e) => (
+          <FileTypeElement
+            id={e.id}
+            listMethod={listMethod}
+            fileName={e.name}
+            imgUrl={e.url}
+            key={`file_index_${e.id}`}
+            selected={selected.has(`selectable-${e.id}`)}
+            dragged={dragged.has(`selectable-${e.id}`)}
+          />
+        ))}
+      </div>
     </div>
   )
 }

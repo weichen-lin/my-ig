@@ -14,28 +14,33 @@ export default function CustomDatePicker() {
     useDatetime()
   return (
     <>
-      <div className='border-2 border-transparent px-3 flex mr-2 text-gray-500 text-lg rounded-lg cursor-pointer hover:border-red-100 relative'>
+      <div className='border-b-2 w-[200px] xs:w-[250px] text-gray-500 cursor-pointer hover:border-red-100 relative mr-1 md:mr-4'>
         <div
-          className='flex w-[300px]'
+          className='flex justify-evenly'
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <CalendarIcon className='w-8 h-6 my-3 mr-2' />
-          <span className='whitespace-nowrap py-3 mr-2 text-base'>
+          <CalendarIcon className='w-6 h-4 mt-[2px] xs:w-8 xs:h-6' />
+          <div className='whitespace-nowrap text-sm xs:text-base my-[1px] xs:my-[2px]'>
             {format(startDate, 'yyyy-MM-dd', { locale: zhTW })}
-          </span>
+          </div>
           {endDate ? (
             <>
-              <span className='py-3 text-base'> - </span>
-              <span className='whitespace-nowrap py-3 ml-2 text-base'>
+              <div className='text-sm mx-[2px] xs:text-base my-[1px] xs:my-[2px]'>
+                -
+              </div>
+              <div className='whitespace-nowrap text-sm xs:text-base my-[1px] xs:my-[2px] mr-1'>
                 {format(endDate, 'yyyy-MM-dd', { locale: zhTW })}
-              </span>
+              </div>
             </>
           ) : (
             ''
           )}
         </div>
         {isOpen && (
-          <div className={`absolute top-16 z-[999] left-4`} ref={ref}>
+          <div
+            className={`absolute top-8 z-[999] -left-16 xs:-left-0`}
+            ref={ref}
+          >
             <DatePicker
               locale={zhTW}
               selected={startDate}
