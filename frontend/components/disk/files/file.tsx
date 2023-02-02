@@ -13,7 +13,7 @@ export default function FileTypeElement(props: FilesProps) {
   return (
     <div
       className={clsx(
-        'flex cursor-pointer md:ml-0 z-10',
+        'flex cursor-pointer md:ml-0',
         `${
           listMethod === ListMethod.Lattice
             ? 'w-[250px] xs:w-[190px] h-[200px] flex-col border-2 xs:mr-4 xs:mb-2 mb-4'

@@ -17,7 +17,7 @@ export default function TextArea(props: TextAreaProps) {
     <>
       {isEdit ? (
         <textarea
-          className='w-full p-2 mt-4 flex-1 border-2 border-gray-200 overflow-y-auto'
+          className='w-full p-2 border-2 border-gray-200 mt-4 overflow-y-auto min-h-[64px]'
           value={text}
           onChange={handleChange}
           onKeyDown={(e) => {
@@ -27,7 +27,7 @@ export default function TextArea(props: TextAreaProps) {
           }}
         />
       ) : (
-        <div className='p-2 mt-4 rounded-lg flex-1 overflow-y-auto'>{text}</div>
+        <div className='p-2 mt-4 rounded-lg flex-1'>{text}</div>
       )}
     </>
   )

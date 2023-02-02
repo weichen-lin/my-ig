@@ -7,10 +7,12 @@ interface OperatorProps {
   operatorOpen: boolean
   toogleCreateFolder: () => void
   toogleOperatorOpen: () => void
+  isScrollDown: boolean
 }
 
 export default function Operator(props: OperatorProps) {
-  const { operatorOpen, toogleCreateFolder, toogleOperatorOpen } = props
+  const { operatorOpen, toogleCreateFolder, toogleOperatorOpen, isScrollDown } =
+    props
 
   // const handleClick = async () => {
   //   const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
@@ -37,14 +39,14 @@ export default function Operator(props: OperatorProps) {
   return (
     <div
       className={clsx(
-        'fixed bottom-0 right-[5%] w-[300px] h-[300px]',
-        'lg:w-[400px] lg:h-[400px]',
-        '3xl:right-[5%]'
+        'fixed bottom-0 right-[5%] lg:right-[5%] lg:bottom-[5%]',
+        'transition-all duration-300 ease-linear',
+        `${isScrollDown ? 'w-0 h-0' : 'w-16 h-16'}`
       )}
     >
       <div
         className={clsx(
-          'absolute bottom-[15%] right-[5%] w-[25%] h-[25%] cursor-pointer bg-white/40',
+          'absolute bottom-[15%] right-[5%] w-full h-full cursor-pointer bg-white/40',
           'lg:right-[10%]',
           'rounded-full hover:bg-gray-300',
           'border-[1px] hover:border-gray-100',
@@ -55,12 +57,12 @@ export default function Operator(props: OperatorProps) {
         )}
         onClick={toogleOperatorOpen}
       >
-        <Plus className='w-1/2 h-1/2 m-[25%] opacity-70' />
+        <Plus className='w-3/5 h-3/5 m-[20%] opacity-70' />
       </div>
       <ul
         className={clsx(
-          'absolute bottom-[19.5%] right-[35%] w-[16%] h-[16%]',
-          'md:right-[40%]',
+          'absolute bottom-[19.5%] right-[165%] md:right-[180%] 2xl:right-[170%] w-full h-full',
+          'md:right-[70%] md:bottom-[30%]',
           'transition-all duration-300 ease-out',
           `${operatorOpen ? 'opacity-100' : 'opacity-0'}`
         )}
@@ -83,7 +85,11 @@ export default function Operator(props: OperatorProps) {
           operatorOpen={operatorOpen}
           angle={'rotate-90'}
           icon={<AddFolder className='w-1/2 h-1/2 m-[25%] -rotate-90' />}
-          onClick={toogleCreateFolder}
+          onClick={() => {
+            if (operatorOpen) {
+              toogleCreateFolder()
+            }
+          }}
         />
       </ul>
     </div>

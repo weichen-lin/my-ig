@@ -18,7 +18,9 @@ const Label = ({ label, color }: { label: string; color: number }) => {
 
   return (
     <li
-      className={`py-1 px-2 relative rounded-lg ${color_table[color % 7]}`}
+      className={`py-1 px-2 relative rounded-lg ${
+        color_table[color % 7]
+      } text-sm xs:text-base`}
       onMouseEnter={() => {
         setIshover(true)
       }}
@@ -38,7 +40,6 @@ const Label = ({ label, color }: { label: string; color: number }) => {
     </li>
   )
 }
-
 export default function Description() {
   const [isEdit, setIsEdit] = useState(false)
   const [text, setText] = useState('這是一隻可愛的狗狗')
@@ -52,8 +53,10 @@ export default function Description() {
   }
 
   return (
-    <div className='bg-gray-100 w-2/5 h-full p-3 overflow-y-auto flex flex-col'>
-      <ul className='flex p-3 flex-wrap gap-4 rounded-lg'>
+    <div
+      className={clsx('bg-gray-100 w-full h-full p-3 overflow-y-auto flex-col')}
+    >
+      <ul className='flex p-3 flex-wrap gap-x-1 gap-y-2'>
         {Array.from(Array(12).keys()).map((e, index) => (
           <Label label={`${e}asdasdas`} color={index} key={`label_${index}`} />
         ))}

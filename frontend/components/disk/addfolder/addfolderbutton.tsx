@@ -9,7 +9,7 @@ export default function AddFolderPageButton(props: {
   return (
     <button
       className={clsx(
-        'h-9 w-16 ml-6 rounded-md hover:bg-slate-200',
+        'h-9 w-16 ml-1 xs:ml-4 rounded-md hover:bg-slate-200',
         'disabled:text-gray-500 disabled:bg-transparent'
       )}
       disabled={disable}

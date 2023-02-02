@@ -19,7 +19,7 @@ export default function Files(props: FilesPageProp) {
   return (
     <div
       className={clsx(
-        'w-full flex items-center justify-start mt-3 mb-12 select-none',
+        'w-[90%] mx-auto flex items-center justify-start mt-3 mb-12 select-none',
         `${
           listMethod === ListMethod.Lattice
             ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6'

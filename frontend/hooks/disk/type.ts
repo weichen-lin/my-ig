@@ -46,11 +46,11 @@ export interface DiskData {
   tags?: string[]
 }
 
-export interface FormatProp {
-  listMethod: number
-}
-
 export enum ListMethod {
   Lattice,
   List
+}
+
+export interface FormatProp {
+  listMethod: number
 }

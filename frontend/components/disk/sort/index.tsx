@@ -15,11 +15,7 @@ export default function Sort(props: SortProps) {
 
   return (
     <div
-      className={clsx(
-        'w-full h-6 xs:h-8 flex justify-around',
-        'my-1',
-        'lg:w-full'
-      )}
+      className={clsx('w-[90%] mx-auto h-6 xs:h-8 flex justify-around', 'my-1')}
     >
       <div className='flex rounded-md hover:bg-slate-200'>
         <span className='pl-1 py-[2px] text-sm xs:text-lg'>排序</span>
