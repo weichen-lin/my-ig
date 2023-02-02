@@ -16,7 +16,7 @@ export default function FileTypeElement(props: FilesProps) {
         'flex cursor-pointer md:ml-0',
         `${
           listMethod === ListMethod.Lattice
-            ? 'w-[250px] xs:w-[190px] h-[200px] flex-col border-2 xs:mr-4 xs:mb-2 mb-4'
+            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] h-[200px] flex-col border-2 xs:mr-4 xs:mb-2 mb-4'
             : 'w-full h-12'
         }`,
         `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,

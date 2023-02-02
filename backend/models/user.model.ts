@@ -6,16 +6,16 @@ import { User_CRUD_STATUS } from '../errors'
 export const User = db.define('user', {
   user_id: {
     type: DataTypes.STRING(50),
-    allowNull: false,
+    allowNull: false
   },
   email: { type: DataTypes.STRING(100), allowNull: false },
   password: { type: DataTypes.STRING(256), allowNull: false },
   sault: {
     type: DataTypes.STRING(50),
-    allowNull: false,
+    allowNull: false
   },
   validate_time: { type: DataTypes.DATE },
-  is_deleted: { type: DataTypes.BOOLEAN },
+  is_deleted: { type: DataTypes.BOOLEAN }
 })
 
 const createUser = async (email: string, password: string, sault: string) => {
@@ -31,12 +31,16 @@ const createUser = async (email: string, password: string, sault: string) => {
   const emailChecker = await User.findOne({ where: { email: email } })
   if (emailChecker) return User_CRUD_STATUS.EMAIL_DUPLICATED
 
+  const emailRegex =
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  if (!emailRegex.test(email)) return User_CRUD_STATUS.INVALID_EAMIL_FORMAT
+
   try {
     User.create({
       user_id: new_user_uuid,
       email: email,
       password: password,
-      sault: sault,
+      sault: sault
     })
     return User_CRUD_STATUS.SUCCESS
   } catch {
@@ -49,6 +53,7 @@ const deleteUser = async (uuid: string) => {}
 const findUser = async (email: string) => {
   return await User.findOne({
     where: { email: email },
+    attributes: ['user_id', 'email', 'password', 'sault']
   })
 }
 
@@ -58,5 +63,5 @@ export const userCRUD = {
   create: createUser,
   delete: deleteUser,
   find: findUser,
-  update: updateUser,
+  update: updateUser
 }

@@ -39,7 +39,7 @@ export default function Operator(props: OperatorProps) {
   return (
     <div
       className={clsx(
-        'fixed bottom-0 right-[5%] lg:right-[5%] lg:bottom-[5%]',
+        'fixed bottom-0 right-[5%] lg:right-[5%] lg:bottom-[5%] bg-red-500',
         'transition-all duration-300 ease-linear',
         `${isScrollDown ? 'w-0 h-0' : 'w-16 h-16'}`
       )}

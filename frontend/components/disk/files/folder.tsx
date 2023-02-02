@@ -17,7 +17,7 @@ export default function FolderTypeElement(props: FolderProps) {
         'flex hover:bg-slate-200 cursor-pointer h-12 justify-between',
         `${
           listMethod === ListMethod.Lattice
-            ? 'w-[250px] xs:w-[190px] border-2 md:ml-0 xs:mr-4 mb-2'
+            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] border-2 md:ml-0 xs:mr-4 mb-2'
             : 'w-full'
         }`,
         `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
@@ -28,11 +28,16 @@ export default function FolderTypeElement(props: FolderProps) {
       <div className='flex'>
         <Folder
           className={clsx(
-            `${listMethod === ListMethod.Lattice ? 'w-9 p-2 ml-2' : 'h-6 m-3'}`,
+            `${listMethod === ListMethod.Lattice ? 'w-9 p-2' : 'h-6 m-3'}`,
             'transition-all duration-300 ease-out'
           )}
         />
-        <div className='flex-1 text-base py-[10px] mx-2 truncate'>
+        <div
+          className={clsx(
+            'flex-1 text-base py-[10px] px-2 truncate',
+            'max-w-[200px] xs:max-w-[140px] md:max-w-[180px] lg:max-w-[170px]'
+          )}
+        >
           {folderName}
         </div>
       </div>
