@@ -1,14 +1,26 @@
 import clsx from 'clsx'
 import { FormatProp, ListMethod, SelectionValue } from 'hooks/disk/type'
+import { useImageDisplay } from 'hooks/disk'
 
 export interface FilesProps extends FormatProp, SelectionValue {
   id: number
   imgUrl: string | undefined
   fileName: string
+  index: number
+  handleImageDisplay: (e: number) => void
 }
 
 export default function FileTypeElement(props: FilesProps) {
-  const { id, listMethod, imgUrl, fileName, selected, dragged } = props
+  const {
+    id,
+    listMethod,
+    imgUrl,
+    fileName,
+    selected,
+    dragged,
+    index,
+    handleImageDisplay
+  } = props
 
   return (
     <div
@@ -23,6 +35,7 @@ export default function FileTypeElement(props: FilesProps) {
         `${dragged ? 'opacity-70' : 'opacity-100'}`,
         `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
+      onDoubleClick={() => handleImageDisplay(index - 1)}
     >
       <div
         className={clsx(

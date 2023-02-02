@@ -1,10 +1,10 @@
 import Description from './description'
 import { ImageArrow } from 'public/icon/disk'
 
-import { useState } from 'react'
 import clsx from 'clsx'
-import { DiskData } from 'hooks/disk/type'
 import { Cancel } from 'public/icon/disk'
+import { useImageDisplay, DiskData } from 'hooks/disk'
+import { Dispatch, SetStateAction } from 'react'
 
 declare module 'react' {
   interface CSSProperties {
@@ -14,12 +14,14 @@ declare module 'react' {
 
 interface ImagePlaygroundProps {
   data: DiskData[]
+  isOpen: boolean
+  currentIndex: number
+  handleEscape: () => void
+  setCurrentIndex: Dispatch<SetStateAction<number>>
 }
 
 export default function ImagePlayground(props: ImagePlaygroundProps) {
-  const { data } = props
-  const [currentIndex, setCurrentIndex] = useState(4)
-  const [isOpen, setIsOpen] = useState(true)
+  const { isOpen, currentIndex, handleEscape, setCurrentIndex, data } = props
 
   return (
     <div
@@ -31,7 +33,7 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
-          setIsOpen(false)
+          handleEscape()
         }
       }}
     >
@@ -47,7 +49,7 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
               <img className='w-full' src={data[currentIndex].url}></img>
               <span
                 className='absolute top-2 right-2 opacity-60 lg:hidden'
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleEscape}
               >
                 <Cancel className='w-8 h-8' />
               </span>
@@ -73,7 +75,7 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
                 }}
                 key={`index_${index}`}
               >
-                <img className='w-full' src={e.url}></img>
+                <img className='w-full' src={e.url} draggable={false}></img>
               </div>
             ))}
             {currentIndex < data.length - 1 ? (

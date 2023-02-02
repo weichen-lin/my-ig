@@ -11,10 +11,12 @@ import {
 interface FilesPageProp extends FormatProp, SelectionStringList {
   files: DiskData[]
   folders: DiskData[]
+  handleImageDisplay: (e: number) => void
 }
 
 export default function Files(props: FilesPageProp) {
-  const { listMethod, files, folders, selected, dragged } = props
+  const { listMethod, files, folders, selected, dragged, handleImageDisplay } =
+    props
 
   return (
     <div
@@ -65,6 +67,8 @@ export default function Files(props: FilesPageProp) {
             key={`file_index_${e.id}`}
             selected={selected.has(`selectable-${e.id}`)}
             dragged={dragged.has(`selectable-${e.id}`)}
+            index={e.index}
+            handleImageDisplay={handleImageDisplay}
           />
         ))}
       </div>
