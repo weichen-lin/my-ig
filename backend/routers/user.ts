@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
   try {
     const { email, password } = req.body
     if (!email || !password) {
-      res.status(408).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
+      res.status(401).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
     }
 
     const sault = await bcrypt.genSalt()
@@ -26,31 +26,20 @@ router.post('/register', async (req, res) => {
     const createSignal = await userCRUD.create(email, password_hashed, sault)
     let return_json: createSignalReturn = { status: createSignal }
 
-    switch (createSignal) {
-      case User_CRUD_STATUS.SUCCESS:
-        const jwt_token = jwt.sign(
-          {
-            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-            email: email
-          },
-          'SECRET_TOKEN'
-        )
-        return_json['token'] = jwt_token
-        res.status(200).send({ status: 'SUCCESS', token: jwt_token })
-        break
-      case User_CRUD_STATUS.UNKNOWN_ERROR:
-        res.status(401).send(return_json)
-        break
-      case User_CRUD_STATUS.EMAIL_DUPLICATED:
-        res.status(401).send(return_json)
-        break
-      default:
-        res.status(401).send()
-        break
+    if (createSignal === User_CRUD_STATUS.SUCCESS) {
+      const jwt_token = jwt.sign(
+        {
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+          email: email
+        },
+        'SECRET_TOKEN'
+      )
+      return_json['token'] = jwt_token
+      res.status(200).send(return_json)
+    } else {
+      res.status(401).send(return_json)
     }
-  } catch (e) {
-    console.log(e)
-
+  } catch {
     res.status(400).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
   }
 })
@@ -90,46 +79,46 @@ router.post('/login', async (req, res) => {
   }
 })
 
-router.get('/logout', async (req, res) => {
-  try {
-    const { email, password } = req.body
-    if (!email || !password) {
-      res.status(408).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
-    }
+// router.get('/logout', async (req, res) => {
+//   try {
+//     const { email, password } = req.body
+//     if (!email || !password) {
+//       res.status(408).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
+//     }
 
-    const sault = await bcrypt.genSalt()
-    const password_hashed = bcrypt.hashSync(password, sault)
+//     const sault = await bcrypt.genSalt()
+//     const password_hashed = bcrypt.hashSync(password, sault)
 
-    const createSignal = await userCRUD.create(email, password_hashed, sault)
-    let return_json: createSignalReturn = { status: createSignal }
+//     const createSignal = await userCRUD.create(email, password_hashed, sault)
+//     let return_json: createSignalReturn = { status: createSignal }
 
-    switch (createSignal) {
-      case User_CRUD_STATUS.SUCCESS:
-        const jwt_token = jwt.sign(
-          {
-            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-            email: email
-          },
-          'SECRET_TOKEN'
-        )
-        return_json['token'] = jwt_token
-        res.status(200).send({ status: 'SUCCESS', token: jwt_token })
-        break
-      case User_CRUD_STATUS.UNKNOWN_ERROR:
-        res.status(401).send(return_json)
-        break
-      case User_CRUD_STATUS.EMAIL_DUPLICATED:
-        res.status(401).send(return_json)
-        break
-      default:
-        res.status(401).send()
-        break
-    }
-  } catch (e) {
-    console.log(e)
+//     switch (createSignal) {
+//       case User_CRUD_STATUS.SUCCESS:
+//         const jwt_token = jwt.sign(
+//           {
+//             exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+//             email: email
+//           },
+//           'SECRET_TOKEN'
+//         )
+//         return_json['token'] = jwt_token
+//         res.status(200).send({ status: 'SUCCESS', token: jwt_token })
+//         break
+//       case User_CRUD_STATUS.UNKNOWN_ERROR:
+//         res.status(401).send(return_json)
+//         break
+//       case User_CRUD_STATUS.EMAIL_DUPLICATED:
+//         res.status(401).send(return_json)
+//         break
+//       default:
+//         res.status(401).send()
+//         break
+//     }
+//   } catch (e) {
+//     console.log(e)
 
-    res.status(400).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
-  }
-})
+//     res.status(400).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
+//   }
+// })
 
 export default router

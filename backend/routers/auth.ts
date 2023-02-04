@@ -15,7 +15,7 @@ declare module 'jsonwebtoken' {
   }
 }
 
-const auth_bearer_middleware = async (
+export const auth_bearer_middleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -45,6 +45,7 @@ const auth_bearer_middleware = async (
     }
 
     if (user_id) {
+      res.locals.user_id = user_id
       next()
       return
     }
@@ -58,7 +59,7 @@ const auth_bearer_middleware = async (
       {
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
         email: email,
-        user_id: user_id_obj.dataValues.user_id,
+        user_id: user_id_obj.dataValues.user_id
       },
       JWT_TOKEN_SECRET
     )

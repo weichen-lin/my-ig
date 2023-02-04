@@ -4,11 +4,11 @@ import axios, { InternalAxiosRequestConfig } from 'axios'
 
 import { APIS } from 'api/apis'
 
-export interface TOKEN {
-  exp: number
-  email: string
-  user_id: string
-}
+// export interface TOKEN {
+//   exp: number
+//   email: string
+//   user_id: string
+// }
 
 const fethcher = axios.create({ baseURL: 'http://localhost:8080' })
 

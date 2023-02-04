@@ -5,6 +5,7 @@
 @import '/styles/login.css';
 @import './datepicker.css';
 @import './loading.css';
+@import './btn_loading.css';
 
 .selection-area {
   border: 1px solid rgba(20, 20, 20, 0.06);

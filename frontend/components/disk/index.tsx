@@ -17,7 +17,12 @@ export default function Disk() {
     creatFolderOpen,
     toogleCreateFolder,
     operatorOpen,
-    toogleOperatorOpen
+    toogleOperatorOpen,
+    isRequesting,
+    createFolder,
+    folderName,
+    handleFolderName,
+    errorMsg
   } = useOperator()
 
   const { root, selected, dragged } = useGdrive()
@@ -58,6 +63,11 @@ export default function Disk() {
       <AddFolderPage
         creatFolderOpen={creatFolderOpen}
         toogleCreateFolder={toogleCreateFolder}
+        isRequesting={isRequesting}
+        folderName={folderName}
+        handleFolderName={handleFolderName}
+        createFolder={createFolder}
+        errorMsg={errorMsg}
       />
       <ImagePlayground
         data={data.filter((e) => e.type === FileType.File)}

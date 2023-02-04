@@ -1,5 +1,6 @@
 import User from './user'
 import Auth from './auth'
-import Drive from './drive'
+import File from './file'
+import Folder from './folder'
 
-export { User, Auth, Drive }
+export { User, Auth, File, Folder }

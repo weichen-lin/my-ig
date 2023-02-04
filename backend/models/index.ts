@@ -1,5 +1,5 @@
 import { File } from './file.model'
-import { Folder } from './folder.model'
+import { Folder, FolderCRUD } from './folder.model'
 import { User, userCRUD } from './user.model'
 
 const Models = { File, Folder, User }
@@ -12,4 +12,4 @@ const init_Models = async () => {
   })
 }
 
-export { init_Models, userCRUD }
+export { init_Models, userCRUD, FolderCRUD }
