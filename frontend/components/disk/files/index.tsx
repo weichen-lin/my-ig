@@ -7,6 +7,9 @@ import {
   DiskData,
   SelectionStringList
 } from 'hooks/disk/type'
+import { useRecoilValue } from 'recoil'
+import { folderInitState } from 'context/folder'
+import { filesInitState } from 'context/file'
 
 interface FilesPageProp extends FormatProp, SelectionStringList {
   files: DiskData[]
@@ -15,8 +18,10 @@ interface FilesPageProp extends FormatProp, SelectionStringList {
 }
 
 export default function Files(props: FilesPageProp) {
-  const { listMethod, files, folders, selected, dragged, handleImageDisplay } =
-    props
+  const { listMethod, selected, dragged, handleImageDisplay } = props
+
+  const folders = useRecoilValue(folderInitState)
+  const files = useRecoilValue(filesInitState)
 
   return (
     <div

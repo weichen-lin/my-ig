@@ -2,6 +2,7 @@ import Head from 'next/head'
 import 'styles/globals.css'
 import type { AppProps } from 'next/app'
 import { NextPage } from 'next'
+import { RecoilRoot } from 'recoil'
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: JSX.Element) => JSX.Element
@@ -20,7 +21,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         <title>Kushare</title>
         <link rel='icon' type='image/x-icon' href='static/favicon.png' />
       </Head>
-      <Component {...pageProps} />
+      <RecoilRoot>
+        <Component {...pageProps} />
+      </RecoilRoot>
     </>
   )
 }

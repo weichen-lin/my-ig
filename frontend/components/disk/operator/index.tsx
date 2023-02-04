@@ -2,39 +2,24 @@ import clsx from 'clsx'
 import { Plus, UploadFolder } from 'public/icon/disk'
 import Option from 'components/disk/operator/option'
 import { UploadFile, AddFolder } from 'public/icon/disk'
+import type { UploadType } from 'hooks/disk/useOperator'
 
 interface OperatorProps {
   operatorOpen: boolean
   toogleCreateFolder: () => void
   toogleOperatorOpen: () => void
   isScrollDown: boolean
+  handleFileUpload: (type: UploadType) => void
 }
 
 export default function Operator(props: OperatorProps) {
-  const { operatorOpen, toogleCreateFolder, toogleOperatorOpen, isScrollDown } =
-    props
-
-  // const handleClick = async () => {
-  //   const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
-  //   const AllContents = await Promise.all(
-  //     FileHandlers.map(async (filehandle) => {
-  //       const file = await filehandle.getFile()
-  //       const imgReader = new FileReader()
-  //       imgReader.readAsDataURL(file)
-  //       imgReader.onloadend = () => {
-  //         setData((prev) => [
-  //           ...prev,
-  //           {
-  //             type: FileType.File,
-  //             name: file.name,
-  //             url: imgReader.result ?? '',
-  //             last_modified_data: '2022/12/10',
-  //           },
-  //         ])
-  //       }
-  //     })
-  //   )
-  // }
+  const {
+    operatorOpen,
+    toogleCreateFolder,
+    toogleOperatorOpen,
+    isScrollDown,
+    handleFileUpload
+  } = props
 
   return (
     <div
@@ -61,7 +46,7 @@ export default function Operator(props: OperatorProps) {
       </div>
       <ul
         className={clsx(
-          'absolute bottom-[19.5%] right-[165%] md:right-[181%] 2xl:right-[170%] w-full h-full',
+          'absolute bottom-[19.5%] right-[165%] md:right-[180%] 2xl:right-[170%] w-full h-full',
           'md:right-[70%] md:bottom-[30%]',
           'transition-all duration-300 ease-out',
           `${operatorOpen ? 'opacity-100' : 'opacity-0'}`
@@ -71,7 +56,9 @@ export default function Operator(props: OperatorProps) {
           operatorOpen={operatorOpen}
           angle={''}
           icon={<UploadFile className='w-1/2 h-1/2 m-[25%]' />}
-          onClick={() => {}}
+          onClick={() => {
+            handleFileUpload('FileOnly')
+          }}
         />
         <Option
           operatorOpen={operatorOpen}
@@ -79,7 +66,9 @@ export default function Operator(props: OperatorProps) {
           icon={
             <UploadFolder className='w-1/2 h-1/2 m-[25%] -rotate-[45deg]' />
           }
-          onClick={() => {}}
+          onClick={() => {
+            handleFileUpload('FilesInFolder')
+          }}
         />
         <Option
           operatorOpen={operatorOpen}

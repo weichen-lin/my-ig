@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { Folder } from 'public/icon/disk'
 import { FormatProp, SelectionValue } from 'hooks/disk/type'
-import { ListMethod } from 'hooks/disk/useDisk'
+import { ListMethod } from 'hooks/disk/type'
 
 interface FolderProps extends FormatProp, SelectionValue {
   id: number

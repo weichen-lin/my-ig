@@ -46,7 +46,7 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
         <div className='h-full lg:h-[70%]'>
           <div className='flex h-full flex-col lg:flex-row'>
             <div className='bg-white w-full h-full flex items-center overflow-clip'>
-              <img className='w-full' src={data[currentIndex].url}></img>
+              <img className='w-full' src={data[currentIndex]?.url}></img>
               <span
                 className='absolute top-2 right-2 opacity-60 lg:hidden'
                 onClick={() => handleEscape}

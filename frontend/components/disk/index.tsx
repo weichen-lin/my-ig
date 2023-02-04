@@ -22,7 +22,8 @@ export default function Disk() {
     createFolder,
     folderName,
     handleFolderName,
-    errorMsg
+    errorMsg,
+    handleFileUpload
   } = useOperator()
 
   const { root, selected, dragged } = useGdrive()
@@ -40,6 +41,7 @@ export default function Disk() {
   return (
     <>
       <Sort listMethod={listMethod} handleListMethod={handleListMethod} />
+
       <div
         className='grow overflow-y-auto'
         ref={root}
@@ -59,6 +61,7 @@ export default function Disk() {
         operatorOpen={operatorOpen}
         toogleOperatorOpen={toogleOperatorOpen}
         isScrollDown={isScrollDown}
+        handleFileUpload={handleFileUpload}
       />
       <AddFolderPage
         creatFolderOpen={creatFolderOpen}

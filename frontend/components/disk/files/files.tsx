@@ -1,6 +1,9 @@
 import clsx from 'clsx'
 import { FormatProp, ListMethod, SelectionValue } from 'hooks/disk/type'
 import { useImageDisplay } from 'hooks/disk'
+import { useRecoilValue } from 'recoil'
+import { folderInitState } from 'context/folder'
+import { filesInitState } from 'context/file'
 
 export interface FilesProps extends FormatProp, SelectionValue {
   id: number
@@ -10,7 +13,26 @@ export interface FilesProps extends FormatProp, SelectionValue {
   handleImageDisplay: (e: number) => void
 }
 
-export default function FileTypeElement(props: FilesProps) {
+export default function Files() {
+  const files = useRecoilValue(filesInitState)
+
+  return (
+    <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
+      {files.map((e) => (
+        <FileElement
+          id={e.id}
+          listMethod={listMethod}
+          fileName={e.name}
+          key={`folder_index_${e.id}`}
+          selected={selected.has(`selectable-${e.id}`)}
+          dragged={dragged.has(`selectable-${e.id}`)}
+        />
+      ))}
+    </div>
+  )
+}
+
+export function FileElement(props: FilesProps) {
   const {
     id,
     listMethod,
