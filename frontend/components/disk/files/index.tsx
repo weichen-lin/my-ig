@@ -1,27 +1,16 @@
 import clsx from 'clsx'
-import FileTypeElement from 'components/disk/files/file'
-import FolderTypeElement from 'components/disk/files/folder'
-import {
-  FormatProp,
-  ListMethod,
-  DiskData,
-  SelectionStringList
-} from 'hooks/disk/type'
+import Files from 'components/disk/files/files'
+import Folders from 'components/disk/files/folders'
+import { FormatProp, ListMethod, SelectionStringList } from 'hooks/disk/type'
 import { useRecoilValue } from 'recoil'
 import { folderInitState } from 'context/folder'
-import { filesInitState } from 'context/file'
 
 interface FilesPageProp extends FormatProp, SelectionStringList {
-  files: DiskData[]
-  folders: DiskData[]
   handleImageDisplay: (e: number) => void
 }
 
-export default function Files(props: FilesPageProp) {
+export default function GdriveLikeDisk(props: FilesPageProp) {
   const { listMethod, selected, dragged, handleImageDisplay } = props
-
-  const folders = useRecoilValue(folderInitState)
-  const files = useRecoilValue(filesInitState)
 
   return (
     <div
@@ -42,18 +31,7 @@ export default function Files(props: FilesPageProp) {
       >
         資料夾
       </p>
-      <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
-        {folders.map((e) => (
-          <FolderTypeElement
-            id={e.id}
-            listMethod={listMethod}
-            folderName={e.name}
-            key={`folder_index_${e.id}`}
-            selected={selected.has(`selectable-${e.id}`)}
-            dragged={dragged.has(`selectable-${e.id}`)}
-          />
-        ))}
-      </div>
+      <Folders listMethod={listMethod} />
       <p
         className={clsx(
           'w-[90%] xs:w-full text-gray-400',
@@ -62,21 +40,7 @@ export default function Files(props: FilesPageProp) {
       >
         檔案
       </p>
-      <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
-        {files.map((e) => (
-          <FileTypeElement
-            id={e.id}
-            listMethod={listMethod}
-            fileName={e.name}
-            imgUrl={e.url}
-            key={`file_index_${e.id}`}
-            selected={selected.has(`selectable-${e.id}`)}
-            dragged={dragged.has(`selectable-${e.id}`)}
-            index={e.index}
-            handleImageDisplay={handleImageDisplay}
-          />
-        ))}
-      </div>
+      <Files listMethod={listMethod} />
     </div>
   )
 }

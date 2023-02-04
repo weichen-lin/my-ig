@@ -1,5 +1,5 @@
 import Sort from 'components/disk/sort'
-import Files from 'components/disk/files'
+import GdriveLikeDisk from 'components/disk/files'
 import Operator from 'components/disk/operator'
 import AddFolderPage from 'components/disk/addfolder'
 import ImagePlayground from 'components/disk/images'
@@ -41,16 +41,13 @@ export default function Disk() {
   return (
     <>
       <Sort listMethod={listMethod} handleListMethod={handleListMethod} />
-
       <div
         className='grow overflow-y-auto'
         ref={root}
         onScroll={handleOnScroll}
       >
-        <Files
+        <GdriveLikeDisk
           listMethod={listMethod}
-          files={data.filter((e) => e.type === FileType.File)}
-          folders={data.filter((e) => e.type === FileType.Folder)}
           selected={selected}
           dragged={dragged}
           handleImageDisplay={handleImageDisplay}

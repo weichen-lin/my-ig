@@ -1,20 +1,25 @@
 import clsx from 'clsx'
-import { FormatProp, ListMethod, SelectionValue } from 'hooks/disk/type'
+import {
+  FormatProp,
+  ListMethod,
+  SelectionValue,
+  SelectionStringList
+} from 'hooks/disk/type'
 import { useImageDisplay } from 'hooks/disk'
 import { useRecoilValue } from 'recoil'
-import { folderInitState } from 'context/folder'
 import { filesInitState } from 'context/file'
 
-export interface FilesProps extends FormatProp, SelectionValue {
+export interface FileProps extends FormatProp {
   id: number
   imgUrl: string | undefined
   fileName: string
   index: number
-  handleImageDisplay: (e: number) => void
+  // handleImageDisplay: (e: number) => void
 }
 
-export default function Files() {
+export default function Files(props: FormatProp) {
   const files = useRecoilValue(filesInitState)
+  const { listMethod } = props
 
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
@@ -23,25 +28,28 @@ export default function Files() {
           id={e.id}
           listMethod={listMethod}
           fileName={e.name}
-          key={`folder_index_${e.id}`}
-          selected={selected.has(`selectable-${e.id}`)}
-          dragged={dragged.has(`selectable-${e.id}`)}
+          imgUrl={e.url}
+          key={`file_index_${e.id}`}
+          // selected={selected.has(`selectable-${e.id}`)}
+          // dragged={dragged.has(`selectable-${e.id}`)}
+          index={e.index}
+          // handleImageDisplay={handleImageDisplay}
         />
       ))}
     </div>
   )
 }
 
-export function FileElement(props: FilesProps) {
+export function FileElement(props: FileProps) {
   const {
     id,
     listMethod,
     imgUrl,
     fileName,
-    selected,
-    dragged,
-    index,
-    handleImageDisplay
+    // selected,
+    // dragged,
+    index
+    // handleImageDisplay
   } = props
 
   return (
@@ -53,11 +61,11 @@ export function FileElement(props: FilesProps) {
             ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] h-[200px] flex-col border-2 xs:mr-4 xs:mb-2 mb-4'
             : 'w-full h-12'
         }`,
-        `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
-        `${dragged ? 'opacity-70' : 'opacity-100'}`,
+        // `${selected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
+        // `${dragged ? 'opacity-70' : 'opacity-100'}`,
         `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
-      onDoubleClick={() => handleImageDisplay(index - 1)}
+      // onDoubleClick={() => handleImageDisplay(index - 1)}
     >
       <div
         className={clsx(

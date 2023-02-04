@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import AddFolderPageButton from 'components/disk/addfolder/button'
 import { ChangeEvent } from 'react'
 import { ErrorIcon } from 'public/icon/login'
+import { useOperator } from 'hooks/disk'
 
 interface AddFolderPageProps {
   creatFolderOpen: boolean
@@ -22,7 +23,7 @@ export default function AddFolderPage(props: AddFolderPageProps) {
     handleFolderName,
     createFolder,
     errorMsg
-  } = props
+  } = useOperator()
 
   return (
     <div
