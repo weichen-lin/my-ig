@@ -1,25 +1,34 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Op } from 'sequelize'
 import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { Folder_CRUD_STATUS } from '../errors'
 
-export const Folder = db.define('folder', {
-  user_uuid: {
-    type: DataTypes.STRING(50),
-    allowNull: false
+export const Folder = db.define(
+  'folder',
+  {
+    user_uuid: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    folder_uuid: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    folder_name: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
+    locate_at: {
+      type: DataTypes.STRING(50)
+    }
   },
-  folder_uuid: {
-    type: DataTypes.STRING(50),
-    allowNull: false
-  },
-  folder_name: {
-    type: DataTypes.STRING(100),
-    allowNull: false
-  },
-  locate_at: {
-    type: DataTypes.STRING(50)
+  {
+    indexes: [
+      { fields: ['createdAt', 'locate_at'] },
+      { fields: ['folder_name'] }
+    ]
   }
-})
+)
 
 const createFolder = async (
   user_uuid: string,
@@ -38,8 +47,12 @@ const createFolder = async (
 
   // check folder name unique
   const folderNameChecker = await Folder.findOne({
-    where: { folder_name: folder_name, user_uuid: user_uuid }
+    where: {
+      folder_name: folder_name,
+      user_uuid: user_uuid
+    }
   })
+
   if (folderNameChecker) return Folder_CRUD_STATUS.FOLDER_DUPLICATED
 
   const folderRegex = /[|\\/~^:,;?!&%$@*+]/
@@ -65,10 +78,19 @@ const createFolder = async (
 
 const deleteFolder = async (uuid: string) => {}
 
-const findFolder = async (email: string) => {
-  return await Folder.findOne({
-    where: { email: email },
-    attributes: ['folder_uuid', 'email', 'password', 'sault']
+const findFolder = async (
+  user_uuid: string,
+  [startDate, endDate]: [startDate: string, endDate: string],
+  current_folder: string
+) => {
+  return await Folder.findAll({
+    where: {
+      user_uuid: user_uuid,
+      createdAt: {
+        [Op.between]: [startDate, endDate]
+      },
+      locate_at: current_folder
+    }
   })
 }
 

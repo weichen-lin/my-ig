@@ -48,7 +48,7 @@ export const List = (props: Props) => (
   </svg>
 )
 
-export const Folder = (props: Props) => (
+export const FolderIcon = (props: Props) => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 309.267 309.267'

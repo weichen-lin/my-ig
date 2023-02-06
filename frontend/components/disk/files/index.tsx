@@ -2,15 +2,15 @@ import clsx from 'clsx'
 import Files from 'components/disk/files/files'
 import Folders from 'components/disk/files/folders'
 import { FormatProp, ListMethod, SelectionStringList } from 'hooks/disk/type'
-import { useRecoilValue } from 'recoil'
-import { folderInitState } from 'context/folder'
+import { FileData, FolderData } from 'context/type'
 
 interface FilesPageProp extends FormatProp, SelectionStringList {
   handleImageDisplay: (e: number) => void
+  data: { files: FileData[]; folders: FolderData[] }
 }
 
 export default function GdriveLikeDisk(props: FilesPageProp) {
-  const { listMethod, selected, dragged, handleImageDisplay } = props
+  const { listMethod, data, selected, dragged, handleImageDisplay } = props
 
   return (
     <div
@@ -31,7 +31,7 @@ export default function GdriveLikeDisk(props: FilesPageProp) {
       >
         資料夾
       </p>
-      <Folders listMethod={listMethod} />
+      <Folders listMethod={listMethod} folders={data.folders} />
       <p
         className={clsx(
           'w-[90%] xs:w-full text-gray-400',
@@ -40,7 +40,11 @@ export default function GdriveLikeDisk(props: FilesPageProp) {
       >
         檔案
       </p>
-      <Files listMethod={listMethod} />
+      <Files
+        listMethod={listMethod}
+        files={data.files}
+        handleImageDisplay={handleImageDisplay}
+      />
     </div>
   )
 }

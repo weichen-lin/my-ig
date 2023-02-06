@@ -6,20 +6,23 @@ import {
   SelectionStringList
 } from 'hooks/disk/type'
 import { useImageDisplay } from 'hooks/disk'
-import { useRecoilValue } from 'recoil'
-import { filesInitState } from 'context/file'
+import { FileData } from 'context/type'
 
 export interface FileProps extends FormatProp {
   id: number
   imgUrl: string | undefined
   fileName: string
   index: number
-  // handleImageDisplay: (e: number) => void
+  handleImageDisplay: (e: number) => void
 }
 
-export default function Files(props: FormatProp) {
-  const files = useRecoilValue(filesInitState)
-  const { listMethod } = props
+export default function Files(
+  props: FormatProp & {
+    files: FileData[]
+    handleImageDisplay: (e: number) => void
+  }
+) {
+  const { listMethod, files, handleImageDisplay } = props
 
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
@@ -33,7 +36,7 @@ export default function Files(props: FormatProp) {
           // selected={selected.has(`selectable-${e.id}`)}
           // dragged={dragged.has(`selectable-${e.id}`)}
           index={e.index}
-          // handleImageDisplay={handleImageDisplay}
+          handleImageDisplay={handleImageDisplay}
         />
       ))}
     </div>
@@ -48,8 +51,8 @@ export function FileElement(props: FileProps) {
     fileName,
     // selected,
     // dragged,
-    index
-    // handleImageDisplay
+    index,
+    handleImageDisplay
   } = props
 
   return (
@@ -65,7 +68,7 @@ export function FileElement(props: FileProps) {
         // `${dragged ? 'opacity-70' : 'opacity-100'}`,
         `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
-      // onDoubleClick={() => handleImageDisplay(index - 1)}
+      onDoubleClick={() => handleImageDisplay(index - 1)}
     >
       <div
         className={clsx(

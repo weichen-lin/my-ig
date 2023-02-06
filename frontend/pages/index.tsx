@@ -1,20 +1,75 @@
-import Disk from 'components/disk'
+import {
+  Sort,
+  GdriveLikeDisk,
+  Operator,
+  ImagePlayground
+} from 'components/disk'
 import { LayoutAuth } from 'components/layout'
 
+import {
+  useDisk,
+  useGdrive,
+  useImageDisplay,
+  useDatetime,
+  useOperator
+} from 'hooks/disk'
+import { useScroll } from 'hooks/utils'
+import { Loading } from 'components/utils'
+
 export default function DiskPage() {
+  const { listMethod, handleListMethod, diskData, isFetching } = useDisk()
+  const { root, selected, dragged } = useGdrive()
+  const {
+    isOpen: ImageDisplayOpen,
+    currentIndex,
+    handleEscape,
+    handleImageDisplay,
+    setCurrentIndex
+  } = useImageDisplay()
+
+  const { isScrollDown, handleOnScroll } = useScroll()
+
+  const customDatePickerProps = useDatetime()
+
+  const operatorProps = useOperator()
+
   return (
     <>
-      {/* <Script src='//cdn.jsdelivr.net/npm/spacingjs' /> */}
-      <Disk />
+      <Sort
+        listMethod={listMethod}
+        handleListMethod={handleListMethod}
+        customDatePickerProps={customDatePickerProps}
+      />
+      <div
+        className='grow overflow-y-auto'
+        ref={root}
+        onScroll={handleOnScroll}
+      >
+        {isFetching ? (
+          <div className='flex items-center justify-center w-full h-full'>
+            <Loading />
+          </div>
+        ) : (
+          <GdriveLikeDisk
+            listMethod={listMethod}
+            selected={selected}
+            dragged={dragged}
+            handleImageDisplay={handleImageDisplay}
+            data={diskData}
+          />
+        )}
+      </div>
+      <Operator operatorProps={operatorProps} isScrollDown={isScrollDown} />
+      <ImagePlayground
+        data={diskData.files}
+        isOpen={ImageDisplayOpen}
+        currentIndex={currentIndex}
+        handleEscape={handleEscape}
+        setCurrentIndex={setCurrentIndex}
+      />
     </>
   )
 }
 DiskPage.getLayout = function getLayout(page: JSX.Element) {
   return <LayoutAuth>{page}</LayoutAuth>
 }
-
-// sm	640px	@media (min-width: 640px) { ... }
-// md	768px	@media (min-width: 768px) { ... }
-// lg	1024px	@media (min-width: 1024px) { ... }
-// xl	1280px	@media (min-width: 1280px) { ... }
-// 2xl	1536px	@media (min-width: 1536px) { ... }

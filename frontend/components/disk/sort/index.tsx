@@ -3,15 +3,17 @@ import { ArrowIcon, Lattice, List } from 'public/icon/disk'
 
 import { ListMethod } from 'hooks/disk/type'
 
-import CustomDatePicker from 'components/disk/sort/date-picker'
+import CustomDatePicker from './date-picker'
+import { DateTimePickerProps } from './type'
 
 interface SortProps {
   listMethod: number
   handleListMethod: () => void
+  customDatePickerProps: DateTimePickerProps
 }
 
 export default function Sort(props: SortProps) {
-  const { listMethod, handleListMethod } = props
+  const { listMethod, handleListMethod, customDatePickerProps } = props
 
   return (
     <div
@@ -28,7 +30,7 @@ export default function Sort(props: SortProps) {
         </div>
       </div>
       <div className='flex-1 flex justify-end'>
-        <CustomDatePicker />
+        <CustomDatePicker customDatePickerProps={customDatePickerProps} />
         <div
           className='w-6 h-6 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'
           onClick={handleListMethod}

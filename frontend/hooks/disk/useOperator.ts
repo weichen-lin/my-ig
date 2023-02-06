@@ -3,12 +3,25 @@ import fethcher from 'api/fetcher'
 import { APIS } from 'api/apis'
 import { FolderResponse, FolderStatus } from 'api/errors'
 import { useRecoilState } from 'recoil'
-import { folderInitState } from 'context/folder'
+import { diskInitState } from 'context/diskData'
 
 export type UploadType = 'FileOnly' | 'FilesInFolder'
 
+export interface useOperatorInterface {
+  creatFolderOpen: boolean
+  operatorOpen: boolean
+  toogleCreateFolder: () => void
+  toogleOperatorOpen: () => void
+  isRequesting: boolean
+  createFolder: (e: string) => void
+  folderName: string
+  handleFolderName: (e: ChangeEvent<HTMLInputElement>) => void
+  errorMsg: string
+  handleFileUpload: (type: UploadType) => void
+}
+
 export default function useOperator() {
-  const [, setFolders] = useRecoilState(folderInitState)
+  const [, setDiskData] = useRecoilState(diskInitState)
   const [creatFolderOpen, setCreateFolderOpen] = useState(false)
   const [operatorOpen, setOperatorOpen] = useState(false)
   const [isRequesting, setIsRequesting] = useState(false)
@@ -30,27 +43,25 @@ export default function useOperator() {
     fethcher
       .post(
         `${process.env.NEXT_PUBLIC_BACKEND_PROTOCOL}://${process.env.NEXT_PUBLIC_BACKEND_HOST}:${process.env.NEXT_PUBLIC_BACKEND_PORT}${APIS.FOLDER}`,
-        { folder_name }
+        { folder_name, test: new Date() }
       )
       .then((res) => {
         if (res.status === 200) {
           setErrorMsg('')
           setFolderName('')
           setCreateFolderOpen(false)
-          setFolders((prev) => [
+          setDiskData((prev) => ({
             ...prev,
-            {
-              type: 0,
-              id: Math.random(),
-              name: folder_name,
-              last_modified_data: '2022/12/10',
-              index: 1,
-              isDragHovered: false,
-              isBeingDragged: false,
-              before: null,
-              next: 2
-            }
-          ])
+            folders: [
+              ...prev.folders,
+              {
+                id: 0,
+                name: folderName,
+                last_modified_data: '2022/12/10',
+                index: 1
+              }
+            ]
+          }))
         }
       })
       .catch((res) => {

@@ -3,20 +3,35 @@ import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { User_CRUD_STATUS } from '../errors'
 
-export const User = db.define('user', {
-  user_id: {
-    type: DataTypes.STRING(50),
-    allowNull: false
+export const User = db.define(
+  'user',
+  {
+    user_id: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    email: { type: DataTypes.STRING(100), allowNull: false },
+    password: { type: DataTypes.STRING(256), allowNull: false },
+    sault: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    validate_time: { type: DataTypes.DATE },
+    is_deleted: { type: DataTypes.BOOLEAN }
   },
-  email: { type: DataTypes.STRING(100), allowNull: false },
-  password: { type: DataTypes.STRING(256), allowNull: false },
-  sault: {
-    type: DataTypes.STRING(50),
-    allowNull: false
-  },
-  validate_time: { type: DataTypes.DATE },
-  is_deleted: { type: DataTypes.BOOLEAN }
-})
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: ['user_id']
+      },
+      {
+        unique: true,
+        fields: ['email']
+      }
+    ]
+  }
+)
 
 const createUser = async (email: string, password: string, sault: string) => {
   // make sure uuid is unique

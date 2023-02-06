@@ -6,19 +6,21 @@ import { zhTW } from 'date-fns/locale'
 import clsx from 'clsx'
 
 import { CalendarIcon, ArrowNoLineIcon } from 'public/icon/disk'
+import { DateTimePickerProps } from './type'
 
-import useDatetime from 'hooks/disk/useDatetime'
+export default function CustomDatePicker(props: {
+  customDatePickerProps: DateTimePickerProps
+}) {
+  const { customDatePickerProps } = props
+  const { diskStatus, isOpen, handleOpen, ref, handleChange } =
+    customDatePickerProps
 
-export default function CustomDatePicker() {
-  const { startDate, endDate, isOpen, setIsOpen, ref, handleChange } =
-    useDatetime()
+  const { startDate, endDate } = diskStatus
+
   return (
     <>
       <div className='border-b-2 w-[200px] xs:w-[250px] text-gray-500 cursor-pointer hover:border-red-100 relative mr-1 md:mr-4'>
-        <div
-          className='flex justify-evenly'
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
+        <div className='flex justify-evenly' onClick={handleOpen}>
           <CalendarIcon className='w-6 h-4 mt-[2px] xs:w-8 xs:h-6' />
           <div className='whitespace-nowrap text-sm xs:text-base my-[1px] xs:my-[2px]'>
             {format(startDate, 'yyyy-MM-dd', { locale: zhTW })}

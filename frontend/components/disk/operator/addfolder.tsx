@@ -1,20 +1,14 @@
 import clsx from 'clsx'
-import AddFolderPageButton from 'components/disk/addfolder/button'
-import { ChangeEvent } from 'react'
+import AddFolderPageButton from './button'
 import { ErrorIcon } from 'public/icon/login'
-import { useOperator } from 'hooks/disk'
+import type { useOperatorInterface } from 'hooks/disk'
 
-interface AddFolderPageProps {
-  creatFolderOpen: boolean
-  toogleCreateFolder: () => void
-  isRequesting: boolean
-  folderName: string
-  handleFolderName: (e: ChangeEvent<HTMLInputElement>) => void
-  createFolder: (e: string) => void
-  errorMsg: string
-}
+type addFolderPageProps = Omit<
+  useOperatorInterface,
+  'operatorOpen' | 'toogleOperatorOpen' | 'handleFileUpload'
+>
 
-export default function AddFolderPage(props: AddFolderPageProps) {
+export default function AddFolderPage(props: addFolderPageProps) {
   const {
     creatFolderOpen,
     toogleCreateFolder,
@@ -23,19 +17,19 @@ export default function AddFolderPage(props: AddFolderPageProps) {
     handleFolderName,
     createFolder,
     errorMsg
-  } = useOperator()
+  } = props
 
   return (
     <div
       className={clsx(
-        'absolute top-0 left-0 h-screen w-full bg-gray-700/40 backdrop-blur-sm',
+        'absolute top-0 left-0 h-screen w-full bg-gray-300/40 backdrop-blur-sm',
         'transition-all duration-100 ease-in',
         `${creatFolderOpen ? 'opacity-100 z-10' : 'hidden opacity-0'}`
       )}
     >
       <div
         className={clsx(
-          'bg-gray-100 m-auto rounded-xl flex flex-col p-5 gap-y-2',
+          'bg-gray-300 m-auto rounded-xl flex flex-col p-5 gap-y-2 border-2 border-slate-400',
           'mt-[300px] w-[280px]',
           'transition-all duration-100 ease-in',
           `${creatFolderOpen ? 'w-[260px] h-[180px]' : 'w-0 h-0'}`,

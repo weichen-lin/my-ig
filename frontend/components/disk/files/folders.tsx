@@ -1,18 +1,16 @@
 import clsx from 'clsx'
-import { Folder } from 'public/icon/disk'
+import { FolderIcon } from 'public/icon/disk'
 import { FormatProp, SelectionValue } from 'hooks/disk/type'
 import { ListMethod } from 'hooks/disk/type'
-import { useRecoilValue } from 'recoil'
-import { folderInitState } from 'context/folder'
+import { FolderData } from 'context/type'
 
 interface FolderProps extends FormatProp {
   id: number
   folderName: string
 }
 
-export default function Folders(props: FormatProp) {
-  const folders = useRecoilValue(folderInitState)
-  const { listMethod } = props
+export default function Folders(props: FormatProp & { folders: FolderData[] }) {
+  const { listMethod, folders } = props
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
       {folders.map((e) => (
@@ -47,7 +45,7 @@ function FolderElement(props: FolderProps) {
       )}
     >
       <div className='flex'>
-        <Folder
+        <FolderIcon
           className={clsx(
             `${listMethod === ListMethod.Lattice ? 'w-9 p-2' : 'h-6 m-3'}`,
             'transition-all duration-300 ease-out'

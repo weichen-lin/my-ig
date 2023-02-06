@@ -3,8 +3,9 @@ import { ImageArrow } from 'public/icon/disk'
 
 import clsx from 'clsx'
 import { Cancel } from 'public/icon/disk'
-import { useImageDisplay, DiskData } from 'hooks/disk'
+import { useImageDisplay } from 'hooks/disk'
 import { Dispatch, SetStateAction } from 'react'
+import { FileData } from 'context/type'
 
 declare module 'react' {
   interface CSSProperties {
@@ -13,7 +14,7 @@ declare module 'react' {
 }
 
 interface ImagePlaygroundProps {
-  data: DiskData[]
+  data: FileData[]
   isOpen: boolean
   currentIndex: number
   handleEscape: () => void
