@@ -23,8 +23,6 @@ export default function useDisk() {
   }
 
   useEffect(() => {
-    console.log('trigger one time')
-
     fethcher
       .get(
         `http://localhost:8080/folder?${new URLSearchParams({

@@ -5,6 +5,17 @@ import { FolderResponse, FolderStatus } from 'api/errors'
 import { useRecoilState } from 'recoil'
 import { diskInitState } from 'context/diskData'
 
+// function readBuffer(file, start = 0, end = 2) {
+//   return new Promise((resolve, reject) => {
+//     const reader = new FileReader()
+//     reader.onload = () => {
+//       resolve(reader.result)
+//     }
+//     reader.onerror = reject
+//     reader.readAsArrayBuffer(file.slice(start, end))
+//   })
+// }
+
 export type UploadType = 'FileOnly' | 'FilesInFolder'
 
 export interface useOperatorInterface {
@@ -57,8 +68,7 @@ export default function useOperator() {
               {
                 id: 0,
                 name: folderName,
-                last_modified_data: '2022/12/10',
-                index: 1
+                last_modified_at: '2022/12/10'
               }
             ]
           }))
@@ -80,21 +90,55 @@ export default function useOperator() {
 
   const handleFileUpload = async (type: UploadType) => {
     try {
-      // const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
-      // const AllContents = await Promise.all(
-      //   FileHandlers.map(async (filehandle) => {
-      //     const file = await filehandle.getFile()
-      //     const imgReader = new FileReader()
-      //     imgReader.readAsDataURL(file)
-      //     imgReader.onloadend = () => {
-      //       console.log('uploading')
-      //     }
-      //   })
-      // )
-      const test = await window?.showDirectoryPicker({ recursive: true })
-      for await (const entry of test.values()) {
-        console.log(entry)
-      }
+      const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
+      const AllContents = await Promise.all(
+        FileHandlers.map(async (filehandle, index) => {
+          const file = await filehandle.getFile()
+          const imgReader = new FileReader()
+          imgReader.readAsDataURL(file)
+          imgReader.onloadend = () => {
+            const img = new Image()
+            img.src = imgReader.result as string
+            img.onload = () => {
+              const formData = new FormData()
+              formData.append('myfile', file, file.name)
+              console.log(formData.getAll('myfile'))
+
+              console.log(`uploading pic ${index}`)
+              fethcher
+                .post('http://localhost:8080/file', formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                })
+                .then((res) =>
+                  setDiskData((prev) => ({
+                    ...prev,
+                    files: [
+                      ...prev.files,
+                      {
+                        name: file.name,
+                        url: res.data.url,
+                        last_modified_at: '',
+                        index: index + 1,
+                        id: Math.random(),
+                        tags: ['']
+                      }
+                    ]
+                  }))
+                )
+                .catch((e) => console.log(e))
+            }
+            img.onerror = () => {
+              console.log('this is not an image')
+            }
+          }
+        })
+      )
+      // const test = await window?.showDirectoryPicker({ recursive: true })
+      // for await (const entry of test.values()) {
+      //   console.log(entry)
+      // }
     } catch {
       console.log('cancel select')
     }
