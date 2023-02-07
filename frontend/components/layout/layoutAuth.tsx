@@ -1,7 +1,6 @@
-import clsx from 'clsx'
 import Search from 'components/disk/search'
 import useAuth from 'hooks/auth/useAuth'
-import { Loading, Transition } from 'components/utils'
+import { Loading } from 'components/utils'
 
 interface LayoutProps {
   children: JSX.Element
@@ -17,7 +16,7 @@ export default function LayoutAuth({ children }: LayoutProps) {
         </div>
         <Search />
       </div>
-      {isAuth ? (
+      {true ? (
         children
       ) : (
         <div className='flex-1'>

@@ -2,7 +2,8 @@ import {
   Sort,
   GdriveLikeDisk,
   Operator,
-  ImagePlayground
+  ImagePlayground,
+  UploadTasks
 } from 'components/disk'
 import { LayoutAuth } from 'components/layout'
 
@@ -60,6 +61,7 @@ export default function DiskPage() {
         )}
       </div>
       <Operator operatorProps={operatorProps} isScrollDown={isScrollDown} />
+      <UploadTasks />
       <ImagePlayground
         data={diskData.files}
         isOpen={ImageDisplayOpen}

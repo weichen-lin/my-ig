@@ -5,17 +5,6 @@ import { FolderResponse, FolderStatus } from 'api/errors'
 import { useRecoilState } from 'recoil'
 import { diskInitState } from 'context/diskData'
 
-// function readBuffer(file, start = 0, end = 2) {
-//   return new Promise((resolve, reject) => {
-//     const reader = new FileReader()
-//     reader.onload = () => {
-//       resolve(reader.result)
-//     }
-//     reader.onerror = reject
-//     reader.readAsArrayBuffer(file.slice(start, end))
-//   })
-// }
-
 export type UploadType = 'FileOnly' | 'FilesInFolder'
 
 export interface useOperatorInterface {
@@ -102,9 +91,6 @@ export default function useOperator() {
             img.onload = () => {
               const formData = new FormData()
               formData.append('myfile', file, file.name)
-              console.log(formData.getAll('myfile'))
-
-              console.log(`uploading pic ${index}`)
               fethcher
                 .post('http://localhost:8080/file', formData, {
                   headers: {
