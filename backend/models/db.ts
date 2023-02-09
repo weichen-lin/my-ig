@@ -8,8 +8,6 @@ const DB_CONFIG = {
   MYIG_DB_HOST: process.env.POSTGRES_HOST ?? 'host.docker.internal'
 }
 
-console.log(DB_CONFIG)
-
 export const db = new Sequelize(
   `postgres://${DB_CONFIG.MYIG_DB_USER}:${DB_CONFIG.MYIG_DB_PASSWORD}@${DB_CONFIG.MYIG_DB_HOST}:${DB_CONFIG.MYIG_DB_PORT}/${DB_CONFIG.MYIG_DB_NAME}`,
   {

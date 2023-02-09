@@ -2,6 +2,7 @@ version: '3.7'
 
 volumes:
   myig-postgre: {}
+  backend_module: {}
 
 services:
   backend:
@@ -10,13 +11,16 @@ services:
     build:
       context: ./backend
       dockerfile: ./build/dev.Dockerfile
+    volumes:
+      - ./backend:/app
+      - backend_module:/app/node_modules
     environment: &db_config
       - POSTGRES_HOST=${MYIG_DB_HOST}
       - POSTGRES_DB=${MYIG_DB_NAME}
       - POSTGRES_USER=${MYIG_DB_USER}
       - POSTGRES_PASSWORD=${MYIG_DB_PASSWORD}
       - POSTGRES_PORT=${MYIG_DB_PORT}
-    env_file: .local.env
+    env_file: .dev.env
     ports:
       - '8080:8080'
     depends_on:
@@ -29,7 +33,7 @@ services:
     environment: *db_config
     volumes:
       - myig-postgre:/var/lib/postgresql/data
-    env_file: .local.env
+    env_file: .dev.env
     ports:
       - '5432:${MYIG_DB_PORT}'
 

@@ -23,13 +23,19 @@ export default function useDisk() {
   }
 
   useEffect(() => {
+    const diskStatus_copy = JSON.parse(JSON.stringify(diskStatus))
+
+    const startDate = new Date(diskStatus_copy.startDate)
+    const endDate = new Date(diskStatus_copy.endDate) || new Date()
+
+    startDate.setUTCHours(0, 0, 0, 0)
+    endDate.setUTCHours(23, 59, 59, 999)
+
     fethcher
       .get(
         `http://localhost:8080/folder?${new URLSearchParams({
-          startDate: diskStatus.startDate.toISOString(),
-          endDate: diskStatus.endDate
-            ? diskStatus.endDate.toISOString()
-            : diskStatus.startDate.toISOString(),
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
           current_folder: diskStatus.current_folder
         })}`
       )

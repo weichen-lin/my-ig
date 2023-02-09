@@ -11,9 +11,6 @@ export interface DiskStatus {
 const start = new Date()
 const end = new Date()
 
-start.setUTCHours(0, 0, 0, 0)
-end.setUTCHours(23, 59, 59, 999)
-
 export const diskStatusInitState = atom<DiskStatus>({
   key: 'diskStatus',
   default: {
