@@ -6,3 +6,7 @@ exec-postgre:
 
 dev-up:
 	docker compose -f dev.docker-compose.yml --env-file .dev.env up
+
+
+dev-down:
+	docker compose -f dev.docker-compose.yml --env-file .dev.env down
