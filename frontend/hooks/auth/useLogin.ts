@@ -61,13 +61,10 @@ export default function useLogin() {
     resetError()
 
     axios
-      .post(
-        `${process.env.NEXT_PUBLIC_BACKEND_PROTOCOL}://${process.env.NEXT_PUBLIC_BACKEND_HOST}:${process.env.NEXT_PUBLIC_BACKEND_PORT}${APIS.USER_LOGIN}`,
-        {
-          email: req.email,
-          password: req.password
-        }
-      )
+      .post(APIS.USER_LOGIN, {
+        email: req.email,
+        password: req.password
+      })
       .then((res) => {
         resetError()
         setIsSuccess(true)

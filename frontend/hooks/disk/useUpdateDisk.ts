@@ -13,7 +13,7 @@ export default function useUpdateDisk() {
 
     fethcher
       .get(
-        `http://localhost:8080/folder?${new URLSearchParams({
+        `/folder?${new URLSearchParams({
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString(),
           current_folder

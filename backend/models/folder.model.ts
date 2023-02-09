@@ -23,10 +23,7 @@ export const Folder = db.define(
     }
   },
   {
-    indexes: [
-      { fields: ['createdAt', 'locate_at'] },
-      { fields: ['folder_name'] }
-    ]
+    indexes: [{ fields: ['createdAt', 'locate_at'] }, { fields: ['user_uuid'] }]
   }
 )
 

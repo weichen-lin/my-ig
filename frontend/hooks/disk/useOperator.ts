@@ -92,7 +92,7 @@ export default function useOperator() {
               const formData = new FormData()
               formData.append('myfile', file, file.name)
               fethcher
-                .post('http://localhost:8080/file', formData, {
+                .post('/file', formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
                   }

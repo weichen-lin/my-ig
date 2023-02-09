@@ -13,14 +13,11 @@ export default function useAuth() {
       return
     }
     axios
-      .get(
-        `${process.env.NEXT_PUBLIC_BACKEND_PROTOCOL}://${process.env.NEXT_PUBLIC_BACKEND_HOST}:${process.env.NEXT_PUBLIC_BACKEND_PORT}${APIS.AUTH}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+      .get(APIS.AUTH, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
         }
-      )
+      })
       .then((res) => {
         if (res.data?.token) {
           localStorage.setItem('accessToken', res?.data?.token)

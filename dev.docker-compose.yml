@@ -3,6 +3,7 @@ version: '3.7'
 volumes:
   myig-postgre: {}
   backend_module: {}
+  frontend_module: {}
 
 services:
   backend:
@@ -22,7 +23,7 @@ services:
       - POSTGRES_PORT=${MYIG_DB_PORT}
     env_file: .dev.env
     ports:
-      - '8080:8080'
+      - '8080'
     depends_on:
       - postgres
     restart: on-failure
@@ -45,23 +46,20 @@ services:
       dockerfile: ./build/dev.Dockerfile
     volumes:
       - ./frontend:/app
+      - frontend_module:/app/node_modules
     ports:
-      - '3000:3000'
+      - '3000'
     depends_on:
       - backend
     restart: on-failure
 
-  # nginx:
-  #   <<: *dev
-  #   container_name: dashboard_nginx
-  #   image: nginx:alpine
-  #   profiles:
-  #     - frontend
-  #   ports:
-  #     - '80:80'
-  #   depends_on:
-  #     - backend
-  #     - frontend
-  #   volumes:
-  #     - ./backend/staticfiles/:/staticfiles/
-  #     - ./config/nginx/dev.conf:/etc/nginx/nginx.conf:ro
+  nginx:
+    container_name: myig-nginx
+    image: nginx:alpine
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - ./dev.conf:/etc/nginx/nginx.conf:ro

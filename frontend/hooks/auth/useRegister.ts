@@ -70,13 +70,10 @@ export default function useRegister() {
     resetError()
 
     axios
-      .post(
-        `${process.env.NEXT_PUBLIC_BACKEND_PROTOCOL}://${process.env.NEXT_PUBLIC_BACKEND_HOST}:${process.env.NEXT_PUBLIC_BACKEND_PORT}${APIS.USER_REGISTER}`,
-        {
-          email: req.email,
-          password: req.password
-        }
-      )
+      .post(APIS.USER_REGISTER, {
+        email: req.email,
+        password: req.password
+      })
       .then((res) => {
         resetError()
         setIsSuccess(true)
