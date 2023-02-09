@@ -1,0 +1,7 @@
+# js modules
+/node_modules
+
+# next.js build
+/.next
+
+# .npmrc

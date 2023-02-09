@@ -15,31 +15,18 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  // console.log(req)
-  // console.log(req.file?.buffer.toString())
-  // console.log(req.file)
   const fileName = req.file?.originalname
   if (!fileName) {
     res.status(400).json({ status: 0 })
   }
-
+  const user_id = res.locals.user_id
   const bucket = storage.bucket('myigbucket')
-  // .file(
-  // Buffer.from(`${Date.now().toString()}_${fileName}`, 'latin1').toString(
-  //   'utf8'
-  // )
-  // )
-  // .createWriteStream({
-  //   metadata: {
-  //     contentType: req.file?.mimetype
-  //   },
-  //   predefinedAcl: 'publicRead'
-  // })
-  const publicFileName = `${Date.now().toString()}_${Buffer.from(
+
+  const publicFileName = `${Buffer.from(
     `${Date.now().toString()}_${fileName}`,
     'latin1'
   ).toString('utf8')}`
-  const blob = bucket.file(publicFileName)
+  const blob = bucket.file(`${user_id}/${publicFileName}`)
   const blobStream = blob.createWriteStream({
     resumable: false
   })
@@ -51,7 +38,6 @@ router.post('/', async (req, res) => {
   blobStream.on('finish', async () => {
     // Create URL for directly file access via HTTP.
     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-
     try {
       // Make the file public
       await bucket.file(blob.name).makePublic()

@@ -31,7 +31,7 @@ export default function GdriveLikeDisk(props: FilesPageProp) {
       >
         資料夾
       </p>
-      <Folders listMethod={listMethod} folders={data.folders} />
+      <Folders listMethod={listMethod} folders={data.folders ?? []} />
       <p
         className={clsx(
           'w-[90%] xs:w-full text-gray-400',
@@ -42,7 +42,7 @@ export default function GdriveLikeDisk(props: FilesPageProp) {
       </p>
       <Files
         listMethod={listMethod}
-        files={data.files}
+        files={data.files ?? []}
         handleImageDisplay={handleImageDisplay}
       />
     </div>
