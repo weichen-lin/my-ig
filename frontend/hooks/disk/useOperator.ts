@@ -41,10 +41,7 @@ export default function useOperator() {
     setIsRequesting(true)
 
     fethcher
-      .post(
-        `${process.env.NEXT_PUBLIC_BACKEND_PROTOCOL}://${process.env.NEXT_PUBLIC_BACKEND_HOST}:${process.env.NEXT_PUBLIC_BACKEND_PORT}${APIS.FOLDER}`,
-        { folder_name, test: new Date() }
-      )
+      .post(APIS.FOLDER, { folder_name, test: new Date() })
       .then((res) => {
         if (res.status === 200) {
           setErrorMsg('')
@@ -92,7 +89,7 @@ export default function useOperator() {
               const formData = new FormData()
               formData.append('myfile', file, file.name)
               fethcher
-                .post('/file', formData, {
+                .post(APIS.FILE, formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
                   }

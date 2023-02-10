@@ -2,7 +2,7 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { diskStatusInitState } from 'context/diskStatus'
 import { diskInitState } from 'context/diskData'
 import fethcher from 'api/fetcher'
-
+import { APIS } from 'api/apis'
 export default function useUpdateDisk() {
   const [diskData, setDiskData] = useRecoilState(diskInitState)
   const diskStatus = useRecoilValue(diskStatusInitState)
@@ -13,7 +13,7 @@ export default function useUpdateDisk() {
 
     fethcher
       .get(
-        `/folder?${new URLSearchParams({
+        `${APIS.FOLDER}?${new URLSearchParams({
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString(),
           current_folder

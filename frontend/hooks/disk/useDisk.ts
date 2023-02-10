@@ -4,7 +4,7 @@ import { diskInitState } from 'context/diskData'
 import { useRecoilState } from 'recoil'
 import { diskStatusInitState } from 'context/diskStatus'
 import fethcher from 'api/fetcher'
-
+import { APIS } from 'api/apis'
 type listMethodState = 0 | 1
 
 export default function useDisk() {
@@ -33,7 +33,7 @@ export default function useDisk() {
 
     fethcher
       .get(
-        `/folder?${new URLSearchParams({
+        `${APIS.FOLDER}?${new URLSearchParams({
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString(),
           current_folder: diskStatus.current_folder
