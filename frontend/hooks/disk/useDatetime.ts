@@ -11,7 +11,6 @@ export default function useDatetime() {
 
   const handleChange = async (dates: [Date | null, Date | null]) => {
     const [start, end] = dates
-    console.log(start, end)
 
     setDiskStatus((prev) => ({ ...prev, startDate: start || new Date() }))
     if (

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ig-postgres
+  labels:
+    apps: ig-postgres
+    type: db
+spec:
+  containers:
+    - name: ig-postgres
+      image: postgres:13-alpine

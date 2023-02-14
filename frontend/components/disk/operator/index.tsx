@@ -4,6 +4,7 @@ import Option from 'components/disk/operator/option'
 import { UploadFile, AddFolder } from 'public/icon/disk'
 import type { useOperatorInterface } from 'hooks/disk'
 import AddFolderPage from './addfolder'
+import { ArrowNoLineIcon } from 'public/icon/disk'
 
 export default function Operator(props: {
   operatorProps: useOperatorInterface
@@ -49,7 +50,7 @@ export default function Operator(props: {
         </div>
         <ul
           className={clsx(
-            'absolute bottom-[19.5%] right-[165%] md:right-[181%] 2xl:right-[170%] w-full h-full',
+            'absolute bottom-[19.5%] right-[165%] md:right-[178%] 2xl:right-[170%] w-full h-full',
             'md:right-[70%] md:bottom-[30%]',
             'transition-all duration-300 ease-out',
             `${operatorOpen ? 'opacity-100' : 'opacity-0'}`

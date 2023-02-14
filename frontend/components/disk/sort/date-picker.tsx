@@ -19,18 +19,18 @@ export default function CustomDatePicker(props: {
 
   return (
     <>
-      <div className='border-b-2 w-[200px] xs:w-[250px] text-gray-500 cursor-pointer hover:border-red-100 relative mr-1 md:mr-4'>
+      <div className='border-b-2 md:border-b-0 w-[200px] xs:w-[250px] text-gray-500 cursor-pointer hover:border-red-100 relative mr-1 md:mr-4'>
         <div className='flex justify-evenly' onClick={handleOpen}>
           <CalendarIcon className='w-6 h-4 mt-[2px] xs:w-8 xs:h-6' />
-          <div className='whitespace-nowrap text-sm xs:text-base my-[1px] xs:my-[2px]'>
+          <div className='whitespace-nowrap text-sm xs:text-base my-[1px] xs:my-[2px] md:mt-1'>
             {format(startDate, 'yyyy-MM-dd', { locale: zhTW })}
           </div>
           {endDate ? (
             <>
-              <div className='text-sm mx-[2px] xs:text-base my-[1px] xs:my-[2px]'>
+              <div className='text-sm mx-[2px] xs:text-base my-[1px] xs:my-[2px] md:mt-1'>
                 -
               </div>
-              <div className='whitespace-nowrap text-sm xs:text-base my-[1px] xs:my-[2px] mr-1'>
+              <div className='whitespace-nowrap text-sm xs:text-base my-[1px] xs:my-[2px] md:mt-1 mr-1'>
                 {format(endDate, 'yyyy-MM-dd', { locale: zhTW })}
               </div>
             </>

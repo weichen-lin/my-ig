@@ -13,7 +13,7 @@ export default function Folders(props: FormatProp & { folders: FolderData[] }) {
   const { listMethod, folders } = props
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
-      {folders.map((e) => (
+      {folders?.map((e) => (
         <FolderElement
           id={e.id}
           listMethod={listMethod}

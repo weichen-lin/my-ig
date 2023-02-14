@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ig-postgres
+  labels:
+    app: ig-postgres
+    type: db
+spec:
+  containers:
+    - name: ig-postgres
+      image: postgres:13-alpine
+      env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: '~9{{<(X"pnX}u`@:'

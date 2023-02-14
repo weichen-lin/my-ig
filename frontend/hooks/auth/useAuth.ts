@@ -9,7 +9,7 @@ export default function useAuth() {
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken')
     if (!accessToken) {
-      // Router.push('/login')
+      Router.push('/login')
       return
     }
     axios

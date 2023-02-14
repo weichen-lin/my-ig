@@ -16,7 +16,7 @@ export default function LayoutAuth({ children }: LayoutProps) {
         </div>
         <Search />
       </div>
-      {true ? (
+      {isAuth ? (
         children
       ) : (
         <div className='flex-1'>

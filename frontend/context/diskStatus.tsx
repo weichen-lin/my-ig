@@ -5,7 +5,7 @@ export interface DiskStatus {
   endDate: Date | null
   searchValue: string
   isFetching: boolean
-  current_folder: string
+  current_folder: string[]
 }
 
 const start = new Date()
@@ -18,6 +18,6 @@ export const diskStatusInitState = atom<DiskStatus>({
     endDate: end,
     searchValue: '',
     isFetching: true,
-    current_folder: ''
+    current_folder: []
   }
 })

@@ -10,9 +10,6 @@ router.use(express.json())
 
 router.get('/', async (req, res) => {
   const { startDate, endDate, current_folder } = req.query
-  console.log('router /folders ')
-
-  console.log(startDate, endDate, current_folder)
 
   const folders = await FolderCRUD.find(
     res.locals.user_id,

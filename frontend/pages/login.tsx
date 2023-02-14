@@ -43,7 +43,7 @@ export default function LoginPage() {
         />
         <AuthButton
           label='Login'
-          isRequest={isRequest}
+          isRequest={isRequest || isSuccess}
           onClick={() => {
             handleLogin(loginInfo)
           }}

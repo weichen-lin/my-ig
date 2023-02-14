@@ -26,7 +26,7 @@ export default function Files(
 
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
-      {files.map((e) => (
+      {files?.map((e) => (
         <FileElement
           id={e.id}
           listMethod={listMethod}

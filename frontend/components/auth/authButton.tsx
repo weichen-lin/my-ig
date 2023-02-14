@@ -20,10 +20,10 @@ export default function AuthButton(props: ButtonProps) {
         )}
         onClick={onClick}
       >
-        <span className={`mr-2 ${isRequest ? 'hidden' : ''}`}>{label}</span>
+        <span className={`${isRequest ? 'hidden' : ''}`}>{label}</span>
         <LoadingIcon
           className={`h-6 w-6 animate-spin transition-opacity ease-out duration-200 ${
-            isRequest ? 'opacity-100' : 'opacity-0'
+            isRequest ? 'block' : 'hidden'
           }`}
         />
       </button>

@@ -36,7 +36,7 @@ export default function useDisk() {
         `${APIS.FOLDER}?${new URLSearchParams({
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString(),
-          current_folder: diskStatus.current_folder
+          current_folder: diskStatus_copy.current_folder.pop() ?? ''
         })}`
       )
       .then((res) => setDiskData((prev) => ({ ...prev, folders: res.data })))

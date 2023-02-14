@@ -9,14 +9,14 @@ export default function useUpdateDisk() {
 
   const getFolders = (startDate: Date, endDate: Date) => {
     const { current_folder } = diskStatus
-    console.log({ startDate, endDate, current_folder })
+    const current_folder_to_api = current_folder.pop() ?? ''
 
     fethcher
       .get(
         `${APIS.FOLDER}?${new URLSearchParams({
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString(),
-          current_folder
+          current_folder: current_folder_to_api
         })}`
       )
       .then((e) => console.log(e))
