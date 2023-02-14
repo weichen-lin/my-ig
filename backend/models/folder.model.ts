@@ -83,9 +83,6 @@ const findFolder = async (
   return await Folder.findAll({
     where: {
       user_uuid: user_uuid,
-      createdAt: {
-        [Op.between]: [startDate, endDate]
-      },
       locate_at: current_folder
     }
   })

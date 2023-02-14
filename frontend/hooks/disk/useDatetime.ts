@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useClickOutside } from 'hooks/utils'
-import { diskStatusInitState } from 'context/diskStatus'
+import { diskStatusInitState } from 'context'
 import { useRecoilState } from 'recoil'
 
 export default function useDatetime() {

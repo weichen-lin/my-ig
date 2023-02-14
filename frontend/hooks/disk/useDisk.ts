@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ListMethod } from './type'
-import { diskInitState } from 'context/diskData'
+import { diskInitState, diskStatusInitState } from 'context'
 import { useRecoilState } from 'recoil'
-import { diskStatusInitState } from 'context/diskStatus'
 import fethcher from 'api/fetcher'
 import { APIS } from 'api/apis'
 type listMethodState = 0 | 1

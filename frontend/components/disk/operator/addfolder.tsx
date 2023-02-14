@@ -5,7 +5,11 @@ import type { useOperatorInterface } from 'hooks/disk'
 
 type addFolderPageProps = Omit<
   useOperatorInterface,
-  'operatorOpen' | 'toogleOperatorOpen' | 'handleFileUpload'
+  | 'operatorOpen'
+  | 'toogleOperatorOpen'
+  | 'handleFileUpload'
+  | 'uploader'
+  | 'handleUploaderClose'
 >
 
 export default function AddFolderPage(props: addFolderPageProps) {

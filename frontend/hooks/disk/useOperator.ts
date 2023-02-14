@@ -2,8 +2,9 @@ import { useState, ChangeEvent } from 'react'
 import fethcher from 'api/fetcher'
 import { APIS } from 'api/apis'
 import { FolderResponse, FolderStatus } from 'api/errors'
-import { useRecoilState } from 'recoil'
-import { diskInitState } from 'context/diskData'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { diskInitState, diskStatusInitState } from 'context'
+import { FileUploadStatus } from 'components/disk/uploadTask/task'
 
 export type UploadType = 'FileOnly' | 'FilesInFolder'
 
@@ -17,11 +18,23 @@ export interface useOperatorInterface {
   folderName: string
   handleFolderName: (e: ChangeEvent<HTMLInputElement>) => void
   errorMsg: string
-  handleFileUpload: (type: UploadType) => void
+  handleFileUpload: () => void
+  uploader: Uploader
+  handleUploaderClose: () => void
+}
+
+export interface Uploader {
+  isOpen: boolean
+  uploadfiles: Map<string, number>
 }
 
 export default function useOperator() {
   const [, setDiskData] = useRecoilState(diskInitState)
+  const diskStatus = useRecoilValue(diskStatusInitState)
+  const [uploader, setUploader] = useState<Uploader>({
+    isOpen: false,
+    uploadfiles: new Map()
+  })
   const [creatFolderOpen, setCreateFolderOpen] = useState(false)
   const [operatorOpen, setOperatorOpen] = useState(false)
   const [isRequesting, setIsRequesting] = useState(false)
@@ -33,6 +46,7 @@ export default function useOperator() {
     setErrorMsg('')
     setCreateFolderOpen((prev) => !prev)
   }
+
   const toogleOperatorOpen = () => {
     setOperatorOpen((prev) => !prev)
   }
@@ -74,12 +88,26 @@ export default function useOperator() {
     setFolderName(e.target.value)
   }
 
-  const handleFileUpload = async (type: UploadType) => {
+  const handleFileUpload = async () => {
+    const diskStatus_copy = JSON.parse(JSON.stringify(diskStatus))
+
     try {
+      setUploader((prev) => ({
+        ...prev,
+        isOpen: true
+      }))
       const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
-      const AllContents = await Promise.all(
+      await Promise.all(
         FileHandlers.map(async (filehandle, index) => {
           const file = await filehandle.getFile()
+          setUploader((prev) => ({
+            ...prev,
+            uploadfiles: new Map(
+              Array.from(
+                prev.uploadfiles.set(file.name, FileUploadStatus.LOADING)
+              )
+            )
+          }))
           const imgReader = new FileReader()
           imgReader.readAsDataURL(file)
           imgReader.onloadend = () => {
@@ -88,20 +116,24 @@ export default function useOperator() {
             img.onload = () => {
               const formData = new FormData()
               formData.append('myfile', file, file.name)
+              formData.append(
+                'current_folder',
+                diskStatus_copy.current_folder.pop() ?? ''
+              )
               fethcher
                 .post(APIS.FILE, formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
                   }
                 })
-                .then((res) =>
+                .then((res) => {
                   setDiskData((prev) => ({
                     ...prev,
                     files: [
                       ...prev.files,
                       {
                         name: file.name,
-                        url: res.data.url,
+                        url: res?.data?.url,
                         last_modified_at: '',
                         index: index + 1,
                         id: Math.random(),
@@ -109,8 +141,28 @@ export default function useOperator() {
                       }
                     ]
                   }))
+                  setUploader((prev) => ({
+                    ...prev,
+                    uploadfiles: new Map(
+                      Array.from(
+                        prev.uploadfiles.set(
+                          file.name,
+                          FileUploadStatus.SUCCESS
+                        )
+                      )
+                    )
+                  }))
+                })
+                .catch(() =>
+                  setUploader((prev) => ({
+                    ...prev,
+                    uploadfiles: new Map(
+                      Array.from(
+                        prev.uploadfiles.set(file.name, FileUploadStatus.FAILED)
+                      )
+                    )
+                  }))
                 )
-                .catch((e) => console.log(e))
             }
             img.onerror = () => {
               console.log('this is not an image')
@@ -127,6 +179,10 @@ export default function useOperator() {
     }
   }
 
+  const handleUploaderClose = () => {
+    setUploader((prev) => ({ ...prev, isOpen: false }))
+  }
+
   return {
     creatFolderOpen,
     operatorOpen,
@@ -137,6 +193,8 @@ export default function useOperator() {
     folderName,
     handleFolderName,
     errorMsg,
-    handleFileUpload
+    handleFileUpload,
+    uploader,
+    handleUploaderClose
   }
 }

@@ -12,3 +12,5 @@ export interface FolderData {
   last_modified_at: string
   id: number
 }
+
+export type UploadingFiles = Map<string, number>

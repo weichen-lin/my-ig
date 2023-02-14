@@ -4,10 +4,9 @@ import Option from 'components/disk/operator/option'
 import { UploadFile, AddFolder } from 'public/icon/disk'
 import type { useOperatorInterface } from 'hooks/disk'
 import AddFolderPage from './addfolder'
-import { ArrowNoLineIcon } from 'public/icon/disk'
 
 export default function Operator(props: {
-  operatorProps: useOperatorInterface
+  operatorProps: Omit<useOperatorInterface, 'uploadFiles'>
   isScrollDown: boolean
 }) {
   const { operatorProps, isScrollDown } = props
@@ -60,9 +59,7 @@ export default function Operator(props: {
             operatorOpen={operatorOpen}
             angle={''}
             icon={<UploadFile className='w-1/2 h-1/2 m-[25%]' />}
-            onClick={() => {
-              handleFileUpload('FileOnly')
-            }}
+            onClick={handleFileUpload}
           />
           <Option
             operatorOpen={operatorOpen}
@@ -70,9 +67,7 @@ export default function Operator(props: {
             icon={
               <UploadFolder className='w-1/2 h-1/2 m-[25%] -rotate-[45deg]' />
             }
-            onClick={() => {
-              handleFileUpload('FilesInFolder')
-            }}
+            onClick={handleFileUpload}
           />
           <Option
             operatorOpen={operatorOpen}

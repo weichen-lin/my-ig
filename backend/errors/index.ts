@@ -23,7 +23,7 @@ export enum Folder_CRUD_STATUS {
 }
 
 export enum File_CRUD_STATUS {
+  FILE_NAME_DUPLICATED,
   SUCCESS,
-  FILE_NO_NAME,
-  MAKE_PUBLUC_ERROR
+  FAILED
 }

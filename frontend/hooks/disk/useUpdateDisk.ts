@@ -1,6 +1,6 @@
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { diskStatusInitState } from 'context/diskStatus'
-import { diskInitState } from 'context/diskData'
+import { diskStatusInitState } from 'context'
+import { diskInitState } from 'context'
 import fethcher from 'api/fetcher'
 import { APIS } from 'api/apis'
 export default function useUpdateDisk() {
