@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react'
 import { ListMethod } from './type'
-import { diskInitState, diskStatusInitState } from 'context'
+import { diskStatusInitState, diskInitState } from 'context'
 import { useRecoilState } from 'recoil'
 import fethcher from 'api/fetcher'
 import { APIS } from 'api/apis'
+
 type listMethodState = 0 | 1
 
 export default function useDisk() {
   const [listMethod, setListMethod] = useState<listMethodState>(
     ListMethod.Lattice
   )
-  const [diskData, setDiskData] = useRecoilState(diskInitState)
   const [diskStatus, setDiskStatus] = useRecoilState(diskStatusInitState)
+  const [diskData, setDiskData] = useRecoilState(diskInitState)
+  const diskStatus_copy = JSON.parse(JSON.stringify(diskStatus))
+  const [isFetching, setIsFetching] = useState(false)
+
+  const queryParams = {
+    current_folder: diskStatus_copy.current_folder.pop() ?? ''
+  }
 
   const handleListMethod = () => {
     if (listMethod === ListMethod.Lattice) {
@@ -21,33 +28,36 @@ export default function useDisk() {
     }
   }
 
+  const handleCurrentFolder = (e: string) => {
+    const index = diskStatus.current_folder.indexOf(e)
+    const new_current_folder = diskStatus.current_folder.slice(0, index + 1)
+    setDiskStatus((prev) => ({ ...prev, current_folder: new_current_folder }))
+  }
+
   useEffect(() => {
-    const diskStatus_copy = JSON.parse(JSON.stringify(diskStatus))
-
-    const startDate = new Date(diskStatus_copy.startDate)
-    const endDate = new Date(diskStatus_copy.endDate) || new Date()
-
-    startDate.setUTCHours(0, 0, 0, 0)
-    endDate.setUTCHours(23, 59, 59, 999)
-
+    setIsFetching(true)
     fethcher
-      .get(
-        `${APIS.FOLDER}?${new URLSearchParams({
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-          current_folder: diskStatus_copy.current_folder.pop() ?? ''
-        })}`
-      )
-      .then((res) => setDiskData((prev) => ({ ...prev, folders: res.data })))
-      .catch((err) => console.log(err))
-
-    setDiskStatus((prev) => ({ ...prev, isFetching: false }))
-  }, [])
+      .get(`${APIS.DISK}?${new URLSearchParams(queryParams)}`)
+      .then((res) => {
+        const data = res.data
+        setDiskData((prev) => ({
+          ...prev,
+          folders: data.folders,
+          files: data.files
+        }))
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    setIsFetching(false)
+  }, [diskStatus.current_folder])
 
   return {
     listMethod,
     handleListMethod,
     diskData,
-    isFetching: diskStatus.isFetching
+    isFetching,
+    current_folder: diskStatus.current_folder,
+    handleCurrentFolder
   }
 }

@@ -8,28 +8,9 @@ const router = express.Router()
 router.use(auth_bearer_middleware)
 router.use(express.json())
 
-router.get('/', async (req, res) => {
-  const { startDate, endDate, current_folder } = req.query
-
-  const folders = await FolderCRUD.find(
-    res.locals.user_id,
-    [startDate as string, endDate as string],
-    current_folder as string
-  )
-
-  res.status(200).json(
-    folders.map((e) => {
-      return {
-        id: e.dataValues.folder_uuid,
-        name: e.dataValues.folder_name,
-        last_modified_at: e.dataValues.updatedAt
-      }
-    })
-  )
-})
-
 router.post('/', async (req, res) => {
   const { folder_name, current_folder } = req.body
+  console.log({ folder_name, current_folder })
 
   const user_id = res.locals.user_id
 
@@ -39,16 +20,33 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    let id: string
+    let status: Folder_CRUD_STATUS
+
     const createSignal = await FolderCRUD.create(
       user_id,
       folder_name,
       current_folder
     )
 
-    if (createSignal === Folder_CRUD_STATUS.SUCCESS) {
-      res.status(200).send({ status: createSignal })
+    id = createSignal.id
+    status = createSignal.status
+
+    while (createSignal.status === Folder_CRUD_STATUS.FOLDER_ID_DUPLICATED) {
+      const createSignal = await FolderCRUD.create(
+        user_id,
+        folder_name,
+        current_folder
+      )
+
+      id = createSignal.id
+      status = createSignal.status
+    }
+
+    if (status === Folder_CRUD_STATUS.SUCCESS) {
+      res.status(200).send({ status, id })
     } else {
-      res.status(401).send({ status: createSignal })
+      res.status(401).send({ status, id })
     }
   } catch {
     res.status(400).json({ error: Folder_CRUD_STATUS.UNKNOWN_ERROR })

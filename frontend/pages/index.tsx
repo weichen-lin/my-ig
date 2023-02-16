@@ -18,7 +18,15 @@ import { useScroll } from 'hooks/utils'
 import { Loading } from 'components/utils'
 
 export default function DiskPage() {
-  const { listMethod, handleListMethod, diskData, isFetching } = useDisk()
+  const {
+    listMethod,
+    handleListMethod,
+    isFetching,
+    diskData,
+    current_folder,
+    handleCurrentFolder
+  } = useDisk()
+
   const { root, selected, dragged } = useGdrive()
   const {
     isOpen: ImageDisplayOpen,
@@ -40,12 +48,10 @@ export default function DiskPage() {
         listMethod={listMethod}
         handleListMethod={handleListMethod}
         customDatePickerProps={customDatePickerProps}
+        current_folder={current_folder}
+        handleCurrentFolder={handleCurrentFolder}
       />
-      <div
-        className='grow overflow-y-auto'
-        ref={root}
-        onScroll={handleOnScroll}
-      >
+      <div className='overflow-y-auto' ref={root} onScroll={handleOnScroll}>
         {isFetching ? (
           <div className='flex items-center justify-center w-full h-full'>
             <Loading />
@@ -56,7 +62,7 @@ export default function DiskPage() {
             selected={selected}
             dragged={dragged}
             handleImageDisplay={handleImageDisplay}
-            data={diskData}
+            data={diskData ?? { files: [], folders: [] }}
           />
         )}
       </div>
@@ -66,7 +72,7 @@ export default function DiskPage() {
         handleUploaderClose={operatorProps.handleUploaderClose}
       />
       <ImagePlayground
-        data={diskData.files}
+        data={diskData?.files ?? []}
         isOpen={ImageDisplayOpen}
         currentIndex={currentIndex}
         handleEscape={handleEscape}

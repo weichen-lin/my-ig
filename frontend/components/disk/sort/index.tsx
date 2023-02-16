@@ -10,20 +10,27 @@ interface SortProps {
   listMethod: number
   handleListMethod: () => void
   customDatePickerProps: DateTimePickerProps
+  current_folder: string[]
+  handleCurrentFolder: (e: string) => void
 }
 
 const BreadCrumb = (props: {
   folderName: string
   isLastOne: boolean
   needTruncate: boolean
+  handleCurrentFolder: (e: string) => void
 }) => {
-  const { folderName, isLastOne, needTruncate } = props
+  const { folderName, isLastOne, needTruncate, handleCurrentFolder } = props
   return (
-    <div className={clsx('text-gray-500 flex')}>
+    <div className='text-gray-500 flex hover:cursor-pointer flex-1'>
       <span
         className={`${
-          needTruncate ? 'truncate w-12' : ''
-        } hover:bg-slate-200 px-2 rounded-lg h-7 mt-[6px] leading-7 p-[1px]`}
+          needTruncate ? 'max-w-[160px]' : 'max-w-[200px] xs:max-w-[300px]'
+        } hover:bg-slate-200 px-2 rounded-lg h-7 mt-[6px] leading-7 p-[1px] truncate`}
+        onClick={() => {
+          if (isLastOne) return
+          handleCurrentFolder(folderName)
+        }}
       >
         {folderName}
       </span>
@@ -39,13 +46,19 @@ const BreadCrumb = (props: {
 }
 
 export default function Sort(props: SortProps) {
-  const { listMethod, handleListMethod, customDatePickerProps } = props
+  const {
+    listMethod,
+    handleListMethod,
+    customDatePickerProps,
+    current_folder,
+    handleCurrentFolder
+  } = props
 
-  const current_folder: string[] = ['第一層', '第二層', '第三層']
+  const current_folder_copy = [...current_folder]
 
   return (
     <div
-      className={clsx('w-[90%] mx-auto flex justify-around flex-wrap', 'my-1')}
+      className={clsx('w-[90%] mx-auto flex justify-around flex-wrap', 'mt-1')}
     >
       <div className='flex rounded-md hover:bg-slate-200'>
         <span className='pl-1 py-[2px] text-sm xs:text-lg'>排序</span>
@@ -80,38 +93,41 @@ export default function Sort(props: SortProps) {
       </div>
       <div
         className={clsx(
-          'w-full mt-2 pt-2 pb-1 md:pt-0 md:pb-0 text-lg text-gray-500 border-b-2 md:border-t-2 px-2 flex',
-          `${current_folder.length > 0 ? '' : 'hidden md:block'}`
+          'w-full mt-2 pt-2 pb-1 md:pt-0 md:pb-[6px] text-lg text-gray-500 border-b-2 md:border-t-2 px-2 flex overflow-x-auto',
+          `${current_folder_copy.length > 0 ? '' : 'hidden md:block'}`
         )}
       >
         <span className='hidden md:block'>
           <BreadCrumb
             folderName='My Kushare'
-            isLastOne={current_folder.length === 0}
+            isLastOne={current_folder_copy.length === 0}
             needTruncate={false}
+            handleCurrentFolder={handleCurrentFolder}
           />
         </span>
         <span className='hidden md:flex'>
-          {current_folder.map((e, index) => (
+          {current_folder_copy.map((e, index) => (
             <BreadCrumb
               folderName={e}
-              isLastOne={index === current_folder.length - 1}
-              needTruncate={index !== current_folder.length - 1}
+              isLastOne={index === current_folder_copy.length - 1}
+              needTruncate={index !== current_folder_copy.length - 1}
               key={`BreadCrumb_${index}`}
+              handleCurrentFolder={handleCurrentFolder}
             ></BreadCrumb>
           ))}
         </span>
         <span className='block md:hidden'>
-          {current_folder.length > 0 ? (
+          {current_folder_copy.length > 0 ? (
             <span className='flex'>
               <ArrowNoLineIcon
                 className={clsx('w-6 h-6 my-2 ml-1 mr-2 rotate-180')}
                 fill={'gray'}
               />
               <BreadCrumb
-                folderName={current_folder.pop() ?? 'My Kushare'}
+                folderName={current_folder_copy?.pop() ?? 'My Kushare'}
                 isLastOne={true}
                 needTruncate={false}
+                handleCurrentFolder={handleCurrentFolder}
               ></BreadCrumb>
             </span>
           ) : (

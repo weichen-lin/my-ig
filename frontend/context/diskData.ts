@@ -71,7 +71,7 @@ export interface DiskDataInterface {
 export const diskInitState = atom<DiskDataInterface>({
   key: 'diskData',
   default: {
-    folders: fakeFolder,
-    files: fakeFile
+    folders: [],
+    files: []
   }
 })

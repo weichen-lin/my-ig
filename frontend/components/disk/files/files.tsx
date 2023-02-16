@@ -9,17 +9,16 @@ import { useImageDisplay } from 'hooks/disk'
 import { FileData } from 'context/type'
 
 export interface FileProps extends FormatProp {
-  id: number
+  id: string
   imgUrl: string | undefined
   fileName: string
-  index: number
-  handleImageDisplay: (e: number) => void
+  handleImageDisplay: (e: string) => void
 }
 
 export default function Files(
   props: FormatProp & {
     files: FileData[]
-    handleImageDisplay: (e: number) => void
+    handleImageDisplay: (e: string) => void
   }
 ) {
   const { listMethod, files, handleImageDisplay } = props
@@ -35,7 +34,6 @@ export default function Files(
           key={`file_index_${e.id}`}
           // selected={selected.has(`selectable-${e.id}`)}
           // dragged={dragged.has(`selectable-${e.id}`)}
-          index={e.index}
           handleImageDisplay={handleImageDisplay}
         />
       ))}
@@ -51,7 +49,6 @@ export function FileElement(props: FileProps) {
     fileName,
     // selected,
     // dragged,
-    index,
     handleImageDisplay
   } = props
 
@@ -68,7 +65,7 @@ export function FileElement(props: FileProps) {
         // `${dragged ? 'opacity-70' : 'opacity-100'}`,
         `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
-      onDoubleClick={() => handleImageDisplay(index - 1)}
+      onDoubleClick={() => handleImageDisplay(id)}
     >
       <div
         className={clsx(
@@ -82,7 +79,7 @@ export function FileElement(props: FileProps) {
       >
         <div
           className={clsx(
-            'overflow-hidden bg-yellow-200',
+            'overflow-hidden',
             `${
               listMethod === ListMethod.Lattice
                 ? 'rounded-t-lg h-full'

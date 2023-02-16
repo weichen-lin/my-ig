@@ -2,8 +2,7 @@ export interface FileData {
   name: string
   url: string
   last_modified_at: string
-  index: number
-  id: number
+  id: string
   tags: string[]
 }
 

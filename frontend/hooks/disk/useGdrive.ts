@@ -96,7 +96,7 @@ export default function useGdrive() {
         iconPositionX: 200
       }
     })
-    return () => selection.destroy()
+    return () => selection?.destroy()
   }, [])
 
   return { root, selected, dragged }

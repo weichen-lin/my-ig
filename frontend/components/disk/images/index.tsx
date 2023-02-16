@@ -3,7 +3,6 @@ import { ImageArrow } from 'public/icon/disk'
 
 import clsx from 'clsx'
 import { Cancel } from 'public/icon/disk'
-import { useImageDisplay } from 'hooks/disk'
 import { Dispatch, SetStateAction } from 'react'
 import { FileData } from 'context/type'
 
@@ -23,7 +22,6 @@ interface ImagePlaygroundProps {
 
 export default function ImagePlayground(props: ImagePlaygroundProps) {
   const { isOpen, currentIndex, handleEscape, setCurrentIndex, data } = props
-
   return (
     <div
       className={clsx(

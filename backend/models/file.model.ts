@@ -38,26 +38,34 @@ const createFile = async (
   file_name: string,
   current_folder: string | null,
   file_url: string
-) => {
+): Promise<{ status: File_CRUD_STATUS; uuid: string }> => {
   // make sure uuid is unique
   const new_file_uuid = uuidv4()
-  const uuidChecker = await File.findOne({
-    where: { file_uuid: new_file_uuid }
-  })
-  if (uuidChecker) {
-    createFile(user_uuid, file_name, current_folder, file_url)
-    return
+  try {
+    const uuidChecker = await File.findOne({
+      where: { file_uuid: new_file_uuid }
+    })
+    if (uuidChecker) {
+      return { status: File_CRUD_STATUS.FILE_ID_DUPLICATED, uuid: '' }
+    }
+  } catch {
+    return { status: File_CRUD_STATUS.FAILED, uuid: '' }
   }
 
   // check file name unique
-  const fileNameChecker = await File.findOne({
-    where: {
-      file_name: file_name,
-      user_uuid: user_uuid
-    }
-  })
-
-  if (fileNameChecker) return File_CRUD_STATUS.FILE_NAME_DUPLICATED
+  try {
+    const fileNameChecker = await File.findOne({
+      where: {
+        file_name: file_name,
+        user_uuid: user_uuid,
+        locate_at: current_folder
+      }
+    })
+    if (fileNameChecker)
+      return { status: File_CRUD_STATUS.FILE_NAME_DUPLICATED, uuid: '' }
+  } catch {
+    return { status: File_CRUD_STATUS.FAILED, uuid: '' }
+  }
 
   try {
     await File.create({
@@ -67,21 +75,32 @@ const createFile = async (
       user_uuid: user_uuid,
       file_url: file_url
     })
-    return File_CRUD_STATUS.SUCCESS
-  } catch (e: any) {
-    if (e?.name === 'SequelizeDatabaseError' && e?.parent?.code === '22001') {
-      return File_CRUD_STATUS.FAILED
-    }
-
-    return File_CRUD_STATUS.FAILED
+    return { status: File_CRUD_STATUS.SUCCESS, uuid: new_file_uuid }
+  } catch {
+    return { status: File_CRUD_STATUS.FAILED, uuid: '' }
   }
 }
 
-const findFile = async (file_name: string, user_uuid: string) => {
+const findFiles = async (user_uuid: string, locate_at: string) => {
+  return await File.findAll({
+    where: {
+      user_uuid: user_uuid,
+      locate_at: locate_at
+    }
+  })
+}
+
+const checkFileExist = async (
+  user_uuid: string,
+  file_name: string,
+  locate_at: string
+) => {
+  console.log(user_uuid, file_name, locate_at)
   return await File.findOne({
     where: {
+      user_uuid: user_uuid,
       file_name: file_name,
-      user_uuid: user_uuid
+      locate_at: locate_at
     }
   })
 }
@@ -89,6 +108,7 @@ const findFile = async (file_name: string, user_uuid: string) => {
 export const FileCRUD = {
   create: createFile,
   delete: () => {},
-  find: findFile,
+  find: findFiles,
+  check: checkFileExist,
   update: () => {}
 }

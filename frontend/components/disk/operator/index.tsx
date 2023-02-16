@@ -49,8 +49,8 @@ export default function Operator(props: {
         </div>
         <ul
           className={clsx(
-            'absolute bottom-[19.5%] right-[165%] md:right-[178%] 2xl:right-[170%] w-full h-full',
-            'md:right-[70%] md:bottom-[30%]',
+            'absolute w-full h-full',
+            'bottom-[15%] right-[165%] md:right-[178%] md:bottom-[15%] 2xl:right-[170%] ',
             'transition-all duration-300 ease-out',
             `${operatorOpen ? 'opacity-100' : 'opacity-0'}`
           )}

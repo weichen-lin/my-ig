@@ -3,6 +3,8 @@ import { FolderIcon } from 'public/icon/disk'
 import { FormatProp, SelectionValue } from 'hooks/disk/type'
 import { ListMethod } from 'hooks/disk/type'
 import { FolderData } from 'context/type'
+import { diskStatusInitState } from 'context'
+import { useRecoilState } from 'recoil'
 
 interface FolderProps extends FormatProp {
   id: number
@@ -11,6 +13,7 @@ interface FolderProps extends FormatProp {
 
 export default function Folders(props: FormatProp & { folders: FolderData[] }) {
   const { listMethod, folders } = props
+
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
       {folders?.map((e) => (
@@ -29,6 +32,7 @@ export default function Folders(props: FormatProp & { folders: FolderData[] }) {
 
 function FolderElement(props: FolderProps) {
   const { id, listMethod, folderName } = props
+  const [diskStatus, setDiskStatus] = useRecoilState(diskStatusInitState)
 
   return (
     <div
@@ -43,6 +47,12 @@ function FolderElement(props: FolderProps) {
         // `${dragged ? 'opacity-70' : 'opacity-100'}`,
         `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
+      onDoubleClick={() => {
+        setDiskStatus((prev) => ({
+          ...prev,
+          current_folder: [...prev.current_folder, folderName]
+        }))
+      }}
     >
       <div className='flex'>
         <FolderIcon

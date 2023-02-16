@@ -26,7 +26,7 @@ export default function useAuth() {
       })
       .catch(() => {
         localStorage.removeItem('accessToken')
-        // Router.push('/login')
+        Router.push('/login')
       })
   }, [])
 

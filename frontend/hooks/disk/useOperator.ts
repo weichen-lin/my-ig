@@ -31,6 +31,8 @@ export interface Uploader {
 export default function useOperator() {
   const [, setDiskData] = useRecoilState(diskInitState)
   const diskStatus = useRecoilValue(diskStatusInitState)
+  const diskStatus_copy = JSON.parse(JSON.stringify(diskStatus))
+
   const [uploader, setUploader] = useState<Uploader>({
     isOpen: false,
     uploadfiles: new Map()
@@ -53,9 +55,10 @@ export default function useOperator() {
 
   const createFolder = (folder_name: string) => {
     setIsRequesting(true)
+    const current_folder = diskStatus_copy.current_folder.pop() ?? ''
 
     fethcher
-      .post(APIS.FOLDER, { folder_name, test: new Date() })
+      .post(APIS.FOLDER, { folder_name, current_folder })
       .then((res) => {
         if (res.status === 200) {
           setErrorMsg('')
@@ -66,7 +69,7 @@ export default function useOperator() {
             folders: [
               ...prev.folders,
               {
-                id: 0,
+                id: res.data.id,
                 name: folderName,
                 last_modified_at: '2022/12/10'
               }
@@ -89,14 +92,12 @@ export default function useOperator() {
   }
 
   const handleFileUpload = async () => {
-    const diskStatus_copy = JSON.parse(JSON.stringify(diskStatus))
-
     try {
+      const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
       setUploader((prev) => ({
         ...prev,
         isOpen: true
       }))
-      const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
       await Promise.all(
         FileHandlers.map(async (filehandle, index) => {
           const file = await filehandle.getFile()
@@ -135,8 +136,7 @@ export default function useOperator() {
                         name: file.name,
                         url: res?.data?.url,
                         last_modified_at: '',
-                        index: index + 1,
-                        id: Math.random(),
+                        id: res?.data?.id,
                         tags: ['']
                       }
                     ]

@@ -12,23 +12,26 @@ router.use(auth_bearer_middleware)
 router.use(express.urlencoded({ extended: true }))
 router.use(multer().single('myfile'))
 
-router.get('/', (req, res) => {
-  res.send('get requeset from router drive')
-})
-
 router.post('/', async (req, res) => {
   const file_name = req.file?.originalname
   const current_folder = req.body?.current_folder ?? ''
-
+  console.log(file_name, current_folder)
   if (!file_name) {
     return res.status(400).json({ status: File_CRUD_STATUS.FAILED })
   }
 
   const user_id = res.locals.user_id
-  const file_name_checker = await FileCRUD.find(file_name, user_id)
+  const file_name_checker = await FileCRUD.check(
+    user_id,
+    file_name,
+    current_folder
+  )
 
-  if (file_name_checker)
-    return res.status(500).send({ status: File_CRUD_STATUS.FAILED })
+  if (file_name_checker) {
+    return res
+      .status(402)
+      .send({ status: File_CRUD_STATUS.FILE_NAME_DUPLICATED })
+  }
 
   const bucket = storage.bucket('myigbucket')
 
@@ -36,6 +39,9 @@ router.post('/', async (req, res) => {
     `${Date.now().toString()}_${file_name}`,
     'latin1'
   ).toString('utf8')}`
+
+  const file_name_utf8 = `${Buffer.from(file_name, 'latin1').toString('utf8')}`
+
   const blob = bucket.file(`${user_id}/${publicfile_name}`)
   const blobStream = blob.createWriteStream({
     resumable: false
@@ -49,18 +55,48 @@ router.post('/', async (req, res) => {
     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
     try {
       await bucket.file(blob.name).makePublic()
+      let status: File_CRUD_STATUS
+      let uuid: string
 
-      await FileCRUD.create(user_id, file_name, current_folder, publicUrl)
+      const { status: status_from_FileCRUD, uuid: uuid_from_FileCRUD } =
+        await FileCRUD.create(
+          user_id,
+          file_name_utf8,
+          current_folder,
+          publicUrl
+        )
+
+      status = status_from_FileCRUD
+      uuid = uuid_from_FileCRUD
+
+      while (status === File_CRUD_STATUS.FILE_ID_DUPLICATED) {
+        const { status: status_from_FileCRUD, uuid: uuid_from_FileCRUD } =
+          await FileCRUD.create(
+            user_id,
+            file_name_utf8,
+            current_folder,
+            publicUrl
+          )
+        status = status_from_FileCRUD
+        uuid = uuid_from_FileCRUD
+      }
+
+      if (status_from_FileCRUD === File_CRUD_STATUS.SUCCESS) {
+        res.status(200).send({
+          url: publicUrl,
+          status: status_from_FileCRUD,
+          id: uuid_from_FileCRUD
+        })
+      } else {
+        res.status(402).send({
+          status: status
+        })
+      }
     } catch {
       return res.status(500).send({
         status: File_CRUD_STATUS.FAILED
       })
     }
-
-    res.status(200).send({
-      url: publicUrl,
-      status: File_CRUD_STATUS.SUCCESS
-    })
   })
 
   blobStream.end(req.file?.buffer)

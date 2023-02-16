@@ -15,9 +15,9 @@ export default function UploadTasks(props: UploadTasksProps) {
       className={clsx(
         'fixed bottom-0 2xl:right-[15%] flex flex-col z-20',
         'w-full md:w-2/3 lg:w-2/5 md:ml-[5%] 2xl:ml-0 3xl:ml-[20%] max-w-[480px]',
-        'border-t-2 md:border-2',
-        'transition-all duration-300 ease-out',
-        `${uploader.isOpen ? 'h-[400px]' : 'h-0'}`
+        'border-t-2 border-b-0 xs:border-2 xs:border-b-0 border-slate-500',
+        'transition-all duration-300 ease-out bg-white',
+        `${uploader.isOpen ? 'h-[400px]' : 'h-0 xss:border-0'}`
       )}
     >
       <div className='w-full h-12 flex bg-slate-300 m-0'>
@@ -29,7 +29,7 @@ export default function UploadTasks(props: UploadTasksProps) {
       </div>
       <div className='overflow-y-auto flex-1 flex flex-col w-full'>
         {Array.from(uploader.uploadfiles).map(([fileName, status]) => (
-          <Task fileName={fileName} status={status} />
+          <Task fileName={fileName} status={status} key={`index_${fileName}`} />
         ))}
       </div>
     </div>

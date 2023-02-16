@@ -22,6 +22,7 @@ interface TaskProps {
 
 export default function Task(props: TaskProps) {
   const { fileName, status } = props
+
   return (
     <div className='h-12 w-full border-b-2 border-slate-100 flex bg-white'>
       <div className='flex-1 truncate py-3 px-4'>{fileName} </div>
