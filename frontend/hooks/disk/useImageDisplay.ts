@@ -47,6 +47,7 @@ export default function useImageDisplay() {
         }
       })
       .catch(() => console.log('tag is already got 5'))
+    setTag('')
   }
 
   const onEdit = (e: string) => {
