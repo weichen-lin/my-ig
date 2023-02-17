@@ -1,13 +1,15 @@
 import clsx from 'clsx'
 import Files from 'components/disk/files/files'
 import Folders from 'components/disk/files/folders'
-import { FormatProp, ListMethod, SelectionStringList } from 'hooks/disk'
+import { FormatProp, ListMethod, GdriveSelectTarget } from 'hooks/disk'
 import { DiskDataInterface } from 'context/'
 
-interface GdriveLikeDiskProps extends FormatProp, SelectionStringList {
+interface GdriveLikeDiskProps extends FormatProp {
   data: DiskDataInterface
   handleCurrentFolder: (e: string) => void
   handleImageDisplay: (e: string) => void
+  selected: GdriveSelectTarget
+  dragged: GdriveSelectTarget
 }
 
 export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
@@ -46,6 +48,8 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
         listMethod={listMethod}
         folders={folders}
         handleCurrentFolder={handleCurrentFolder}
+        selected={selected.folders}
+        dragged={dragged.folders}
       />
       <p
         className={clsx(
@@ -59,6 +63,8 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
         listMethod={listMethod}
         files={files}
         handleImageDisplay={handleImageDisplay}
+        selected={selected.files}
+        dragged={dragged.files}
       />
     </div>
   )

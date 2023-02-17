@@ -96,7 +96,6 @@ const checkFileExist = async (
   file_name: string,
   locate_at: string
 ) => {
-  console.log(user_uuid, file_name, locate_at)
   return await File.findOne({
     where: {
       user_uuid: user_uuid,
@@ -140,12 +139,10 @@ const updateTags = async (
 
   try {
     const tags = target_file.dataValues.tags ?? []
-    console.log(target_file.dataValues.file_uuid)
 
     if (tags.length >= 5) {
       return File_CRUD_STATUS.NO_MORE_TAGS
     }
-    console.log(`tags is `, tags)
 
     if (!tags.includes(tag)) {
       target_file.update(

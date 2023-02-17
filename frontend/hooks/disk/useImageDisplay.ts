@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { diskInitState } from 'context'
+import { diskInitState, diskStatusInitState } from 'context'
 import fetcher from 'api/fetcher'
 import { APIS } from 'api/apis'
 
@@ -8,6 +8,7 @@ export type ImageDisplayProps = ReturnType<typeof useImageDisplay>
 
 export default function useImageDisplay() {
   const [diskData, setDiskData] = useRecoilState(diskInitState)
+  const [, setDiskStatus] = useRecoilState(diskStatusInitState)
 
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -78,6 +79,7 @@ export default function useImageDisplay() {
   const handleEscape = () => {
     setIsOpen(false)
     setIsEdit(false)
+    setDiskStatus((prev) => ({ ...prev, canSelect: true }))
   }
 
   const handleImageDisplay = (id: string) => {
@@ -86,6 +88,7 @@ export default function useImageDisplay() {
     setCurrentIndex(index)
     setIsOpen(true)
     setText(diskData.files[index].description ?? '')
+    setDiskStatus((prev) => ({ ...prev, canSelect: false }))
   }
 
   const handleInfo = (index: number) => {

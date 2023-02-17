@@ -1,6 +1,6 @@
 import useDatetime, { DatetimeProps } from './useDatetime'
 import useDisk, { DiskProps } from './useDisk'
-import useGdrive from './useGdrive'
+import useGdrive, { GdriveSelectTarget } from './useGdrive'
 import useImageDisplay, { ImageDisplayProps } from './useImageDisplay'
 import useOperator, { OperatorProps, Uploader } from './useOperator'
 import {
@@ -19,5 +19,10 @@ export type {
   Uploader,
   ImageDisplayProps
 }
-export type { FormatProp, SelectionStringList, SelectionValue }
+export type {
+  FormatProp,
+  SelectionStringList,
+  SelectionValue,
+  GdriveSelectTarget
+}
 export { FileType, ListMethod }

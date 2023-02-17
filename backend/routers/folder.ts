@@ -10,7 +10,6 @@ router.use(express.json())
 
 router.post('/', async (req, res) => {
   const { folder_name, current_folder } = req.body
-  console.log({ folder_name, current_folder })
 
   const user_id = res.locals.user_id
 

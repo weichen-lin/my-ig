@@ -21,10 +21,7 @@ export default function DiskPage() {
   const { sortProps, diskProps } = useDisk()
   const { isFetching, diskData, handleCurrentFolder } = diskProps
 
-  const dragged: Set<string> = new Set()
-  const selected: Set<string> = new Set()
-
-  // const { root, selected, dragged } = useGdrive()
+  const { root, selected, dragged } = useGdrive()
 
   const { infoProps, tagProps } = useImageDisplay()
 
@@ -40,7 +37,7 @@ export default function DiskPage() {
         sortProps={sortProps}
         customDatePickerProps={customDatePickerProps}
       />
-      <div className='overflow-y-auto' onScroll={handleOnScroll}>
+      <div className='overflow-y-auto' onScroll={handleOnScroll} ref={root}>
         {isFetching ? (
           <div className='flex items-center justify-center w-full h-full'>
             <Loading />

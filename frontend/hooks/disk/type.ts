@@ -2,14 +2,19 @@ export interface FormatProp {
   listMethod: number
 }
 
+export interface GdriveSelectTarget {
+  folders: Set<string>
+  files: Set<string>
+}
+
 export interface SelectionStringList {
   selected: Set<string>
   dragged: Set<string>
 }
 
 export interface SelectionValue {
-  selected: boolean
-  dragged: boolean
+  isSelected: boolean
+  isDragged: boolean
 }
 
 export enum FileType {
