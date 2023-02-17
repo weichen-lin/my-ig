@@ -4,37 +4,32 @@ import {
   ListMethod,
   SelectionValue,
   SelectionStringList
-} from 'hooks/disk/type'
-import { useImageDisplay } from 'hooks/disk'
+} from 'hooks/disk'
 import { FileData } from 'context/type'
 
-export interface FileProps extends FormatProp {
-  id: string
-  imgUrl: string | undefined
-  fileName: string
+interface FilesProps extends FormatProp {
+  files: FileData[]
   handleImageDisplay: (e: string) => void
 }
 
-export default function Files(
-  props: FormatProp & {
-    files: FileData[]
-    handleImageDisplay: (e: string) => void
-  }
-) {
+interface FileProps extends FormatProp {
+  fileInfo: FileData
+  handleImageDisplay: (e: string) => void
+}
+
+export default function Files(props: FilesProps) {
   const { listMethod, files, handleImageDisplay } = props
 
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
       {files?.map((e) => (
         <FileElement
-          id={e.id}
           listMethod={listMethod}
-          fileName={e.name}
-          imgUrl={e.url}
-          key={`file_index_${e.id}`}
+          fileInfo={e}
           // selected={selected.has(`selectable-${e.id}`)}
           // dragged={dragged.has(`selectable-${e.id}`)}
           handleImageDisplay={handleImageDisplay}
+          key={`file_${e.id}`}
         />
       ))}
     </div>
@@ -42,15 +37,8 @@ export default function Files(
 }
 
 export function FileElement(props: FileProps) {
-  const {
-    id,
-    listMethod,
-    imgUrl,
-    fileName,
-    // selected,
-    // dragged,
-    handleImageDisplay
-  } = props
+  const { fileInfo, listMethod, handleImageDisplay } = props
+  const { id, url, name, last_modified_at } = fileInfo
 
   return (
     <div
@@ -93,7 +81,7 @@ export function FileElement(props: FileProps) {
                 ? 'min-h-[160px] min-w-full'
                 : 'h-full min-w-[24px] max-w-[24px]'
             }`}
-            src={imgUrl}
+            src={url}
             draggable={false}
           ></img>
         </div>
@@ -107,16 +95,21 @@ export function FileElement(props: FileProps) {
             }`
           )}
         >
-          {fileName}
+          {name}
         </div>
       </div>
       {listMethod === ListMethod.Lattice ? (
         <></>
       ) : (
         <div className='w-[400px] py-3 px-2 text-gray-400 text-right hidden md:block'>
-          2022年 12月 24日
+          {handleTime(last_modified_at)}
         </div>
       )}
     </div>
   )
+}
+
+const handleTime = (e: string) => {
+  const date = new Date(e) ?? new Date()
+  return `${date.getFullYear()}年 ${date.getMonth() + 1}月 ${date.getDate()}日`
 }

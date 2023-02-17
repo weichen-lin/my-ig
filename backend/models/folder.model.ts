@@ -87,7 +87,8 @@ const findFolder = async (user_uuid: string, current_folder: string) => {
     where: {
       user_uuid: user_uuid,
       locate_at: current_folder
-    }
+    },
+    order: [['updatedAt', 'DESC']]
   })
 }
 

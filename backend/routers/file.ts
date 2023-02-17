@@ -10,12 +10,12 @@ const router = express.Router()
 router.use(auth_bearer_middleware)
 // router.use()
 router.use(express.urlencoded({ extended: true }))
+router.use(express.json())
 router.use(multer().single('myfile'))
 
 router.post('/', async (req, res) => {
   const file_name = req.file?.originalname
   const current_folder = req.body?.current_folder ?? ''
-  console.log(file_name, current_folder)
   if (!file_name) {
     return res.status(400).json({ status: File_CRUD_STATUS.FAILED })
   }
@@ -100,6 +100,43 @@ router.post('/', async (req, res) => {
   })
 
   blobStream.end(req.file?.buffer)
+})
+
+router.patch('/description', async (req, res) => {
+  const { description, id } = req.body
+
+  const user_id = res.locals.user_id
+
+  if (!id) {
+    return res.status(400).json({ status: File_CRUD_STATUS.FAILED })
+  }
+
+  try {
+    FileCRUD.updateDesciption(user_id, id, description)
+    return res.status(200).json({ status: File_CRUD_STATUS.SUCCESS })
+  } catch {
+    return res.status(400).json({ status: File_CRUD_STATUS.FAILED })
+  }
+})
+
+router.patch('/tag', async (req, res) => {
+  const { tag, id } = req.body
+
+  const user_id = res.locals.user_id
+
+  if (!id) {
+    return res.status(400).json({ status: File_CRUD_STATUS.FAILED })
+  }
+
+  try {
+    const status = await FileCRUD.updateTags(user_id, id, tag)
+    if (status === File_CRUD_STATUS.SUCCESS) {
+      return res.status(200).json({ status: status })
+    }
+    return res.status(400).json({ status: status })
+  } catch {
+    return res.status(400).json({ status: File_CRUD_STATUS.FAILED })
+  }
 })
 
 export default router

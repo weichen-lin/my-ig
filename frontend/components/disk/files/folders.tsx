@@ -1,27 +1,29 @@
 import clsx from 'clsx'
 import { FolderIcon } from 'public/icon/disk'
-import { FormatProp, SelectionValue } from 'hooks/disk/type'
-import { ListMethod } from 'hooks/disk/type'
+import { FormatProp, SelectionValue, ListMethod } from 'hooks/disk'
 import { FolderData } from 'context/type'
-import { diskStatusInitState } from 'context'
-import { useRecoilState } from 'recoil'
 
-interface FolderProps extends FormatProp {
-  id: number
-  folderName: string
+interface FoldersProps extends FormatProp {
+  folders: FolderData[]
+  handleCurrentFolder: (e: string) => void
 }
 
-export default function Folders(props: FormatProp & { folders: FolderData[] }) {
-  const { listMethod, folders } = props
+interface FolderProps extends FormatProp {
+  folderInfo: FolderData
+  handleCurrentFolder: (e: string) => void
+}
+
+export default function Folders(props: FoldersProps) {
+  const { listMethod, folders, handleCurrentFolder } = props
 
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
       {folders?.map((e) => (
         <FolderElement
-          id={e.id}
+          folderInfo={e}
           listMethod={listMethod}
-          folderName={e.name}
           key={`folder_index_${e.id}`}
+          handleCurrentFolder={handleCurrentFolder}
           // selected={selected.has(`selectable-${e.id}`)}
           // dragged={dragged.has(`selectable-${e.id}`)}
         />
@@ -31,8 +33,8 @@ export default function Folders(props: FormatProp & { folders: FolderData[] }) {
 }
 
 function FolderElement(props: FolderProps) {
-  const { id, listMethod, folderName } = props
-  const [diskStatus, setDiskStatus] = useRecoilState(diskStatusInitState)
+  const { folderInfo, listMethod, handleCurrentFolder } = props
+  const { id, name, last_modified_at } = folderInfo
 
   return (
     <div
@@ -48,10 +50,7 @@ function FolderElement(props: FolderProps) {
         `${listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2'}`
       )}
       onDoubleClick={() => {
-        setDiskStatus((prev) => ({
-          ...prev,
-          current_folder: [...prev.current_folder, folderName]
-        }))
+        handleCurrentFolder(name)
       }}
     >
       <div className='flex'>
@@ -67,16 +66,21 @@ function FolderElement(props: FolderProps) {
             'max-w-[200px] xs:max-w-[140px] md:max-w-[180px] lg:max-w-[170px]'
           )}
         >
-          {folderName}
+          {name}
         </div>
       </div>
       {listMethod === ListMethod.Lattice ? (
         <></>
       ) : (
         <div className='w-[400px] py-3 px-2 text-gray-400 text-right hidden md:block'>
-          2022年 12月 24日
+          {handleTime(last_modified_at)}
         </div>
       )}
     </div>
   )
+}
+
+const handleTime = (e: string) => {
+  const date = new Date(e) ?? new Date()
+  return `${date.getFullYear()}年 ${date.getMonth() + 1}月 ${date.getDate()}日`
 }

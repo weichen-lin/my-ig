@@ -26,7 +26,9 @@ router.get('/', async (req, res) => {
       id: e.dataValues.file_uuid,
       name: e.dataValues.file_name,
       last_modified_at: e.dataValues.updatedAt,
-      url: e.dataValues.file_url
+      url: e.dataValues.file_url,
+      description: e.dataValues.description,
+      tags: e.dataValues.tags
     }))
   })
 })

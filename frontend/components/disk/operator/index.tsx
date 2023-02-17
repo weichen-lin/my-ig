@@ -2,26 +2,16 @@ import clsx from 'clsx'
 import { Plus, UploadFolder } from 'public/icon/disk'
 import Option from 'components/disk/operator/option'
 import { UploadFile, AddFolder } from 'public/icon/disk'
-import type { useOperatorInterface } from 'hooks/disk'
+import type { OperatorProps } from 'hooks/disk/useOperator'
 import AddFolderPage from './addfolder'
 
 export default function Operator(props: {
-  operatorProps: Omit<useOperatorInterface, 'uploadFiles'>
+  operatorProps: Omit<OperatorProps, 'uploadFiles'>
   isScrollDown: boolean
 }) {
   const { operatorProps, isScrollDown } = props
-  const {
-    creatFolderOpen,
-    operatorOpen,
-    toogleCreateFolder,
-    toogleOperatorOpen,
-    isRequesting,
-    createFolder,
-    folderName,
-    handleFolderName,
-    errorMsg,
-    handleFileUpload
-  } = operatorProps
+  const { addFolderProps, operatorOpen, toogleOperatorOpen, handleFileUpload } =
+    operatorProps
 
   return (
     <>
@@ -75,21 +65,13 @@ export default function Operator(props: {
             icon={<AddFolder className='w-1/2 h-1/2 m-[25%] -rotate-90' />}
             onClick={() => {
               if (operatorOpen) {
-                toogleCreateFolder()
+                addFolderProps.toogleCreateFolder()
               }
             }}
           />
         </ul>
       </div>
-      <AddFolderPage
-        creatFolderOpen={creatFolderOpen}
-        toogleCreateFolder={toogleCreateFolder}
-        isRequesting={isRequesting}
-        folderName={folderName}
-        handleFolderName={handleFolderName}
-        createFolder={createFolder}
-        errorMsg={errorMsg}
-      />
+      <AddFolderPage addFolderProps={addFolderProps} />
     </>
   )
 }

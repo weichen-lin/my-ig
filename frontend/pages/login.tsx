@@ -7,7 +7,7 @@ export default function LoginPage() {
   const {
     isRequest,
     loginInfo,
-    handleRegisterInfo,
+    handleAuthInfo,
     isError,
     errMsg,
     handleLogin,
@@ -29,7 +29,7 @@ export default function LoginPage() {
           value={loginInfo.email}
           isError={isError}
           onChange={(e) => {
-            handleRegisterInfo('email', e.target.value)
+            handleAuthInfo('email', e.target.value)
           }}
         />
         <AuthInput
@@ -38,7 +38,7 @@ export default function LoginPage() {
           value={loginInfo.password}
           isError={isError}
           onChange={(e) => {
-            handleRegisterInfo('password', e.target.value)
+            handleAuthInfo('password', e.target.value)
           }}
         />
         <AuthButton

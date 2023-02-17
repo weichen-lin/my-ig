@@ -4,5 +4,7 @@ export enum APIS {
   USER_REGISTER = '/api/user/register',
   FOLDER = '/api/folder',
   FILE = '/api/file',
-  DISK = '/api/disk'
+  DISK = '/api/disk',
+  UPDATE_DESCRIPTION = '/api/file/description',
+  UPDATE_TAG = '/api/file/tag'
 }

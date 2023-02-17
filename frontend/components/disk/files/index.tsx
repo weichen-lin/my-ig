@@ -1,16 +1,27 @@
 import clsx from 'clsx'
 import Files from 'components/disk/files/files'
 import Folders from 'components/disk/files/folders'
-import { FormatProp, ListMethod, SelectionStringList } from 'hooks/disk/type'
-import { FileData, FolderData } from 'context/type'
+import { FormatProp, ListMethod, SelectionStringList } from 'hooks/disk'
+import { DiskDataInterface } from 'context/'
 
-interface FilesPageProp extends FormatProp, SelectionStringList {
+interface GdriveLikeDiskProps extends FormatProp, SelectionStringList {
+  data: DiskDataInterface
+  handleCurrentFolder: (e: string) => void
   handleImageDisplay: (e: string) => void
-  data: { files: FileData[]; folders: FolderData[] }
 }
 
-export default function GdriveLikeDisk(props: FilesPageProp) {
-  const { listMethod, data, selected, dragged, handleImageDisplay } = props
+export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
+  const {
+    listMethod,
+    data,
+    selected,
+    dragged,
+    handleImageDisplay,
+    handleCurrentFolder
+  } = props
+
+  const files = data.files ?? []
+  const folders = data.folders ?? []
 
   return (
     <div
@@ -31,7 +42,11 @@ export default function GdriveLikeDisk(props: FilesPageProp) {
       >
         資料夾
       </p>
-      <Folders listMethod={listMethod} folders={data.folders ?? []} />
+      <Folders
+        listMethod={listMethod}
+        folders={folders}
+        handleCurrentFolder={handleCurrentFolder}
+      />
       <p
         className={clsx(
           'w-[90%] xs:w-full text-gray-400',
@@ -42,7 +57,7 @@ export default function GdriveLikeDisk(props: FilesPageProp) {
       </p>
       <Files
         listMethod={listMethod}
-        files={data.files ?? []}
+        files={files}
         handleImageDisplay={handleImageDisplay}
       />
     </div>

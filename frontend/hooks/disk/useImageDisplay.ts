@@ -1,14 +1,82 @@
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState } from 'recoil'
 import { diskInitState } from 'context'
+import fetcher from 'api/fetcher'
+import { APIS } from 'api/apis'
+
+export type ImageDisplayProps = ReturnType<typeof useImageDisplay>
 
 export default function useImageDisplay() {
+  const [diskData, setDiskData] = useRecoilState(diskInitState)
+
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState<number>(0)
-  const diskData = useRecoilValue(diskInitState)
+  const [isEdit, setIsEdit] = useState(false)
+
+  const [text, setText] = useState('')
+
+  const [tag, setTag] = useState('')
+  const [isAddTag, setIsAddTag] = useState(false)
+
+  const onEditTag = (e: string) => {
+    setTag(e)
+  }
+
+  const handleIsAddTag = () => {
+    setIsAddTag((prev) => !prev)
+  }
+
+  const handleAddTag = () => {
+    const id = diskData.files[currentIndex]?.id ?? ''
+    setIsAddTag((prev) => !prev)
+
+    fetcher
+      .patch(APIS.UPDATE_TAG, { id, tag })
+      .then((res) => {
+        if (res.status === 200) {
+          const tags = diskData.files[currentIndex]?.tags ?? []
+
+          setDiskData((prev) => ({
+            ...prev,
+            files: [
+              ...prev.files.slice(0, currentIndex),
+              { ...prev.files[currentIndex], tags: [...tags, tag] },
+              ...prev.files.slice(currentIndex + 1)
+            ]
+          }))
+        }
+      })
+      .catch(() => console.log('tag is already got 5'))
+  }
+
+  const onEdit = (e: string) => {
+    setText(e)
+  }
+
+  const handleEdit = () => {
+    const id = diskData.files[currentIndex]?.id ?? ''
+    setIsEdit((prev) => !prev)
+
+    if (!isEdit) return
+    fetcher
+      .patch(APIS.UPDATE_DESCRIPTION, { id, description: text })
+      .then((res) => {
+        if (res.status === 200) {
+          setDiskData((prev) => ({
+            ...prev,
+            files: [
+              ...prev.files.slice(0, currentIndex),
+              { ...prev.files[currentIndex], description: text },
+              ...prev.files.slice(currentIndex + 1)
+            ]
+          }))
+        }
+      })
+  }
 
   const handleEscape = () => {
     setIsOpen(false)
+    setIsEdit(false)
   }
 
   const handleImageDisplay = (id: string) => {
@@ -16,13 +84,32 @@ export default function useImageDisplay() {
     if (index < 0) return
     setCurrentIndex(index)
     setIsOpen(true)
+    setText(diskData.files[index].description ?? '')
+  }
+
+  const handleInfo = (index: number) => {
+    setCurrentIndex(index)
+    setText(diskData.files[currentIndex]?.description ?? '')
   }
 
   return {
-    isOpen,
-    currentIndex,
-    handleEscape,
-    handleImageDisplay,
-    setCurrentIndex
+    infoProps: {
+      isOpen,
+      currentIndex,
+      handleEscape,
+      handleImageDisplay,
+      handleInfo,
+      isEdit,
+      onEdit,
+      handleEdit,
+      text
+    },
+    tagProps: {
+      tag,
+      isAddTag,
+      handleIsAddTag,
+      handleAddTag,
+      onEditTag
+    }
   }
 }

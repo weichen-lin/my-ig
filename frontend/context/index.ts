@@ -1,5 +1,6 @@
 import { diskStatusInitState } from './diskStatus'
 import { diskInitState } from './diskData'
-import { uploadInitState } from './uploadfiles'
+import type { DiskDataInterface } from './diskData'
 
-export { diskStatusInitState, diskInitState, uploadInitState }
+export { diskStatusInitState, diskInitState }
+export type { DiskDataInterface }

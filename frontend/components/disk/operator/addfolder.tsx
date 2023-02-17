@@ -1,18 +1,12 @@
 import clsx from 'clsx'
 import AddFolderPageButton from './button'
 import { ErrorIcon } from 'public/icon/login'
-import type { useOperatorInterface } from 'hooks/disk'
+import type { OperatorProps } from 'hooks/disk/useOperator'
 
-type addFolderPageProps = Omit<
-  useOperatorInterface,
-  | 'operatorOpen'
-  | 'toogleOperatorOpen'
-  | 'handleFileUpload'
-  | 'uploader'
-  | 'handleUploaderClose'
->
-
-export default function AddFolderPage(props: addFolderPageProps) {
+export default function AddFolderPage(
+  props: Pick<OperatorProps, 'addFolderProps'>
+) {
+  const { addFolderProps } = props
   const {
     creatFolderOpen,
     toogleCreateFolder,
@@ -21,7 +15,7 @@ export default function AddFolderPage(props: addFolderPageProps) {
     handleFolderName,
     createFolder,
     errorMsg
-  } = props
+  } = addFolderProps
 
   return (
     <div

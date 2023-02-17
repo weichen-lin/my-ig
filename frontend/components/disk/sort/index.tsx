@@ -1,26 +1,19 @@
 import clsx from 'clsx'
 import { ArrowIcon, Lattice, List, ArrowNoLineIcon } from 'public/icon/disk'
 
-import { ListMethod } from 'hooks/disk/type'
+import { ListMethod } from 'hooks/disk'
 
 import CustomDatePicker from './date-picker'
-import { DateTimePickerProps } from './type'
 
-interface SortProps {
-  listMethod: number
-  handleListMethod: () => void
-  customDatePickerProps: DateTimePickerProps
-  current_folder: string[]
-  handleCurrentFolder: (e: string) => void
-}
+import type { DiskProps, DatetimeProps } from 'hooks/disk'
 
 const BreadCrumb = (props: {
   folderName: string
   isLastOne: boolean
   needTruncate: boolean
-  handleCurrentFolder: (e: string) => void
+  handleBreadChangeFolder: (e: string) => void
 }) => {
-  const { folderName, isLastOne, needTruncate, handleCurrentFolder } = props
+  const { folderName, isLastOne, needTruncate, handleBreadChangeFolder } = props
   return (
     <div className='text-gray-500 flex hover:cursor-pointer flex-1'>
       <span
@@ -29,7 +22,7 @@ const BreadCrumb = (props: {
         } hover:bg-slate-200 px-2 rounded-lg h-7 mt-[6px] leading-7 p-[1px] truncate`}
         onClick={() => {
           if (isLastOne) return
-          handleCurrentFolder(folderName)
+          handleBreadChangeFolder(folderName)
         }}
       >
         {folderName}
@@ -45,14 +38,18 @@ const BreadCrumb = (props: {
   )
 }
 
+interface SortProps extends Pick<DiskProps, 'sortProps'> {
+  customDatePickerProps: DatetimeProps
+}
+
 export default function Sort(props: SortProps) {
+  const { sortProps, customDatePickerProps } = props
   const {
     listMethod,
     handleListMethod,
-    customDatePickerProps,
     current_folder,
-    handleCurrentFolder
-  } = props
+    handleBreadChangeFolder
+  } = sortProps
 
   const current_folder_copy = [...current_folder]
 
@@ -102,7 +99,7 @@ export default function Sort(props: SortProps) {
             folderName='My Kushare'
             isLastOne={current_folder_copy.length === 0}
             needTruncate={false}
-            handleCurrentFolder={handleCurrentFolder}
+            handleBreadChangeFolder={handleBreadChangeFolder}
           />
         </span>
         <span className='hidden md:flex'>
@@ -112,7 +109,7 @@ export default function Sort(props: SortProps) {
               isLastOne={index === current_folder_copy.length - 1}
               needTruncate={index !== current_folder_copy.length - 1}
               key={`BreadCrumb_${index}`}
-              handleCurrentFolder={handleCurrentFolder}
+              handleBreadChangeFolder={handleBreadChangeFolder}
             ></BreadCrumb>
           ))}
         </span>
@@ -127,7 +124,7 @@ export default function Sort(props: SortProps) {
                 folderName={current_folder_copy?.pop() ?? 'My Kushare'}
                 isLastOne={true}
                 needTruncate={false}
-                handleCurrentFolder={handleCurrentFolder}
+                handleBreadChangeFolder={handleBreadChangeFolder}
               ></BreadCrumb>
             </span>
           ) : (

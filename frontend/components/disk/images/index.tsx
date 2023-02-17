@@ -3,8 +3,8 @@ import { ImageArrow } from 'public/icon/disk'
 
 import clsx from 'clsx'
 import { Cancel } from 'public/icon/disk'
-import { Dispatch, SetStateAction } from 'react'
 import { FileData } from 'context/type'
+import type { ImageDisplayProps } from 'hooks/disk/useImageDisplay'
 
 declare module 'react' {
   interface CSSProperties {
@@ -12,16 +12,23 @@ declare module 'react' {
   }
 }
 
-interface ImagePlaygroundProps {
+interface ImagePlaygroundProps extends ImageDisplayProps {
   data: FileData[]
-  isOpen: boolean
-  currentIndex: number
-  handleEscape: () => void
-  setCurrentIndex: Dispatch<SetStateAction<number>>
 }
 
 export default function ImagePlayground(props: ImagePlaygroundProps) {
-  const { isOpen, currentIndex, handleEscape, setCurrentIndex, data } = props
+  const { infoProps, tagProps, data } = props
+  const {
+    isOpen,
+    handleEscape,
+    currentIndex,
+    isEdit,
+    handleEdit,
+    onEdit,
+    text,
+    handleInfo
+  } = infoProps
+
   return (
     <div
       className={clsx(
@@ -53,7 +60,14 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
                 <Cancel className='w-8 h-8' />
               </span>
             </div>
-            <Description />
+            <Description
+              info={data[currentIndex] ?? { description: '', tags: [] }}
+              isEdit={isEdit}
+              handleEdit={handleEdit}
+              onEdit={onEdit}
+              text={text}
+              tagProps={tagProps}
+            />
           </div>
         </div>
         <div className='hidden lg:h-1/5 lg:block lg:mt-[5%] w-full'>
@@ -84,7 +98,7 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
               currentIndex > data.length - 1 ? 'none' : ''
             }`}
                 onClick={() => {
-                  setCurrentIndex((prev) => prev + 1)
+                  handleInfo(currentIndex + 1)
                 }}
               >
                 <ImageArrow />
@@ -97,7 +111,7 @@ export default function ImagePlayground(props: ImagePlaygroundProps) {
                 className={`absolute w-16 h-16 top-6 left-[18%] -rotate-90 rounded-full hover:bg-slate-100/20 hover:cursor-pointer
             transition-all opacity-100 duration-300 ease-out`}
                 onClick={() => {
-                  setCurrentIndex((prev) => prev - 1)
+                  handleInfo(currentIndex - 1)
                 }}
               >
                 <ImageArrow />

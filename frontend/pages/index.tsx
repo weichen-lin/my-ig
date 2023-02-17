@@ -6,6 +6,7 @@ import {
   UploadTasks
 } from 'components/disk'
 import { LayoutAuth } from 'components/layout'
+import { Loading } from 'components/utils'
 
 import {
   useDisk,
@@ -15,26 +16,17 @@ import {
   useOperator
 } from 'hooks/disk'
 import { useScroll } from 'hooks/utils'
-import { Loading } from 'components/utils'
 
 export default function DiskPage() {
-  const {
-    listMethod,
-    handleListMethod,
-    isFetching,
-    diskData,
-    current_folder,
-    handleCurrentFolder
-  } = useDisk()
+  const { sortProps, diskProps } = useDisk()
+  const { isFetching, diskData, handleCurrentFolder } = diskProps
 
-  const { root, selected, dragged } = useGdrive()
-  const {
-    isOpen: ImageDisplayOpen,
-    currentIndex,
-    handleEscape,
-    handleImageDisplay,
-    setCurrentIndex
-  } = useImageDisplay()
+  const dragged: Set<string> = new Set()
+  const selected: Set<string> = new Set()
+
+  // const { root, selected, dragged } = useGdrive()
+
+  const { infoProps, tagProps } = useImageDisplay()
 
   const { isScrollDown, handleOnScroll } = useScroll()
 
@@ -45,38 +37,31 @@ export default function DiskPage() {
   return (
     <>
       <Sort
-        listMethod={listMethod}
-        handleListMethod={handleListMethod}
+        sortProps={sortProps}
         customDatePickerProps={customDatePickerProps}
-        current_folder={current_folder}
-        handleCurrentFolder={handleCurrentFolder}
       />
-      <div className='overflow-y-auto' ref={root} onScroll={handleOnScroll}>
+      <div className='overflow-y-auto' onScroll={handleOnScroll}>
         {isFetching ? (
           <div className='flex items-center justify-center w-full h-full'>
             <Loading />
           </div>
         ) : (
           <GdriveLikeDisk
-            listMethod={listMethod}
+            listMethod={sortProps.listMethod}
             selected={selected}
             dragged={dragged}
-            handleImageDisplay={handleImageDisplay}
-            data={diskData ?? { files: [], folders: [] }}
+            handleImageDisplay={infoProps.handleImageDisplay}
+            data={diskData}
+            handleCurrentFolder={handleCurrentFolder}
           />
         )}
       </div>
       <Operator operatorProps={operatorProps} isScrollDown={isScrollDown} />
-      <UploadTasks
-        uploader={operatorProps.uploader}
-        handleUploaderClose={operatorProps.handleUploaderClose}
-      />
+      <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}
-        isOpen={ImageDisplayOpen}
-        currentIndex={currentIndex}
-        handleEscape={handleEscape}
-        setCurrentIndex={setCurrentIndex}
+        infoProps={infoProps}
+        tagProps={tagProps}
       />
     </>
   )

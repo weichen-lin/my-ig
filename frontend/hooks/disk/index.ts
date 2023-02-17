@@ -1,7 +1,23 @@
-import useDatetime from './useDatetime'
-import useDisk from './useDisk'
+import useDatetime, { DatetimeProps } from './useDatetime'
+import useDisk, { DiskProps } from './useDisk'
 import useGdrive from './useGdrive'
-import useImageDisplay from './useImageDisplay'
-import useOperator, { useOperatorInterface } from './useOperator'
+import useImageDisplay, { ImageDisplayProps } from './useImageDisplay'
+import useOperator, { OperatorProps, Uploader } from './useOperator'
+import {
+  FormatProp,
+  SelectionStringList,
+  SelectionValue,
+  FileType,
+  ListMethod
+} from './type'
+
 export { useDatetime, useDisk, useGdrive, useImageDisplay, useOperator }
-export type { useOperatorInterface }
+export type {
+  DatetimeProps,
+  DiskProps,
+  OperatorProps,
+  Uploader,
+  ImageDisplayProps
+}
+export type { FormatProp, SelectionStringList, SelectionValue }
+export { FileType, ListMethod }

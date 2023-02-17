@@ -1,15 +1,13 @@
 import { Cancel } from 'public/icon/disk'
 import clsx from 'clsx'
 import Task from './task'
-import { useOperatorInterface } from 'hooks/disk/useOperator'
+import { OperatorProps } from 'hooks/disk'
 
-type UploadTasksProps = Pick<
-  useOperatorInterface,
-  'uploader' | 'handleUploaderClose'
->
-
-export default function UploadTasks(props: UploadTasksProps) {
-  const { uploader, handleUploaderClose } = props
+export default function UploadTasks(
+  props: Pick<OperatorProps, 'uploaderProps'>
+) {
+  const { uploaderProps } = props
+  const { uploader, handleUploaderClose } = uploaderProps
   return (
     <div
       className={clsx(

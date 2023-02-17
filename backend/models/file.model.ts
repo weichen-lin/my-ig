@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Sequelize } from 'sequelize'
 import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { File_CRUD_STATUS } from '../errors'
@@ -86,7 +86,8 @@ const findFiles = async (user_uuid: string, locate_at: string) => {
     where: {
       user_uuid: user_uuid,
       locate_at: locate_at
-    }
+    },
+    order: [['updatedAt', 'DESC']]
   })
 }
 
@@ -105,10 +106,65 @@ const checkFileExist = async (
   })
 }
 
+const updateFileDescription = async (
+  user_uuid: string,
+  file_uuid: string,
+  description: string
+) => {
+  const target_file = await File.findOne({
+    where: { file_uuid, user_uuid }
+  })
+  if (!target_file) {
+    return File_CRUD_STATUS.FAILED
+  }
+
+  try {
+    target_file.update({ description }, { where: { user_uuid, file_uuid } })
+    return File_CRUD_STATUS.SUCCESS
+  } catch {
+    return File_CRUD_STATUS.FAILED
+  }
+}
+
+const updateTags = async (
+  user_uuid: string,
+  file_uuid: string,
+  tag: string
+) => {
+  const target_file = await File.findOne({
+    where: { file_uuid, user_uuid }
+  })
+  if (!target_file) {
+    return File_CRUD_STATUS.FAILED
+  }
+
+  try {
+    const tags = target_file.dataValues.tags ?? []
+    console.log(target_file.dataValues.file_uuid)
+
+    if (tags.length >= 5) {
+      return File_CRUD_STATUS.NO_MORE_TAGS
+    }
+    console.log(`tags is `, tags)
+
+    if (!tags.includes(tag)) {
+      target_file.update(
+        { tags: Sequelize.fn('array_append', Sequelize.col('tags'), tag) },
+        { where: { user_uuid, file_uuid } }
+      )
+      return File_CRUD_STATUS.SUCCESS
+    }
+    return File_CRUD_STATUS.TAG_ALREADY_HAVE
+  } catch {
+    return File_CRUD_STATUS.FAILED
+  }
+}
+
 export const FileCRUD = {
   create: createFile,
   delete: () => {},
   find: findFiles,
   check: checkFileExist,
-  update: () => {}
+  updateDesciption: updateFileDescription,
+  updateTags: updateTags
 }

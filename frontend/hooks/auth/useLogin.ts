@@ -23,7 +23,7 @@ export default function useLogin() {
 
   const theOnlyOneErrMsg = '帳號或密碼錯誤，請重新輸入'
 
-  const handleRegisterInfo = (key: keyof LoginBody, value: string) => {
+  const handleAuthInfo = (key: keyof LoginBody, value: string) => {
     setLoginInfo((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -86,7 +86,7 @@ export default function useLogin() {
   return {
     isRequest,
     loginInfo,
-    handleRegisterInfo,
+    handleAuthInfo,
     isError,
     errMsg,
     handleLogin,

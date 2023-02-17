@@ -7,6 +7,8 @@ import { APIS } from 'api/apis'
 
 type listMethodState = 0 | 1
 
+export type DiskProps = ReturnType<typeof useDisk>
+
 export default function useDisk() {
   const [listMethod, setListMethod] = useState<listMethodState>(
     ListMethod.Lattice
@@ -28,36 +30,56 @@ export default function useDisk() {
     }
   }
 
-  const handleCurrentFolder = (e: string) => {
+  const handleBreadChangeFolder = (e: string) => {
     const index = diskStatus.current_folder.indexOf(e)
     const new_current_folder = diskStatus.current_folder.slice(0, index + 1)
     setDiskStatus((prev) => ({ ...prev, current_folder: new_current_folder }))
   }
 
+  const handleCurrentFolder = (e: string) => {
+    setDiskStatus((prev) => ({
+      ...prev,
+      current_folder: [...prev.current_folder, e]
+    }))
+  }
+
   useEffect(() => {
+    const fetchData = async () => {
+      const res = await fethcher.get(
+        `${APIS.DISK}?${new URLSearchParams(queryParams)}`
+      )
+      return res
+    }
+
     setIsFetching(true)
-    fethcher
-      .get(`${APIS.DISK}?${new URLSearchParams(queryParams)}`)
+
+    fetchData()
       .then((res) => {
-        const data = res.data
-        setDiskData((prev) => ({
-          ...prev,
-          folders: data.folders,
-          files: data.files
-        }))
+        if (res.status === 200) {
+          const data = res.data
+          setDiskData((prev) => ({
+            ...prev,
+            folders: data.folders,
+            files: data.files
+          }))
+        }
       })
-      .catch((err) => {
-        console.log(err)
-      })
+      .catch((e) => console.log(e))
+
     setIsFetching(false)
   }, [diskStatus.current_folder])
 
   return {
-    listMethod,
-    handleListMethod,
-    diskData,
-    isFetching,
-    current_folder: diskStatus.current_folder,
-    handleCurrentFolder
+    sortProps: {
+      listMethod,
+      handleListMethod,
+      current_folder: diskStatus.current_folder,
+      handleBreadChangeFolder
+    },
+    diskProps: {
+      diskData,
+      isFetching,
+      handleCurrentFolder
+    }
   }
 }

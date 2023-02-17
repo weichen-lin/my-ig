@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from 'react'
-import fethcher from 'api/fetcher'
+import fetcher from 'api/fetcher'
 import { APIS } from 'api/apis'
 import { FolderResponse, FolderStatus } from 'api/errors'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -8,20 +8,7 @@ import { FileUploadStatus } from 'components/disk/uploadTask/task'
 
 export type UploadType = 'FileOnly' | 'FilesInFolder'
 
-export interface useOperatorInterface {
-  creatFolderOpen: boolean
-  operatorOpen: boolean
-  toogleCreateFolder: () => void
-  toogleOperatorOpen: () => void
-  isRequesting: boolean
-  createFolder: (e: string) => void
-  folderName: string
-  handleFolderName: (e: ChangeEvent<HTMLInputElement>) => void
-  errorMsg: string
-  handleFileUpload: () => void
-  uploader: Uploader
-  handleUploaderClose: () => void
-}
+export type OperatorProps = ReturnType<typeof useOperator>
 
 export interface Uploader {
   isOpen: boolean
@@ -57,7 +44,7 @@ export default function useOperator() {
     setIsRequesting(true)
     const current_folder = diskStatus_copy.current_folder.pop() ?? ''
 
-    fethcher
+    fetcher
       .post(APIS.FOLDER, { folder_name, current_folder })
       .then((res) => {
         if (res.status === 200) {
@@ -121,7 +108,7 @@ export default function useOperator() {
                 'current_folder',
                 diskStatus_copy.current_folder.pop() ?? ''
               )
-              fethcher
+              fetcher
                 .post(APIS.FILE, formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
@@ -137,7 +124,8 @@ export default function useOperator() {
                         url: res?.data?.url,
                         last_modified_at: '',
                         id: res?.data?.id,
-                        tags: ['']
+                        tags: [''],
+                        description: ''
                       }
                     ]
                   }))
@@ -184,17 +172,18 @@ export default function useOperator() {
   }
 
   return {
-    creatFolderOpen,
+    addFolderProps: {
+      creatFolderOpen,
+      toogleCreateFolder,
+      isRequesting,
+      folderName,
+      handleFolderName,
+      createFolder,
+      errorMsg
+    },
     operatorOpen,
-    toogleCreateFolder,
     toogleOperatorOpen,
-    isRequesting,
-    createFolder,
-    folderName,
-    handleFolderName,
-    errorMsg,
     handleFileUpload,
-    uploader,
-    handleUploaderClose
+    uploaderProps: { uploader, handleUploaderClose }
   }
 }

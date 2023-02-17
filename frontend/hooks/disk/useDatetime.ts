@@ -3,6 +3,8 @@ import { useClickOutside } from 'hooks/utils'
 import { diskStatusInitState } from 'context'
 import { useRecoilState } from 'recoil'
 
+export type DatetimeProps = ReturnType<typeof useDatetime>
+
 export default function useDatetime() {
   const [diskStatus, setDiskStatus] = useRecoilState(diskStatusInitState)
   const [isOpen, setIsOpen] = useState(false)
