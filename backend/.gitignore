@@ -13,7 +13,7 @@
 /out/
 
 # production
-/build
+/build/pwd.Dockerfile
 
 # misc
 .DS_Store

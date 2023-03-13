@@ -1,4 +1,4 @@
-import { DataTypes, Op } from 'sequelize'
+import { DataTypes, Transaction } from 'sequelize'
 import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { Folder_CRUD_STATUS } from '../errors'
@@ -75,7 +75,7 @@ const createFolder = async (
         id: ''
       }
     }
-
+    console.log(e)
     return { status: Folder_CRUD_STATUS.UNKNOWN_ERROR, id: '' }
   }
 }
@@ -92,11 +92,33 @@ const findFolder = async (user_uuid: string, current_folder: string) => {
   })
 }
 
-const updateFolder = async (uuid: string) => {}
+const updateFolderLocateAt = async (
+  folder_uuid_need_update: string,
+  user_uuid: string,
+  update_locate_at: string
+) => {
+  const target_folder = await Folder.findOne({
+    lock: Transaction.LOCK.UPDATE,
+    where: { folder_uuid: folder_uuid_need_update, user_uuid }
+  })
+  if (!target_folder) {
+    return Folder_CRUD_STATUS.FAILED
+  }
+
+  try {
+    target_folder.update(
+      { locate_at: update_locate_at },
+      { where: { user_uuid, folder_uuid: folder_uuid_need_update } }
+    )
+    return Folder_CRUD_STATUS.SUCCESS
+  } catch {
+    return Folder_CRUD_STATUS.FAILED
+  }
+}
 
 export const FolderCRUD = {
   create: createFolder,
   delete: deleteFolder,
   find: findFolder,
-  update: updateFolder
+  updateFolderLocateAt: updateFolderLocateAt
 }

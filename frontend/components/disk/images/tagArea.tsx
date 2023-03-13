@@ -1,11 +1,7 @@
 import { ChangeEvent } from 'react'
-import { TagProps } from 'hooks/disk/useImageDisplay'
+import { ImageDisplayProps } from 'hooks/disk'
 
-interface TagAreaProps {
-  tagProps: TagProps
-}
-
-export default function TagArea(props: TagAreaProps) {
+export default function TagArea(props: Pick<ImageDisplayProps, 'tagProps'>) {
   const { tag, isAddTag, handleAddTag, onEditTag } = props.tagProps
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -8,7 +8,6 @@ import { FileCRUD } from '../models'
 const router = express.Router()
 
 router.use(auth_bearer_middleware)
-// router.use()
 router.use(express.urlencoded({ extended: true }))
 router.use(express.json())
 router.use(multer().single('myfile'))
@@ -137,6 +136,21 @@ router.patch('/tag', async (req, res) => {
   } catch {
     return res.status(400).json({ status: File_CRUD_STATUS.FAILED })
   }
+})
+
+router.patch('/locate', async (req, res) => {
+  const { update_locate_at, need_update } = req.body
+
+  console.log({ update_locate_at, need_update })
+  const user_id = res.locals.user_id
+
+  const status = FileCRUD.updateFileLocateAt(
+    need_update,
+    user_id,
+    update_locate_at
+  )
+
+  return res.status(200).json({ status })
 })
 
 export default router

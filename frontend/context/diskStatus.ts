@@ -1,12 +1,17 @@
 import { atom } from 'recoil'
 
+export interface CurrentFolder {
+  folder_uuid: string
+  folder_name: string
+}
+
 export interface DiskStatus {
   startDate: Date
   endDate: Date | null
   searchValue: string
-  isFetching: boolean
-  current_folder: string[]
+  current_folder: CurrentFolder[]
   canSelect: boolean
+  shouldRefresh: boolean
 }
 
 const start = new Date()
@@ -18,8 +23,8 @@ export const diskStatusInitState = atom<DiskStatus>({
     startDate: start,
     endDate: end,
     searchValue: '',
-    isFetching: true,
     current_folder: [],
-    canSelect: true
+    canSelect: true,
+    shouldRefresh: false
   }
 })

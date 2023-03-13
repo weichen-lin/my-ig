@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize } from 'sequelize'
+import { DataTypes, Sequelize, Transaction } from 'sequelize'
 import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { File_CRUD_STATUS } from '../errors'
@@ -113,6 +113,7 @@ const updateFileDescription = async (
   const target_file = await File.findOne({
     where: { file_uuid, user_uuid }
   })
+
   if (!target_file) {
     return File_CRUD_STATUS.FAILED
   }
@@ -157,11 +158,38 @@ const updateTags = async (
   }
 }
 
+const updateFileLocateAt = async (
+  file_uuid_need_update: string,
+  user_uuid: string,
+  update_locate_at: string
+) => {
+  console.log()
+
+  const target_file = await File.findOne({
+    lock: Transaction.LOCK.UPDATE,
+    where: { file_uuid: file_uuid_need_update, user_uuid }
+  })
+  if (!target_file) {
+    return File_CRUD_STATUS.FAILED
+  }
+
+  try {
+    target_file.update(
+      { locate_at: update_locate_at },
+      { where: { user_uuid, file_uuid: file_uuid_need_update } }
+    )
+    return File_CRUD_STATUS.SUCCESS
+  } catch {
+    return File_CRUD_STATUS.FAILED
+  }
+}
+
 export const FileCRUD = {
   create: createFile,
   delete: () => {},
   find: findFiles,
   check: checkFileExist,
   updateDesciption: updateFileDescription,
-  updateTags: updateTags
+  updateTags,
+  updateFileLocateAt
 }

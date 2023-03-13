@@ -1,7 +1,6 @@
 import express from 'express'
 import { init_Models } from './models'
 import { User, Auth, File, Folder, Disk } from './routers'
-import cors from 'cors'
 
 const app = express()
 const port = process.env.BACKEND_PORT ?? '8080'
@@ -9,7 +8,15 @@ const port = process.env.BACKEND_PORT ?? '8080'
 //https://ithelp.ithome.com.tw/articles/10202754
 
 init_Models()
-// process.env.NODE_ENV === 'develop' ? app.use(cors()) : ''
+
+app.get('/healthz', async (req, res) => {
+  return res.status(200).json({ status: 0 })
+})
+
+app.get('/', async (req, res) => {
+  return res.status(200).json({ status: 0 })
+})
+
 app.use('/user', User)
 app.use('/auth', Auth)
 app.use('/file', File)

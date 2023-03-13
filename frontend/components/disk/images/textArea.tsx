@@ -5,11 +5,10 @@ interface TextAreaProps {
   handleEdit: () => void
   text: string
   onEdit: (e: string) => void
-  description: string
 }
 
 export default function TextArea(props: TextAreaProps) {
-  const { isEdit, text, onEdit, handleEdit, description } = props
+  const { isEdit, text, onEdit, handleEdit } = props
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     onEdit(e.target.value)

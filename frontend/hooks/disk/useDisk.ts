@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ListMethod } from './type'
-import { diskStatusInitState, diskInitState } from 'context'
+import { diskStatusInitState, diskInitState, CurrentFolder } from 'context'
 import { useRecoilState } from 'recoil'
 import fethcher from 'api/fetcher'
 import { APIS } from 'api/apis'
@@ -19,7 +19,7 @@ export default function useDisk() {
   const [isFetching, setIsFetching] = useState(false)
 
   const queryParams = {
-    current_folder: diskStatus_copy.current_folder.pop() ?? ''
+    current_folder: diskStatus_copy.current_folder.pop()?.folder_uuid ?? ''
   }
 
   const handleListMethod = () => {
@@ -30,13 +30,13 @@ export default function useDisk() {
     }
   }
 
-  const handleBreadChangeFolder = (e: string) => {
+  const handleBreadChangeFolder = (e: CurrentFolder) => {
     const index = diskStatus.current_folder.indexOf(e)
     const new_current_folder = diskStatus.current_folder.slice(0, index + 1)
     setDiskStatus((prev) => ({ ...prev, current_folder: new_current_folder }))
   }
 
-  const handleCurrentFolder = (e: string) => {
+  const handleCurrentFolder = (e: CurrentFolder) => {
     setDiskStatus((prev) => ({
       ...prev,
       current_folder: [...prev.current_folder, e]
@@ -44,6 +44,7 @@ export default function useDisk() {
   }
 
   useEffect(() => {
+    console.log('trigger effect')
     const fetchData = async () => {
       const res = await fethcher.get(
         `${APIS.DISK}?${new URLSearchParams(queryParams)}`
@@ -66,8 +67,9 @@ export default function useDisk() {
       })
       .catch((e) => console.log(e))
 
+    setDiskStatus((prev) => ({ ...prev, shouldRefresh: false }))
     setIsFetching(false)
-  }, [diskStatus.current_folder])
+  }, [diskStatus.current_folder, diskStatus.shouldRefresh])
 
   return {
     sortProps: {

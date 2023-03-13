@@ -6,22 +6,31 @@ import {
   ListMethod,
   SelectionStringList
 } from 'hooks/disk'
-import { FolderData } from 'context/type'
+import { FolderData, CurrentFolder } from 'context'
+import type { HoverHandler } from 'hooks/disk/useGdrive'
 
-interface FoldersProps extends FormatProp, SelectionStringList {
+interface FolderBase extends FormatProp, HoverHandler {
+  handleCurrentFolder: (e: CurrentFolder) => void
+}
+
+interface FoldersProps extends FolderBase, SelectionStringList {
   folders: FolderData[]
-  handleCurrentFolder: (e: string) => void
   selected: Set<string>
 }
 
-interface FolderProps extends FormatProp, SelectionValue {
+interface FolderProps extends FolderBase, SelectionValue {
   folderInfo: FolderData
-  handleCurrentFolder: (e: string) => void
 }
 
 export default function Folders(props: FoldersProps) {
-  const { listMethod, folders, handleCurrentFolder, selected, dragged } = props
-
+  const {
+    listMethod,
+    folders,
+    handleCurrentFolder,
+    selected,
+    dragged,
+    hoverHandler
+  } = props
   return (
     <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
       {folders?.map((e) => (
@@ -32,6 +41,7 @@ export default function Folders(props: FoldersProps) {
           handleCurrentFolder={handleCurrentFolder}
           isSelected={selected.has(`selectable-folder-${e.id}`)}
           isDragged={dragged.has(`selectable-folder-${e.id}`)}
+          hoverHandler={hoverHandler}
         />
       ))}
     </div>
@@ -39,8 +49,14 @@ export default function Folders(props: FoldersProps) {
 }
 
 function FolderElement(props: FolderProps) {
-  const { folderInfo, listMethod, handleCurrentFolder, isSelected, isDragged } =
-    props
+  const {
+    folderInfo,
+    listMethod,
+    handleCurrentFolder,
+    hoverHandler,
+    isSelected,
+    isDragged
+  } = props
   const { id, name, last_modified_at } = folderInfo
 
   return (
@@ -60,7 +76,15 @@ function FolderElement(props: FolderProps) {
         'selectable'
       )}
       onDoubleClick={() => {
-        handleCurrentFolder(name)
+        handleCurrentFolder({ folder_uuid: id, folder_name: name })
+      }}
+      onMouseEnter={() => {
+        if (isDragged || isSelected) return
+        hoverHandler.handleFolderOnHover(id)
+      }}
+      onMouseLeave={() => {
+        if (isDragged || isSelected) return
+        hoverHandler.handleFolderOnHover('')
       }}
       data-key={`selectable-folder-${id}`}
     >

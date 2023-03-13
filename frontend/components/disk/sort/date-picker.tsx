@@ -6,10 +6,10 @@ import { zhTW } from 'date-fns/locale'
 import clsx from 'clsx'
 
 import { CalendarIcon, ArrowNoLineIcon } from 'public/icon/disk'
-import { DateTimePickerProps } from './type'
+import { DatetimeProps } from 'hooks/disk'
 
 export default function CustomDatePicker(props: {
-  customDatePickerProps: DateTimePickerProps
+  customDatePickerProps: DatetimeProps
 }) {
   const { customDatePickerProps } = props
   const { diskStatus, isOpen, handleOpen, ref, handleChange } =

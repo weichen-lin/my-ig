@@ -1,8 +1,13 @@
 import { useState, useEffect, createRef } from 'react'
-import Selectable from '@weichen-lin/gdrive-select-and-drag'
+// import Selectable from '@weichen-lin/gdrive-select-and-drag'
+import Selectable from 'selection'
 
-import { useRecoilValue } from 'recoil'
-import { diskStatusInitState } from 'context'
+import { useRecoilValue, useRecoilState } from 'recoil'
+import { diskStatusInitState, diskInitState } from 'context'
+
+import { APIS } from 'api/apis'
+import fetcher from 'api/fetcher'
+
 interface SelectionEvent {
   stored: string[]
   canSelected: Element[]
@@ -12,14 +17,23 @@ interface SelectionEvent {
   }
 }
 
+declare global {
+  interface Window {
+    folderOnHover?: Map<string, string>
+    draggedElement?: Map<string, Set<string>>
+  }
+}
+
 export interface GdriveSelectTarget {
   folders: Set<string>
   files: Set<string>
 }
 
-export default function useGdrive() {
-  const diskStatus = useRecoilValue(diskStatusInitState)
+export type HoverHandler = Pick<ReturnType<typeof useGdrive>, 'hoverHandler'>
 
+export default function useGdrive() {
+  const [diskStatus, setDiskStatus] = useRecoilState(diskStatusInitState)
+  const [diskData, setDiskData] = useRecoilState(diskInitState)
   const [selected, setSelected] = useState<GdriveSelectTarget>({
     folders: new Set(),
     files: new Set()
@@ -28,6 +42,7 @@ export default function useGdrive() {
     folders: new Set(),
     files: new Set()
   })
+  const [isMoving, setIsMoving] = useState(false)
 
   const root = createRef<HTMLDivElement>()
 
@@ -40,6 +55,9 @@ export default function useGdrive() {
 
     const new_files = new Set<string>(stored_files)
     const new_folders = new Set<string>(stored_folders)
+
+    window.draggedElement?.set('files', new_files)
+    window.draggedElement?.set('folders', new_folders)
 
     added.forEach((e) => {
       if (e.includes('file')) {
@@ -85,6 +103,7 @@ export default function useGdrive() {
         new_folders.delete(e)
       }
     })
+
     setDragged({ folders: new_folders, files: new_files })
   }
 
@@ -107,6 +126,8 @@ export default function useGdrive() {
   }
 
   const handleRevert = (e: Element) => {
+    console.log('revert happen')
+
     let target = e as HTMLElement
 
     if (target.querySelector('img')) {
@@ -120,10 +141,49 @@ export default function useGdrive() {
         return target
       }
     }
+
     return target
   }
 
+  const handleFolderOnHover = (e: string) => {
+    const dragChecker = dragged.files.size > 0 || dragged.folders.size > 0
+    if (!dragChecker) return
+    window.folderOnHover?.set('current_folder', e)
+  }
+
+  const hoverHandler = {
+    handleFolderOnHover,
+    isMoving
+  }
+
+  const handleMoving = (
+    type: 'file' | 'folder',
+    update_locate_at: string,
+    obj_need_update_w_prefix: string
+  ) => {
+    window.folderOnHover?.set('current_folder', '')
+
+    const need_update = obj_need_update_w_prefix.replace(
+      `selectable-${type}-`,
+      ''
+    )
+    const api =
+      type === 'file' ? APIS.UPDATE_FILE_LOCATE : APIS.UPDATE_FOLDER_LOCATE
+
+    return fetcher
+      .patch(api, { update_locate_at, need_update })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   useEffect(() => {
+    window.folderOnHover = new Map()
+    window.draggedElement = new Map()
+
     const selection = new Selectable({
       boundary: root?.current as HTMLDivElement,
       canStartSelect: diskStatus.canSelect,
@@ -151,11 +211,34 @@ export default function useGdrive() {
           }
         },
         iconPositionX: 200
+      },
+      dragEndCallback: async () => {
+        const isDragEndOnFolder =
+          window.folderOnHover?.get('current_folder') ?? ''
+
+        if (!isDragEndOnFolder) return false
+
+        setDiskStatus((prev) => ({ ...prev, shouldRefresh: true }))
+        setIsMoving(true)
+
+        const FILE_MOVING = Array.from(
+          window.draggedElement?.get('files') ?? []
+        ).map((e) => handleMoving('file', isDragEndOnFolder, e))
+
+        const FOLDER_MOVING = Array.from(
+          window.draggedElement?.get('folders') ?? []
+        ).map((e) => handleMoving('folder', isDragEndOnFolder, e))
+
+        await Promise.all([...FILE_MOVING, ...FOLDER_MOVING])
+
+        setIsMoving(false)
+
+        return false
       }
     })
 
     return () => selection?.destroy()
   }, [diskStatus.canSelect])
 
-  return { root, selected, dragged }
+  return { root, selected, dragged, hoverHandler }
 }

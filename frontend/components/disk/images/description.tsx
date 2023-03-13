@@ -1,10 +1,10 @@
 import { Cancel, AddLabel, Edit } from 'public/icon/disk'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import clsx from 'clsx'
 import TextArea from 'components/disk/images/textArea'
-import TagArea from 'components/disk/images/TagArea'
+import TagArea from 'components/disk/images/tagArea'
 import { FileData } from 'context/type'
-import { TagProps } from 'hooks/disk/useImageDisplay'
+import { ImageDisplayProps } from 'hooks/disk'
 
 const color_table = [
   'bg-red-100',
@@ -44,19 +44,17 @@ const Label = ({ label, color }: { label: string; color: number }) => {
   )
 }
 
-interface DescriptionProps {
+interface DescriptionProps extends Pick<ImageDisplayProps, 'tagProps'> {
   info: FileData
   isEdit: boolean
   handleEdit: () => void
   onEdit: (e: string) => void
   text: string
-  tagProps: TagProps
 }
 
 export default function Description(props: DescriptionProps) {
-  const { description, tags } = props.info
+  const { tags } = props.info
   const { isEdit, handleEdit, onEdit, text, tagProps } = props
-
   return (
     <div
       className={clsx('bg-gray-100 w-full h-full p-3 overflow-y-auto flex-col')}
@@ -85,7 +83,6 @@ export default function Description(props: DescriptionProps) {
           handleEdit={handleEdit}
           text={text}
           onEdit={onEdit}
-          description={description ?? ''}
         />
       </div>
       <div className='h-10 mt-2'>

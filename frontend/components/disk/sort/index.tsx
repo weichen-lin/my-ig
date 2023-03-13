@@ -6,26 +6,27 @@ import { ListMethod } from 'hooks/disk'
 import CustomDatePicker from './date-picker'
 
 import type { DiskProps, DatetimeProps } from 'hooks/disk'
+import { CurrentFolder } from 'context'
 
 const BreadCrumb = (props: {
-  folderName: string
+  folderInfo: CurrentFolder
   isLastOne: boolean
   needTruncate: boolean
-  handleBreadChangeFolder: (e: string) => void
+  handleBreadChangeFolder: (e: CurrentFolder) => void
 }) => {
-  const { folderName, isLastOne, needTruncate, handleBreadChangeFolder } = props
+  const { folderInfo, isLastOne, needTruncate, handleBreadChangeFolder } = props
   return (
     <div className='text-gray-500 flex hover:cursor-pointer flex-1'>
       <span
         className={`${
           needTruncate ? 'max-w-[160px]' : 'max-w-[200px] xs:max-w-[300px]'
-        } hover:bg-slate-200 px-2 rounded-lg h-7 mt-[6px] leading-7 p-[1px] truncate`}
+        } hover:bg-slate-200 px-3 rounded-lg h-9 mt-[6px] leading-7 py-1 truncate select-none`}
         onClick={() => {
           if (isLastOne) return
-          handleBreadChangeFolder(folderName)
+          handleBreadChangeFolder(folderInfo)
         }}
       >
-        {folderName}
+        {folderInfo.folder_name}
       </span>
       <ArrowNoLineIcon
         className={clsx(
@@ -96,7 +97,10 @@ export default function Sort(props: SortProps) {
       >
         <span className='hidden md:block'>
           <BreadCrumb
-            folderName='My Kushare'
+            folderInfo={{
+              folder_name: 'My Kushare',
+              folder_uuid: ''
+            }}
             isLastOne={current_folder_copy.length === 0}
             needTruncate={false}
             handleBreadChangeFolder={handleBreadChangeFolder}
@@ -105,7 +109,7 @@ export default function Sort(props: SortProps) {
         <span className='hidden md:flex'>
           {current_folder_copy.map((e, index) => (
             <BreadCrumb
-              folderName={e}
+              folderInfo={e}
               isLastOne={index === current_folder_copy.length - 1}
               needTruncate={index !== current_folder_copy.length - 1}
               key={`BreadCrumb_${index}`}
@@ -121,7 +125,12 @@ export default function Sort(props: SortProps) {
                 fill={'gray'}
               />
               <BreadCrumb
-                folderName={current_folder_copy?.pop() ?? 'My Kushare'}
+                folderInfo={
+                  current_folder_copy?.pop() ?? {
+                    folder_name: 'My Kushare',
+                    folder_uuid: ''
+                  }
+                }
                 isLastOne={true}
                 needTruncate={false}
                 handleBreadChangeFolder={handleBreadChangeFolder}

@@ -9,8 +9,34 @@ spec:
   containers:
     - name: ig-postgres
       image: postgres:13-alpine
+      ports:
+        - containerPort: 5432
       env:
+        - name: POSTGRES_DB
+          value: postgres
         - name: POSTGRES_USER
           value: postgres
+        - name: POSTGRES_PORT
+          value: '5432'
         - name: POSTGRES_PASSWORD
-          value: '~9{{<(X"pnX}u`@:'
+          valueFrom:
+            secretKeyRef:
+              key: db-password
+              name: postgresql-secret
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              key: db-ip
+              name: postgresql-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ig-postgres-service
+spec:
+  ports:
+    - port: 5432
+      protocol: TCP
+  selector:
+    app: ig-postgres
+  type: NodePort

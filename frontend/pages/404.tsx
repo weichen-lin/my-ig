@@ -5,6 +5,7 @@ export default function Custom404() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log('404 page')
     router.replace('/')
   })
 

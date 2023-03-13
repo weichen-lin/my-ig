@@ -42,10 +42,16 @@ export default function useOperator() {
 
   const createFolder = (folder_name: string) => {
     setIsRequesting(true)
-    const current_folder = diskStatus_copy.current_folder.pop() ?? ''
+    const current_folder = diskStatus_copy.current_folder.pop() ?? {
+      folder_uuid: '',
+      folder_name: ''
+    }
 
     fetcher
-      .post(APIS.FOLDER, { folder_name, current_folder })
+      .post(APIS.FOLDER, {
+        folder_name,
+        current_folder: current_folder.folder_uuid
+      })
       .then((res) => {
         if (res.status === 200) {
           setErrorMsg('')
@@ -162,7 +168,8 @@ export default function useOperator() {
       // for await (const entry of test.values()) {
       //   console.log(entry)
       // }
-    } catch {
+    } catch (e) {
+      console.log(e)
       console.log('cancel select')
     }
   }

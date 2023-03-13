@@ -1,11 +1,49 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ig-postgres
+  name: ig-backend
   labels:
-    apps: ig-postgres
-    type: db
+    app: ig-backend
 spec:
   containers:
-    - name: ig-postgres
-      image: postgres:13-alpine
+    - name: ig-backend
+      image: asia.gcr.io/my-ig-375608/ig-backend:expr
+
+      ports:
+        - containerPort: 8080
+
+      env:
+        - name: POSTGRES_DB
+          value: postgres
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PORT
+          value: '5432'
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: db-password
+              name: postgresql-secret
+        - name: POSTGRES_HOST
+          value: ig-postgres-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ig-backend-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ig-backend
+  type: NodePort
+# livenessProbe:
+#         httpGet:
+#           path: /health
+#           port: 8080
+
+#       readinessProbe:
+#         httpGet:
+#           path: /health
+#           port: 8080

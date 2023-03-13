@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: ig-frontend
-      image: asia.gcr.io/my-ig-375608/ig-frontend:latest
+      image: asia.gcr.io/my-ig-375608/ig-frontend:prod
       ports:
         - containerPort: 3000
 ---

@@ -10,7 +10,7 @@ router.use(express.json())
 
 router.post('/', async (req, res) => {
   const { folder_name, current_folder } = req.body
-
+  console.log({ folder_name, current_folder })
   const user_id = res.locals.user_id
 
   if (!folder_name || !user_id) {
@@ -47,9 +47,24 @@ router.post('/', async (req, res) => {
     } else {
       res.status(401).send({ status, id })
     }
-  } catch {
+  } catch (e) {
+    console.log(e)
     res.status(400).json({ error: Folder_CRUD_STATUS.UNKNOWN_ERROR })
   }
+})
+
+router.patch('/locate', async (req, res) => {
+  const { update_locate_at, need_update } = req.body
+
+  const user_id = res.locals.user_id
+
+  const status = FolderCRUD.updateFolderLocateAt(
+    need_update,
+    user_id,
+    update_locate_at
+  )
+
+  return res.status(200).json({ status })
 })
 
 export default router

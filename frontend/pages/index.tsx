@@ -5,6 +5,7 @@ import {
   ImagePlayground,
   UploadTasks
 } from 'components/disk'
+
 import { LayoutAuth } from 'components/layout'
 import { Loading } from 'components/utils'
 
@@ -21,7 +22,7 @@ export default function DiskPage() {
   const { sortProps, diskProps } = useDisk()
   const { isFetching, diskData, handleCurrentFolder } = diskProps
 
-  const { root, selected, dragged } = useGdrive()
+  const { root, selected, dragged, hoverHandler } = useGdrive()
 
   const { infoProps, tagProps } = useImageDisplay()
 
@@ -38,7 +39,7 @@ export default function DiskPage() {
         customDatePickerProps={customDatePickerProps}
       />
       <div className='overflow-y-auto' onScroll={handleOnScroll} ref={root}>
-        {isFetching ? (
+        {isFetching || hoverHandler.isMoving ? (
           <div className='flex items-center justify-center w-full h-full'>
             <Loading />
           </div>
@@ -50,6 +51,7 @@ export default function DiskPage() {
             handleImageDisplay={infoProps.handleImageDisplay}
             data={diskData}
             handleCurrentFolder={handleCurrentFolder}
+            hoverHandler={hoverHandler}
           />
         )}
       </div>
