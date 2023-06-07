@@ -1,7 +1,5 @@
 import AuthInput from './authInput'
 import AuthButton from './authButton'
-import AuthError from './authError'
-import AuthBackBone from './authBackbone'
-import AuthSuccess from './authSuccess'
+import AuthStatus from './authStatus'
 
-export { AuthInput, AuthButton, AuthError, AuthBackBone, AuthSuccess }
+export { AuthInput, AuthButton, AuthStatus }

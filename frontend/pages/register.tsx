@@ -1,5 +1,5 @@
 import { Layout } from 'components/layout'
-import { AuthInput, AuthButton, AuthError, AuthSuccess } from 'components/auth'
+import { AuthInput, AuthButton, AuthStatus } from 'components/auth'
 import clsx from 'clsx'
 import useRegister from 'hooks/auth/useRegister'
 
@@ -13,8 +13,11 @@ export default function RegisterPage() {
     errMsg,
     handleRegister,
     isSuccess,
-    successMsg
+    successMsg,
+    goLogin,
   } = useRegister()
+
+  const btnDisabled = Object.values(registerInfo).every((e) => e === '')
 
   return (
     <>
@@ -38,17 +41,9 @@ export default function RegisterPage() {
           label='password'
           type='password'
           value={registerInfo.password}
+          passwordChecker
           onChange={(e) => {
             handleRegisterInfo('password', e.target.value)
-          }}
-        />
-        <AuthInput
-          isError={pwdError}
-          label='confirmed_password'
-          type='password'
-          value={registerInfo.confirmed_password}
-          onChange={(e) => {
-            handleRegisterInfo('confirmed_password', e.target.value)
           }}
         />
         <AuthButton
@@ -57,7 +52,17 @@ export default function RegisterPage() {
           onClick={() => {
             handleRegister(registerInfo)
           }}
+          disabled={btnDisabled}
         />
+        <p className='w-full md:w-2/3 md:mx-auto text-center mt-8 text-gray-700'>
+          Already have an account?
+          <span
+            className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100'
+            onClick={goLogin}
+          >
+            Sign in
+          </span>
+        </p>
       </div>
       {emailError || pwdError ? (
         <div
@@ -66,22 +71,20 @@ export default function RegisterPage() {
             'w-4/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
           )}
         >
-          <AuthError message={errMsg} />
+          <AuthStatus message={errMsg} status='failed' />
         </div>
       ) : (
         <></>
       )}
-      {isSuccess ? (
+      {isSuccess && (
         <div
           className={clsx(
             'mx-auto',
             'w-2/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
           )}
         >
-          <AuthSuccess message={successMsg} />
+          <AuthStatus message={successMsg} status='success' />
         </div>
-      ) : (
-        <></>
       )}
     </>
   )

@@ -5,18 +5,24 @@ interface ButtonProps {
   label: string
   isRequest: boolean
   onClick: () => void
+  disabled: boolean
 }
 
 export default function AuthButton(props: ButtonProps) {
-  const { label, isRequest, onClick } = props
+  const { label, isRequest, onClick, disabled } = props
+
   return (
     <div className='relative mx-auto w-full md:w-2/3'>
       <button
         className={clsx(
-          'w-full bg-gradient-to-r from-gray-500/80 to-gray-700/70 absolute',
+          'w-full bg-gradient-to-r',
           'rounded-xl p-3 text-lg text-yellow-50 font-black',
           'flex justify-center',
-          `${isRequest ? 'cursor-not-allowed' : 'cursor-pointer active:top-1'}`
+          `${
+            isRequest || disabled
+              ? 'cursor-not-allowed from-gray-500/80 to-gray-700/70'
+              : 'cursor-pointer active:top-1 from-blue-500/80 to-blue-700/70'
+          }`
         )}
         onClick={onClick}
       >

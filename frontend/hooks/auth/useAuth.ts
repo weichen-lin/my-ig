@@ -15,8 +15,8 @@ export default function useAuth() {
     axios
       .get(APIS.AUTH, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       })
       .then((res) => {
         if (res.data?.token) {

@@ -4,12 +4,11 @@ import { APIS } from 'api/apis'
 import Router from 'next/router'
 import { RegisterResponse, RegisterStatus } from 'api/errors'
 
-export type RegisterKeys = 'email' | 'password' | 'confirmed_password'
+export type RegisterKeys = 'email' | 'password'
 
 export interface RegisterBody extends Record<RegisterKeys, string> {
   email: string
   password: string
-  confirmed_password: string
 }
 
 export default function useRegister() {
@@ -17,7 +16,6 @@ export default function useRegister() {
   const [registerInfo, setRegisterInfo] = useState<RegisterBody>({
     email: '',
     password: '',
-    confirmed_password: ''
   })
   const [emailError, setEmailError] = useState(false)
   const [pwdError, setPwdError] = useState(false)
@@ -39,17 +37,12 @@ export default function useRegister() {
       return false
     }
 
-    if (!req.password || !req.confirmed_password) {
+    if (!req.password) {
       setPwdError(true)
       setErrMsg('請填寫密碼')
       return false
     }
 
-    if (req.password !== req.confirmed_password) {
-      setPwdError(true)
-      setErrMsg('密碼填寫不一致')
-      return false
-    }
     return true
   }
 
@@ -72,7 +65,7 @@ export default function useRegister() {
     axios
       .post(APIS.USER_REGISTER, {
         email: req.email,
-        password: req.password
+        password: req.password,
       })
       .then((res) => {
         resetError()
@@ -96,6 +89,8 @@ export default function useRegister() {
     setIsRequest(false)
   }
 
+  const goLogin = () => Router.push('login')
+
   return {
     isRequest,
     registerInfo,
@@ -105,6 +100,7 @@ export default function useRegister() {
     errMsg,
     handleRegister,
     isSuccess,
-    successMsg
+    successMsg,
+    goLogin,
   }
 }

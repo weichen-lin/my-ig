@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
-import { APIS } from 'api/apis'
+import { APIS, AuthErrorMsgs } from 'api/apis'
 import Router from 'next/router'
 
 export type LoginKeys = 'email' | 'password'
@@ -14,14 +14,12 @@ export default function useLogin() {
   const [isRequest, setIsRequest] = useState(false)
   const [loginInfo, setLoginInfo] = useState<LoginBody>({
     email: '',
-    password: ''
+    password: '',
   })
   const [isError, setIsError] = useState(false)
   const [errMsg, setErrMsg] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
-
-  const theOnlyOneErrMsg = '帳號或密碼錯誤，請重新輸入'
 
   const handleAuthInfo = (key: keyof LoginBody, value: string) => {
     setLoginInfo((prev) => ({ ...prev, [key]: value }))
@@ -33,13 +31,13 @@ export default function useLogin() {
 
     if (!emailRegex.test(req.email)) {
       setIsError(true)
-      setErrMsg(theOnlyOneErrMsg)
+      setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
       return false
     }
 
     if (!req.password || !req.email) {
       setIsError(true)
-      setErrMsg(theOnlyOneErrMsg)
+      setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
       return false
     }
     return true
@@ -63,7 +61,7 @@ export default function useLogin() {
     axios
       .post(APIS.USER_LOGIN, {
         email: req.email,
-        password: req.password
+        password: req.password,
       })
       .then((res) => {
         resetError()
@@ -77,10 +75,14 @@ export default function useLogin() {
       })
       .catch(() => {
         setIsError(true)
-        setErrMsg(theOnlyOneErrMsg)
+        setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
       })
 
     setIsRequest(false)
+  }
+
+  const goRegister = () => {
+    Router.push('register')
   }
 
   return {
@@ -91,6 +93,7 @@ export default function useLogin() {
     errMsg,
     handleLogin,
     isSuccess,
-    successMsg
+    successMsg,
+    goRegister,
   }
 }
