@@ -73,7 +73,7 @@ export default function Custom404() {
           transform='translate(-31.39089 -100.5)'
           fill='none'
           stroke='#2f2e41'
-          stroke-miterlimit='10'
+          strokeMiterlimit='10'
           stroke-width='2'
         ></path>
         <path
@@ -81,7 +81,7 @@ export default function Custom404() {
           transform='translate(-31.39089 -100.5)'
           fill='none'
           stroke='#2f2e41'
-          stroke-miterlimit='10'
+          strokeMiterlimit='10'
           stroke-width='2'
         ></path>
         <path
@@ -89,7 +89,7 @@ export default function Custom404() {
           transform='translate(-31.39089 -100.5)'
           fill='none'
           stroke='#2f2e41'
-          stroke-miterlimit='10'
+          strokeMiterlimit='10'
           stroke-width='2'
         ></path>
         <path
