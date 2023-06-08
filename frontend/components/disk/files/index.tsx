@@ -21,7 +21,7 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
     dragged,
     handleImageDisplay,
     handleCurrentFolder,
-    hoverHandler
+    hoverHandler,
   } = props
 
   const files = data.files ?? []

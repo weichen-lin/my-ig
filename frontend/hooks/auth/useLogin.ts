@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import axios from 'axios'
 import { APIS, AuthErrorMsgs } from 'api/apis'
 import Router from 'next/router'
@@ -43,10 +43,10 @@ export default function useLogin() {
     return true
   }
 
-  const resetError = () => {
+  const resetError = useCallback(() => {
     setIsError(false)
     setErrMsg('')
-  }
+  }, [])
 
   const handleLogin = (req: LoginBody) => {
     setIsRequest(true)

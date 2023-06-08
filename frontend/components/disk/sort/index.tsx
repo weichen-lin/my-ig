@@ -8,6 +8,10 @@ import CustomDatePicker from './date-picker'
 import type { DiskProps, DatetimeProps } from 'hooks/disk'
 import { CurrentFolder } from 'context'
 
+import { HiArrowSmUp } from 'react-icons/hi'
+import { AiOutlineUnorderedList } from 'react-icons/ai'
+import { TbLayoutDashboard } from 'react-icons/tb'
+
 const BreadCrumb = (props: {
   folderInfo: CurrentFolder
   isLastOne: boolean
@@ -49,7 +53,7 @@ export default function Sort(props: SortProps) {
     listMethod,
     handleListMethod,
     current_folder,
-    handleBreadChangeFolder
+    handleBreadChangeFolder,
   } = sortProps
 
   const current_folder_copy = [...current_folder]
@@ -61,7 +65,7 @@ export default function Sort(props: SortProps) {
       <div className='flex rounded-md hover:bg-slate-200'>
         <span className='pl-1 py-[2px] text-sm xs:text-lg'>排序</span>
         <div className={clsx('cursor-pointer', 'w-6 h-6')}>
-          <ArrowIcon
+          <HiArrowSmUp
             className={clsx(
               'w-4 h-4 xs:w-[20px] xs:h-[20px] ml-[2px] my-1 xs:my-[6px] cursor-pointer'
             )}
@@ -75,13 +79,13 @@ export default function Sort(props: SortProps) {
           onClick={handleListMethod}
         >
           {listMethod > ListMethod.Lattice ? (
-            <Lattice
+            <TbLayoutDashboard
               className={clsx(
                 'w-4 h-4 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer'
               )}
             />
           ) : (
-            <List
+            <AiOutlineUnorderedList
               className={clsx(
                 'w-4 h-4 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer'
               )}
@@ -99,7 +103,7 @@ export default function Sort(props: SortProps) {
           <BreadCrumb
             folderInfo={{
               folder_name: 'My Kushare',
-              folder_uuid: ''
+              folder_uuid: '',
             }}
             isLastOne={current_folder_copy.length === 0}
             needTruncate={false}
@@ -128,7 +132,7 @@ export default function Sort(props: SortProps) {
                 folderInfo={
                   current_folder_copy?.pop() ?? {
                     folder_name: 'My Kushare',
-                    folder_uuid: ''
+                    folder_uuid: '',
                   }
                 }
                 isLastOne={true}

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Custom404() {
+export default function Custom401() {
   return (
     <div className='w-full h-screen flex flex-col items-center justify-center'>
       <svg
@@ -317,13 +317,13 @@ export default function Custom404() {
 
       <div className='flex flex-col items-center justify-center'>
         <p className='text-5xl md:text-6xl lg:text-7xl font-bold tracking-wider text-gray-600 mt-8'>
-          404
+          401
         </p>
         <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mt-2'>
-          Server Error
+          Unauthorized
         </p>
         <p className='md:text-lg xl:text-xl text-gray-500 mt-4'>
-          此項資源不存在
+          您沒有此項操作的權限
         </p>
         <Link
           href='/home'

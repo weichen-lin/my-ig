@@ -2,15 +2,15 @@ import { Layout } from 'components/layout'
 import { AuthInput, AuthButton, AuthStatus } from 'components/auth'
 import clsx from 'clsx'
 import useLogin from 'hooks/auth/useLogin'
-import {
-  GoogleIcon,
-  FacebookIcon,
-  GithubIcon,
-  MailIcon,
-} from 'public/icon/login'
+
+import { FcGoogle } from 'react-icons/fc'
+import { IoLogoGithub, IoLogoFacebook, IoIosMail } from 'react-icons/io'
 
 const IconClass =
   'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
+
+const IconClassFacebook =
+  'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 
 export default function LoginPage() {
   const {
@@ -25,7 +25,7 @@ export default function LoginPage() {
     goRegister,
   } = useLogin()
 
-  const btnDisabled = Object.values(loginInfo).every((e) => e === '')
+  const btnDisabled = Object.values(loginInfo).some((e) => e === '')
 
   return (
     <>
@@ -54,7 +54,7 @@ export default function LoginPage() {
           }}
         />
         <AuthButton
-          label='Login'
+          label='登入'
           isRequest={isRequest || isSuccess}
           onClick={() => {
             if (btnDisabled) return
@@ -67,11 +67,11 @@ export default function LoginPage() {
             'w-full md:w-2/3 mx-auto flex justify-center items-center mt-12'
           )}
         >
-          <GoogleIcon className={IconClass} />
-          <FacebookIcon className={IconClass} />
-          <GithubIcon className={IconClass} />
+          <FcGoogle className={IconClass} />
+          <IoLogoFacebook className={IconClassFacebook} fill='#385997' />
+          <IoLogoGithub className={IconClass} />
           <div className='border-r-[1px] border-gray-500 h-full mx-8'></div>
-          <MailIcon className={IconClass} onClick={goRegister} />
+          <IoIosMail className={IconClass} onClick={goRegister} />
         </div>
       </div>
       {isError && (

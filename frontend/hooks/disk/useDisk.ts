@@ -19,7 +19,7 @@ export default function useDisk() {
   const [isFetching, setIsFetching] = useState(false)
 
   const queryParams = {
-    current_folder: diskStatus_copy.current_folder.pop()?.folder_uuid ?? ''
+    current_folder: diskStatus_copy.current_folder.pop()?.folder_uuid ?? '',
   }
 
   const handleListMethod = () => {
@@ -39,7 +39,7 @@ export default function useDisk() {
   const handleCurrentFolder = (e: CurrentFolder) => {
     setDiskStatus((prev) => ({
       ...prev,
-      current_folder: [...prev.current_folder, e]
+      current_folder: [...prev.current_folder, e],
     }))
   }
 
@@ -61,7 +61,7 @@ export default function useDisk() {
           setDiskData((prev) => ({
             ...prev,
             folders: data.folders,
-            files: data.files
+            files: data.files,
           }))
         }
       })
@@ -76,12 +76,12 @@ export default function useDisk() {
       listMethod,
       handleListMethod,
       current_folder: diskStatus.current_folder,
-      handleBreadChangeFolder
+      handleBreadChangeFolder,
     },
     diskProps: {
       diskData,
       isFetching,
-      handleCurrentFolder
-    }
+      handleCurrentFolder,
+    },
   }
 }
