@@ -143,23 +143,12 @@ export default function Sort(props: SortProps) {
             handleBreadChangeFolder={handleBreadChangeFolder}
           />
         </span>
-        <span className='hidden md:flex'>
-          {current_folder_copy.map((e, index) => (
-            <BreadCrumb
-              folderInfo={e}
-              isLastOne={index === current_folder_copy.length - 1}
-              needTruncate={index !== current_folder_copy.length - 1}
-              key={`BreadCrumb_${index}`}
-              handleBreadChangeFolder={handleBreadChangeFolder}
-            ></BreadCrumb>
-          ))}
-        </span>
-        <span className='block md:hidden'>
-          {current_folder_copy.length > 0 ? (
-            <span className='flex items-center h-10'>
-              <MdKeyboardArrowRight
-                className={clsx('w-6 h-6 my-2 ml-1 mr-2 rotate-180')}
-              />
+        {isMobile && current_folder_copy.length > 0 ? (
+          <div className='flex w-full justify-between items-center'>
+            <MdKeyboardArrowRight
+              className={clsx('w-6 h-6 my-2 ml-1 mr-2 rotate-180')}
+            />
+            <span className='flex flex-1 justify-center'>
               <BreadCrumb
                 folderInfo={
                   current_folder_copy?.pop() ?? {
@@ -172,10 +161,20 @@ export default function Sort(props: SortProps) {
                 handleBreadChangeFolder={handleBreadChangeFolder}
               ></BreadCrumb>
             </span>
-          ) : (
-            <></>
-          )}
-        </span>
+          </div>
+        ) : (
+          <span className='hidden md:flex'>
+            {current_folder_copy.map((e, index) => (
+              <BreadCrumb
+                folderInfo={e}
+                isLastOne={index === current_folder_copy.length - 1}
+                needTruncate={index !== current_folder_copy.length - 1}
+                key={`BreadCrumb_${index}`}
+                handleBreadChangeFolder={handleBreadChangeFolder}
+              ></BreadCrumb>
+            ))}
+          </span>
+        )}
       </div>
     </div>
   )

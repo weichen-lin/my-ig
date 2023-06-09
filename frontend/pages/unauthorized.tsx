@@ -74,7 +74,7 @@ export default function Custom401() {
           fill='none'
           stroke='#2f2e41'
           stroke-miterlimit='10'
-          stroke-width='2'
+          strokeWidth='2'
         ></path>
         <path
           d='M341,359.5s130-36,138,80-107,149-17,172'
@@ -82,7 +82,7 @@ export default function Custom401() {
           fill='none'
           stroke='#2f2e41'
           stroke-miterlimit='10'
-          stroke-width='2'
+          strokeWidth='2'
         ></path>
         <path
           d='M215.40233,637.78332s39.0723-10.82,41.47675,24.04449-32.15951,44.78287-5.10946,51.69566'
@@ -90,7 +90,7 @@ export default function Custom401() {
           fill='none'
           stroke='#2f2e41'
           stroke-miterlimit='10'
-          stroke-width='2'
+          strokeWidth='2'
         ></path>
         <path
           d='M810.09554,663.73988,802.218,714.03505s-38.78182,20.60284-11.51335,21.20881,155.73324,0,155.73324,0,24.84461,0-14.54318-21.81478l-7.87756-52.719Z'

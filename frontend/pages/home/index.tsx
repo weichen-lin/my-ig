@@ -56,7 +56,6 @@ export default function DiskPage() {
           />
         )}
       </div>
-      <Operator operatorProps={operatorProps} isScrollDown={isScrollDown} />
       <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}
