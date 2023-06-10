@@ -1,10 +1,10 @@
 import clsx from 'clsx'
-import { FolderIcon } from 'public/icon/disk'
+import { FcFolder } from 'react-icons/fc'
 import {
   FormatProp,
   SelectionValue,
   ListMethod,
-  SelectionStringList
+  SelectionStringList,
 } from 'hooks/disk'
 import { FolderData, CurrentFolder } from 'context'
 import type { HoverHandler } from 'hooks/disk/useGdrive'
@@ -29,10 +29,10 @@ export default function Folders(props: FoldersProps) {
     handleCurrentFolder,
     selected,
     dragged,
-    hoverHandler
+    hoverHandler,
   } = props
   return (
-    <div className='flex flex-col xs:flex-row xs:flex-wrap w-full items-center'>
+    <div className='flex flex-col xs:flex-row xs:flex-wrap w-full gap-x-4 mx-auto items-center'>
       {folders?.map((e) => (
         <FolderElement
           folderInfo={e}
@@ -55,62 +55,63 @@ function FolderElement(props: FolderProps) {
     handleCurrentFolder,
     hoverHandler,
     isSelected,
-    isDragged
+    isDragged,
   } = props
   const { id, name, last_modified_at } = folderInfo
 
   return (
     <div
       className={clsx(
-        'flex hover:bg-slate-200 cursor-pointer h-12 justify-between',
+        'flex cursor-pointer',
+        'transition-all duration-100 ease-out',
         `${
           listMethod === ListMethod.Lattice
-            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] border-2 md:ml-0 xs:mr-4 mb-2'
-            : 'w-full'
-        }`,
-        `${isSelected ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
-        `${isDragged ? 'opacity-50' : 'opacity-100'}`,
-        `${
-          listMethod === ListMethod.Lattice ? 'rounded-lg' : 'border-b-2 LIST'
-        }`,
-        'selectable'
+            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] mb-4'
+            : 'w-full flex-col'
+        }`
       )}
-      onDoubleClick={() => {
-        handleCurrentFolder({ folder_uuid: id, folder_name: name })
-      }}
-      onMouseEnter={() => {
-        if (isDragged || isSelected) return
-        hoverHandler.handleFolderOnHover(id)
-      }}
-      onMouseLeave={() => {
-        if (isDragged || isSelected) return
-        hoverHandler.handleFolderOnHover('')
-      }}
-      data-key={`selectable-folder-${id}`}
     >
-      <div className='flex selectable'>
-        <FolderIcon
-          className={clsx(
-            `${listMethod === ListMethod.Lattice ? 'w-9 p-2' : 'h-6 m-3'}`,
-            'transition-all duration-300 ease-out'
-          )}
-        />
-        <div
-          className={clsx(
-            'flex-1 text-base py-[10px] px-2 truncate',
-            'max-w-[200px] xs:max-w-[140px] md:max-w-[180px] lg:max-w-[170px]'
-          )}
-        >
-          {name}
-        </div>
-      </div>
-      {listMethod === ListMethod.Lattice ? (
-        <></>
-      ) : (
-        <div className='w-[400px] py-3 px-2 text-gray-400 text-right hidden md:block DATE'>
-          {handleTime(last_modified_at)}
-        </div>
+      {listMethod === ListMethod.Lattice ? <LatticeFolder /> : <ListFolder />}
+    </div>
+  )
+}
+
+const LatticeFolder = () => {
+  return (
+    <div
+      className={clsx(
+        'flex w-full h-12 justify-between rounded-lg items-center',
+        'hover:bg-slate-200 border-2',
+        `${false ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
+        `${false ? 'opacity-50' : 'opacity-100'}`,
+        'selectable LIST'
       )}
+    >
+      <FcFolder className='w-6 h-6 mx-2' />
+      <div className='flex-1 px-1 truncate'>
+        FOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDER
+      </div>
+    </div>
+  )
+}
+
+const ListFolder = () => {
+  const data = new Date()
+  return (
+    <div
+      className={clsx(
+        'flex h-12 items-center w-full',
+        'hover:bg-slate-200 cursor-pointer opacity-100 border-b-2',
+        'selectable LIST'
+      )}
+    >
+      <FcFolder className='w-6 h-6 mx-2' />
+      <div className='flex-1 truncate px-4'>
+        FOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDERFOLDER
+      </div>
+      <div className='w-[200px] px-2 text-gray-400 text-right hidden md:block DATE'>
+        {handleTime(data.toISOString())}
+      </div>
     </div>
   )
 }

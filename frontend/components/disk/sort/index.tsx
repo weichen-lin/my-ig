@@ -5,7 +5,7 @@ import { ListMethod } from 'hooks/disk'
 import type { DiskProps, DatetimeProps } from 'hooks/disk'
 import { CurrentFolder } from 'context'
 
-import { HiArrowSmUp } from 'react-icons/hi'
+import { HiArrowSmUp, HiOutlinePlusSm } from 'react-icons/hi'
 import { AiOutlineUnorderedList } from 'react-icons/ai'
 import { TbLayoutDashboard } from 'react-icons/tb'
 import {
@@ -16,6 +16,7 @@ import {
 import { LuPlusSquare } from 'react-icons/lu'
 
 import { useIsMobile } from 'hooks/disk'
+import { IconType } from 'react-icons/lib'
 
 const BreadCrumb = (props: {
   folderInfo: CurrentFolder
@@ -55,12 +56,10 @@ const BreadCrumbBackBone = () => {
   )
 }
 
-interface SortProps extends Pick<DiskProps, 'sortProps'> {
-  customDatePickerProps: DatetimeProps
-}
+interface SortProps extends Pick<DiskProps, 'sortProps'> {}
 
-export default function Sort(props: SortProps) {
-  const { sortProps, customDatePickerProps } = props
+export default function Manipulator(props: SortProps) {
+  const { sortProps } = props
   const {
     listMethod,
     handleListMethod,
@@ -91,41 +90,46 @@ export default function Sort(props: SortProps) {
 
   const isMobile = useIsMobile()
 
+  const Bottons = [
+    {
+      Icon: HiOutlinePlusSm,
+      message: '建立',
+      onClick: () => console.log('press button'),
+    },
+    {
+      Icon: MdOutlineDriveFolderUpload,
+      message: '上傳',
+      onClick: () => console.log('press button'),
+    },
+    {
+      Icon: MdManageSearch,
+      message: '設定過濾',
+      onClick: () => console.log('press button'),
+    },
+    {
+      Icon:
+        listMethod > ListMethod.Lattice
+          ? AiOutlineUnorderedList
+          : TbLayoutDashboard,
+      message: '調整檢視',
+      onClick: handleListMethod,
+    },
+  ]
+
   return (
     <div
-      className={clsx('w-[90%] mx-auto flex justify-around flex-wrap', 'mt-1')}
+      className={clsx(
+        'w-[90%] mx-auto flex flex-wrap mt-1',
+        `${isMobile ? 'justify-around' : 'justify-start gap-4'}`
+      )}
     >
-      {/* <div className='flex rounded-md hover:bg-slate-200'>
-        <span className='pl-1 py-[2px] text-sm xs:text-lg'>排序</span>
-        <div className={clsx('cursor-pointer', 'w-6 h-6')}>
-          <HiArrowSmUp
-            className={clsx(
-              'w-4 h-4 xs:w-[20px] xs:h-[20px] ml-[2px] my-1 xs:my-[6px] cursor-pointer'
-            )}
-          />
-        </div>
-      </div> */}
-      <div className='flex-1 flex justify-end gap-x-4'>
-        <div className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'>
-          <LuPlusSquare className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
-        </div>
-        <div className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'>
-          <MdOutlineDriveFolderUpload className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
-        </div>
-        <div className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'>
-          <MdManageSearch className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
-        </div>
-        <div
-          className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'
-          onClick={handleListMethod}
-        >
-          {listMethod > ListMethod.Lattice ? (
-            <TbLayoutDashboard className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
-          ) : (
-            <AiOutlineUnorderedList className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
-          )}
-        </div>
-      </div>
+      {Bottons.map((e) =>
+        isMobile ? (
+          <MobileButton Icon={e.Icon} onClick={e.onClick} />
+        ) : (
+          <PCButton Icon={e.Icon} onClick={e.onClick} message={e.message} />
+        )
+      )}
       <div
         className={clsx(
           'w-full mt-2 pt-2 pb-1 md:pt-0 md:pb-[6px] text-lg text-gray-500 border-b-2 md:border-none px-2 flex overflow-x-auto',
@@ -177,5 +181,38 @@ export default function Sort(props: SortProps) {
         )}
       </div>
     </div>
+  )
+}
+
+interface ButtonProps {
+  Icon: IconType
+  onClick: () => void
+  message?: string
+}
+
+const MobileButton = (props: ButtonProps) => {
+  const { Icon, onClick } = props
+
+  return (
+    <div
+      className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'
+      onClick={onClick}
+    >
+      <Icon className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
+    </div>
+  )
+}
+
+const PCButton = (props: ButtonProps) => {
+  const { Icon, onClick, message } = props
+
+  return (
+    <button
+      className='h-10 border-slate-50 hover:bg-slate-100 shadow-lg px-4 rounded-lg flex items-center justify-between gap-x-2'
+      onClick={onClick}
+    >
+      <Icon className='w-8 h-6' />
+      {message}
+    </button>
   )
 }

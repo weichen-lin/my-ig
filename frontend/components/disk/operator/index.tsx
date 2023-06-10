@@ -1,77 +1,68 @@
 import clsx from 'clsx'
-import { Plus, UploadFolder } from 'public/icon/disk'
-import Option from 'components/disk/operator/option'
-import { UploadFile, AddFolder } from 'public/icon/disk'
-import type { OperatorProps } from 'hooks/disk/useOperator'
-import AddFolderPage from './addfolder'
 
-export default function Operator(props: {
-  operatorProps: Omit<OperatorProps, 'uploadFiles'>
-  isScrollDown: boolean
-}) {
-  const { operatorProps, isScrollDown } = props
-  const { addFolderProps, operatorOpen, toogleOperatorOpen, handleFileUpload } =
-    operatorProps
+import { ListMethod } from 'hooks/disk'
+
+import type { DiskProps } from 'hooks/disk'
+
+import { HiOutlinePlusSm } from 'react-icons/hi'
+import { AiOutlineUnorderedList } from 'react-icons/ai'
+import { TbLayoutDashboard } from 'react-icons/tb'
+import { MdManageSearch, MdOutlineDriveFolderUpload } from 'react-icons/md'
+
+import { useIsMobile } from 'hooks/disk'
+
+import { PCButton, MobileButton } from './buttons'
+
+interface SortProps extends Pick<DiskProps, 'sortProps'> {}
+
+export default function Operator(props: SortProps) {
+  const { sortProps } = props
+  const { listMethod, handleListMethod } = sortProps
+
+  const isMobile = useIsMobile()
+
+  const Bottons = [
+    {
+      Icon: HiOutlinePlusSm,
+      message: '建立',
+      onClick: () => console.log('press button'),
+    },
+    {
+      Icon: MdOutlineDriveFolderUpload,
+      message: '上傳',
+      onClick: () => console.log('press button'),
+    },
+    {
+      Icon: MdManageSearch,
+      message: '設定過濾',
+      onClick: () => console.log('press button'),
+    },
+    {
+      Icon:
+        listMethod > ListMethod.Lattice
+          ? AiOutlineUnorderedList
+          : TbLayoutDashboard,
+      message: '調整檢視',
+      onClick: handleListMethod,
+    },
+  ]
 
   return (
-    <>
-      <div
-        className={clsx(
-          'fixed bottom-4 right-[5%] lg:right-[5%] lg:bottom-[5%]',
-          'transition-all duration-300 ease-linear',
-          `${isScrollDown ? 'w-0 h-0' : 'w-16 h-16'}`
-        )}
-      >
-        <div
-          className={clsx(
-            'absolute bottom-[15%] right-[5%] w-full h-full cursor-pointer bg-white/40',
-            'lg:right-[10%]',
-            'rounded-full hover:bg-gray-300',
-            'border-[1px] hover:border-gray-100',
-            'transition-all duration-700 ease-in-out',
-            'md:right-[10%]',
-            'hover:shadow-lg hover:shadow-gray-300 hover:border-none',
-            `${operatorOpen ? 'rotate-[360deg]' : ''}`
-          )}
-          onClick={toogleOperatorOpen}
-        >
-          <Plus className='w-3/5 h-3/5 m-[20%] opacity-70' />
-        </div>
-        <ul
-          className={clsx(
-            'absolute w-full h-full',
-            'bottom-[15%] right-[165%] md:right-[178%] md:bottom-[15%] 2xl:right-[170%] ',
-            'transition-all duration-300 ease-out',
-            `${operatorOpen ? 'opacity-100' : 'opacity-0'}`
-          )}
-        >
-          <Option
-            operatorOpen={operatorOpen}
-            angle={''}
-            icon={<UploadFile className='w-1/2 h-1/2 m-[25%]' />}
-            onClick={handleFileUpload}
-          />
-          <Option
-            operatorOpen={operatorOpen}
-            angle={'rotate-[45deg]'}
-            icon={
-              <UploadFolder className='w-1/2 h-1/2 m-[25%] -rotate-[45deg]' />
-            }
-            onClick={handleFileUpload}
-          />
-          <Option
-            operatorOpen={operatorOpen}
-            angle={'rotate-90'}
-            icon={<AddFolder className='w-1/2 h-1/2 m-[25%] -rotate-90' />}
-            onClick={() => {
-              if (operatorOpen) {
-                addFolderProps.toogleCreateFolder()
-              }
-            }}
-          />
-        </ul>
-      </div>
-      <AddFolderPage addFolderProps={addFolderProps} />
-    </>
+    <div
+      className={clsx(
+        'flex',
+        `${
+          isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4 mt-1'
+        }`
+      )}
+    >
+      {Bottons.map((e) =>
+        isMobile ? (
+          <MobileButton Icon={e.Icon} onClick={e.onClick} />
+        ) : (
+          <PCButton Icon={e.Icon} onClick={e.onClick} message={e.message} />
+        )
+      )}
+    </div>
   )
 }

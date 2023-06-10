@@ -4,6 +4,7 @@ import {
   Operator,
   ImagePlayground,
   UploadTasks,
+  BreadCrumbs,
 } from 'components/disk'
 
 import { LayoutAuth } from 'components/layout'
@@ -17,6 +18,103 @@ import {
   useOperator,
 } from 'hooks/disk'
 import { useScroll } from 'hooks/utils'
+
+const date = new Date()
+
+const fakeData = {
+  folders: [
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+    },
+  ],
+  files: [
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+      tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
+      description: 'test',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+      tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
+      description: 'test',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+      tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
+      description: 'test',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+      tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
+      description: 'test',
+    },
+    {
+      name: 'test',
+      url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
+      last_modified_at: date.toISOString(),
+      id: 'test-id',
+      tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
+      description: 'test',
+    },
+  ],
+}
 
 export default function DiskPage() {
   const { sortProps, diskProps } = useDisk()
@@ -35,11 +133,16 @@ export default function DiskPage() {
 
   return (
     <>
-      <Sort
-        sortProps={sortProps}
-        customDatePickerProps={customDatePickerProps}
-      />
-      <div className='overflow-y-auto' onScroll={handleOnScroll} ref={root}>
+      <div className='flex flex-wrap w-[90%] items-center mx-auto mt-1'>
+        <Operator sortProps={sortProps} />
+        <BreadCrumbs sortProps={sortProps} />
+      </div>
+
+      <div
+        className='flex-1 overflow-y-auto'
+        onScroll={handleOnScroll}
+        ref={root}
+      >
         {isFetching || hoverHandler.isMoving ? (
           <div className='flex items-center justify-center w-full h-full'>
             <Loading />
@@ -50,7 +153,7 @@ export default function DiskPage() {
             selected={selected}
             dragged={dragged}
             handleImageDisplay={infoProps.handleImageDisplay}
-            data={diskData}
+            data={fakeData}
             handleCurrentFolder={handleCurrentFolder}
             hoverHandler={hoverHandler}
           />
@@ -65,6 +168,7 @@ export default function DiskPage() {
     </>
   )
 }
+
 DiskPage.getLayout = function getLayout(page: JSX.Element) {
   return <LayoutAuth>{page}</LayoutAuth>
 }
