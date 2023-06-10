@@ -50,7 +50,7 @@ export default function Operator(props: SortProps) {
   return (
     <div
       className={clsx(
-        'flex',
+        'flex ml-3',
         `${
           isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4 mt-1'
         }`

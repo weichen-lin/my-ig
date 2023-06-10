@@ -38,14 +38,9 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
         }`
       )}
     >
-      <p
-        className={clsx(
-          'w-full xs:w-full text-gray-400',
-          `${listMethod === ListMethod.Lattice ? '' : 'hidden'}`
-        )}
-      >
-        資料夾
-      </p>
+      {listMethod === ListMethod.Lattice && (
+        <p className='w-[90%] xs:w-full text-gray-400'>資料夾</p>
+      )}
       <Folders
         listMethod={listMethod}
         folders={folders}
@@ -54,14 +49,9 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
         dragged={dragged.folders}
         hoverHandler={hoverHandler}
       />
-      <p
-        className={clsx(
-          'w-[90%] xs:w-full text-gray-400',
-          `${listMethod === ListMethod.Lattice ? '' : 'hidden'}`
-        )}
-      >
-        檔案
-      </p>
+      {listMethod === ListMethod.Lattice && (
+        <p className='w-[90%] xs:w-full text-gray-400'>檔案</p>
+      )}
       <Files
         listMethod={listMethod}
         files={files}

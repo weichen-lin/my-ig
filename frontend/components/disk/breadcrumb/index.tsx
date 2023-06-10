@@ -105,7 +105,7 @@ export default function BreadCrumbs(props: SortProps) {
         ) : (
           <>
             <span
-              className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 pr-3 rounded-lg truncate select-none font-bold py-1`}
+              className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1`}
             >
               我的 Kushare
             </span>

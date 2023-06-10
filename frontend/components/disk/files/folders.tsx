@@ -8,6 +8,7 @@ import {
 } from 'hooks/disk'
 import { FolderData, CurrentFolder } from 'context'
 import type { HoverHandler } from 'hooks/disk/useGdrive'
+import { ListBackBone } from 'components/disk/files/listbackbone'
 
 interface FolderBase extends FormatProp, HoverHandler {
   handleCurrentFolder: (e: CurrentFolder) => void
@@ -62,7 +63,7 @@ function FolderElement(props: FolderProps) {
   return (
     <div
       className={clsx(
-        'flex cursor-pointer',
+        'flex',
         'transition-all duration-100 ease-out',
         `${
           listMethod === ListMethod.Lattice
@@ -71,7 +72,11 @@ function FolderElement(props: FolderProps) {
         }`
       )}
     >
-      {listMethod === ListMethod.Lattice ? <LatticeFolder /> : <ListFolder />}
+      {listMethod === ListMethod.Lattice ? (
+        <LatticeFolderBackbone />
+      ) : (
+        <ListBackBone />
+      )}
     </div>
   )
 }
@@ -81,7 +86,7 @@ const LatticeFolder = () => {
     <div
       className={clsx(
         'flex w-full h-12 justify-between rounded-lg items-center',
-        'hover:bg-slate-200 border-2',
+        'hover:bg-slate-200 border-2 cursor-pointer',
         `${false ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
         `${false ? 'opacity-50' : 'opacity-100'}`,
         'selectable LIST'
@@ -112,6 +117,20 @@ const ListFolder = () => {
       <div className='w-[200px] px-2 text-gray-400 text-right hidden md:block DATE'>
         {handleTime(data.toISOString())}
       </div>
+    </div>
+  )
+}
+
+const LatticeFolderBackbone = () => {
+  return (
+    <div
+      className={clsx(
+        'flex w-full h-12 justify-start rounded-lg items-center cursor-wait',
+        'border-2 animate-pulse border-slate-100'
+      )}
+    >
+      <div className='w-6 h-6 mx-2 bg-slate-100 rounded-md'></div>
+      <div className='w-[140px] h-2/3 bg-slate-100 rounded-md'></div>
     </div>
   )
 }

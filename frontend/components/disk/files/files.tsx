@@ -7,6 +7,7 @@ import {
 } from 'hooks/disk'
 import { FileData } from 'context/type'
 import { FcFolder } from 'react-icons/fc'
+import { ListBackBone } from 'components/disk/files/listbackbone'
 
 interface FilesProps extends FormatProp, SelectionStringList {
   files: FileData[]
@@ -45,7 +46,7 @@ export function FileElement(props: FileProps) {
   return (
     <div
       className={clsx(
-        'flex cursor-pointer',
+        'flex',
         'transition-all duration-100 ease-out',
         `${
           listMethod === ListMethod.Lattice
@@ -54,7 +55,11 @@ export function FileElement(props: FileProps) {
         }`
       )}
     >
-      {listMethod === ListMethod.Lattice ? <LatticeFile /> : <ListFile />}
+      {listMethod === ListMethod.Lattice ? (
+        <LatticeFileBackbone />
+      ) : (
+        <ListBackBone />
+      )}
     </div>
   )
 }
@@ -111,6 +116,20 @@ const ListFile = () => {
       <div className='w-[200px] px-2 text-gray-400 text-right hidden md:block'>
         {handleTime(date.toISOString())}
       </div>
+    </div>
+  )
+}
+
+const LatticeFileBackbone = () => {
+  return (
+    <div
+      className={clsx(
+        'flex flex-col w-full h-[200px] justify-between rounded-lg items-center',
+        'border-2 animate-pulse border-slate-100 cursor-wait'
+      )}
+    >
+      <div className='h-full w-full bg-slate-100'></div>
+      <div className='truncate px-2 w-[180px] text-center h-8 my-2 bg-slate-100 rounded-xl'></div>
     </div>
   )
 }

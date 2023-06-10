@@ -133,7 +133,7 @@ export default function DiskPage() {
 
   return (
     <>
-      <div className='flex flex-wrap w-[90%] items-center mx-auto mt-1'>
+      <div className='flex flex-wrap w-[92%] items-center mx-auto mt-1'>
         <Operator sortProps={sortProps} />
         <BreadCrumbs sortProps={sortProps} />
       </div>
