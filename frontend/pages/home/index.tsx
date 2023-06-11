@@ -5,6 +5,7 @@ import {
   ImagePlayground,
   UploadTasks,
   BreadCrumbs,
+  Hinter,
 } from 'components/disk'
 
 import { LayoutAuth } from 'components/layout'
@@ -27,49 +28,49 @@ const fakeData = {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-1',
     },
     {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-2',
     },
     {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-3',
     },
     {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-4',
     },
     {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-5',
     },
     {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-6',
     },
     {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-7',
     },
     {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-8',
     },
   ],
   files: [
@@ -77,7 +78,7 @@ const fakeData = {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-9',
       tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
       description: 'test',
     },
@@ -85,7 +86,7 @@ const fakeData = {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-10',
       tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
       description: 'test',
     },
@@ -93,7 +94,7 @@ const fakeData = {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-11',
       tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
       description: 'test',
     },
@@ -101,7 +102,7 @@ const fakeData = {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-12',
       tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
       description: 'test',
     },
@@ -109,7 +110,7 @@ const fakeData = {
       name: 'test',
       url: 'https://briian.com/wp-content/uploads/2014/08/%E5%9C%96%E7%89%87%E8%A3%81%E5%88%87%E6%90%9C%E5%B0%8B.png',
       last_modified_at: date.toISOString(),
-      id: 'test-id',
+      id: 'test-id-13',
       tags: ['asdasd', 'asdasd', 'asdasd', 'asdasd', 'asdasd'],
       description: 'test',
     },
@@ -132,7 +133,7 @@ export default function DiskPage() {
   const operatorProps = useOperator()
 
   return (
-    <>
+    <div className='relative w-full h-screen'>
       <div className='flex flex-wrap w-[92%] items-center mx-auto mt-1'>
         <Operator sortProps={sortProps} />
         <BreadCrumbs sortProps={sortProps} />
@@ -165,7 +166,7 @@ export default function DiskPage() {
         infoProps={infoProps}
         tagProps={tagProps}
       />
-    </>
+    </div>
   )
 }
 

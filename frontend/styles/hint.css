@@ -1,0 +1,22 @@
+@keyframes enterAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(0) translate3d(0, 16px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes leaveAnimation {
+  0% {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, -1px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) translate3d(0, 200px, 2px);
+    background-color: green;
+  }
+}

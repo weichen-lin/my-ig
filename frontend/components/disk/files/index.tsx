@@ -30,7 +30,7 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
   return (
     <div
       className={clsx(
-        'w-[92%] mx-auto pl-[1%] flex items-center justify-start mb-12 select-none',
+        'w-[92%] mx-auto pl-[1%] flex items-center justify-start mb-12 select-none relative',
         `${
           listMethod === ListMethod.Lattice
             ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3'

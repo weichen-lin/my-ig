@@ -72,11 +72,7 @@ function FolderElement(props: FolderProps) {
         }`
       )}
     >
-      {listMethod === ListMethod.Lattice ? (
-        <LatticeFolderBackbone />
-      ) : (
-        <ListBackBone />
-      )}
+      {listMethod === ListMethod.Lattice ? <LatticeFolder /> : <ListFolder />}
     </div>
   )
 }

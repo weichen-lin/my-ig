@@ -1,6 +1,8 @@
 import Search from 'components/disk/search'
 import useAuth from 'hooks/auth/useAuth'
 import { Loading } from 'components/utils'
+import { Hinter } from 'components/disk'
+import { useIsMobile } from 'hooks/disk'
 
 interface LayoutProps {
   children: JSX.Element
@@ -8,8 +10,11 @@ interface LayoutProps {
 
 export default function LayoutAuth({ children }: LayoutProps) {
   // const { isAuth } = useAuth()
+
+  const isMobile = useIsMobile()
+
   return (
-    <>
+    <div className='relative'>
       {/* {isAuth ? (
         <div className='flex h-screen w-screen flex-col max-w-[1280px] mx-auto relative'>
           <div className='flex w-[90%] mx-auto'>
@@ -32,6 +37,7 @@ export default function LayoutAuth({ children }: LayoutProps) {
         </div>
         {children}
       </div>
-    </>
+      {!isMobile && <Hinter />}
+    </div>
   )
 }

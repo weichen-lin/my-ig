@@ -55,11 +55,7 @@ export function FileElement(props: FileProps) {
         }`
       )}
     >
-      {listMethod === ListMethod.Lattice ? (
-        <LatticeFileBackbone />
-      ) : (
-        <ListBackBone />
-      )}
+      {listMethod === ListMethod.Lattice ? <LatticeFile /> : <ListFile />}
     </div>
   )
 }

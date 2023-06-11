@@ -4,6 +4,7 @@ import useGdrive, { GdriveSelectTarget } from './useGdrive'
 import useImageDisplay, { ImageDisplayProps } from './useImageDisplay'
 import useOperator, { OperatorProps, Uploader } from './useOperator'
 import useIsMobile from './useIsMobile'
+import useHints, { Hint } from './useHints'
 import {
   FormatProp,
   SelectionStringList,
@@ -26,5 +27,7 @@ export type {
   SelectionValue,
   GdriveSelectTarget,
 }
+export type { Hint }
 export { FileType, ListMethod }
 export { useIsMobile }
+export { useHints }
