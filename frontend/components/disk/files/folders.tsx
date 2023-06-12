@@ -117,7 +117,7 @@ const ListFolder = () => {
   )
 }
 
-const LatticeFolderBackbone = () => {
+export const LatticeFolderBackbone = () => {
   return (
     <div
       className={clsx(

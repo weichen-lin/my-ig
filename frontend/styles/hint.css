@@ -17,6 +17,5 @@
   100% {
     opacity: 0;
     transform: scale(1) translate3d(0, 200px, 2px);
-    background-color: green;
   }
 }

@@ -13,11 +13,7 @@ export default function Hinter() {
           onClick={() => AddHints('test')}
         >
           {hints.map((e) => (
-            <CheckMark
-              message={`${e.message}`}
-              key={e.id}
-              timeOutId={e.timeOutId}
-            />
+            <CheckMark message={`${e.message}`} key={e.id} />
           ))}
         </ul>
       </div>

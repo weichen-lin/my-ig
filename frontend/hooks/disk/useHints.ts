@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 function generate_uuid() {
   var d = Date.now()
@@ -26,14 +26,24 @@ type Action = 'success' | 'failed'
 
 const hintsTimeout = new Map<Hint['id'], ReturnType<typeof setTimeout>>()
 
-let rememberHints: Hint[] = []
-
 export default function useHints() {
   const [hints, setHints] = useState<Hint[]>([])
 
+  const clearHint = useCallback((hintId: string) => {
+    if (hintsTimeout.has(hintId)) {
+      setHints((prev) => prev.filter((e) => e.id !== hintId))
+      clearTimeout(hintsTimeout.get(hintId))
+    }
+  }, [])
+
   const AddHints = (message: string, status: Action = 'success') => {
-    console.log(hints)
     const uuid = generate_uuid()
+
+    const timeOutId = setTimeout(() => {
+      clearHint(uuid)
+    }, 4500)
+
+    hintsTimeout.set(uuid, timeOutId)
 
     const newHint = {
       id: uuid,
@@ -42,17 +52,7 @@ export default function useHints() {
       createAt: new Date(),
     }
 
-    rememberHints = [...hints, newHint]
-
     setHints((prev) => [...prev, newHint])
-
-    const timeOutId = setTimeout(() => {
-      const index = rememberHints.findIndex((e) => e.id === uuid)
-      if (index > -1) {
-        setHints(rememberHints.filter((e) => e.id !== uuid))
-        clearTimeout(timeOutId)
-      }
-    }, 4500)
   }
 
   return { hints, AddHints }

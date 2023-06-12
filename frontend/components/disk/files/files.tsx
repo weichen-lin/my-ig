@@ -116,7 +116,7 @@ const ListFile = () => {
   )
 }
 
-const LatticeFileBackbone = () => {
+export const LatticeFileBackbone = () => {
   return (
     <div
       className={clsx(

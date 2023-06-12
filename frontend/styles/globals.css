@@ -26,3 +26,12 @@
     translateZ(calc(var(--abs-offset) * -30rem));
   filter: blur(calc(var(--abs-offset) * 0.8rem));
 }
+
+@keyframes loadingHomepage {
+  0% {
+    transform: translateX(70px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}

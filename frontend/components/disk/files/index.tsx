@@ -4,6 +4,7 @@ import Folders from 'components/disk/files/folders'
 import { FormatProp, ListMethod, GdriveSelectTarget } from 'hooks/disk'
 import { DiskDataInterface, CurrentFolder } from 'context'
 import type { HoverHandler } from 'hooks/disk/useGdrive'
+import { GdriveLikeDiskBackbonePC } from './gdrivebone'
 
 interface GdriveLikeDiskProps extends FormatProp, HoverHandler {
   data: DiskDataInterface
@@ -27,6 +28,7 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
   const files = data.files ?? []
   const folders = data.folders ?? []
 
+  return <GdriveLikeDiskBackbonePC listMethod={listMethod} />
   return (
     <div
       className={clsx(

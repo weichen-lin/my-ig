@@ -14,7 +14,7 @@ export default function LayoutAuth({ children }: LayoutProps) {
   const isMobile = useIsMobile()
 
   return (
-    <div className='relative'>
+    <div className='relative bg-slate-100'>
       {/* {isAuth ? (
         <div className='flex h-screen w-screen flex-col max-w-[1280px] mx-auto relative'>
           <div className='flex w-[90%] mx-auto'>
@@ -28,7 +28,7 @@ export default function LayoutAuth({ children }: LayoutProps) {
       ) : (
         <Loading />
       )} */}
-      <div className='flex h-screen w-screen flex-col max-w-[1280px] mx-auto relative'>
+      <div className='flex h-screen w-screen flex-col max-w-[1280px] mx-auto relative bg-white'>
         <div className='flex w-[90%] mx-auto'>
           <div className='xss:hidden md:block mr-4 h-12 mt-3'>
             <img className='h-full mx-auto' src='/icon/layout/logo.png'></img>
