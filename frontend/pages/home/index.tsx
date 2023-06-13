@@ -332,11 +332,13 @@ export default function DiskPage() {
 
   const operatorProps = useOperator()
 
+  const isLoading = true
+
   return (
     <div className='relative w-full h-screen flex flex-col'>
       <div className='flex flex-wrap w-[92%] items-center mx-auto mt-1'>
         <Operator sortProps={sortProps} />
-        <BreadCrumbs sortProps={sortProps} />
+        <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
       </div>
       <div
         className='flex-1 overflow-y-auto'
@@ -349,6 +351,7 @@ export default function DiskPage() {
           </div>
         ) : (
           <GdriveLikeDisk
+            isLoading={isLoading}
             listMethod={sortProps.listMethod}
             selected={selected}
             dragged={dragged}

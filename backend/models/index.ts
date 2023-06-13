@@ -2,7 +2,7 @@ import { File, FileCRUD } from './file.model'
 import { Folder, FolderCRUD } from './folder.model'
 import { User, userCRUD } from './user.model'
 
-const Models = { File, Folder, User }
+const Models = { User }
 
 const init_Models = async () => {
   const models = Object.entries(Models)

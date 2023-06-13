@@ -30,7 +30,7 @@ router.post('/register', async (req, res) => {
       const jwt_token = jwt.sign(
         {
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-          email: email
+          email: email,
         },
         'SECRET_TOKEN'
       )
@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
         {
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
           email: userInfo.email,
-          user_id: userInfo.user_id
+          user_id: userInfo.user_id,
         },
         'SECRET_TOKEN'
       )

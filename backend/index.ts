@@ -1,6 +1,6 @@
 import express from 'express'
 import { init_Models } from './models'
-import { User, Auth, File, Folder, Disk } from './routers'
+import { User, Auth, Folder, Disk } from './routers'
 
 const app = express()
 const port = process.env.BACKEND_PORT ?? '8080'
@@ -19,8 +19,8 @@ app.get('/', async (req, res) => {
 
 app.use('/user', User)
 app.use('/auth', Auth)
-app.use('/file', File)
-app.use('/folder', Folder)
+// app.use('/file', File)
+// app.use('/folder', Folder)
 app.use('/disk', Disk)
 
 app.listen(port, () => {

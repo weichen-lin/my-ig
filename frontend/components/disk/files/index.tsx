@@ -12,6 +12,7 @@ interface GdriveLikeDiskProps extends FormatProp, HoverHandler {
   handleImageDisplay: (e: string) => void
   selected: GdriveSelectTarget
   dragged: GdriveSelectTarget
+  isLoading: boolean
 }
 
 export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
@@ -23,13 +24,15 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
     handleImageDisplay,
     handleCurrentFolder,
     hoverHandler,
+    isLoading,
   } = props
 
   const files = data.files ?? []
   const folders = data.folders ?? []
 
-  return <GdriveLikeDiskBackbonePC listMethod={listMethod} />
-  return (
+  return isLoading ? (
+    <GdriveLikeDiskBackbonePC listMethod={listMethod} />
+  ) : (
     <div
       className={clsx(
         'w-[92%] mx-auto pl-[1%] flex items-center justify-start mb-12 select-none relative',

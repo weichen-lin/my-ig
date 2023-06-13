@@ -46,19 +46,58 @@ const BreadCrumbMobile = (props: {
   )
 }
 
-const BreadCrumbBackBone = () => {
+const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
+  const { isMobile } = props
+
   return (
-    <div className='flex items-center'>
+    <div className='flex items-center flex-1'>
+      {!isMobile && (
+        <span
+          className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1`}
+        >
+          我的 Kushare
+        </span>
+      )}
       <MdKeyboardArrowRight className='w-6 h-6' fill={'gray'} />
-      <div className='ml-4 w-[200px] h-9 bg-gray-300/20 animate-pulse rounded-2xl'></div>
+      <div className='ml-4 xss:w-[100px] xs:w-[150px] md:w-[200px] h-9 bg-gray-300/20 animate-pulse rounded-2xl'></div>
     </div>
   )
 }
 
-interface SortProps extends Pick<DiskProps, 'sortProps'> {}
+interface SortProps extends Pick<DiskProps, 'sortProps'> {
+  isLoading: boolean
+}
+
+const BreadCrumbDisplay = (props: {
+  isMobile: boolean
+  layerFolder: CurrentFolder[]
+}) => {
+  const { isMobile, layerFolder } = props
+
+  return isMobile ? (
+    <>
+      {layerFolder.length > 0 && (
+        <div className='flex items-center'>
+          <MdKeyboardArrowRight className={clsx('w-8 h-8 mr-2 rotate-180')} />
+          <BreadCrumbMobile folderInfo={layerFolder} isLastOne={false} />
+        </div>
+      )}
+    </>
+  ) : (
+    <>
+      <span
+        className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1`}
+      >
+        我的 Kushare
+      </span>
+      {layerFolder.length > 0 &&
+        layerFolder.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} />)}
+    </>
+  )
+}
 
 export default function BreadCrumbs(props: SortProps) {
-  const { sortProps } = props
+  const { sortProps, isLoading } = props
   const { current_folder, handleBreadChangeFolder } = sortProps
 
   const test = [
@@ -88,35 +127,13 @@ export default function BreadCrumbs(props: SortProps) {
   return (
     <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-4'}`)}>
       <div className='font-bold text-xl flex items-center text-gray-500'>
-        {isMobile ? (
-          <>
-            {current_folder_copy.length > 0 && (
-              <div className='flex items-center'>
-                <MdKeyboardArrowRight
-                  className={clsx('w-8 h-8 mr-2 rotate-180')}
-                />
-                <BreadCrumbMobile
-                  folderInfo={current_folder_copy}
-                  isLastOne={false}
-                />
-              </div>
-            )}
-          </>
+        {isLoading ? (
+          <BreadCrumbBackBone isMobile={isMobile} />
         ) : (
-          <>
-            <span
-              className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1`}
-            >
-              我的 Kushare
-            </span>
-            {current_folder_copy.length > 0 ? (
-              current_folder_copy.map((e) => (
-                <BreadCrumb folderInfo={e} isLastOne={false} />
-              ))
-            ) : (
-              <BreadCrumbBackBone />
-            )}
-          </>
+          <BreadCrumbDisplay
+            isMobile={isMobile}
+            layerFolder={current_folder_copy}
+          />
         )}
       </div>
     </div>
