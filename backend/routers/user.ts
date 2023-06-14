@@ -3,6 +3,7 @@ import { userCRUD } from '../models'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { User_CRUD_STATUS, Auth_STATUS } from '../errors'
+import { OauthHelper } from '../utils/oauth'
 
 interface createSignalReturn {
   status: User_CRUD_STATUS | undefined
@@ -76,6 +77,21 @@ router.post('/login', async (req, res) => {
     }
   } catch {
     res.status(400).json({ error: Auth_STATUS.UNKNOWN_ERROR })
+  }
+})
+
+// https://github.com/login/oauth/authorize?client_id=6e7a0aec3433971e0008&scope=user:email
+router.post('/oauth', async (req, res) => {
+  try {
+    const oauth = new OauthHelper({ platform: 'Github' })
+    const user = await oauth.AuthGithub()
+
+    console.log(user)
+    res.status(200).send('test')
+  } catch (e) {
+    console.log(e)
+    res.status(404).send('test')
+    return
   }
 })
 
