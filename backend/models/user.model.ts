@@ -20,10 +20,9 @@ export const User = db.define(
       primaryKey: true,
     },
     email: { type: DataTypes.STRING(100), allowNull: false },
-    password: { type: DataTypes.STRING(100), allowNull: false },
+    password: { type: DataTypes.STRING(100) },
     sault: {
       type: DataTypes.STRING(50),
-      allowNull: false,
     },
     validate_time: { type: DataTypes.DATE },
     is_deleted: { type: DataTypes.BOOLEAN },
