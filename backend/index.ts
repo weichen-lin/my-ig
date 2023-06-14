@@ -7,7 +7,7 @@ const port = process.env.BACKEND_PORT ?? '8080'
 
 //https://ithelp.ithome.com.tw/articles/10202754
 
-init_Models()
+// init_Models()
 
 app.get('/healthz', async (req, res) => {
   return res.status(200).json({ status: 0 })

@@ -5,6 +5,9 @@ import useLogin from 'hooks/auth/useLogin'
 
 import { FcGoogle } from 'react-icons/fc'
 import { IoLogoGithub, IoLogoFacebook, IoIosMail } from 'react-icons/io'
+import { GetServerSideProps } from 'next'
+
+import { Loading } from 'components/utils'
 
 const IconClass =
   'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
@@ -12,7 +15,22 @@ const IconClass =
 const IconClassFacebook =
   'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 
-export default function LoginPage() {
+interface LoginPageSSRProps {
+  query: string
+}
+
+interface OAuth {
+  Gituhb: GithubOAuth
+}
+
+interface GithubOAuth {
+  code: string
+}
+
+export default function LoginPage(props: LoginPageSSRProps) {
+  const oAuth = props.query
+  if (oAuth) return <Loading />
+
   const {
     isRequest,
     loginInfo,
@@ -100,4 +118,12 @@ export default function LoginPage() {
 
 LoginPage.getLayout = function getLayout(page: JSX.Element) {
   return <Layout>{page}</Layout>
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return {
+    props: {
+      query: context.query,
+    },
+  }
 }
