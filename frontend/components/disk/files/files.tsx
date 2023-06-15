@@ -68,7 +68,7 @@ const LatticeFile = () => {
         'border-2',
         `${false ? 'bg-blue-100' : 'hover:bg-slate-200'}`,
         `${false ? 'opacity-50' : 'opacity-100'}`,
-        'selectable LIST'
+        'selectable'
       )}
     >
       <div className={clsx('overflow-hidden', 'h-full')}>
@@ -97,7 +97,7 @@ const ListFile = () => {
         'selectable'
       )}
     >
-      <div className={clsx('overflow-hidden', 'h-6 LIST')}>
+      <div className={clsx('overflow-hidden', 'h-6')}>
         <img
           className='h-6 w-6 mx-2'
           src={

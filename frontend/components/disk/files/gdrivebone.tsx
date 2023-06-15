@@ -4,7 +4,7 @@ import { ListBackBone } from './listbackbone'
 import clsx from 'clsx'
 import { ListMethod } from 'hooks/disk'
 
-const BACKBONE_NUMBER = 10
+const BACKBONE_NUMBER = 5
 
 export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
   const { listMethod } = props
@@ -15,7 +15,7 @@ export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
         'w-[92%] mx-auto flex items-center justify-start select-none relative',
         `${
           listMethod === ListMethod.Lattice
-            ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6'
+            ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-2 mt-2'
             : 'flex-col'
         }`
       )}
@@ -50,7 +50,7 @@ const FolderBackbone = (props: { listMethod: ListMethod }) => {
         'transition-all duration-100 ease-out',
         `${
           listMethod === ListMethod.Lattice
-            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]'
+            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] my-2'
             : 'w-full flex-col'
         }`
       )}

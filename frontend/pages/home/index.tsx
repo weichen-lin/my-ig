@@ -335,12 +335,12 @@ export default function DiskPage() {
   const isLoading = false
 
   return (
-    <div className='flex flex-col flex-1'>
+    <div className='flex flex-col h-[90%]'>
       <div className='flex flex-wrap w-[92%] items-center mx-auto'>
         <Operator sortProps={sortProps} />
         <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
       </div>
-      {/* <GdriveLikeDisk
+      <GdriveLikeDisk
         isLoading={isLoading}
         listMethod={sortProps.listMethod}
         selected={selected}
@@ -349,7 +349,7 @@ export default function DiskPage() {
         data={fakeData}
         handleCurrentFolder={handleCurrentFolder}
         hoverHandler={hoverHandler}
-      /> */}
+      />
       {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}

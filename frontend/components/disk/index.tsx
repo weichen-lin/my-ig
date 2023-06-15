@@ -5,6 +5,7 @@ import ImagePlayground from 'components/disk/images'
 import UploadTasks from 'components/disk/uploadTask'
 import BreadCrumbs from 'components/disk/breadcrumb'
 import Hinter from 'components/disk/htinter'
+import Cover from 'components/disk/menu'
 
 export {
   Sort,
@@ -14,4 +15,5 @@ export {
   UploadTasks,
   BreadCrumbs,
   Hinter,
+  Cover,
 }
