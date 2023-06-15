@@ -35,10 +35,10 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
   ) : (
     <div
       className={clsx(
-        'w-[92%] mx-auto pl-[1%] flex items-center justify-start mb-12 select-none relative',
+        'overflow-y-scroll w-[92%] mx-auto pl-[1%] flex items-center justify-start mb-12 select-none bg-teal-400',
         `${
           listMethod === ListMethod.Lattice
-            ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3'
+            ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3 flex-row'
             : 'flex-col'
         }`
       )}

@@ -12,10 +12,10 @@ export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
   return (
     <div
       className={clsx(
-        'w-[92%] mx-auto pl-[1%] flex items-center justify-start mb-12 select-none relative',
+        'w-[92%] mx-auto flex items-center justify-start select-none relative',
         `${
           listMethod === ListMethod.Lattice
-            ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3'
+            ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6'
             : 'flex-col'
         }`
       )}
@@ -50,7 +50,7 @@ const FolderBackbone = (props: { listMethod: ListMethod }) => {
         'transition-all duration-100 ease-out',
         `${
           listMethod === ListMethod.Lattice
-            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] mb-4'
+            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]'
             : 'w-full flex-col'
         }`
       )}

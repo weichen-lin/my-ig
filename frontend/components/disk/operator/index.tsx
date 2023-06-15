@@ -51,9 +51,7 @@ export default function Operator(props: SortProps) {
     <div
       className={clsx(
         'flex ml-3',
-        `${
-          isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4 mt-1'
-        }`
+        `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`
       )}
     >
       {Bottons.map((e) =>

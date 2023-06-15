@@ -322,7 +322,7 @@ export default function DiskPage() {
 
   const { isFetching, diskData, handleCurrentFolder } = diskProps
 
-  const { root, selected, dragged, hoverHandler } = useGdrive()
+  const { selected, dragged, hoverHandler } = useGdrive()
 
   const { infoProps, tagProps } = useImageDisplay()
 
@@ -332,42 +332,30 @@ export default function DiskPage() {
 
   const operatorProps = useOperator()
 
-  const isLoading = true
+  const isLoading = false
 
   return (
-    <div className='relative w-full h-screen flex flex-col'>
-      <div className='flex flex-wrap w-[92%] items-center mx-auto mt-1'>
+    <div className='flex flex-col flex-1'>
+      <div className='flex flex-wrap w-[92%] items-center mx-auto'>
         <Operator sortProps={sortProps} />
         <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
       </div>
-      <div
-        className='flex-1 overflow-y-auto'
-        onScroll={handleOnScroll}
-        ref={root}
-      >
-        {isFetching || hoverHandler.isMoving ? (
-          <div className='flex items-center justify-center w-full h-full'>
-            <Loading />
-          </div>
-        ) : (
-          <GdriveLikeDisk
-            isLoading={isLoading}
-            listMethod={sortProps.listMethod}
-            selected={selected}
-            dragged={dragged}
-            handleImageDisplay={infoProps.handleImageDisplay}
-            data={fakeData}
-            handleCurrentFolder={handleCurrentFolder}
-            hoverHandler={hoverHandler}
-          />
-        )}
-      </div>
-      <UploadTasks uploaderProps={operatorProps.uploaderProps} />
+      {/* <GdriveLikeDisk
+        isLoading={isLoading}
+        listMethod={sortProps.listMethod}
+        selected={selected}
+        dragged={dragged}
+        handleImageDisplay={infoProps.handleImageDisplay}
+        data={fakeData}
+        handleCurrentFolder={handleCurrentFolder}
+        hoverHandler={hoverHandler}
+      /> */}
+      {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}
         infoProps={infoProps}
         tagProps={tagProps}
-      />
+      /> */}
     </div>
   )
 }
