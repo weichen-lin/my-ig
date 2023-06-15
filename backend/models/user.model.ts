@@ -24,6 +24,9 @@ export const User = db.define(
     sault: {
       type: DataTypes.STRING(50),
     },
+    user_name: { type: DataTypes.STRING(100) },
+    avatar_url: { type: DataTypes.TEXT },
+    oauth_id: { type: DataTypes.STRING(100) },
     validate_time: { type: DataTypes.DATE },
     is_deleted: { type: DataTypes.BOOLEAN },
     login_method: { type: DataTypes.STRING(10) },
@@ -32,10 +35,6 @@ export const User = db.define(
   },
   {
     indexes: [
-      {
-        unique: true,
-        fields: ['user_id'],
-      },
       {
         unique: true,
         fields: ['email'],

@@ -27,10 +27,7 @@ interface GithubOAuth {
   code: string
 }
 
-export default function LoginPage(props: LoginPageSSRProps) {
-  const oAuth = props.query
-  if (oAuth) return <Loading />
-
+export default function LoginPage() {
   const {
     isRequest,
     loginInfo,
@@ -118,12 +115,4 @@ export default function LoginPage(props: LoginPageSSRProps) {
 
 LoginPage.getLayout = function getLayout(page: JSX.Element) {
   return <Layout>{page}</Layout>
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  return {
-    props: {
-      query: context.query,
-    },
-  }
 }

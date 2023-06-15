@@ -1,57 +1,77 @@
 import axios from 'axios'
 
-// https://github.com/login/oauth/authorize?client_id=8d64abb54295cfe2d88a&amp;scope=user:email
-const github_client_id = '6e7a0aec3433971e0008'
+// https://github.com/login/oauth/authorize?client_id=6e7a0aec3433971e0008&amp;scope=user:email
 
 interface GithubOAuth {
   accessTokenUrl: string
   userProfileUrl: string
-  code: string
-  token: string
-  client_id: string
-  client_secret: string
+  token?: string
+  client_id?: string
+  client_secret?: string
+  code?: string
 }
 
 export class OauthHelper {
-  private githuAuth: GithubOAuth
+  private githubAuth?: GithubOAuth
+  private facebookAuth?: {}
+  private googleAuth?: {}
   private errorMsg: string
 
   constructor({ platform, ...params }: { platform: string }) {
-    this.githuAuth = {
-      token: '',
-      accessTokenUrl: 'https://github.com/login/oauth/access_token',
-      userProfileUrl: 'https://api.github.com/user',
-      client_id: '',
-      client_secret: '',
-      code: '',
+    switch (platform) {
+      case 'Github':
+        this.githubAuth = {
+          accessTokenUrl: 'https://github.com/login/oauth/access_token',
+          userProfileUrl: 'https://api.github.com/user',
+          client_id: '6e7a0aec3433971e0008',
+          client_secret: '',
+          ...params,
+        }
+        break
+      case 'Facebook':
+        this.facebookAuth = {}
+        break
+      case 'Google':
+        this.googleAuth = {}
+        break
+      default:
+        throw new Error('No match platform to do oAuth!')
     }
 
     this.errorMsg = 'Something wrong...'
   }
 
   private getGithubAccessToken = () => {
-    return axios.post(
-      this.githuAuth.accessTokenUrl,
-      {
-        client_id: '',
-        client_secret: '',
-        code: '',
-      },
-      {
-        headers: {
-          Accept: 'application/json',
+    if (this.githubAuth) {
+      return axios.post(
+        this.githubAuth.accessTokenUrl,
+        {
+          client_id: this.githubAuth.client_id,
+          client_secret: this.githubAuth.client_secret,
+          code: this.githubAuth?.code ?? '',
         },
-      }
-    )
+        {
+          headers: {
+            Accept: 'application/json',
+          },
+        }
+      )
+    } else {
+      return Promise.reject('No exist github oAuth to do Oauth!')
+    }
   }
 
   private getGithubUserProfile = (accessToken: string) => {
-    return axios.get(this.githuAuth.userProfileUrl, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `token ${accessToken}`,
-      },
-    })
+    if (this.githubAuth) {
+      return axios.get(this.githubAuth.userProfileUrl, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `token ${accessToken}`,
+        },
+      })
+    } else {
+      return Promise.reject('No exist github oAuth to do Oauth!')
+    }
   }
 
   public AuthGithub = async () => {
@@ -70,14 +90,7 @@ export class OauthHelper {
         return Promise.reject('get access token error')
       }
     } catch (e) {
-      return Promise.reject('error undefined')
+      return Promise.reject(e)
     }
   }
 }
-
-//         {
-//   "access_token": "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",
-//   "token_type": "bearer",
-//   "scope": "user:email"
-// }
-//       }

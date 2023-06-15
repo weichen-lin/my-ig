@@ -9,6 +9,14 @@ const port = process.env.BACKEND_PORT ?? '8080'
 
 // init_Models()
 
+process.env.NODE_ENV === 'develop' &&
+  app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*'])
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    res.append('Access-Control-Allow-Headers', 'Content-Type')
+    next()
+  })
+
 app.get('/healthz', async (req, res) => {
   return res.status(200).json({ status: 0 })
 })

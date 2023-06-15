@@ -1,37 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Router from 'next/router'
 
-interface OAuth {
-  Gituhb: GithubOAuth
-}
-
-interface GithubOAuth {
+export interface oAuth {
+  platform: OAuthPlatform
   code: string
 }
 
-type OAuthPlatform = 'Github' | 'Facebook' | 'Google' | 'Email'
+type OAuthPlatform = 'Github' | 'Facebook' | 'Google'
 
-const platformChecker = (arr: string[]): OAuthPlatform => {
-  const arrayChecker = arr.sort().join(',')
+export default function useOAuth(props: oAuth) {
+  const { platform, code } = props
 
-  switch (arrayChecker) {
-    case 'code':
-      return 'Github'
-    case 'facebook':
-      return 'Facebook'
-    case 'google':
-      return 'Google'
-    default:
-      return 'Email'
-  }
-}
-
-export default function useOAuth(props: OAuth['Gituhb']) {
-  const [isChecking, setIsChecking] = useState(false)
-
-  const paramsKey = Object.keys(props)
-  const platform = platformChecker(paramsKey)
-
-  return { isChecking }
+  useEffect(() => {
+    axios
+      .post('http://localhost:8080/user/oauth', { platform, code })
+      .then(() => {
+        Router.push('/home')
+      })
+      .catch(() => Router.push('/login'))
+  }, [])
 }

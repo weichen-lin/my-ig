@@ -4,7 +4,7 @@ import axios, { InternalAxiosRequestConfig } from 'axios'
 
 import { APIS } from 'api/apis'
 
-const fetcher = axios.create({ baseURL: '/' })
+const fetcher = axios.create({ baseURL: 'http://localhost:8080' })
 
 fetcher.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const accessToken = localStorage.getItem('accessToken')

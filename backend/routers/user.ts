@@ -82,8 +82,10 @@ router.post('/login', async (req, res) => {
 
 // https://github.com/login/oauth/authorize?client_id=6e7a0aec3433971e0008&scope=user:email
 router.post('/oauth', async (req, res) => {
+  const { platform, ...params } = req.body
+
   try {
-    const oauth = new OauthHelper({ platform: 'Github' })
+    const oauth = new OauthHelper({ platform: platform, ...params })
     const user = await oauth.AuthGithub()
 
     console.log(user)
