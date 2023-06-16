@@ -15,7 +15,7 @@ interface GdriveLikeDiskProps extends FormatProp, HoverHandler {
   isLoading: boolean
 }
 
-export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
+export default function GdriveLikeDisk(props: any) {
   const {
     listMethod,
     data,
@@ -50,8 +50,8 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
         listMethod={listMethod}
         folders={folders}
         handleCurrentFolder={handleCurrentFolder}
-        selected={selected.folders}
-        dragged={dragged.folders}
+        // selected={}
+        // dragged={dragged.folders}
         hoverHandler={hoverHandler}
       />
       {listMethod === ListMethod.Lattice && (
@@ -61,8 +61,8 @@ export default function GdriveLikeDisk(props: GdriveLikeDiskProps) {
         listMethod={listMethod}
         files={files}
         handleImageDisplay={handleImageDisplay}
-        selected={selected.files}
-        dragged={dragged.files}
+        // selected={selected.files}
+        // dragged={dragged.files}
       />
     </div>
   )

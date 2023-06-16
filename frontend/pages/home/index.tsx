@@ -322,7 +322,7 @@ export default function DiskPage() {
 
   const { isFetching, diskData, handleCurrentFolder } = diskProps
 
-  const { selected, dragged, hoverHandler } = useGdrive()
+  // const { selected, dragged, hoverHandler } = useGdrive()
 
   const { infoProps, tagProps } = useImageDisplay()
 
@@ -343,12 +343,12 @@ export default function DiskPage() {
       <GdriveLikeDisk
         isLoading={isLoading}
         listMethod={sortProps.listMethod}
-        selected={selected}
-        dragged={dragged}
+        // selected={selected}
+        // dragged={dragged}
         handleImageDisplay={infoProps.handleImageDisplay}
         data={fakeData}
         handleCurrentFolder={handleCurrentFolder}
-        hoverHandler={hoverHandler}
+        // hoverHandler={hoverHandler}
       />
       {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground

@@ -23,7 +23,7 @@ interface FolderProps extends FolderBase, SelectionValue {
   folderInfo: FolderData
 }
 
-export default function Folders(props: FoldersProps) {
+export default function Folders(props: any) {
   const {
     listMethod,
     folders,
@@ -40,21 +40,21 @@ export default function Folders(props: FoldersProps) {
           listMethod={listMethod}
           key={`folder_index_${e.id}`}
           handleCurrentFolder={handleCurrentFolder}
-          isSelected={selected.has(`selectable-folder-${e.id}`)}
-          isDragged={dragged.has(`selectable-folder-${e.id}`)}
-          hoverHandler={hoverHandler}
+          // isSelected={selected.has(`selectable-folder-${e.id}`)}
+          // isDragged={dragged.has(`selectable-folder-${e.id}`)}
+          // hoverHandler={hoverHandler}
         />
       ))}
     </div>
   )
 }
 
-function FolderElement(props: FolderProps) {
+function FolderElement(props: any) {
   const {
     folderInfo,
     listMethod,
     handleCurrentFolder,
-    hoverHandler,
+    // hoverHandler,
     isSelected,
     isDragged,
   } = props

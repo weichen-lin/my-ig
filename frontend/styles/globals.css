@@ -55,3 +55,41 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+/* 
+0% {
+    transform: translateX(70px);
+  }
+  100% {
+    transform: translateX(0px);
+  } */
+
+@keyframes top_to_bottom {
+  10% {
+    transform: scale(1, 0.002);
+  }
+  35% {
+    transform: scale(0.2, 0.002);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.2, 0.002);
+    opacity: 0;
+  }
+  75% {
+    transform: scale(1, 0.002);
+    opacity: 1;
+  }
+  95% {
+    transform: scale(1, 1);
+  }
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
+/* className={clsx(
+          'bg-green-100 absolute w-full h-1/2',
+          'transition-all duration-300 ease-in-out origin-bottom',
+          `${a ? '-top-1/2' : 'top-0'}`
+        )} */

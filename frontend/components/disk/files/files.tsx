@@ -19,7 +19,7 @@ interface FileProps extends FormatProp, SelectionValue {
   handleImageDisplay: (e: string) => void
 }
 
-export default function Files(props: FilesProps) {
+export default function Files(props: any) {
   const { listMethod, files, handleImageDisplay, selected, dragged } = props
 
   return (
@@ -28,8 +28,8 @@ export default function Files(props: FilesProps) {
         <FileElement
           listMethod={listMethod}
           fileInfo={e}
-          isSelected={selected.has(`selectable-file-${e.id}`)}
-          isDragged={dragged.has(`selectable-file-${e.id}`)}
+          // isSelected={selected.has(`selectable-file-${e.id}`)}
+          // isDragged={dragged.has(`selectable-file-${e.id}`)}
           handleImageDisplay={handleImageDisplay}
           key={`file_${e.id}`}
         />

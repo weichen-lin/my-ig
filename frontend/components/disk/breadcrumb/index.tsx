@@ -122,7 +122,7 @@ export default function BreadCrumbs(props: SortProps) {
 
   const current_folder_copy = [...test]
 
-  const isMobile = useIsMobile()
+  const { isMobile } = useIsMobile()
 
   return (
     <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-4'}`)}>

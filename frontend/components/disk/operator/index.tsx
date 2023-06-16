@@ -19,7 +19,7 @@ export default function Operator(props: SortProps) {
   const { sortProps } = props
   const { listMethod, handleListMethod } = sortProps
 
-  const isMobile = useIsMobile()
+  const { isMobile } = useIsMobile()
 
   const Bottons = [
     {

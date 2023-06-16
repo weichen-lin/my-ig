@@ -88,7 +88,7 @@ export default function Manipulator(props: SortProps) {
 
   const current_folder_copy = [...test]
 
-  const isMobile = useIsMobile()
+  const { isMobile } = useIsMobile()
 
   const Bottons = [
     {
