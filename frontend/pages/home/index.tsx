@@ -332,7 +332,7 @@ export default function DiskPage() {
 
   const operatorProps = useOperator()
 
-  const isLoading = false
+  const isLoading = true
 
   return (
     <div className='flex flex-col h-[90%]'>

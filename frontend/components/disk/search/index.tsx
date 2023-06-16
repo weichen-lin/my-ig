@@ -1,11 +1,9 @@
 import clsx from 'clsx'
 import { CiSearch } from 'react-icons/ci'
-import { RxHamburgerMenu } from 'react-icons/rx'
 
 export default function Search() {
   return (
     <div className='flex w-full items-center'>
-      <RxHamburgerMenu className='w-7 h-7 mr-2 p-1 hover:bg-slate-300 md:hidden' />
       <div className='relative mb-2 flex-1'>
         <div className={clsx('absolute', 'w-8 h-8 xs:w-12 xs:h-12 top-3')}>
           <CiSearch

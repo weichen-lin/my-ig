@@ -1,9 +1,11 @@
 import Search from 'components/disk/search'
 import useAuth from 'hooks/auth/useAuth'
 import { Loading } from 'components/utils'
-import { Hinter, MobileMenu, FullScreenMenu } from 'components/disk'
+import { Hinter, FullScreenMenu, MobileMenu } from 'components/disk'
 import { useIsMobile } from 'hooks/disk'
 import clsx from 'clsx'
+import { RxHamburgerMenu } from 'react-icons/rx'
+import { useState } from 'react'
 
 interface LayoutProps {
   children: JSX.Element
@@ -30,14 +32,19 @@ const LayoutAuthPC = ({ children }: LayoutProps) => {
 
 const LayoutAuthMobile = (props: { children: JSX.Element }) => {
   const { children } = props
+  const [openMenu, setOpenMenu] = useState(false)
 
   return (
     <div className='flex flex-col h-screen w-full'>
-      <div className='flex w-[90%] mx-auto h-[10%]'>
+      <div className='flex w-[90%] mx-auto h-[10%] items-center'>
+        <RxHamburgerMenu
+          className='w-7 h-7 mr-2 p-1 hover:bg-slate-300 xl:hidden md:w-9 md:h-9'
+          onClick={() => setOpenMenu((prev) => !prev)}
+        />
         <Search />
       </div>
+      <MobileMenu isOpen={openMenu} close={() => setOpenMenu(false)} />
       {children}
-      <MobileMenu />
     </div>
   )
 }
