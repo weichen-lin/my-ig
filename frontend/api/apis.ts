@@ -9,6 +9,7 @@ export enum APIS {
   UPDATE_TAG = '/api/file/tag',
   UPDATE_FILE_LOCATE = '/api/file/locate',
   UPDATE_FOLDER_LOCATE = '/api/folder/locate',
+  HEALTH_CHECK = 'healthz',
 }
 
 export enum AuthErrorMsgs {

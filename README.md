@@ -10,3 +10,15 @@ Todos:
 Future API Design:
 
 1. 資料夾與檔案分開 request (因為要實作 drag & drop)
+
+=> ICON 全面改成 react-icons
+https://react-icons.github.io/react-icons/icons?name=ci
+
+notification 工具
+https://react-hot-toast.com/
+
+alert
+https://sweetalert.js.org/docs/
+
+select
+https://juejin.cn/post/7036162494573838367

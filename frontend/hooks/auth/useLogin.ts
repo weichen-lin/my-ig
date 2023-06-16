@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import axios from 'axios'
 import { APIS, AuthErrorMsgs } from 'api/apis'
 import Router from 'next/router'
@@ -43,40 +43,45 @@ export default function useLogin() {
     return true
   }
 
-  const resetError = () => {
+  const resetError = useCallback(() => {
     setIsError(false)
     setErrMsg('')
-  }
+  }, [])
 
   const handleLogin = (req: LoginBody) => {
     setIsRequest(true)
 
-    if (!checkLoginInfo(req)) {
-      setIsRequest(false)
-      return
-    }
+    // if (!checkLoginInfo(req)) {
+    //   setIsRequest(false)
+    //   return
+    // }
 
     resetError()
 
     axios
-      .post(APIS.USER_LOGIN, {
-        email: req.email,
-        password: req.password,
-      })
-      .then((res) => {
-        resetError()
-        setIsSuccess(true)
-        setSuccessMsg('登入成功')
-        const data = res.data
-        if (data.token) localStorage.setItem('accessToken', data.token)
-        setTimeout(() => {
-          Router.push('/')
-        }, 1500)
-      })
-      .catch(() => {
-        setIsError(true)
-        setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
-      })
+      .get(`http://localhost:8080/${APIS.HEALTH_CHECK}`)
+      .then((e) => console.log(e))
+      .catch((e) => console.log(e))
+
+    // axios
+    //   .post(APIS.USER_LOGIN, {
+    //     email: req.email,
+    //     password: req.password,
+    //   })
+    //   .then((res) => {
+    //     resetError()
+    //     setIsSuccess(true)
+    //     setSuccessMsg('登入成功')
+    //     const data = res.data
+    //     if (data.token) localStorage.setItem('accessToken', data.token)
+    //     setTimeout(() => {
+    //       Router.push('/')
+    //     }, 1500)
+    //   })
+    //   .catch(() => {
+    //     setIsError(true)
+    //     setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
+    //   })
 
     setIsRequest(false)
   }

@@ -17,7 +17,7 @@ export default function RegisterPage() {
     goLogin,
   } = useRegister()
 
-  const btnDisabled = Object.values(registerInfo).every((e) => e === '')
+  const btnDisabled = Object.values(registerInfo).some((e) => e === '')
 
   return (
     <>
@@ -47,7 +47,7 @@ export default function RegisterPage() {
           }}
         />
         <AuthButton
-          label='Register'
+          label='註冊'
           isRequest={isRequest}
           onClick={() => {
             handleRegister(registerInfo)
@@ -55,12 +55,12 @@ export default function RegisterPage() {
           disabled={btnDisabled}
         />
         <p className='w-full md:w-2/3 md:mx-auto text-center mt-8 text-gray-700'>
-          Already have an account?
+          已經有帳號了嗎？
           <span
             className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100'
             onClick={goLogin}
           >
-            Sign in
+            點此登入
           </span>
         </p>
       </div>

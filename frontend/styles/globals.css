@@ -6,6 +6,7 @@
 @import './datepicker.css';
 @import './loading.css';
 @import './btn_loading.css';
+@import './hint.css';
 
 .selection-area {
   border: 1px solid rgba(20, 20, 20, 0.06);
@@ -25,3 +26,70 @@
     translateZ(calc(var(--abs-offset) * -30rem));
   filter: blur(calc(var(--abs-offset) * 0.8rem));
 }
+
+@keyframes loadingHomepage {
+  0% {
+    transform: translateX(70px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+/* 
+0% {
+    transform: translateX(70px);
+  }
+  100% {
+    transform: translateX(0px);
+  } */
+
+@keyframes top_to_bottom {
+  10% {
+    transform: scale(1, 0.002);
+  }
+  35% {
+    transform: scale(0.2, 0.002);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.2, 0.002);
+    opacity: 0;
+  }
+  75% {
+    transform: scale(1, 0.002);
+    opacity: 1;
+  }
+  95% {
+    transform: scale(1, 1);
+  }
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
+/* className={clsx(
+          'bg-green-100 absolute w-full h-1/2',
+          'transition-all duration-300 ease-in-out origin-bottom',
+          `${a ? '-top-1/2' : 'top-0'}`
+        )} */

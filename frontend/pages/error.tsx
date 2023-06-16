@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Custom404() {
+export default function Custom500() {
   return (
     <div className='w-full h-screen flex flex-col items-center justify-center'>
       <svg
@@ -73,7 +73,7 @@ export default function Custom404() {
           transform='translate(-31.39089 -100.5)'
           fill='none'
           stroke='#2f2e41'
-          strokeMiterlimit='10'
+          stroke-miterlimit='10'
           strokeWidth='2'
         ></path>
         <path
@@ -81,7 +81,7 @@ export default function Custom404() {
           transform='translate(-31.39089 -100.5)'
           fill='none'
           stroke='#2f2e41'
-          strokeMiterlimit='10'
+          stroke-miterlimit='10'
           strokeWidth='2'
         ></path>
         <path
@@ -89,7 +89,7 @@ export default function Custom404() {
           transform='translate(-31.39089 -100.5)'
           fill='none'
           stroke='#2f2e41'
-          strokeMiterlimit='10'
+          stroke-miterlimit='10'
           strokeWidth='2'
         ></path>
         <path
@@ -317,14 +317,12 @@ export default function Custom404() {
 
       <div className='flex flex-col items-center justify-center'>
         <p className='text-5xl md:text-6xl lg:text-7xl font-bold tracking-wider text-gray-600 mt-8'>
-          404
+          500
         </p>
         <p className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mt-2'>
           Server Error
         </p>
-        <p className='md:text-lg xl:text-xl text-gray-500 mt-4'>
-          此項資源不存在
-        </p>
+        <p className='md:text-lg xl:text-xl text-gray-500 mt-4'>伺服器出錯了</p>
         <Link
           href='/home'
           className='mt-12 bg-transparent hover:bg-yellow-500 text-yellow-700 hover:text-white rounded shadow hover:shadow-lg py-2 px-4 border border-yellow-700 hover:border-transparent'

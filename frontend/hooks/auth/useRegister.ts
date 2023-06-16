@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import axios from 'axios'
 import { APIS } from 'api/apis'
 import Router from 'next/router'
@@ -46,11 +46,11 @@ export default function useRegister() {
     return true
   }
 
-  const resetError = () => {
+  const resetError = useCallback(() => {
     setEmailError(false)
     setPwdError(false)
     setErrMsg('')
-  }
+  }, [])
 
   const handleRegister = (req: RegisterBody) => {
     setIsRequest(true)

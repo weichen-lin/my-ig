@@ -3,6 +3,7 @@ import { userCRUD } from '../models'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { User_CRUD_STATUS, Auth_STATUS } from '../errors'
+import { OauthHelper } from '../utils/oauth'
 
 interface createSignalReturn {
   status: User_CRUD_STATUS | undefined
@@ -30,7 +31,7 @@ router.post('/register', async (req, res) => {
       const jwt_token = jwt.sign(
         {
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-          email: email
+          email: email,
         },
         'SECRET_TOKEN'
       )
@@ -66,7 +67,7 @@ router.post('/login', async (req, res) => {
         {
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
           email: userInfo.email,
-          user_id: userInfo.user_id
+          user_id: userInfo.user_id,
         },
         'SECRET_TOKEN'
       )
@@ -76,6 +77,23 @@ router.post('/login', async (req, res) => {
     }
   } catch {
     res.status(400).json({ error: Auth_STATUS.UNKNOWN_ERROR })
+  }
+})
+
+// https://github.com/login/oauth/authorize?client_id=6e7a0aec3433971e0008&scope=user:email
+router.post('/oauth', async (req, res) => {
+  const { platform, ...params } = req.body
+
+  try {
+    const oauth = new OauthHelper({ platform: platform, ...params })
+    const user = await oauth.AuthGithub()
+
+    console.log(user)
+    res.status(200).send('test')
+  } catch (e) {
+    console.log(e)
+    res.status(404).send('test')
+    return
   }
 })
 

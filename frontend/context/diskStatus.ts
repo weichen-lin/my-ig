@@ -25,6 +25,6 @@ export const diskStatusInitState = atom<DiskStatus>({
     searchValue: '',
     current_folder: [],
     canSelect: true,
-    shouldRefresh: false
-  }
+    shouldRefresh: false,
+  },
 })

@@ -1,35 +1,47 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, literal } from 'sequelize'
 import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { User_CRUD_STATUS } from '../errors'
+
+enum LOGIN_METHOD {
+  GOOGLE = 'Google',
+  FACEBOOK = 'Facebook',
+  GITHUB = 'Github',
+  EMAIL = 'Email',
+}
 
 export const User = db.define(
   'user',
   {
     user_id: {
-      type: DataTypes.STRING(50),
-      allowNull: false
+      type: DataTypes.UUID,
+      allowNull: false,
+      defaultValue: literal(`uuid_generate_v4()`),
+      primaryKey: true,
     },
     email: { type: DataTypes.STRING(100), allowNull: false },
-    password: { type: DataTypes.STRING(256), allowNull: false },
+    password: { type: DataTypes.STRING(100) },
     sault: {
       type: DataTypes.STRING(50),
-      allowNull: false
     },
+    user_name: { type: DataTypes.STRING(100) },
+    avatar_url: { type: DataTypes.TEXT },
+    oauth_id: { type: DataTypes.STRING(100) },
     validate_time: { type: DataTypes.DATE },
-    is_deleted: { type: DataTypes.BOOLEAN }
+    is_deleted: { type: DataTypes.BOOLEAN },
+    login_method: { type: DataTypes.STRING(10) },
+    create_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
+    last_modified_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
   },
   {
     indexes: [
       {
         unique: true,
-        fields: ['user_id']
+        fields: ['email'],
       },
-      {
-        unique: true,
-        fields: ['email']
-      }
-    ]
+    ],
+    freezeTableName: true,
+    timestamps: false,
   }
 )
 
@@ -55,7 +67,7 @@ const createUser = async (email: string, password: string, sault: string) => {
       user_id: new_user_uuid,
       email: email,
       password: password,
-      sault: sault
+      sault: sault,
     })
     return User_CRUD_STATUS.SUCCESS
   } catch {
@@ -68,7 +80,7 @@ const deleteUser = async (uuid: string) => {}
 const findUser = async (email: string) => {
   return await User.findOne({
     where: { email: email },
-    attributes: ['user_id', 'email', 'password', 'sault']
+    attributes: ['user_id', 'email', 'password', 'sault'],
   })
 }
 
@@ -78,5 +90,5 @@ export const userCRUD = {
   create: createUser,
   delete: deleteUser,
   find: findUser,
-  update: updateUser
+  update: updateUser,
 }

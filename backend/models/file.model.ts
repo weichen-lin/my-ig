@@ -7,29 +7,33 @@ export const File = db.define(
   'file',
   {
     user_uuid: {
-      type: DataTypes.STRING(50)
+      type: DataTypes.STRING(50),
     },
     file_uuid: {
-      type: DataTypes.STRING(50)
+      type: DataTypes.STRING(50),
     },
     file_name: {
-      type: DataTypes.STRING(100)
+      type: DataTypes.STRING(100),
     },
     locate_at: {
-      type: DataTypes.STRING(50)
+      type: DataTypes.STRING(50),
     },
     file_url: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
     },
     tags: {
-      type: DataTypes.ARRAY(DataTypes.STRING(50))
+      type: DataTypes.ARRAY(DataTypes.STRING(50)),
     },
     description: {
-      type: DataTypes.TEXT
-    }
+      type: DataTypes.TEXT,
+    },
   },
   {
-    indexes: [{ fields: ['createdAt', 'locate_at'] }, { fields: ['user_uuid'] }]
+    indexes: [
+      { fields: ['createdAt', 'locate_at'] },
+      { fields: ['user_uuid'] },
+    ],
+    freezeTableName: true,
   }
 )
 
@@ -43,7 +47,7 @@ const createFile = async (
   const new_file_uuid = uuidv4()
   try {
     const uuidChecker = await File.findOne({
-      where: { file_uuid: new_file_uuid }
+      where: { file_uuid: new_file_uuid },
     })
     if (uuidChecker) {
       return { status: File_CRUD_STATUS.FILE_ID_DUPLICATED, uuid: '' }
@@ -58,8 +62,8 @@ const createFile = async (
       where: {
         file_name: file_name,
         user_uuid: user_uuid,
-        locate_at: current_folder
-      }
+        locate_at: current_folder,
+      },
     })
     if (fileNameChecker)
       return { status: File_CRUD_STATUS.FILE_NAME_DUPLICATED, uuid: '' }
@@ -73,7 +77,7 @@ const createFile = async (
       file_name: file_name,
       locate_at: current_folder ?? '',
       user_uuid: user_uuid,
-      file_url: file_url
+      file_url: file_url,
     })
     return { status: File_CRUD_STATUS.SUCCESS, uuid: new_file_uuid }
   } catch {
@@ -85,9 +89,9 @@ const findFiles = async (user_uuid: string, locate_at: string) => {
   return await File.findAll({
     where: {
       user_uuid: user_uuid,
-      locate_at: locate_at
+      locate_at: locate_at,
     },
-    order: [['updatedAt', 'DESC']]
+    order: [['updatedAt', 'DESC']],
   })
 }
 
@@ -100,8 +104,8 @@ const checkFileExist = async (
     where: {
       user_uuid: user_uuid,
       file_name: file_name,
-      locate_at: locate_at
-    }
+      locate_at: locate_at,
+    },
   })
 }
 
@@ -111,7 +115,7 @@ const updateFileDescription = async (
   description: string
 ) => {
   const target_file = await File.findOne({
-    where: { file_uuid, user_uuid }
+    where: { file_uuid, user_uuid },
   })
 
   if (!target_file) {
@@ -132,7 +136,7 @@ const updateTags = async (
   tag: string
 ) => {
   const target_file = await File.findOne({
-    where: { file_uuid, user_uuid }
+    where: { file_uuid, user_uuid },
   })
   if (!target_file) {
     return File_CRUD_STATUS.FAILED
@@ -167,7 +171,7 @@ const updateFileLocateAt = async (
 
   const target_file = await File.findOne({
     lock: Transaction.LOCK.UPDATE,
-    where: { file_uuid: file_uuid_need_update, user_uuid }
+    where: { file_uuid: file_uuid_need_update, user_uuid },
   })
   if (!target_file) {
     return File_CRUD_STATUS.FAILED
@@ -191,5 +195,5 @@ export const FileCRUD = {
   check: checkFileExist,
   updateDesciption: updateFileDescription,
   updateTags,
-  updateFileLocateAt
+  updateFileLocateAt,
 }

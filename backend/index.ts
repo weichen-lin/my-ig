@@ -1,13 +1,21 @@
 import express from 'express'
 import { init_Models } from './models'
-import { User, Auth, File, Folder, Disk } from './routers'
+import { User, Auth, Folder, Disk } from './routers'
 
 const app = express()
 const port = process.env.BACKEND_PORT ?? '8080'
 
 //https://ithelp.ithome.com.tw/articles/10202754
 
-init_Models()
+// init_Models()
+
+process.env.NODE_ENV === 'develop' &&
+  app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*'])
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    res.append('Access-Control-Allow-Headers', 'Content-Type')
+    next()
+  })
 
 app.get('/healthz', async (req, res) => {
   return res.status(200).json({ status: 0 })
@@ -19,8 +27,8 @@ app.get('/', async (req, res) => {
 
 app.use('/user', User)
 app.use('/auth', Auth)
-app.use('/file', File)
-app.use('/folder', Folder)
+// app.use('/file', File)
+// app.use('/folder', Folder)
 app.use('/disk', Disk)
 
 app.listen(port, () => {
