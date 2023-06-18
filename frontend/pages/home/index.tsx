@@ -8,7 +8,7 @@ import {
   Hinter,
 } from 'components/disk'
 
-import { LayoutAuth } from 'components/layout'
+import { LayoutHome } from 'components/layout'
 import { Loading } from 'components/utils'
 
 import {
@@ -361,5 +361,5 @@ export default function DiskPage() {
 }
 
 DiskPage.getLayout = function getLayout(page: JSX.Element) {
-  return <LayoutAuth>{page}</LayoutAuth>
+  return <LayoutHome>{page}</LayoutHome>
 }

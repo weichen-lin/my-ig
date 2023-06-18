@@ -5,27 +5,12 @@ import useLogin from 'hooks/auth/useLogin'
 
 import { FcGoogle } from 'react-icons/fc'
 import { IoLogoGithub, IoLogoFacebook, IoIosMail } from 'react-icons/io'
-import { GetServerSideProps } from 'next'
-
-import { Loading } from 'components/utils'
 
 const IconClass =
   'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 
 const IconClassFacebook =
   'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
-
-interface LoginPageSSRProps {
-  query: string
-}
-
-interface OAuth {
-  Gituhb: GithubOAuth
-}
-
-interface GithubOAuth {
-  code: string
-}
 
 export default function LoginPage() {
   const {

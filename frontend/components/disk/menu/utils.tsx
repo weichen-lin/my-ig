@@ -43,7 +43,8 @@ export const MenuItem = (props: MenuItemProps) => {
   )
 }
 
-export const Menu = () => {
+export const Menu = (props: { isLoading: boolean }) => {
+  const { isLoading } = props
   const [isRouting, setIsRouting] = useState(false)
 
   const handleRoute = (route: string) => {
@@ -58,15 +59,21 @@ export const Menu = () => {
 
   return (
     <>
-      <div className='rounded-full overflow-hidden w-24 h-24'>
-        <img
-          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbYWSJXT-Og2fhBhVQjF0lQtRbFaL-ZbROWQ&usqp=CAU'
-          className='w-full h-full'
-        ></img>
-      </div>
-      <p className='text-lg text-center w-full px-4 truncate max-w-[130px] 4xl:max-w-[260px]'>
-        WeiChen LinWeiChen Lin
-      </p>
+      {isLoading ? (
+        <MenuBackbone />
+      ) : (
+        <>
+          <div className='rounded-full overflow-hidden w-24 h-24'>
+            <img
+              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbYWSJXT-Og2fhBhVQjF0lQtRbFaL-ZbROWQ&usqp=CAU'
+              className='w-full h-full'
+            ></img>
+          </div>
+          <p className='text-lg text-center w-full px-4 truncate max-w-[130px] 4xl:max-w-[260px]'>
+            WeiChen LinWeiChen Lin
+          </p>
+        </>
+      )}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       <MenuItem
         Icon={CiHome}
@@ -85,10 +92,14 @@ export const Menu = () => {
       />
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       <MenuItem Icon={CiCloudOn} name='儲存空間' />
-      <meter className='w-full px-3' min='0' max='15' value='5'></meter>
-      <p className='text-gray-500 text-sm text-left w-full px-3'>
-        已使用 5 GB，共 15 GB
-      </p>
+      {!isLoading && (
+        <>
+          <meter className='w-full px-3' min='0' max='15' value='5'></meter>
+          <p className='text-gray-500 text-sm text-left w-full px-3'>
+            已使用 5 GB，共 15 GB
+          </p>
+        </>
+      )}
       <div className='flex-1'></div>
       <MenuItem
         Icon={CiLogout}
@@ -96,6 +107,17 @@ export const Menu = () => {
         handleRoute={() => handleRoute('/login')}
       />
       {isRouting && <Switcher />}
+    </>
+  )
+}
+
+const MenuBackbone = () => {
+  return (
+    <>
+      <div className='rounded-full overflow-hidden w-24 h-24'>
+        <div className='w-24 h-24 bg-slate-200 animate-pulse'></div>
+      </div>
+      <div className='w-[70%] h-8 animate-pulse bg-slate-200 my-2 rounded-xl'></div>
     </>
   )
 }

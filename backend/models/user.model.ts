@@ -3,13 +3,6 @@ import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { User_CRUD_STATUS } from '../errors'
 
-enum LOGIN_METHOD {
-  GOOGLE = 'Google',
-  FACEBOOK = 'Facebook',
-  GITHUB = 'Github',
-  EMAIL = 'Email',
-}
-
 export const User = db.define(
   'user',
   {

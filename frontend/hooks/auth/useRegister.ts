@@ -63,16 +63,20 @@ export default function useRegister() {
     resetError()
 
     axios
-      .post(APIS.USER_REGISTER, {
-        email: req.email,
-        password: req.password,
-      })
+      .post(
+        `http://localhost:8080${APIS.USER_REGISTER}`,
+        {
+          email: req.email,
+          password: req.password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         resetError()
         setIsSuccess(true)
         setSuccessMsg('註冊成功')
-        const data = res.data
-        if (data.token) localStorage.setItem('accessToken', data.token)
         setTimeout(() => {
           Router.push('/')
         }, 1500)
