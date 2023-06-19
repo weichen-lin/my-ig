@@ -1,6 +1,6 @@
 import { LayoutAuth } from 'components/layout'
 import { Loading } from 'components/utils'
-import useAuth from 'hooks/auth/useAuth'
+import { useAuth } from 'hooks/auth'
 
 export default function IndexPage() {
   const { isAuth } = useAuth()

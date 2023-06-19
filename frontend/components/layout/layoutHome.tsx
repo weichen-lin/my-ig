@@ -1,5 +1,5 @@
 import Search from 'components/disk/search'
-import useAuth from 'hooks/auth/useAuth'
+import { useAuth } from 'hooks/auth'
 import { Loading } from 'components/utils'
 import { Hinter, FullScreenMenu, MobileMenu } from 'components/disk'
 import { useIsMobile } from 'hooks/disk'

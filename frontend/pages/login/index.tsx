@@ -1,7 +1,7 @@
 import { Layout } from 'components/layout'
 import { AuthInput, AuthButton, AuthStatus } from 'components/auth'
 import clsx from 'clsx'
-import useLogin from 'hooks/auth/useLogin'
+import { useLogin } from 'hooks/auth'
 
 import { FcGoogle } from 'react-icons/fc'
 import { IoLogoGithub, IoLogoFacebook, IoIosMail } from 'react-icons/io'
@@ -17,29 +17,25 @@ export default function LoginPage() {
     isRequest,
     loginInfo,
     handleAuthInfo,
-    isError,
     errMsg,
     handleLogin,
-    isSuccess,
     successMsg,
     goRegister,
+    btnDisabled,
   } = useLogin()
-
-  const btnDisabled = Object.values(loginInfo).some((e) => e === '')
 
   return (
     <>
       <div
         className={clsx(
-          'mx-auto flex flex-col mt-[10%] xl:mt-[2%]',
-          'w-4/5 xl:w-2/5'
+          'mx-auto flex flex-col mt-[10%] sm:mt-[4%] xl:mt-[2%]',
+          'w-4/5 xl:w-2/5 gap-y-8'
         )}
       >
         <AuthInput
           label='email'
           type='text'
           value={loginInfo.email}
-          isError={isError}
           onChange={(e) => {
             handleAuthInfo('email', e.target.value)
           }}
@@ -48,23 +44,21 @@ export default function LoginPage() {
           label='password'
           type='password'
           value={loginInfo.password}
-          isError={isError}
           onChange={(e) => {
             handleAuthInfo('password', e.target.value)
           }}
         />
         <AuthButton
           label='登入'
-          isRequest={isRequest || isSuccess}
+          isRequest={isRequest}
           onClick={() => {
-            if (btnDisabled) return
             handleLogin(loginInfo)
           }}
           disabled={btnDisabled}
         />
         <div
           className={clsx(
-            'w-full md:w-2/3 mx-auto flex justify-center items-center mt-12'
+            'w-full md:w-2/3 mx-auto flex justify-center items-center mt-12 sm:mt-4 md:mt-1'
           )}
         >
           <FcGoogle className={IconClass} />
@@ -74,21 +68,21 @@ export default function LoginPage() {
           <IoIosMail className={IconClass} onClick={goRegister} />
         </div>
       </div>
-      {isError && (
+      {errMsg && (
         <div
           className={clsx(
             'mx-auto',
-            'w-4/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
+            'w-4/5 xl:w-2/5 xss:mt-[15%] xs:mt-[10%] sm:mt-[5%] md:mt-[3%]'
           )}
         >
           <AuthStatus message={errMsg} status='failed' />
         </div>
       )}
-      {isSuccess && (
+      {successMsg && (
         <div
           className={clsx(
             'mx-auto',
-            'w-2/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
+            'w-4/5 xl:w-2/5 xss:mt-[15%] xs:mt-[10%] sm:mt-[5%] md:mt-[3%]'
           )}
         >
           <AuthStatus message={successMsg} status='success' />

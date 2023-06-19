@@ -1,57 +1,60 @@
 import { Layout } from 'components/layout'
-import { AuthInput, AuthButton, AuthStatus } from 'components/auth'
+import {
+  AuthInput,
+  AuthButton,
+  AuthStatus,
+  EmailChecker,
+  PasswordChecker,
+} from 'components/auth'
 import clsx from 'clsx'
-import useRegister from 'hooks/auth/useRegister'
+import { useRegister } from 'hooks/auth'
 
 export default function RegisterPage() {
   const {
     isRequest,
     registerInfo,
     handleRegisterInfo,
-    emailError,
-    pwdError,
     errMsg,
     handleRegister,
-    isSuccess,
     successMsg,
     goLogin,
+    btnDisabled,
+    validateEmail,
+    validatePwd,
   } = useRegister()
-
-  const btnDisabled = Object.values(registerInfo).some((e) => e === '')
 
   return (
     <>
       <div
         className={clsx(
-          'mx-auto flex flex-col mt-[10%] xl:mt-[2%]',
+          'mx-auto flex flex-col mt-[10%] xl:mt-[2%] gap-y-8',
           'w-4/5 xl:w-2/5'
         )}
       >
         <AuthInput
-          isError={emailError}
           label='email'
           type='text'
           value={registerInfo.email}
+          validate={validateEmail}
           onChange={(e) => {
             handleRegisterInfo('email', e.target.value)
           }}
+          Error={EmailChecker}
         />
         <AuthInput
-          isError={pwdError}
           label='password'
           type='password'
           value={registerInfo.password}
-          passwordChecker
+          validate={validatePwd}
           onChange={(e) => {
             handleRegisterInfo('password', e.target.value)
           }}
+          Error={PasswordChecker}
         />
         <AuthButton
           label='註冊'
           isRequest={isRequest}
-          onClick={() => {
-            handleRegister(registerInfo)
-          }}
+          onClick={handleRegister}
           disabled={btnDisabled}
         />
         <p className='w-full md:w-2/3 md:mx-auto text-center mt-8 text-gray-700'>
@@ -64,7 +67,7 @@ export default function RegisterPage() {
           </span>
         </p>
       </div>
-      {emailError || pwdError ? (
+      {errMsg && (
         <div
           className={clsx(
             'mx-auto',
@@ -73,10 +76,8 @@ export default function RegisterPage() {
         >
           <AuthStatus message={errMsg} status='failed' />
         </div>
-      ) : (
-        <></>
       )}
-      {isSuccess && (
+      {successMsg && (
         <div
           className={clsx(
             'mx-auto',

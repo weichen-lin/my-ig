@@ -1,21 +1,25 @@
 import express from 'express'
-import { userCRUD } from '../models'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
-import { User_CRUD_STATUS, Auth_STATUS } from '../errors'
 import { OauthHelper } from '../utils/oauth'
-import { UserController } from '../controller/user'
-
-interface createSignalReturn {
-  status: User_CRUD_STATUS | undefined
-  token?: string
-}
+import { UserController } from '../controller/user/user'
+import { Request, Response } from 'express'
 
 const user = new UserController()
 
 const router = express.Router()
 
 router.use(express.json())
+
+const sign_jwt_token = async (req: Request, res: Response) => {
+  const user_id = res.locals.user_id
+  const token = user.assignToken(user_id)
+
+  res.cookie('my-ig-token', token, {
+    maxAge: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+    httpOnly: true,
+  })
+
+  return res.status(200).send('OK')
+}
 
 router.post(
   '/register',
@@ -33,53 +37,27 @@ router.post(
       return res.status(500).send(e)
     }
   },
-  async (req, res) => {
-    const user_id = res.locals.user_id
-    const token = user.assignToken(user_id)
-
-    res.cookie('my-ig-token', token, {
-      maxAge: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-      httpOnly: true,
-    })
-
-    return res.status(200).send('OK')
-  }
+  sign_jwt_token
 )
 
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body
-    if (!email || !password) {
-      res.status(401).json({ status: Auth_STATUS.NOT_AUTHORIZED })
+router.post(
+  '/login',
+  async (req, res, next) => {
+    try {
+      const [status, message] = await user.login(req.body)
+
+      if (status === 200) {
+        res.locals.user_id = message
+        return next()
+      } else {
+        return res.status(401).send(message)
+      }
+    } catch (e) {
+      return res.status(500).send(e)
     }
-
-    const userObj = await userCRUD.find(email)
-
-    if (!userObj) {
-      res.status(401).json({ status: Auth_STATUS.NOT_AUTHORIZED })
-      return
-    }
-
-    const userInfo = { ...userObj.dataValues }
-
-    const password_hashed = bcrypt.hashSync(password, userInfo.sault)
-    if (userInfo.password === password_hashed) {
-      const jwt_token = jwt.sign(
-        {
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-          email: userInfo.email,
-          user_id: userInfo.user_id,
-        },
-        'SECRET_TOKEN'
-      )
-      res.status(200).json({ status: Auth_STATUS.AUTHORIZED, token: jwt_token })
-    } else {
-      res.status(401).json({ status: Auth_STATUS.NOT_AUTHORIZED })
-    }
-  } catch {
-    res.status(400).json({ error: Auth_STATUS.UNKNOWN_ERROR })
-  }
-})
+  },
+  sign_jwt_token
+)
 
 router.post('/oauth', async (req, res) => {
   const { platform, ...params } = req.body

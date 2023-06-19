@@ -2,7 +2,7 @@ const compareArr = <T, V>(arr1: T[], arr2: V[]) => {
   return JSON.stringify(arr1.sort()) === JSON.stringify(arr2.sort())
 }
 
-const ErrorMsg = [401, 'Invalid arguments']
+const ErrorArgumentsMsg = [403, 'Invalid arguments']
 
 export type ControllerReturnMsg = [number, string]
 
@@ -15,12 +15,12 @@ export const BodyChecker = (body: Record<string, string>) => {
       const paramKeys = Object.keys(param)
 
       if (!compareArr(need_verified_keys, paramKeys)) {
-        return ErrorMsg
+        return ErrorArgumentsMsg
       }
 
       Object.entries(body).forEach(([key, value]) => {
         if (typeof param[key] !== value) {
-          return ErrorMsg
+          return ErrorArgumentsMsg
         }
       })
 

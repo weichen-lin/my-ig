@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next'
 
 import { Loading } from 'components/utils'
 
-import useOAuth, { oAuth } from 'hooks/auth/useOAuth'
+import { useOAuth, oAuth } from 'hooks/auth'
 
 interface LoginPageSSRProps {
   query: oAuth
