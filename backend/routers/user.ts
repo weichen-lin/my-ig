@@ -2,6 +2,7 @@ import express from 'express'
 import { OauthHelper } from '../utils/oauth'
 import { UserController } from '../controller/user/user'
 import { Request, Response } from 'express'
+import { verify_token } from './utils'
 
 const user = new UserController()
 
@@ -20,6 +21,12 @@ const sign_jwt_token = async (req: Request, res: Response) => {
 
   return res.status(200).send('OK')
 }
+
+router.get('/userinfo', verify_token, async (req, res) => {
+  const [status, info] = await user.getUserInfo(res.locals.user_id)
+
+  return res.status(status).json(info)
+})
 
 router.post(
   '/register',

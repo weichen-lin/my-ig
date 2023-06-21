@@ -7,6 +7,7 @@ import {
   BreadCrumbs,
   Hinter,
 } from 'components/disk'
+import { GetServerSideProps } from 'next'
 
 import { LayoutHome } from 'components/layout'
 import { Loading } from 'components/utils'
@@ -362,4 +363,13 @@ export default function DiskPage() {
 
 DiskPage.getLayout = function getLayout(page: JSX.Element) {
   return <LayoutHome>{page}</LayoutHome>
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookie = context.req.headers.cookie
+  return {
+    props: {
+      te: 'et',
+    },
+  }
 }

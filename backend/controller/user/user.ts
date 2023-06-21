@@ -99,7 +99,7 @@ export class UserController {
       return [401, ErrorMsg.Unauthorized.tw]
     }
 
-    const token = bearerHeader?.split('Bearer ')
+    const token = bearerHeader.split('Bearer ')
     if (token.length !== 2) {
       return [401, ErrorMsg.Unauthorized.tw]
     }
@@ -122,5 +122,16 @@ export class UserController {
     } catch {
       return [401, ErrorMsg.Unauthorized.tw]
     }
+  }
+
+  async getUserInfo(id: string): Promise<[number, any]> {
+    const user = await User.findOne({ where: { user_id: id } })
+
+    if (!user) return [401, ErrorMsg.Unauthorized.tw]
+
+    const { user_id, email, user_name, avatar_url, login_method } =
+      user.dataValues
+
+    return [200, { user_id, email, user_name, avatar_url, login_method }]
   }
 }

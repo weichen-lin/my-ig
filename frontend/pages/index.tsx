@@ -1,13 +1,19 @@
-import { LayoutAuth } from 'components/layout'
 import { Loading } from 'components/utils'
-import { useAuth } from 'hooks/auth'
+import { GetServerSideProps } from 'next'
+import { useCookie } from 'hooks/utils'
+import LayoutTest from 'components/layout/LayoutTest'
 
 export default function IndexPage() {
-  const { isAuth } = useAuth()
-
   return <Loading />
 }
 
-IndexPage.getLayout = function getLayout(page: JSX.Element) {
-  return <LayoutAuth>{page}</LayoutAuth>
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookie = req.headers.cookie
+  const token = useCookie({ cookie, name: 'my-ig-token' })
+
+  return {
+    props: {
+      token,
+    },
+  }
 }

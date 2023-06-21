@@ -11,6 +11,7 @@ export const verify_token = async (
   const bearerHeader = req.headers.authorization
   const [status, message] = user.verifyToken(bearerHeader)
   if (status !== 200) {
+    res.clearCookie('my-ig-token')
     return res.status(status).send(message)
   } else {
     res.locals.user_id = message

@@ -1,12 +1,15 @@
 import Search from 'components/disk/search'
 import { useIsMobile } from 'hooks/disk'
 import { RxHamburgerMenu } from 'react-icons/rx'
+import { IgProvider } from 'context/IgContext'
+import { GetServerSideProps } from 'next'
 
 interface LayoutProps {
   children: JSX.Element
+  token: string | null
 }
 
-const LayoutAuthPC = ({ children }: LayoutProps) => {
+const LayoutAuthPC = ({ children }: { children: JSX.Element }) => {
   return (
     <div className='bg-slate-300 flex gap-x-1 md:pt-[1%] h-screen w-full justify-center'>
       <div className='flex-col md:h-[98%] bg-white md:rounded-lg flex gap-y-4 max-w-[1280px] w-full'>
@@ -37,12 +40,18 @@ const LayoutAuthMobile = (props: { children: JSX.Element }) => {
 }
 
 export default function LayoutAuth(props: LayoutProps) {
-  const { children } = props
+  const { children, token } = props
   const { isFullScreen } = useIsMobile()
 
-  return isFullScreen ? (
-    <LayoutAuthPC children={children} />
-  ) : (
-    <LayoutAuthMobile children={children} />
+  if (!token) return null
+
+  return (
+    <IgProvider>
+      {isFullScreen ? (
+        <LayoutAuthPC children={children} />
+      ) : (
+        <LayoutAuthMobile children={children} />
+      )}
+    </IgProvider>
   )
 }

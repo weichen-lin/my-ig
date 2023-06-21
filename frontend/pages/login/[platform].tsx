@@ -20,11 +20,3 @@ export default function OauthPage(props: LoginPageSSRProps) {
 OauthPage.getLayout = function getLayout(page: JSX.Element) {
   return <Layout>{page}</Layout>
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  return {
-    props: {
-      query,
-    },
-  }
-}
