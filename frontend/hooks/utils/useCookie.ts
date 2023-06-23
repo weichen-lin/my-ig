@@ -3,6 +3,10 @@ interface CookieParser {
   name: string
 }
 
+export interface TokenProp {
+  token: string | null
+}
+
 export default function useCookie({ cookie, name }: CookieParser) {
   if (!cookie) return null
   const value = `; ${cookie}`

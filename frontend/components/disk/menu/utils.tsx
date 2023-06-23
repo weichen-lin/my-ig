@@ -6,8 +6,9 @@ import {
   CiCloudOn,
   CiLogout,
 } from 'react-icons/ci'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import Router from 'next/router'
+import { IgContext } from 'context'
 
 export interface MenuItemProps {
   Icon: IconType
@@ -43,9 +44,12 @@ export const MenuItem = (props: MenuItemProps) => {
   )
 }
 
-export const Menu = (props: { isLoading: boolean }) => {
-  const { isLoading } = props
+export const Menu = () => {
   const [isRouting, setIsRouting] = useState(false)
+
+  const kushareContext = useContext(IgContext)
+
+  const userInfo = kushareContext?.userProfile
 
   const handleRoute = (route: string) => {
     setIsRouting(true)
@@ -59,18 +63,23 @@ export const Menu = (props: { isLoading: boolean }) => {
 
   return (
     <>
-      {isLoading ? (
+      {!kushareContext?.isAuth ? (
         <MenuBackbone />
       ) : (
         <>
           <div className='rounded-full overflow-hidden w-24 h-24'>
             <img
-              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbYWSJXT-Og2fhBhVQjF0lQtRbFaL-ZbROWQ&usqp=CAU'
+              src={
+                userInfo?.avatar_url ??
+                'https://www.computerhope.com/jargon/g/guest-user.png'
+              }
               className='w-full h-full'
             ></img>
           </div>
           <p className='text-lg text-center w-full px-4 truncate max-w-[130px] 4xl:max-w-[260px]'>
-            WeiChen LinWeiChen Lin
+            {userInfo?.user_name ?? (
+              <span className='text-gray-500 text-sm'>未設定使用者名稱</span>
+            )}
           </p>
         </>
       )}
@@ -92,7 +101,7 @@ export const Menu = (props: { isLoading: boolean }) => {
       />
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       <MenuItem Icon={CiCloudOn} name='儲存空間' />
-      {!isLoading && (
+      {kushareContext?.isAuth && (
         <>
           <meter className='w-full px-3' min='0' max='15' value='5'></meter>
           <p className='text-gray-500 text-sm text-left w-full px-3'>

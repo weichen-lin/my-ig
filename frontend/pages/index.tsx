@@ -1,10 +1,16 @@
 import { Loading } from 'components/utils'
 import { GetServerSideProps } from 'next'
 import { useCookie } from 'hooks/utils'
-import LayoutTest from 'components/layout/LayoutTest'
+import { LayoutCheckToken } from 'components/layout'
 
-export default function IndexPage() {
-  return <Loading />
+export default function IndexPage(props: { token: string }) {
+  const { token } = props
+
+  return (
+    <LayoutCheckToken token={token}>
+      <Loading />
+    </LayoutCheckToken>
+  )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {

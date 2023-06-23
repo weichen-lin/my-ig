@@ -9,8 +9,10 @@ import {
 } from 'components/disk'
 import { GetServerSideProps } from 'next'
 
-import { LayoutHome } from 'components/layout'
+import { TokenChechecker, LayoutHome } from 'components/layout'
+import { IgProvider } from 'context'
 import { Loading } from 'components/utils'
+import { useCookie, TokenProp } from 'hooks/utils'
 
 import {
   useDisk,
@@ -318,7 +320,9 @@ const fakeData = {
   ],
 }
 
-export default function DiskPage() {
+export default function DiskPage(props: TokenProp) {
+  const { token } = props
+
   const { sortProps, diskProps } = useDisk()
 
   const { isFetching, diskData, handleCurrentFolder } = diskProps
@@ -329,47 +333,49 @@ export default function DiskPage() {
 
   const { isScrollDown, handleOnScroll } = useScroll()
 
-  const customDatePickerProps = useDatetime()
+  // const customDatePickerProps = useDatetime()
 
-  const operatorProps = useOperator()
+  // const operatorProps = useOperator()
 
   const isLoading = true
 
   return (
-    <div className='flex flex-col h-[90%]'>
-      <div className='flex flex-wrap w-[92%] items-center mx-auto'>
-        <Operator sortProps={sortProps} />
-        <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
-      </div>
-      <GdriveLikeDisk
-        isLoading={isLoading}
-        listMethod={sortProps.listMethod}
-        // selected={selected}
-        // dragged={dragged}
-        handleImageDisplay={infoProps.handleImageDisplay}
-        data={fakeData}
-        handleCurrentFolder={handleCurrentFolder}
-        // hoverHandler={hoverHandler}
-      />
-      {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
+    <IgProvider token={token}>
+      <LayoutHome>
+        <div className='flex flex-col h-[90%]'>
+          <div className='flex flex-wrap w-[92%] items-center mx-auto'>
+            <Operator sortProps={sortProps} />
+            <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
+          </div>
+          <GdriveLikeDisk
+            isLoading={isLoading}
+            listMethod={sortProps.listMethod}
+            // selected={selected}
+            // dragged={dragged}
+            handleImageDisplay={infoProps.handleImageDisplay}
+            data={fakeData}
+            handleCurrentFolder={handleCurrentFolder}
+            // hoverHandler={hoverHandler}
+          />
+          {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}
         infoProps={infoProps}
         tagProps={tagProps}
       /> */}
-    </div>
+        </div>
+      </LayoutHome>
+    </IgProvider>
   )
 }
 
-DiskPage.getLayout = function getLayout(page: JSX.Element) {
-  return <LayoutHome>{page}</LayoutHome>
-}
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookie = req.headers.cookie
+  const token = useCookie({ cookie, name: 'my-ig-token' })
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookie = context.req.headers.cookie
   return {
     props: {
-      te: 'et',
+      token,
     },
   }
 }

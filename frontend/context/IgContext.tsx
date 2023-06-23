@@ -1,29 +1,66 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
+import { Loading } from 'components/utils'
+import Router from 'next/router'
+import axios from 'axios'
 
-interface User {
+export interface User {
   user_id: string
   email: string
   user_name: string
   login_method: string
+  avatar_url: string
 }
 
 interface IgType {
   userProfile?: User
   handleUserProfile: (user: User) => void
+  isAuth: boolean
 }
 
-const IgContext = createContext<IgType | null>(null)
+interface TokenCheckerProps {
+  children: JSX.Element
+  token: string | null
+}
 
-export const IgProvider = ({ children }: { children: JSX.Element }) => {
+export const IgContext = createContext<IgType | null>(null)
+
+export const IgProvider = (props: TokenCheckerProps) => {
+  const { children, token } = props
+
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
+  const [isAuth, setIsAuth] = useState(false)
+
+  useEffect(() => {
+    const authUser = () => {
+      if (!token) {
+        return Router.push('/login')
+      }
+
+      return axios
+        .get('http://localhost:8080/user/userinfo', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          setIsAuth(true)
+          setUserProfile(res.data)
+        })
+        .catch(() => {
+          Router.push('/login')
+        })
+    }
+    authUser()
+  }, [])
 
   const handleUserProfile = (user: User) => {
     setUserProfile(user)
   }
 
-  return (
-    <IgContext.Provider
-      value={{ userProfile, handleUserProfile }}
-    ></IgContext.Provider>
-  )
+  return isAuth ? (
+    <IgContext.Provider value={{ userProfile, handleUserProfile, isAuth }}>
+      {children}
+    </IgContext.Provider>
+  ) : null
 }

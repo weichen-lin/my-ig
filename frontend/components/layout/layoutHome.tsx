@@ -5,17 +5,19 @@ import { Hinter, FullScreenMenu, MobileMenu } from 'components/disk'
 import { useIsMobile } from 'hooks/disk'
 import clsx from 'clsx'
 import { RxHamburgerMenu } from 'react-icons/rx'
-import { useCallback, useState } from 'react'
-
+import { useCallback, useState, useContext } from 'react'
+import { IgContext } from 'context'
 interface LayoutProps {
   children: JSX.Element
 }
 
 const LayoutAuthPC = ({ children }: LayoutProps) => {
-  const isLoading = true
+  const user = useContext(IgContext)
+
+  const isLoading = false
   return (
     <div className='bg-slate-300 flex gap-x-1 md:pt-[1%] h-screen w-full justify-center'>
-      <FullScreenMenu isLoading={isLoading} />
+      <FullScreenMenu />
       <div className='flex-col md:h-[98%] bg-white md:rounded-lg flex gap-y-4 max-w-[1280px] w-full'>
         <div className='flex w-[90%] mx-auto h-[10%]'>
           <div className='xss:hidden md:block mr-4 h-12 mt-3'>
@@ -25,7 +27,7 @@ const LayoutAuthPC = ({ children }: LayoutProps) => {
         </div>
         {children}
       </div>
-      <FullScreenMenu isLoading={isLoading} />
+      <FullScreenMenu />
     </div>
   )
 }

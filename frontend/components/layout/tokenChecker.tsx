@@ -3,8 +3,8 @@ import Router from 'next/router'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-export default function LayoutTest(props: {
-  token: string
+export default function LayoutCheckToken(props: {
+  token: string | null
   children: JSX.Element
 }) {
   const { token, children } = props
@@ -25,15 +25,13 @@ export default function LayoutTest(props: {
         })
         .then(() => {
           setIsAuth(true)
-          Router.push('/login')
         })
         .catch(() => {
-          setIsAuth(true)
           Router.push('/login')
         })
     }
     authUser()
   }, [])
 
-  return isAuth ? true : <Loading />
+  return isAuth ? children : <Loading />
 }

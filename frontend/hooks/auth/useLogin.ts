@@ -55,7 +55,7 @@ export default function useLogin() {
   }
 
   const btnDisabled =
-    Object.values(loginInfo).every((e) => e === '') || isRequest
+    Object.values(loginInfo).some((e) => e === '') || isRequest
 
   return {
     isRequest,
