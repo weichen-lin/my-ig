@@ -22,7 +22,7 @@ export default function useOperator() {
 
   const [uploader, setUploader] = useState<Uploader>({
     isOpen: false,
-    uploadfiles: new Map()
+    uploadfiles: new Map(),
   })
   const [creatFolderOpen, setCreateFolderOpen] = useState(false)
   const [operatorOpen, setOperatorOpen] = useState(false)
@@ -44,13 +44,13 @@ export default function useOperator() {
     setIsRequesting(true)
     const current_folder = diskStatus_copy.current_folder.pop() ?? {
       folder_uuid: '',
-      folder_name: ''
+      folder_name: '',
     }
 
     fetcher
       .post(APIS.FOLDER, {
         folder_name,
-        current_folder: current_folder.folder_uuid
+        current_folder: current_folder.folder_uuid,
       })
       .then((res) => {
         if (res.status === 200) {
@@ -64,9 +64,9 @@ export default function useOperator() {
               {
                 id: res.data.id,
                 name: folderName,
-                last_modified_at: '2022/12/10'
-              }
-            ]
+                last_modified_at: '2022/12/10',
+              },
+            ],
           }))
         }
       })
@@ -89,7 +89,7 @@ export default function useOperator() {
       const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
       setUploader((prev) => ({
         ...prev,
-        isOpen: true
+        isOpen: true,
       }))
       await Promise.all(
         FileHandlers.map(async (filehandle, index) => {
@@ -100,7 +100,7 @@ export default function useOperator() {
               Array.from(
                 prev.uploadfiles.set(file.name, FileUploadStatus.LOADING)
               )
-            )
+            ),
           }))
           const imgReader = new FileReader()
           imgReader.readAsDataURL(file)
@@ -117,8 +117,8 @@ export default function useOperator() {
               fetcher
                 .post(APIS.FILE, formData, {
                   headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
+                    'Content-Type': 'multipart/form-data',
+                  },
                 })
                 .then((res) => {
                   setDiskData((prev) => ({
@@ -131,9 +131,9 @@ export default function useOperator() {
                         last_modified_at: '',
                         id: res?.data?.id,
                         tags: [''],
-                        description: ''
-                      }
-                    ]
+                        description: '',
+                      },
+                    ],
                   }))
                   setUploader((prev) => ({
                     ...prev,
@@ -144,7 +144,7 @@ export default function useOperator() {
                           FileUploadStatus.SUCCESS
                         )
                       )
-                    )
+                    ),
                   }))
                 })
                 .catch(() =>
@@ -154,7 +154,7 @@ export default function useOperator() {
                       Array.from(
                         prev.uploadfiles.set(file.name, FileUploadStatus.FAILED)
                       )
-                    )
+                    ),
                   }))
                 )
             }
@@ -186,11 +186,11 @@ export default function useOperator() {
       folderName,
       handleFolderName,
       createFolder,
-      errorMsg
+      errorMsg,
     },
     operatorOpen,
     toogleOperatorOpen,
     handleFileUpload,
-    uploaderProps: { uploader, handleUploaderClose }
+    uploaderProps: { uploader, handleUploaderClose },
   }
 }

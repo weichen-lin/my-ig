@@ -44,4 +44,4 @@ dist
 # env 
 .env
 
-/gcs/credential.json
+**/*/credential.json

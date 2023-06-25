@@ -1,6 +1,6 @@
 import express from 'express'
 import { OauthHelper } from '../utils/oauth'
-import { UserController } from '../controller/user/user'
+import { UserController } from '../controller/user'
 import { Request, Response } from 'express'
 import { verify_token } from './utils'
 

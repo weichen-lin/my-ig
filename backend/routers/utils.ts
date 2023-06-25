@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { UserController } from '../controller/user/user'
+import { UserController } from '../controller/user'
 
 const user = new UserController()
 

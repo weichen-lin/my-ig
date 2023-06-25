@@ -84,7 +84,7 @@ export class UserController {
     }
   }
 
-  assignToken(user_id: string) {
+  public assignToken(user_id: string) {
     return jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
@@ -94,12 +94,13 @@ export class UserController {
     )
   }
 
-  verifyToken(bearerHeader: string | undefined): [number, string] {
+  public verifyToken(bearerHeader: string | undefined): [number, string] {
     if (!bearerHeader) {
       return [401, ErrorMsg.Unauthorized.tw]
     }
 
     const token = bearerHeader.split('Bearer ')
+
     if (token.length !== 2) {
       return [401, ErrorMsg.Unauthorized.tw]
     }
