@@ -6,15 +6,12 @@ import { useIsMobile } from 'hooks/disk'
 import clsx from 'clsx'
 import { RxHamburgerMenu } from 'react-icons/rx'
 import { useCallback, useState, useContext } from 'react'
-import { IgContext } from 'context'
+
 interface LayoutProps {
   children: JSX.Element
 }
 
-const LayoutAuthPC = ({ children }: LayoutProps) => {
-  const user = useContext(IgContext)
-
-  const isLoading = false
+const LayoutHomePC = ({ children }: LayoutProps) => {
   return (
     <div className='bg-slate-300 flex gap-x-1 md:pt-[1%] h-screen w-full justify-center'>
       <FullScreenMenu />
@@ -32,7 +29,7 @@ const LayoutAuthPC = ({ children }: LayoutProps) => {
   )
 }
 
-const LayoutAuthMobile = (props: { children: JSX.Element }) => {
+const LayoutHomeMobile = (props: { children: JSX.Element }) => {
   const { children } = props
   const [openMenu, setOpenMenu] = useState(false)
 
@@ -60,8 +57,8 @@ export default function LayoutHome(props: LayoutProps) {
   const { isFullScreen } = useIsMobile()
 
   return isFullScreen ? (
-    <LayoutAuthPC children={children} />
+    <LayoutHomePC children={children} />
   ) : (
-    <LayoutAuthMobile children={children} />
+    <LayoutHomeMobile children={children} />
   )
 }

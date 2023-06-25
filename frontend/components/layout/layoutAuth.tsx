@@ -46,7 +46,7 @@ export default function LayoutAuth(props: LayoutProps) {
   if (!token) return null
 
   return (
-    <IgProvider>
+    <IgProvider token={token}>
       {isFullScreen ? (
         <LayoutAuthPC children={children} />
       ) : (

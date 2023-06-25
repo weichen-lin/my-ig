@@ -9,11 +9,13 @@ import {
 import { useState, useContext } from 'react'
 import Router from 'next/router'
 import { IgContext } from 'context'
+import clsx from 'clsx'
 
 export interface MenuItemProps {
   Icon: IconType
   name: string
   handleRoute?: () => void
+  current?: boolean
 }
 
 export const Switcher = () => {
@@ -28,18 +30,21 @@ export const Switcher = () => {
 }
 
 export const MenuItem = (props: MenuItemProps) => {
-  const { Icon, name, handleRoute } = props
+  const { Icon, name, handleRoute, current } = props
   return (
     <div
-      className='w-full py-2 flex justify-start items-center hover:bg-slate-200 hover:cursor-pointer'
+      className={clsx(
+        'w-[97.5%] py-2 flex justify-start items-center hover:bg-slate-200 hover:cursor-pointer',
+        `${current ? 'w-[100%] border-r-4 border-blue-500 pl-[1.25%]' : ''}`
+      )}
       onClick={() => {
         if (handleRoute) {
           handleRoute()
         }
       }}
     >
-      <Icon className='w-7 h-7 mx-3' />
-      <span>{name}</span>
+      <Icon className='w-7 h-7 mx-3' fill={`${current ? '#3B82F6' : ''}`} />
+      <span className={`${current ? 'text-blue-500' : ''}`}>{name}</span>
     </div>
   )
 }
@@ -61,6 +66,24 @@ export const Menu = () => {
     }, 2000)
   }
 
+  const Menus = [
+    {
+      Icon: CiHome,
+      name: '首頁',
+      pathname: 'home',
+    },
+    {
+      Icon: CiShare2,
+      name: '分享',
+      pathname: 'share',
+    },
+    {
+      Icon: CiSettings,
+      name: '設定',
+      pathname: 'setting',
+    },
+  ]
+
   return (
     <>
       {!kushareContext?.isAuth ? (
@@ -78,27 +101,21 @@ export const Menu = () => {
           </div>
           <p className='text-lg text-center w-full px-4 truncate max-w-[130px] 4xl:max-w-[260px]'>
             {userInfo?.user_name ?? (
-              <span className='text-gray-500 text-sm'>未設定使用者名稱</span>
+              <span className='text-gray-400 text-sm'>未設定使用者名稱</span>
             )}
           </p>
         </>
       )}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
-      <MenuItem
-        Icon={CiHome}
-        name='首頁'
-        handleRoute={() => handleRoute('/home')}
-      />
-      <MenuItem
-        Icon={CiShare2}
-        name='分享'
-        handleRoute={() => handleRoute('/share')}
-      />
-      <MenuItem
-        Icon={CiSettings}
-        name='設定'
-        handleRoute={() => handleRoute('/setting')}
-      />
+      {Menus.map((e) => (
+        <MenuItem
+          Icon={e.Icon}
+          name={e.name}
+          handleRoute={() => handleRoute(`${e.pathname}`)}
+          current={kushareContext?.currentMenu === e.pathname}
+          key={`menu_${e.name}`}
+        />
+      ))}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       <MenuItem Icon={CiCloudOn} name='儲存空間' />
       {kushareContext?.isAuth && (

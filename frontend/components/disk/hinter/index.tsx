@@ -1,4 +1,4 @@
-import { CheckMark } from 'components/disk/htinter/checkmark'
+import { CheckMark } from 'components/disk/hinter/checkmark'
 import { useHints } from 'hooks/disk'
 
 export default function Hinter() {

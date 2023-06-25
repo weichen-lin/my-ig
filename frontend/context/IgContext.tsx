@@ -15,19 +15,22 @@ interface IgType {
   userProfile?: User
   handleUserProfile: (user: User) => void
   isAuth: boolean
+  currentMenu: string | undefined
 }
 
 interface TokenCheckerProps {
   children: JSX.Element
   token: string | null
+  current: string
 }
 
 export const IgContext = createContext<IgType | null>(null)
 
 export const IgProvider = (props: TokenCheckerProps) => {
-  const { children, token } = props
+  const { children, token, current } = props
 
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
+  const [currentMenu, setCurrentMenu] = useState<string | undefined>(current)
   const [isAuth, setIsAuth] = useState(false)
 
   useEffect(() => {
@@ -59,7 +62,9 @@ export const IgProvider = (props: TokenCheckerProps) => {
   }
 
   return isAuth ? (
-    <IgContext.Provider value={{ userProfile, handleUserProfile, isAuth }}>
+    <IgContext.Provider
+      value={{ userProfile, handleUserProfile, isAuth, currentMenu }}
+    >
       {children}
     </IgContext.Provider>
   ) : null

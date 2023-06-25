@@ -1,21 +1,22 @@
 import { Loading } from 'components/utils'
 import { GetServerSideProps } from 'next'
-import { useCookie } from 'hooks/utils'
-import { LayoutCheckToken } from 'components/layout'
+import { CookieParser } from 'hooks/utils'
+import { GuestChecker } from 'components/layout'
+import { IgProvider } from 'context'
 
 export default function IndexPage(props: { token: string }) {
   const { token } = props
 
   return (
-    <LayoutCheckToken token={token}>
+    <GuestChecker token={token}>
       <Loading />
-    </LayoutCheckToken>
+    </GuestChecker>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const cookie = req.headers.cookie
-  const token = useCookie({ cookie, name: 'my-ig-token' })
+  const token = CookieParser({ cookie, name: 'my-ig-token' })
 
   return {
     props: {

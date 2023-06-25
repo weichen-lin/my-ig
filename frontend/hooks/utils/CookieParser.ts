@@ -5,9 +5,10 @@ interface CookieParser {
 
 export interface TokenProp {
   token: string | null
+  current: string
 }
 
-export default function useCookie({ cookie, name }: CookieParser) {
+export default function CookieParser({ cookie, name }: CookieParser) {
   if (!cookie) return null
   const value = `; ${cookie}`
   const parts = value.split(`; ${name}=`)

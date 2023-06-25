@@ -9,10 +9,10 @@ import {
 } from 'components/disk'
 import { GetServerSideProps } from 'next'
 
-import { TokenChechecker, LayoutHome } from 'components/layout'
+import { GuestChecker, LayoutHome } from 'components/layout'
 import { IgProvider } from 'context'
 import { Loading } from 'components/utils'
-import { useCookie, TokenProp } from 'hooks/utils'
+import { CookieParser, TokenProp } from 'hooks/utils'
 
 import {
   useDisk,
@@ -321,7 +321,7 @@ const fakeData = {
 }
 
 export default function DiskPage(props: TokenProp) {
-  const { token } = props
+  const { token, current } = props
 
   const { sortProps, diskProps } = useDisk()
 
@@ -340,9 +340,9 @@ export default function DiskPage(props: TokenProp) {
   const isLoading = true
 
   return (
-    <IgProvider token={token}>
+    <IgProvider token={token} current={current}>
       <LayoutHome>
-        <div className='flex flex-col h-[90%]'>
+        <div className='flex flex-col h-[90%] relative'>
           <div className='flex flex-wrap w-[92%] items-center mx-auto'>
             <Operator sortProps={sortProps} />
             <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
@@ -370,12 +370,15 @@ export default function DiskPage(props: TokenProp) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const url = req.url
+
   const cookie = req.headers.cookie
-  const token = useCookie({ cookie, name: 'my-ig-token' })
+  const token = CookieParser({ cookie, name: 'my-ig-token' })
 
   return {
     props: {
       token,
+      current: url?.split('/').pop(),
     },
   }
 }

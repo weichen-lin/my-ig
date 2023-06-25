@@ -10,9 +10,7 @@ type listMethodState = 0 | 1
 export type DiskProps = ReturnType<typeof useDisk>
 
 export default function useDisk() {
-  const [listMethod, setListMethod] = useState<listMethodState>(
-    ListMethod.Lattice
-  )
+  const [listMethod, setListMethod] = useState<listMethodState>(ListMethod.List)
   const [diskStatus, setDiskStatus] = useRecoilState(diskStatusInitState)
   const [diskData, setDiskData] = useRecoilState(diskInitState)
   const diskStatus_copy = JSON.parse(JSON.stringify(diskStatus))
