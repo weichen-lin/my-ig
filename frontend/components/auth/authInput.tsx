@@ -3,7 +3,7 @@ import { ChangeEvent } from 'react'
 import type { RegisterKeys } from 'hooks/auth'
 
 interface InputProps<T> {
-  label: RegisterKeys
+  label: string
   type: string
   value: string
   validate?: (e: T) => boolean
@@ -23,12 +23,7 @@ export default function AuthInput(props: InputProps<string>) {
 
   return (
     <div>
-      <div
-        className={clsx(
-          'w-full h-12 text-xl relative mb-1',
-          'md:w-2/3 md:mx-auto'
-        )}
-      >
+      <div className={clsx('w-full h-12 text-xl relative mb-1')}>
         <input
           className={clsx(
             'absolute top-0 left-0 z-10',

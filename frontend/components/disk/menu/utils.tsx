@@ -10,6 +10,7 @@ import { useState, useContext } from 'react'
 import Router from 'next/router'
 import { IgContext } from 'context'
 import clsx from 'clsx'
+import { MdUploadFile } from 'react-icons/md'
 
 export interface MenuItemProps {
   Icon: IconType
@@ -86,7 +87,7 @@ export const Menu = () => {
 
   return (
     <>
-      {!kushareContext?.isAuth ? (
+      {kushareContext?.isAuth ? (
         <MenuBackbone />
       ) : (
         <>
@@ -104,6 +105,18 @@ export const Menu = () => {
               <span className='text-gray-400 text-sm'>未設定使用者名稱</span>
             )}
           </p>
+          <div className='relative mt-1 w-[100px] h-16 mx-auto'>
+            <div className='w-full absolute active:top-1 rounded-md border border-gray-100 bg-blue-100 p-1 px-4 shadow-md'>
+              <label
+                htmlFor='upload'
+                className='flex items-center gap-2 cursor-pointer'
+              >
+                <MdUploadFile className='w-6 h-6 ' />
+                <span className='text-gray-600 font-medium'>上傳</span>
+              </label>
+              <input id='upload' type='file' className='hidden' />
+            </div>
+          </div>
         </>
       )}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>

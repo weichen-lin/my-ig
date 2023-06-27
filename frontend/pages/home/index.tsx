@@ -340,32 +340,30 @@ export default function DiskPage(props: TokenProp) {
   const isLoading = true
 
   return (
-    <IgProvider token={token} current={current}>
-      <LayoutHome>
-        <div className='flex flex-col h-[90%] relative'>
-          <div className='flex flex-wrap w-[92%] items-center mx-auto'>
-            <Operator sortProps={sortProps} />
-            <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
-          </div>
-          <GdriveLikeDisk
-            isLoading={isLoading}
-            listMethod={sortProps.listMethod}
-            // selected={selected}
-            // dragged={dragged}
-            handleImageDisplay={infoProps.handleImageDisplay}
-            data={fakeData}
-            handleCurrentFolder={handleCurrentFolder}
-            // hoverHandler={hoverHandler}
-          />
-          {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
+    <LayoutHome>
+      <div className='flex flex-col h-[90%] relative'>
+        <div className='flex flex-wrap w-[92%] items-center mx-auto'>
+          <Operator sortProps={sortProps} />
+          <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
+        </div>
+        <GdriveLikeDisk
+          isLoading={isLoading}
+          listMethod={sortProps.listMethod}
+          // selected={selected}
+          // dragged={dragged}
+          handleImageDisplay={infoProps.handleImageDisplay}
+          data={fakeData}
+          handleCurrentFolder={handleCurrentFolder}
+          // hoverHandler={hoverHandler}
+        />
+        {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}
         infoProps={infoProps}
         tagProps={tagProps}
       /> */}
-        </div>
-      </LayoutHome>
-    </IgProvider>
+      </div>
+    </LayoutHome>
   )
 }
 

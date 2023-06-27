@@ -34,7 +34,7 @@ export default function LoginPage(props: { token: string }) {
           <div
             className={clsx(
               'mx-auto flex flex-col mt-[10%] sm:mt-[4%] xl:mt-[2%]',
-              'w-4/5 xl:w-2/5 gap-y-8'
+              'w-4/5 md:w-2/3 lg:w-2/5 xl:w-1/5 gap-y-8'
             )}
           >
             <AuthInput

@@ -1,4 +1,4 @@
-import { Layout, GuestChecker } from 'components/layout'
+import { Layout, RegisterChecker } from 'components/layout'
 import { CookieParser } from 'hooks/utils'
 import {
   AuthInput,
@@ -28,13 +28,13 @@ export default function RegisterPage(props: { token: string }) {
   } = useRegister()
 
   return (
-    <GuestChecker token={token}>
+    <RegisterChecker token={token}>
       <Layout>
         <>
           <div
             className={clsx(
               'mx-auto flex flex-col mt-[10%] xl:mt-[2%] gap-y-8',
-              'w-4/5 xl:w-2/5'
+              'w-4/5 md:w-2/3 lg:w-2/5 xl:w-1/5 gap-y-8'
             )}
           >
             <AuthInput
@@ -95,7 +95,7 @@ export default function RegisterPage(props: { token: string }) {
           )}
         </>
       </Layout>
-    </GuestChecker>
+    </RegisterChecker>
   )
 }
 
