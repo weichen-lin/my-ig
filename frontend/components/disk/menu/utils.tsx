@@ -11,7 +11,7 @@ import Router from 'next/router'
 import { IgContext } from 'context'
 import clsx from 'clsx'
 import { MdUploadFile } from 'react-icons/md'
-
+import axios from 'axios'
 export interface MenuItemProps {
   Icon: IconType
   name: string
@@ -67,6 +67,47 @@ export const Menu = () => {
     }, 2000)
   }
 
+  const handleFileUpload = async (multiple: boolean) => {
+    try {
+      const FileHandlers = await window?.showOpenFilePicker({
+        multiple: multiple,
+      })
+
+      await Promise.all(
+        FileHandlers.map(async (filehandle, index) => {
+          const file = await filehandle.getFile()
+
+          const imgReader = new FileReader()
+          imgReader.readAsDataURL(file)
+          imgReader.onloadend = () => {
+            const img = new Image()
+            img.src = imgReader.result as string
+            img.onload = () => {
+              const formData = new FormData()
+              formData.append('myfile', file, file.name)
+              axios
+                .post('http://localhost:8080/file', formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                  },
+                })
+                .then((res) => {
+                  console.log(res)
+                })
+                .catch((err) => console.log(err))
+            }
+            img.onerror = () => {
+              console.log('this is not an image')
+            }
+          }
+        })
+      )
+    } catch (e) {
+      console.log(e)
+      console.log('cancel select')
+    }
+  }
+
   const Menus = [
     {
       Icon: CiHome,
@@ -106,7 +147,13 @@ export const Menu = () => {
             )}
           </p>
           <div className='relative mt-1 w-[100px] h-16 mx-auto'>
-            <div className='w-full absolute active:top-1 rounded-md border border-gray-100 bg-blue-100 p-1 px-4 shadow-md'>
+            <div
+              className='w-full absolute active:top-1 rounded-md border border-gray-100 bg-blue-100 p-1 px-4 shadow-md'
+              onClick={(e) => {
+                e.preventDefault()
+                handleFileUpload(false)
+              }}
+            >
               <label
                 htmlFor='upload'
                 className='flex items-center gap-2 cursor-pointer'
