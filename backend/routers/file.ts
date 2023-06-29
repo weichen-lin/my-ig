@@ -1,42 +1,36 @@
 import express from 'express'
 import multer from 'multer'
 import { FileController } from '../controller/file'
+import { UserController } from '../controller/user'
+import { verify_token } from './utils'
 
 const router = express.Router()
 
-const firebase = new FileController()
+const fileController = new FileController()
+const userController = new UserController()
 
 router.use(express.urlencoded({ extended: true }))
 router.use(express.json())
 router.use(multer().single('myfile'))
 
-router.post('/', async (req, res) => {
-  const bucket = firebase.storage.bucket('test_bucket')
-  const blob = firebase.bucket.file(
-    Buffer.from(
-      `avatar/test-user-id/${req?.file?.originalname}`,
-      'latin1'
-    ).toString('utf-8')
-  )
+router.post('/', verify_token, async (req, res) => {
+  const user_id = res.locals.user_id
+  const [status, msg] = await fileController.uploadAvatarFile(user_id, req)
 
-  const blobStream = blob.createWriteStream()
-
-  blobStream.on('error', (err) => {
-    res.send({
-      success: false,
-      message: 'blobStream error',
-    })
-  })
-  blobStream.on('finish', () => {
-    // (3)
-    const publicUrl = `https://storage.cloud.google.com/${
-      bucket.name
-    }/${encodeURIComponent(blob.name)}?hl=zh-tw`
-  })
-  // (4)
-  blobStream.end(req.file?.buffer)
-
-  return res.status(200).send('OK')
+  if (status === 201) {
+    const updateStatus = await userController.addAvatarUrl(user_id, msg)
+    return res.status(updateStatus).send(msg)
+  } else {
+    return res.status(status).send(msg)
+  }
 })
+
+// router.get('/', async (req, res) => {
+//   const buffer = await urlToBuffer('')
+
+//   res.setHeader('Content-type', 'image/jpeg')
+
+//   return res.status(200).send(buffer)
+// })
 
 export default router

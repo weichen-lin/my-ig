@@ -93,6 +93,7 @@ export const Menu = () => {
                 })
                 .then((res) => {
                   console.log(res)
+                  kushareContext?.handleUserProfile('avatar_url', res.data)
                 })
                 .catch((err) => console.log(err))
             }
@@ -103,7 +104,6 @@ export const Menu = () => {
         })
       )
     } catch (e) {
-      console.log(e)
       console.log('cancel select')
     }
   }
@@ -128,17 +128,14 @@ export const Menu = () => {
 
   return (
     <>
-      {kushareContext?.isAuth ? (
+      {!kushareContext?.isAuth ? (
         <MenuBackbone />
       ) : (
         <>
-          <div className='rounded-full overflow-hidden w-24 h-24'>
+          <div className='overflow-hidden w-24 h-24'>
             <img
-              src={
-                userInfo?.avatar_url ??
-                'https://www.computerhope.com/jargon/g/guest-user.png'
-              }
-              className='w-full h-full'
+              src={userInfo?.avatar_url}
+              className='w-full h-full rounded-full border-2'
             ></img>
           </div>
           <p className='text-lg text-center w-full px-4 truncate max-w-[130px] 4xl:max-w-[260px]'>

@@ -17,6 +17,14 @@ declare module 'jsonwebtoken' {
   }
 }
 
+interface UserInfo {
+  user_id: string
+  email: string
+  user_name: string
+  avatar_url: string
+  login_method: string
+}
+
 export class UserController {
   @BodyChecker({ email: 'string', password: 'string' })
   async register({
@@ -53,7 +61,7 @@ export class UserController {
   }
 
   @BodyChecker({ email: 'string', password: 'string' })
-  async login({
+  public async login({
     email,
     password,
   }: {
@@ -125,7 +133,7 @@ export class UserController {
     }
   }
 
-  async getUserInfo(id: string): Promise<[number, any]> {
+  public async getUserInfo(id: string): Promise<[number, string | UserInfo]> {
     const user = await User.findOne({ where: { user_id: id } })
 
     if (!user) return [401, ErrorMsg.Unauthorized.tw]
@@ -134,5 +142,22 @@ export class UserController {
       user.dataValues
 
     return [200, { user_id, email, user_name, avatar_url, login_method }]
+  }
+
+  public async addAvatarUrl(
+    user_id: string,
+    avatar_url: string
+  ): Promise<number> {
+    const user = await User.findOne({ where: { user_id } })
+
+    if (!user) return 401
+
+    try {
+      await user.update({ avatar_url })
+
+      return 200
+    } catch (e) {
+      return 400
+    }
   }
 }

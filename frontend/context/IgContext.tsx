@@ -13,7 +13,7 @@ export interface User {
 
 interface IgType {
   userProfile?: User
-  handleUserProfile: (user: User) => void
+  handleUserProfile: (key: keyof User, value: any) => void
   isAuth: boolean
   currentMenu: string | undefined
 }
@@ -57,8 +57,18 @@ export const IgProvider = (props: TokenCheckerProps) => {
     authUser()
   }, [])
 
-  const handleUserProfile = (user: User) => {
-    setUserProfile(user)
+  const handleUserProfile = (key: keyof User, value: any) => {
+    console.log('************************')
+    console.log(key, value)
+    console.log('************************')
+
+    setUserProfile((prev) => {
+      if (prev) {
+        return { ...prev, [key]: value }
+      } else {
+        return undefined
+      }
+    })
   }
 
   return isAuth ? (

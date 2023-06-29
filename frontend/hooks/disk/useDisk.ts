@@ -42,7 +42,6 @@ export default function useDisk() {
   }
 
   useEffect(() => {
-    console.log('trigger effect')
     const fetchData = async () => {
       const res = await fethcher.get(
         `${APIS.DISK}?${new URLSearchParams(queryParams)}`
