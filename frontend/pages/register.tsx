@@ -31,12 +31,7 @@ export default function RegisterPage(props: { token: string }) {
     <RegisterChecker token={token}>
       <Layout>
         <>
-          <div
-            className={clsx(
-              'mx-auto flex flex-col mt-[10%] xl:mt-[2%] gap-y-8',
-              'w-4/5 md:w-2/3 lg:w-2/5 xl:w-1/5 gap-y-8'
-            )}
-          >
+          <div className='w-4/5 md:min-w-[350px] max-w-[350px] mx-auto flex flex-col gap-y-8 justify-between'>
             <AuthInput
               label='email'
               type='text'
@@ -63,7 +58,7 @@ export default function RegisterPage(props: { token: string }) {
               onClick={handleRegister}
               disabled={btnDisabled}
             />
-            <p className='w-full md:w-2/3 md:mx-auto text-center mt-8 text-gray-700'>
+            <p className='w-full md:w-2/3 md:mx-auto text-center text-gray-700'>
               已經有帳號了嗎？
               <span
                 className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100'
@@ -74,22 +69,12 @@ export default function RegisterPage(props: { token: string }) {
             </p>
           </div>
           {errMsg && (
-            <div
-              className={clsx(
-                'mx-auto',
-                'w-4/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
-              )}
-            >
+            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
               <AuthStatus message={errMsg} status='failed' />
             </div>
           )}
           {successMsg && (
-            <div
-              className={clsx(
-                'mx-auto',
-                'w-2/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
-              )}
-            >
+            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
               <AuthStatus message={successMsg} status='success' />
             </div>
           )}

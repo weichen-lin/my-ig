@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import axios from 'axios'
+import fetcher from 'api/fetcher'
 import { APIS, AuthErrorMsgs } from 'api/apis'
 import Router from 'next/router'
 
@@ -27,13 +28,15 @@ export default function useLogin() {
     setErrMsg('')
   }, [])
 
-  const handleLogin = (req: LoginBody) => {
+  const handleLogin = () => {
     setIsRequest(true)
     resetError()
 
     axios
-      .post(`http://localhost:8080${APIS.USER_LOGIN}`, loginInfo)
-      .then((e) => {
+      .post(`http://localhost:8080${APIS.USER_LOGIN}`, loginInfo, {
+        withCredentials: true,
+      })
+      .then(() => {
         setSuccessMsg('登入成功！')
         setTimeout(() => {
           Router.push('/home')

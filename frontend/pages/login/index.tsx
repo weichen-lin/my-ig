@@ -1,6 +1,5 @@
 import { GuestChecker, Layout } from 'components/layout'
 import { AuthInput, AuthButton, AuthStatus } from 'components/auth'
-import clsx from 'clsx'
 import { useLogin } from 'hooks/auth'
 import { CookieParser } from 'hooks/utils'
 import { GetServerSideProps } from 'next'
@@ -31,12 +30,7 @@ export default function LoginPage(props: { token: string }) {
     <GuestChecker token={token}>
       <Layout>
         <>
-          <div
-            className={clsx(
-              'mx-auto flex flex-col mt-[10%] sm:mt-[4%] xl:mt-[2%]',
-              'w-4/5 md:w-2/3 lg:w-2/5 xl:w-1/5 gap-y-8'
-            )}
-          >
+          <div className='mx-auto flex flex-col w-4/5 md:min-w-[350px] max-w-[350px] gap-y-8'>
             <AuthInput
               label='email'
               type='text'
@@ -56,16 +50,10 @@ export default function LoginPage(props: { token: string }) {
             <AuthButton
               label='登入'
               isRequest={isRequest}
-              onClick={() => {
-                handleLogin(loginInfo)
-              }}
+              onClick={handleLogin}
               disabled={btnDisabled}
             />
-            <div
-              className={clsx(
-                'w-full md:w-2/3 mx-auto flex justify-center items-center mt-12 sm:mt-4 md:mt-1'
-              )}
-            >
+            <div className='w-full md:w-2/3 mx-auto lg:min-w-[300px] flex justify-center items-center'>
               <FcGoogle className={IconClass} />
               <IoLogoFacebook className={IconClassFacebook} fill='#385997' />
               <IoLogoGithub className={IconClass} />
@@ -74,22 +62,12 @@ export default function LoginPage(props: { token: string }) {
             </div>
           </div>
           {errMsg && (
-            <div
-              className={clsx(
-                'mx-auto',
-                'w-4/5 xl:w-2/5 xss:mt-[15%] xs:mt-[10%] sm:mt-[5%] md:mt-[3%]'
-              )}
-            >
+            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
               <AuthStatus message={errMsg} status='failed' />
             </div>
           )}
           {successMsg && (
-            <div
-              className={clsx(
-                'mx-auto',
-                'w-4/5 xl:w-2/5 xss:mt-[15%] xs:mt-[10%] sm:mt-[5%] md:mt-[3%]'
-              )}
-            >
+            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
               <AuthStatus message={successMsg} status='success' />
             </div>
           )}

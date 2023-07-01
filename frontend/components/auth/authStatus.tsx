@@ -13,9 +13,7 @@ interface StatusIcon {
 }
 
 const statusObj: StatusIcon = {
-  success: (
-    <SuccessIcon className='h-4 w-4 my-[4px] xs:h-8 xs:w-8 xs:m-[10px]' />
-  ),
+  success: <SuccessIcon className='h-6 w-6 mx-2 xs:h-8 xs:w-8 xs:m-[10px]' />,
   failed: (
     <ErrorIcon className='h-[20px] w-[20px] my-[8px] mx-[6px] xs:h-8 xs:w-8 xs:m-[10px]' />
   ),
@@ -26,14 +24,14 @@ export default function AuthStatus(props: InputSuccessProps) {
   return (
     <div
       className={clsx(
-        'h-8 text-xl relative mb-8 flex',
+        'h-8 text-xl relative mb-8 flex items-center',
         'md:mx-auto rounded-lg',
-        'w-full md:w-2/3 xs:h-12',
+        'w-full max-w-[350px] xs:h-12',
         `${status === 'success' ? 'bg-green-100' : 'bg-red-100'}`
       )}
     >
       {statusObj[status]}
-      <span className='ml-[6px] my-[6px] xs:m-[12px] xl:my-[10px] text-sm xs:text-lg font-bold md:text-lg'>
+      <span className='ml-[6px] my-[6px] xs:m-[12px] xl:my-[10px] text-base xs:text-lg font-bold md:text-lg'>
         {message}
       </span>
     </div>

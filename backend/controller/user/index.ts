@@ -102,7 +102,7 @@ export class UserController {
     )
   }
 
-  public verifyToken(bearerHeader: string | undefined): [number, string] {
+  public verifyCookie(bearerHeader: string | undefined): [number, string] {
     if (!bearerHeader) {
       return [401, ErrorMsg.Unauthorized.tw]
     }
@@ -113,9 +113,13 @@ export class UserController {
       return [401, ErrorMsg.Unauthorized.tw]
     }
 
+    return this.verifyJWTToken(token[1])
+  }
+
+  public verifyJWTToken(token: string): [number, string] {
     try {
       const jwt_payload = <jwt.MYIG_JwtPayload>(
-        jwt.verify(token[1], JWT_TOKEN_SECRET)
+        jwt.verify(token, JWT_TOKEN_SECRET)
       )
 
       const { exp, user_id } = jwt_payload

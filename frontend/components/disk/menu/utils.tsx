@@ -11,7 +11,8 @@ import Router from 'next/router'
 import { IgContext } from 'context'
 import clsx from 'clsx'
 import { MdUploadFile } from 'react-icons/md'
-import axios from 'axios'
+import fetcher from 'api/fetcher'
+
 export interface MenuItemProps {
   Icon: IconType
   name: string
@@ -85,14 +86,13 @@ export const Menu = () => {
             img.onload = () => {
               const formData = new FormData()
               formData.append('myfile', file, file.name)
-              axios
+              fetcher
                 .post('http://localhost:8080/file', formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data',
                   },
                 })
                 .then((res) => {
-                  console.log(res)
                   kushareContext?.handleUserProfile('avatar_url', res.data)
                 })
                 .catch((err) => console.log(err))
@@ -106,6 +106,12 @@ export const Menu = () => {
     } catch (e) {
       console.log('cancel select')
     }
+  }
+
+  const handleLogout = async () => {
+    try {
+      fetcher.delete('')
+    } catch {}
   }
 
   const Menus = [

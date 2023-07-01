@@ -7,7 +7,7 @@ interface LayoutProps {
 export default function Layout(props: LayoutProps) {
   const { children } = props
   return (
-    <div className='w-full h-screen flex flex-col justify-start'>
+    <div className='w-full h-screen flex flex-col justify-start gap-y-12'>
       <div>
         <img
           className={clsx('mx-auto mt-48', 'h-[80px] md:h-[120px]')}

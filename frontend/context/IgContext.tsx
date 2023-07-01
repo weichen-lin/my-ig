@@ -30,8 +30,12 @@ export const IgProvider = (props: TokenCheckerProps) => {
   const { children, token, current } = props
 
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
-  const [currentMenu, setCurrentMenu] = useState<string | undefined>(current)
+  const [currentMenu, setCurrentMenu] = useState<string | undefined>(
+    current.split('.json')[0]
+  )
   const [isAuth, setIsAuth] = useState(false)
+
+  console.log(current)
 
   useEffect(() => {
     const authUser = () => {
@@ -58,10 +62,6 @@ export const IgProvider = (props: TokenCheckerProps) => {
   }, [])
 
   const handleUserProfile = (key: keyof User, value: any) => {
-    console.log('************************')
-    console.log(key, value)
-    console.log('************************')
-
     setUserProfile((prev) => {
       if (prev) {
         return { ...prev, [key]: value }
