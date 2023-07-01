@@ -26,10 +26,9 @@ export default function AuthInput(props: InputProps<string>) {
       <div className={clsx('w-full h-12 text-xl relative mb-1')}>
         <input
           className={clsx(
-            'absolute top-0 left-0 z-10',
+            'absolute top-0 left-0 text-gray-600',
             'w-full h-full rounded-xl bg-transparent border-2 p-3 outline-none',
             'peer',
-            'text-gray-600',
             `${isError ? 'border-red-200' : ''}`,
             `${
               validate && !isError && value !== '' ? 'border-green-500/50' : ''

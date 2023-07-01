@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import { Loading } from 'components/utils'
 import Router from 'next/router'
 import axios from 'axios'
+import { useHints, Action, Hint } from 'hooks/disk'
 
 export interface User {
   user_id: string
@@ -15,7 +16,9 @@ interface IgType {
   userProfile?: User
   handleUserProfile: (key: keyof User, value: any) => void
   isAuth: boolean
-  currentMenu: string | undefined
+  current: string | undefined
+  hints: Hint[]
+  handleHints: (status: Action, message: string) => void
 }
 
 interface TokenCheckerProps {
@@ -30,12 +33,9 @@ export const IgProvider = (props: TokenCheckerProps) => {
   const { children, token, current } = props
 
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
-  const [currentMenu, setCurrentMenu] = useState<string | undefined>(
-    current.split('.json')[0]
-  )
-  const [isAuth, setIsAuth] = useState(false)
 
-  console.log(current)
+  const [isAuth, setIsAuth] = useState(false)
+  const { hints, AddHints } = useHints()
 
   useEffect(() => {
     const authUser = () => {
@@ -71,9 +71,20 @@ export const IgProvider = (props: TokenCheckerProps) => {
     })
   }
 
+  const handleHints = (status: Action, message: string) => {
+    AddHints(message, status)
+  }
+
   return isAuth ? (
     <IgContext.Provider
-      value={{ userProfile, handleUserProfile, isAuth, currentMenu }}
+      value={{
+        userProfile,
+        handleUserProfile,
+        isAuth,
+        current,
+        hints,
+        handleHints,
+      }}
     >
       {children}
     </IgContext.Provider>

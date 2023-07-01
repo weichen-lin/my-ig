@@ -1,17 +1,18 @@
 import Search from 'components/disk/search'
 import { useAuth } from 'hooks/auth'
-import { Loading } from 'components/utils'
+import { Loading, AddFolder } from 'components/utils'
 import { Hinter, FullScreenMenu, MobileMenu } from 'components/disk'
 import { useIsMobile } from 'hooks/disk'
-import clsx from 'clsx'
 import { RxHamburgerMenu } from 'react-icons/rx'
-import { useCallback, useState, useContext } from 'react'
+import { useCallback, useState, createRef } from 'react'
 
 interface LayoutProps {
   children: JSX.Element
 }
 
 const LayoutHomePC = ({ children }: LayoutProps) => {
+  const ref = createRef<HTMLInputElement>()
+
   return (
     <div className='bg-slate-300 flex gap-x-1 md:pt-[1%] h-screen w-full justify-center'>
       <FullScreenMenu />
@@ -24,7 +25,12 @@ const LayoutHomePC = ({ children }: LayoutProps) => {
         </div>
         {children}
       </div>
-      <FullScreenMenu />
+      <Hinter />
+      <div className='z-20 bg-slate-900/30 w-full h-screen absolute top-0 left-0 flex items-center'>
+        <div className='relative w-[300px] opacity-100 m-auto '>
+          <AddFolder ref={ref} />
+        </div>
+      </div>
     </div>
   )
 }
@@ -47,6 +53,7 @@ const LayoutHomeMobile = (props: { children: JSX.Element }) => {
         <Search />
       </div>
       <MobileMenu isOpen={openMenu} close={closeMenu} />
+      <Hinter />
       {children}
     </div>
   )

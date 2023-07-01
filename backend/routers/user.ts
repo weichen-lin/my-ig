@@ -82,7 +82,7 @@ router.post('/oauth', async (req, res) => {
   }
 })
 
-router.delete('/logout', async (req, res) => {
+router.delete('/logout', verify_token, async (req, res) => {
   res.clearCookie('my-ig-token')
   return res.status(200).send('OK')
 })

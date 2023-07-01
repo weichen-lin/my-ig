@@ -27,7 +27,7 @@ export default function SettingPage(props: TokenProp) {
           <p className='text-2xl text-gray-500'>檔案設定</p>
           <div className='border-t-[1px] border-gray-300/70 w-full my-4'></div>
           <div className='flex flex-col mb-6 w-full items-start gap-4 mt-4'>
-            <p className='uppercase text-gray-500 font-bold'>Contact Email</p>
+            <p className='uppercase text-gray-500 font-bold'>信箱</p>
             <div className='flex flex-col md:flex-row md:items-center gap-4'>
               <div className='text-black'>asdfg09487@gmail.com</div>
               <div className='flex items-center'>
@@ -36,13 +36,13 @@ export default function SettingPage(props: TokenProp) {
                   已驗證
                 </div>
                 <button className='border p-1 w-16 rounded-md border-blue-300'>
-                  Edit
+                  編輯
                 </button>
               </div>
             </div>
           </div>
           <div className='flex flex-col mb-6 w-full items-start gap-4 mt-4'>
-            <p className='uppercase text-gray-500 font-bold'>Password</p>
+            <p className='uppercase text-gray-500 font-bold'>密碼</p>
             <div className='flex flex-col w-full md:flex-row md:items-center gap-4'>
               <div className='w-[250px]'>
                 <AuthInput
@@ -58,7 +58,7 @@ export default function SettingPage(props: TokenProp) {
               {/* <p className='text-gray-300'>************</p> */}
               <div className='flex items-center'>
                 <button className='border p-1 w-16 rounded-md border-blue-300'>
-                  Reset
+                  重設
                 </button>
               </div>
             </div>

@@ -94,6 +94,7 @@ export const Menu = () => {
                 })
                 .then((res) => {
                   kushareContext?.handleUserProfile('avatar_url', res.data)
+                  kushareContext?.handleHints('success', '上傳成功')
                 })
                 .catch((err) => console.log(err))
             }
@@ -110,7 +111,10 @@ export const Menu = () => {
 
   const handleLogout = async () => {
     try {
-      fetcher.delete('')
+      fetcher.delete('/user/logout', { withCredentials: true }).then(() => {
+        localStorage.removeItem('accessToken')
+        handleRoute('login')
+      })
     } catch {}
   }
 
@@ -144,27 +148,23 @@ export const Menu = () => {
               className='w-full h-full rounded-full border-2'
             ></img>
           </div>
-          <p className='text-lg text-center w-full px-4 truncate max-w-[130px] 4xl:max-w-[260px]'>
+          <p className='text-lg text-center w-full px-4 truncate max-w-[180px] 4xl:max-w-[260px]'>
             {userInfo?.user_name ?? (
               <span className='text-gray-400 text-sm'>未設定使用者名稱</span>
             )}
           </p>
           <div className='relative mt-1 w-[100px] h-16 mx-auto'>
             <div
-              className='w-full absolute active:top-1 rounded-md border border-gray-100 bg-blue-100 p-1 px-4 shadow-md'
+              className='w-full absolute top-0 left-0 active:top-1 rounded-md border border-gray-100 bg-blue-100 p-1 px-4 shadow-md'
               onClick={(e) => {
                 e.preventDefault()
                 handleFileUpload(false)
               }}
             >
-              <label
-                htmlFor='upload'
-                className='flex items-center gap-2 cursor-pointer'
-              >
+              <div className='flex items-center gap-2 cursor-pointer'>
                 <MdUploadFile className='w-6 h-6 ' />
                 <span className='text-gray-600 font-medium'>上傳</span>
-              </label>
-              <input id='upload' type='file' className='hidden' />
+              </div>
             </div>
           </div>
         </>
@@ -175,7 +175,7 @@ export const Menu = () => {
           Icon={e.Icon}
           name={e.name}
           handleRoute={() => handleRoute(`${e.pathname}`)}
-          current={kushareContext?.currentMenu === e.pathname}
+          current={kushareContext?.current === e.pathname}
           key={`menu_${e.name}`}
         />
       ))}
@@ -190,11 +190,7 @@ export const Menu = () => {
         </>
       )}
       <div className='flex-1'></div>
-      <MenuItem
-        Icon={CiLogout}
-        name='登出'
-        handleRoute={() => handleRoute('/login')}
-      />
+      <MenuItem Icon={CiLogout} name='登出' handleRoute={handleLogout} />
       {isRouting && <Switcher />}
     </>
   )
