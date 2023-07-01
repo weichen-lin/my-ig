@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next'
 
 import { Loading } from 'components/utils'
 
-import useOAuth, { oAuth } from 'hooks/auth/useOAuth'
+import { useOAuth, oAuth } from 'hooks/auth'
 
 interface LoginPageSSRProps {
   query: oAuth
@@ -22,6 +22,7 @@ OauthPage.getLayout = function getLayout(page: JSX.Element) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  console.log(query)
   return {
     props: {
       query,

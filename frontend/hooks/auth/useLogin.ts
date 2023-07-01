@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import axios from 'axios'
+import fetcher from 'api/fetcher'
 import { APIS, AuthErrorMsgs } from 'api/apis'
 import Router from 'next/router'
 
@@ -16,89 +17,57 @@ export default function useLogin() {
     email: '',
     password: '',
   })
-  const [isError, setIsError] = useState(false)
-  const [errMsg, setErrMsg] = useState('')
-  const [isSuccess, setIsSuccess] = useState(false)
-  const [successMsg, setSuccessMsg] = useState('')
+  const [errMsg, setErrMsg] = useState<string | null>('')
+  const [successMsg, setSuccessMsg] = useState<string | null>('')
 
   const handleAuthInfo = (key: keyof LoginBody, value: string) => {
     setLoginInfo((prev) => ({ ...prev, [key]: value }))
   }
 
-  const checkLoginInfo = (req: LoginBody) => {
-    const emailRegex =
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-
-    if (!emailRegex.test(req.email)) {
-      setIsError(true)
-      setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
-      return false
-    }
-
-    if (!req.password || !req.email) {
-      setIsError(true)
-      setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
-      return false
-    }
-    return true
-  }
-
   const resetError = useCallback(() => {
-    setIsError(false)
     setErrMsg('')
   }, [])
 
-  const handleLogin = (req: LoginBody) => {
+  const handleLogin = () => {
     setIsRequest(true)
-
-    // if (!checkLoginInfo(req)) {
-    //   setIsRequest(false)
-    //   return
-    // }
-
     resetError()
 
     axios
-      .get(`http://localhost:8080/${APIS.HEALTH_CHECK}`)
-      .then((e) => console.log(e))
-      .catch((e) => console.log(e))
-
-    // axios
-    //   .post(APIS.USER_LOGIN, {
-    //     email: req.email,
-    //     password: req.password,
-    //   })
-    //   .then((res) => {
-    //     resetError()
-    //     setIsSuccess(true)
-    //     setSuccessMsg('登入成功')
-    //     const data = res.data
-    //     if (data.token) localStorage.setItem('accessToken', data.token)
-    //     setTimeout(() => {
-    //       Router.push('/')
-    //     }, 1500)
-    //   })
-    //   .catch(() => {
-    //     setIsError(true)
-    //     setErrMsg(AuthErrorMsgs.LOGIN_INVALID)
-    //   })
-
-    setIsRequest(false)
+      .post(`http://localhost:8080${APIS.USER_LOGIN}`, loginInfo, {
+        withCredentials: true,
+      })
+      .then(() => {
+        setSuccessMsg('登入成功！')
+        setTimeout(() => {
+          Router.push('/home')
+        }, 1500)
+      })
+      .catch((err) => {
+        if (axios.isAxiosError(err)) {
+          const msg = err.response?.data
+          setErrMsg(msg)
+        } else {
+          setErrMsg('發生未知錯誤，請聯繫開發人員')
+        }
+      })
+      .finally(() => setIsRequest(false))
   }
 
   const goRegister = () => {
     Router.push('register')
   }
 
+  const btnDisabled =
+    Object.values(loginInfo).some((e) => e === '') || isRequest
+
   return {
     isRequest,
     loginInfo,
     handleAuthInfo,
-    isError,
     errMsg,
     handleLogin,
-    isSuccess,
     successMsg,
     goRegister,
+    btnDisabled,
   }
 }

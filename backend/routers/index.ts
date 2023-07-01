@@ -1,7 +1,7 @@
 import User from './user'
-import Auth from './auth'
-// import File from './file'
+import File from './file'
 import Folder from './folder'
 import Disk from './disk'
+import Auth from './auth'
 
-export { User, Auth, Folder, Disk }
+export { User, Folder, Disk, File, Auth }

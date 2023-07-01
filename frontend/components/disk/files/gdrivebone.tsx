@@ -3,23 +3,29 @@ import { LatticeFileBackbone } from './files'
 import { ListBackBone } from './listbackbone'
 import clsx from 'clsx'
 import { ListMethod } from 'hooks/disk'
+import { useIsMobile } from 'hooks/disk'
 
 const BACKBONE_NUMBER = 5
 
 export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
   const { listMethod } = props
+  const { isFullScreen } = useIsMobile()
 
   return (
     <div
       className={clsx(
-        'w-[92%] mx-auto flex items-center justify-start select-none relative',
+        'w-[92%] mx-auto flex items-center justify-start select-none',
         `${
           listMethod === ListMethod.Lattice
             ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-2 mt-2'
-            : 'flex-col'
+            : 'flex-col mt-4'
         }`
       )}
-      style={{ animation: 'loadingHomepage 0.5s forwards ease-in-out' }}
+      style={{
+        animation: isFullScreen
+          ? 'loadingHomepage 0.5s forwards ease-in-out'
+          : '',
+      }}
     >
       {listMethod === ListMethod.Lattice && (
         <p className='w-[90%] xs:w-full text-gray-400'>資料夾</p>

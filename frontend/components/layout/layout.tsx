@@ -7,7 +7,7 @@ interface LayoutProps {
 export default function Layout(props: LayoutProps) {
   const { children } = props
   return (
-    <div className='w-full h-screen flex flex-col justify-start'>
+    <div className='w-full h-screen flex flex-col justify-start gap-y-12'>
       <div>
         <img
           className={clsx('mx-auto mt-48', 'h-[80px] md:h-[120px]')}
@@ -21,9 +21,3 @@ export default function Layout(props: LayoutProps) {
     </div>
   )
 }
-
-// sm	640px	@media (min-width: 640px) { ... }
-// md	768px	@media (min-width: 768px) { ... }
-// lg	1024px	@media (min-width: 1024px) { ... }
-// xl	1280px	@media (min-width: 1280px) { ... }
-// 2xl	1536px	@media (min-width: 1536px) { ... }

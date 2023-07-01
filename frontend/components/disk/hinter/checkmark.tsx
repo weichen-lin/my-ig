@@ -7,7 +7,7 @@ export interface CheckmarkTheme {
   secondary?: string
 }
 
-export const CheckMark = (props: Hint) => {
+export const CheckMark = (props: { message: string }) => {
   const { message } = props
   const [hintState, setHintState] = useState(true)
 
@@ -25,7 +25,7 @@ export const CheckMark = (props: Hint) => {
     <li
       className={clsx(
         'w-[200px] shadow-md h-12 flex gap-x-2 p-4 items-center',
-        'border-2 rounded-lg border-slate-300 bg-white z-10 order-last',
+        'border-2 rounded-lg border-slate-300 bg-green-100 order-last',
         'transition-all duration-150 ease-in-out'
       )}
       style={{
@@ -35,7 +35,7 @@ export const CheckMark = (props: Hint) => {
       }}
     >
       <IoIosCheckmarkCircleOutline fill='green' className='w-6 h-6' />
-      <span className='font-bold'>Success {message}</span>
+      <span className='font-bold'>{message}</span>
     </li>
   )
 }

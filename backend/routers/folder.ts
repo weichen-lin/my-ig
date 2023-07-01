@@ -1,11 +1,9 @@
 import express from 'express'
-import { auth_bearer_middleware } from './auth'
 import { Folder_CRUD_STATUS } from '../errors'
 import { FolderCRUD } from '../models'
 
 const router = express.Router()
 
-router.use(auth_bearer_middleware)
 router.use(express.json())
 
 router.post('/', async (req, res) => {

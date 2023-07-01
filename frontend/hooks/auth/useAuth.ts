@@ -3,32 +3,28 @@ import axios from 'axios'
 import { APIS } from 'api/apis'
 import Router from 'next/router'
 
-export default function useAuth() {
+export default function useAuth(token: string) {
   const [isAuth, setIsAuth] = useState(false)
 
-  // useEffect(() => {
-  //   const accessToken = localStorage.getItem('accessToken')
-  //   if (!accessToken) {
-  //     Router.push('/login')
-  //     return
-  //   }
-  //   axios
-  //     .get(APIS.AUTH, {
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       if (res.data?.token) {
-  //         localStorage.setItem('accessToken', res?.data?.token)
-  //       }
-  //       setIsAuth(true)
-  //     })
-  //     .catch(() => {
-  //       localStorage.removeItem('accessToken')
-  //       Router.push('/login')
-  //     })
-  // }, [])
+  useEffect(() => {
+    const authUser = () => {
+      if (!token) {
+        Router.push('/login')
+        return
+      }
+
+      return axios
+        .get('http://localhost:8080/user/userinfo', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((e) => Router.push('/home'))
+        .catch((e) => Router.push('/login'))
+    }
+    authUser()
+  }, [])
 
   return { isAuth }
 }

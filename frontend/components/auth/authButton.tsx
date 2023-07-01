@@ -12,7 +12,7 @@ export default function AuthButton(props: ButtonProps) {
   const { label, isRequest, onClick, disabled } = props
 
   return (
-    <div className='relative mx-auto w-full md:w-2/3'>
+    <div className='relative mx-auto w-full'>
       <button
         className={clsx(
           'w-full bg-gradient-to-r',

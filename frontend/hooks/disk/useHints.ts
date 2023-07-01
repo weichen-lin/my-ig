@@ -22,7 +22,7 @@ export interface Hint {
   createAt: Date
 }
 
-type Action = 'success' | 'failed'
+export type Action = 'success' | 'failed'
 
 const hintsTimeout = new Map<Hint['id'], ReturnType<typeof setTimeout>>()
 

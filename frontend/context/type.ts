@@ -12,5 +12,3 @@ export interface FolderData {
   last_modified_at: string
   id: string
 }
-
-const data = new Date()

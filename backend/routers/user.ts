@@ -1,86 +1,71 @@
 import express from 'express'
-import { userCRUD } from '../models'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
-import { User_CRUD_STATUS, Auth_STATUS } from '../errors'
 import { OauthHelper } from '../utils/oauth'
+import { UserController } from '../controller/user'
+import { Request, Response } from 'express'
+import { verify_token } from './utils'
 
-interface createSignalReturn {
-  status: User_CRUD_STATUS | undefined
-  token?: string
-}
+const user = new UserController()
 
 const router = express.Router()
 
 router.use(express.json())
 
-router.post('/register', async (req, res) => {
-  try {
-    const { email, password } = req.body
-    if (!email || !password) {
-      res.status(401).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
-    }
+const sign_jwt_token = async (req: Request, res: Response) => {
+  const user_id = res.locals.user_id
+  const token = user.assignToken(user_id)
 
-    const sault = await bcrypt.genSalt()
-    const password_hashed = bcrypt.hashSync(password, sault)
+  res.cookie('my-ig-token', token, {
+    maxAge: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+    httpOnly: true,
+  })
 
-    const createSignal = await userCRUD.create(email, password_hashed, sault)
-    let return_json: createSignalReturn = { status: createSignal }
+  return res.status(200).send('OK')
+}
 
-    if (createSignal === User_CRUD_STATUS.SUCCESS) {
-      const jwt_token = jwt.sign(
-        {
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-          email: email,
-        },
-        'SECRET_TOKEN'
-      )
-      return_json['token'] = jwt_token
-      res.status(200).send(return_json)
-    } else {
-      res.status(401).send(return_json)
-    }
-  } catch {
-    res.status(400).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
-  }
+router.get('/userinfo', verify_token, async (req, res) => {
+  const [status, info] = await user.getUserInfo(res.locals.user_id)
+
+  return res.status(status).json(info)
 })
 
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body
-    if (!email || !password) {
-      res.status(401).json({ status: Auth_STATUS.NOT_AUTHORIZED })
+router.post(
+  '/register',
+  async (req, res, next) => {
+    try {
+      const [status, message] = await user.register(req.body)
+
+      if (status === 200) {
+        res.locals.user_id = message
+        return next()
+      } else {
+        return res.status(403).send(message)
+      }
+    } catch (e) {
+      return res.status(500).send(e)
     }
+  },
+  sign_jwt_token
+)
 
-    const userObj = await userCRUD.find(email)
+router.post(
+  '/login',
+  async (req, res, next) => {
+    try {
+      const [status, message] = await user.login(req.body)
 
-    if (!userObj) {
-      res.status(401).json({ status: Auth_STATUS.NOT_AUTHORIZED })
-      return
+      if (status === 200) {
+        res.locals.user_id = message
+        return next()
+      } else {
+        return res.status(401).send(message)
+      }
+    } catch (e) {
+      return res.status(500).send(e)
     }
+  },
+  sign_jwt_token
+)
 
-    const userInfo = { ...userObj.dataValues }
-
-    const password_hashed = bcrypt.hashSync(password, userInfo.sault)
-    if (userInfo.password === password_hashed) {
-      const jwt_token = jwt.sign(
-        {
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-          email: userInfo.email,
-          user_id: userInfo.user_id,
-        },
-        'SECRET_TOKEN'
-      )
-      res.status(200).json({ status: Auth_STATUS.AUTHORIZED, token: jwt_token })
-    } else {
-      res.status(401).json({ status: Auth_STATUS.NOT_AUTHORIZED })
-    }
-  } catch {
-    res.status(400).json({ error: Auth_STATUS.UNKNOWN_ERROR })
-  }
-})
-
-// https://github.com/login/oauth/authorize?client_id=6e7a0aec3433971e0008&scope=user:email
 router.post('/oauth', async (req, res) => {
   const { platform, ...params } = req.body
 
@@ -97,46 +82,9 @@ router.post('/oauth', async (req, res) => {
   }
 })
 
-// router.get('/logout', async (req, res) => {
-//   try {
-//     const { email, password } = req.body
-//     if (!email || !password) {
-//       res.status(408).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
-//     }
-
-//     const sault = await bcrypt.genSalt()
-//     const password_hashed = bcrypt.hashSync(password, sault)
-
-//     const createSignal = await userCRUD.create(email, password_hashed, sault)
-//     let return_json: createSignalReturn = { status: createSignal }
-
-//     switch (createSignal) {
-//       case User_CRUD_STATUS.SUCCESS:
-//         const jwt_token = jwt.sign(
-//           {
-//             exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-//             email: email
-//           },
-//           'SECRET_TOKEN'
-//         )
-//         return_json['token'] = jwt_token
-//         res.status(200).send({ status: 'SUCCESS', token: jwt_token })
-//         break
-//       case User_CRUD_STATUS.UNKNOWN_ERROR:
-//         res.status(401).send(return_json)
-//         break
-//       case User_CRUD_STATUS.EMAIL_DUPLICATED:
-//         res.status(401).send(return_json)
-//         break
-//       default:
-//         res.status(401).send()
-//         break
-//     }
-//   } catch (e) {
-//     console.log(e)
-
-//     res.status(400).json({ error: User_CRUD_STATUS.INVALID_BODY_FORMAT })
-//   }
-// })
+router.delete('/logout', verify_token, async (req, res) => {
+  res.clearCookie('my-ig-token')
+  return res.status(200).send('OK')
+})
 
 export default router

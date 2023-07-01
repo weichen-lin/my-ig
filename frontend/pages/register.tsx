@@ -1,95 +1,96 @@
-import { Layout } from 'components/layout'
-import { AuthInput, AuthButton, AuthStatus } from 'components/auth'
+import { Layout, RegisterChecker } from 'components/layout'
+import { CookieParser } from 'hooks/utils'
+import {
+  AuthInput,
+  AuthButton,
+  AuthStatus,
+  EmailChecker,
+  PasswordChecker,
+} from 'components/auth'
 import clsx from 'clsx'
-import useRegister from 'hooks/auth/useRegister'
+import { useRegister } from 'hooks/auth'
+import { GetServerSideProps } from 'next'
 
-export default function RegisterPage() {
+export default function RegisterPage(props: { token: string }) {
+  const { token } = props
+
   const {
     isRequest,
     registerInfo,
     handleRegisterInfo,
-    emailError,
-    pwdError,
     errMsg,
     handleRegister,
-    isSuccess,
     successMsg,
     goLogin,
+    btnDisabled,
+    validateEmail,
+    validatePwd,
   } = useRegister()
 
-  const btnDisabled = Object.values(registerInfo).some((e) => e === '')
-
   return (
-    <>
-      <div
-        className={clsx(
-          'mx-auto flex flex-col mt-[10%] xl:mt-[2%]',
-          'w-4/5 xl:w-2/5'
-        )}
-      >
-        <AuthInput
-          isError={emailError}
-          label='email'
-          type='text'
-          value={registerInfo.email}
-          onChange={(e) => {
-            handleRegisterInfo('email', e.target.value)
-          }}
-        />
-        <AuthInput
-          isError={pwdError}
-          label='password'
-          type='password'
-          value={registerInfo.password}
-          passwordChecker
-          onChange={(e) => {
-            handleRegisterInfo('password', e.target.value)
-          }}
-        />
-        <AuthButton
-          label='註冊'
-          isRequest={isRequest}
-          onClick={() => {
-            handleRegister(registerInfo)
-          }}
-          disabled={btnDisabled}
-        />
-        <p className='w-full md:w-2/3 md:mx-auto text-center mt-8 text-gray-700'>
-          已經有帳號了嗎？
-          <span
-            className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100'
-            onClick={goLogin}
-          >
-            點此登入
-          </span>
-        </p>
-      </div>
-      {emailError || pwdError ? (
-        <div
-          className={clsx(
-            'mx-auto',
-            'w-4/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
+    <RegisterChecker token={token}>
+      <Layout>
+        <>
+          <div className='w-4/5 md:min-w-[350px] max-w-[350px] mx-auto flex flex-col gap-y-8 justify-between'>
+            <AuthInput
+              label='email'
+              type='text'
+              value={registerInfo.email}
+              validate={validateEmail}
+              onChange={(e) => {
+                handleRegisterInfo('email', e.target.value)
+              }}
+              Error={EmailChecker}
+            />
+            <AuthInput
+              label='password'
+              type='password'
+              value={registerInfo.password}
+              validate={validatePwd}
+              onChange={(e) => {
+                handleRegisterInfo('password', e.target.value)
+              }}
+              Error={PasswordChecker}
+            />
+            <AuthButton
+              label='註冊'
+              isRequest={isRequest}
+              onClick={handleRegister}
+              disabled={btnDisabled}
+            />
+            <p className='w-full md:w-2/3 md:mx-auto text-center text-gray-700'>
+              已經有帳號了嗎？
+              <span
+                className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100'
+                onClick={goLogin}
+              >
+                點此登入
+              </span>
+            </p>
+          </div>
+          {errMsg && (
+            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
+              <AuthStatus message={errMsg} status='failed' />
+            </div>
           )}
-        >
-          <AuthStatus message={errMsg} status='failed' />
-        </div>
-      ) : (
-        <></>
-      )}
-      {isSuccess && (
-        <div
-          className={clsx(
-            'mx-auto',
-            'w-2/5 xl:w-2/5 mt-[20%] xss:mt-[25%] xs:mt-[20%] sm:mt-[15%] md:mt-[15%] lg:mt-[10%] xl:mt-[7%]'
+          {successMsg && (
+            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
+              <AuthStatus message={successMsg} status='success' />
+            </div>
           )}
-        >
-          <AuthStatus message={successMsg} status='success' />
-        </div>
-      )}
-    </>
+        </>
+      </Layout>
+    </RegisterChecker>
   )
 }
 
-RegisterPage.getLayout = function getLayout(page: JSX.Element) {
-  return <Layout>{page}</Layout>
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookie = req.headers.cookie
+  const token = CookieParser({ cookie, name: 'my-ig-token' })
+
+  return {
+    props: {
+      token,
+    },
+  }
 }

@@ -1,16 +1,18 @@
-import { DataTypes, Sequelize, Transaction } from 'sequelize'
+import { DataTypes, Sequelize, Transaction, literal } from 'sequelize'
 import { db } from './db'
-import { v4 as uuidv4 } from 'uuid'
 import { File_CRUD_STATUS } from '../errors'
 
 export const File = db.define(
   'file',
   {
-    user_uuid: {
+    user_id: {
       type: DataTypes.STRING(50),
+      allowNull: false,
     },
-    file_uuid: {
+    file_id: {
       type: DataTypes.STRING(50),
+      defaultValue: literal(`uuid_generate_v4()`),
+      primaryKey: true,
     },
     file_name: {
       type: DataTypes.STRING(100),
@@ -27,13 +29,13 @@ export const File = db.define(
     description: {
       type: DataTypes.TEXT,
     },
+    create_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
+    last_modified_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
   },
   {
-    indexes: [
-      { fields: ['createdAt', 'locate_at'] },
-      { fields: ['user_uuid'] },
-    ],
+    indexes: [{ fields: ['create_at', 'locate_at'] }, { fields: ['user_id'] }],
     freezeTableName: true,
+    timestamps: false,
   }
 )
 
@@ -44,7 +46,7 @@ const createFile = async (
   file_url: string
 ): Promise<{ status: File_CRUD_STATUS; uuid: string }> => {
   // make sure uuid is unique
-  const new_file_uuid = uuidv4()
+  const new_file_uuid = 'asdas'
   try {
     const uuidChecker = await File.findOne({
       where: { file_uuid: new_file_uuid },

@@ -88,6 +88,15 @@
   }
 }
 
+@keyframes popup {
+  10% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* className={clsx(
           'bg-green-100 absolute w-full h-1/2',
           'transition-all duration-300 ease-in-out origin-bottom',

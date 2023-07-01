@@ -1,13 +1,26 @@
-import { LayoutAuth } from 'components/layout'
 import { Loading } from 'components/utils'
-import useAuth from 'hooks/auth/useAuth'
+import { GetServerSideProps } from 'next'
+import { CookieParser } from 'hooks/utils'
+import { GuestChecker } from 'components/layout'
+import { IgProvider } from 'context'
 
-export default function IndexPage() {
-  const { isAuth } = useAuth()
+export default function IndexPage(props: { token: string }) {
+  const { token } = props
 
-  return <Loading />
+  return (
+    <GuestChecker token={token}>
+      <Loading />
+    </GuestChecker>
+  )
 }
 
-IndexPage.getLayout = function getLayout(page: JSX.Element) {
-  return <LayoutAuth>{page}</LayoutAuth>
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookie = req.headers.cookie
+  const token = CookieParser({ cookie, name: 'my-ig-token' })
+
+  return {
+    props: {
+      token,
+    },
+  }
 }

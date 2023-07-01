@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import axios from 'axios'
 import { APIS } from 'api/apis'
 import Router from 'next/router'
-import { RegisterResponse, RegisterStatus } from 'api/errors'
+import { PwdValidate } from './utils'
 
 export type RegisterKeys = 'email' | 'password'
 
@@ -11,96 +11,96 @@ export interface RegisterBody extends Record<RegisterKeys, string> {
   password: string
 }
 
+const emailRegex =
+  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+
 export default function useRegister() {
   const [isRequest, setIsRequest] = useState(false)
   const [registerInfo, setRegisterInfo] = useState<RegisterBody>({
     email: '',
     password: '',
   })
-  const [emailError, setEmailError] = useState(false)
-  const [pwdError, setPwdError] = useState(false)
-  const [errMsg, setErrMsg] = useState('')
-  const [isSuccess, setIsSuccess] = useState(false)
-  const [successMsg, setSuccessMsg] = useState('')
+  const [errMsg, setErrMsg] = useState<null | string>(null)
+  const [successMsg, setSuccessMsg] = useState<null | string>(null)
 
   const handleRegisterInfo = (key: keyof RegisterBody, value: string) => {
     setRegisterInfo((prev) => ({ ...prev, [key]: value }))
   }
 
+  const resetStatus = useCallback(() => {
+    setErrMsg(null)
+    setSuccessMsg(null)
+    setIsRequest(false)
+  }, [])
+
+  const goLogin = () => Router.push('login')
+
+  const validateEmail = useCallback((email: string) => {
+    return emailRegex.test(email)
+  }, [])
+
+  const validatePwd = useCallback((value: string) => {
+    const results = PwdValidate(value)
+    return results.every((e) => e)
+  }, [])
+
   const checkRegisterInfo = (req: RegisterBody) => {
-    const emailRegex =
-      /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-
-    if (!emailRegex.test(req.email)) {
-      setEmailError(true)
-      setErrMsg('email 格式錯誤')
+    if (!validateEmail(req.email) || !validatePwd(req.password)) {
       return false
     }
-
-    if (!req.password) {
-      setPwdError(true)
-      setErrMsg('請填寫密碼')
-      return false
-    }
-
     return true
   }
 
-  const resetError = useCallback(() => {
-    setEmailError(false)
-    setPwdError(false)
-    setErrMsg('')
-  }, [])
-
-  const handleRegister = (req: RegisterBody) => {
+  const handleRegister = () => {
     setIsRequest(true)
 
-    if (!checkRegisterInfo(req)) {
-      setIsRequest(false)
+    if (!checkRegisterInfo(registerInfo)) {
+      resetStatus()
+      setErrMsg('Email 或密碼輸入格式有誤')
       return
     }
 
-    resetError()
-
     axios
-      .post(APIS.USER_REGISTER, {
-        email: req.email,
-        password: req.password,
-      })
-      .then((res) => {
-        resetError()
-        setIsSuccess(true)
+      .post(
+        `http://localhost:8080${APIS.USER_REGISTER}`,
+        {
+          email: registerInfo.email,
+          password: registerInfo.password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        resetStatus()
         setSuccessMsg('註冊成功')
-        const data = res.data
-        if (data.token) localStorage.setItem('accessToken', data.token)
         setTimeout(() => {
-          Router.push('/')
+          Router.push('/home')
         }, 1500)
       })
       .catch((err) => {
-        const status = err?.response?.data?.status as RegisterStatus
-        if (status) {
-          setEmailError(true)
-          setPwdError(true)
-          setErrMsg(RegisterResponse[status])
+        resetStatus()
+        if (axios.isAxiosError(err)) {
+          const msg = err.response?.data
+          setErrMsg(msg)
+        } else {
+          setErrMsg('發生未知錯誤，請聯繫開發人員')
         }
       })
-
-    setIsRequest(false)
   }
 
-  const goLogin = () => Router.push('login')
+  const btnDisabled = !checkRegisterInfo(registerInfo) || isRequest
 
   return {
     isRequest,
     registerInfo,
     handleRegisterInfo,
-    emailError,
-    pwdError,
     errMsg,
     handleRegister,
-    isSuccess,
     successMsg,
     goLogin,
+    btnDisabled,
+    validateEmail,
+    validatePwd,
   }
 }
