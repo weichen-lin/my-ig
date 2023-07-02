@@ -7,6 +7,8 @@ import {
   BreadCrumbs,
   Hinter,
 } from 'components/disk'
+
+import { Dialog } from 'components/utils'
 import { GetServerSideProps } from 'next'
 
 import { GuestChecker, LayoutHome } from 'components/layout'
@@ -363,6 +365,7 @@ export default function DiskPage(props: TokenProp) {
         infoProps={infoProps}
         tagProps={tagProps}
       /> */}
+          <Hinter />
         </div>
       </LayoutHome>
     </IgProvider>

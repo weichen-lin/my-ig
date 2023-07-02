@@ -13,6 +13,11 @@ import { useIsMobile } from 'hooks/disk'
 
 import { PCButton, MobileButton } from './buttons'
 
+import { useContext, useRef, useEffect, createRef } from 'react'
+import { IgContext } from 'context'
+
+import { AddFolder } from 'components/utils'
+
 interface SortProps extends Pick<DiskProps, 'sortProps'> {}
 
 export default function Operator(props: SortProps) {
@@ -20,12 +25,23 @@ export default function Operator(props: SortProps) {
   const { listMethod, handleListMethod } = sortProps
 
   const { isMobile } = useIsMobile()
+  const kushareContext = useContext(IgContext)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    inputRef.current?.select()
+    inputRef.current?.focus()
+  }, [kushareContext?.openDialog])
 
   const Bottons = [
     {
       Icon: HiOutlinePlusSm,
       message: '建立',
-      onClick: () => console.log('press button'),
+      onClick: () => {
+        kushareContext?.handleCurrentDialog(
+          <AddFolder ref={inputRef} close={kushareContext?.handleCloseDialog} />
+        )
+      },
     },
     {
       Icon: MdOutlineDriveFolderUpload,
@@ -54,11 +70,20 @@ export default function Operator(props: SortProps) {
         `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`
       )}
     >
-      {Bottons.map((e) =>
+      {Bottons.map((e, index) =>
         isMobile ? (
-          <MobileButton Icon={e.Icon} onClick={e.onClick} />
+          <MobileButton
+            Icon={e.Icon}
+            onClick={e.onClick}
+            key={`button_${index}`}
+          />
         ) : (
-          <PCButton Icon={e.Icon} onClick={e.onClick} message={e.message} />
+          <PCButton
+            Icon={e.Icon}
+            onClick={e.onClick}
+            message={e.message}
+            key={`button_${index}`}
+          />
         )
       )}
     </div>

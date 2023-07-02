@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 export default function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false)
-  const [isFullScreen, setIsFullScreen] = useState(false)
+  const [isFullScreen, setIsFullScreen] = useState(true)
 
   const onResize = useCallback(() => {
     const checker = window?.innerWidth <= 768
