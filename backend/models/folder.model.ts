@@ -1,4 +1,4 @@
-import { DataTypes, Transaction } from 'sequelize'
+import { DataTypes, Transaction, literal } from 'sequelize'
 import { db } from './db'
 import { v4 as uuidv4 } from 'uuid'
 import { Folder_CRUD_STATUS } from '../errors'
@@ -6,28 +6,31 @@ import { Folder_CRUD_STATUS } from '../errors'
 export const Folder = db.define(
   'folder',
   {
-    user_uuid: {
-      type: DataTypes.STRING(50),
+    user_id: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
-    folder_uuid: {
-      type: DataTypes.STRING(50),
+    folder_id: {
+      type: DataTypes.UUID,
       allowNull: false,
+      defaultValue: literal(`uuid_generate_v4()`),
+      primaryKey: true,
     },
     folder_name: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false,
     },
     locate_at: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
     },
+    is_deleted: { type: DataTypes.BOOLEAN },
+    create_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
+    last_modified_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
   },
   {
-    indexes: [
-      { fields: ['createdAt', 'locate_at'] },
-      { fields: ['user_uuid'] },
-    ],
+    indexes: [{ fields: ['create_at', 'locate_at'] }, { fields: ['user_id'] }],
     freezeTableName: true,
+    timestamps: false,
   }
 )
 

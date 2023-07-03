@@ -6,11 +6,11 @@ export const File = db.define(
   'file',
   {
     user_id: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
       allowNull: false,
     },
     file_id: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
       defaultValue: literal(`uuid_generate_v4()`),
       primaryKey: true,
     },
@@ -18,7 +18,7 @@ export const File = db.define(
       type: DataTypes.STRING(100),
     },
     locate_at: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
     },
     file_url: {
       type: DataTypes.TEXT,
