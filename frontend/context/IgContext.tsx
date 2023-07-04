@@ -8,7 +8,7 @@ import {
 import Router from 'next/router'
 import axios from 'axios'
 import { useHints, Action, Hint } from 'hooks/disk'
-import { AddFolder } from 'components/utils'
+import fetcher from 'api/fetcher'
 
 export interface User {
   user_id: string
@@ -29,24 +29,49 @@ interface IgType {
   currentDialog: JSX.Element | null
   handleCurrentDialog: (e: JSX.Element) => void
   handleCloseDialog: () => void
+  isFetching: boolean
+  diskData: DiskData
 }
 
 interface TokenCheckerProps {
   children: JSX.Element
   token: string | null
   current: string
+  folder: string | null
+}
+
+export interface FileData {
+  name: string
+  url: string
+  last_modified_at: string
+  id: string
+  tags: string[]
+  description: string | null
+}
+
+export interface FolderData {
+  name: string
+  last_modified_at: string
+  id: string
+}
+
+interface DiskData {
+  files: FileData[]
+  folders: FolderData[]
 }
 
 export const IgContext = createContext<IgType | null>(null)
 
 export const IgProvider = (props: TokenCheckerProps) => {
-  const { children, token, current } = props
+  const { children, token, current, folder } = props
   const { hints, AddHints } = useHints()
 
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
   const [isAuth, setIsAuth] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
   const [currentDialog, setCurrentDialog] = useState<JSX.Element | null>(null)
+  const [diskData, setDiskData] = useState<DiskData>({ files: [], folders: [] })
+  const [isFetching, setIsFetching] = useState(true)
 
   const handleUserProfile = (key: keyof User, value: any) => {
     setUserProfile((prev) => {
@@ -73,28 +98,45 @@ export const IgProvider = (props: TokenCheckerProps) => {
   }, [])
 
   useEffect(() => {
-    const authUser = () => {
+    const authUser = async () => {
       if (!token) {
         return Router.push('/login')
       }
 
-      return axios
-        .get('http://localhost:8080/user/userinfo', {
+      try {
+        const res = await axios.get('http://localhost:8080/user/userinfo', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         })
-        .then((res) => {
+
+        if (res.status === 200) {
           setIsAuth(true)
           setUserProfile(res.data)
-        })
-        .catch(() => {
-          Router.push('/login')
-          return
-        })
+        }
+      } catch {
+        localStorage.clear()
+        return Router.push('/login')
+      }
     }
+
+    const getDiskData = async () => {
+      try {
+        const res = await fetcher.get('http://localhost:8080/disk')
+        if (res.status === 200) {
+          const data = res.data
+          setIsFetching(false)
+          setDiskData(data)
+        }
+      } catch {
+        localStorage.clear()
+        return Router.push('/login')
+      }
+    }
+
     authUser()
+    getDiskData()
   }, [])
 
   return (
@@ -110,6 +152,8 @@ export const IgProvider = (props: TokenCheckerProps) => {
         currentDialog,
         handleCurrentDialog,
         handleCloseDialog,
+        isFetching,
+        diskData,
       }}
     >
       {children}

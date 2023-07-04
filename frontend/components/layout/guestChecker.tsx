@@ -24,6 +24,7 @@ export default function GuestChecker(props: {
         .catch(() => {
           setCheckLogin(true)
           Router.push('/login')
+          localStorage.clear()
         })
     }
     checkIsLogin()

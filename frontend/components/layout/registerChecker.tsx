@@ -23,6 +23,7 @@ export default function RegisterChecker(props: {
         })
         .catch(() => {
           setCheckLogin(true)
+          localStorage.clear()
         })
     }
     checkIsLogin()

@@ -69,7 +69,7 @@ const RuleChecker = (props: { status: boolean; rule: string }) => {
 
 export const EmailChecker = () => {
   return (
-    <p className='w-full md:w-2/3 md:mx-auto rounded-lg py-1 text-red-300'>
+    <p className='w-full md:mx-auto rounded-lg py-1 text-red-300'>
       Email格式錯誤
     </p>
   )

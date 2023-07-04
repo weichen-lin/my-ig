@@ -6,6 +6,9 @@ import { CurrentFolder } from 'context'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 
 import { useIsMobile } from 'hooks/disk'
+import { useState, useEffect } from 'react'
+import fetcher from 'api/fetcher'
+import Router from 'next/router'
 
 const BreadCrumb = (props: {
   folderInfo: CurrentFolder
@@ -97,43 +100,37 @@ const BreadCrumbDisplay = (props: {
 }
 
 export default function BreadCrumbs(props: SortProps) {
-  const { sortProps, isLoading } = props
+  const { sortProps } = props
   const { current_folder, handleBreadChangeFolder } = sortProps
 
-  const test = [
-    {
-      folder_uuid: 'asdasdad',
-      folder_name:
-        '層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1',
-    },
-    {
-      folder_uuid: 'asdasdad',
-      folder_name: '層級2',
-    },
-    {
-      folder_uuid: 'asdasdad',
-      folder_name: '層級3',
-    },
-    {
-      folder_uuid: 'asdasdad',
-      folder_name: '層級4',
-    },
-  ]
-
-  const current_folder_copy = [...test]
-
+  const [breadcrumbs, setBreadCrumbs] = useState([])
+  const [isFetch, setIsFetch] = useState(false)
   const { isMobile } = useIsMobile()
 
+  useEffect(() => {
+    const getBreadCrumb = async () => {
+      try {
+        const res = await fetcher.get('/disk/breadcrumb')
+        if (res.status === 200) {
+          const breadcrumbs = res.data
+          setIsFetch(false)
+          setBreadCrumbs(breadcrumbs)
+        }
+      } catch {
+        Router.push('login')
+      }
+    }
+
+    getBreadCrumb()
+  }, [])
+
   return (
-    <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-4'}`)}>
+    <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-8'}`)}>
       <div className='font-bold text-xl flex items-center text-gray-500'>
-        {isLoading ? (
+        {isFetch ? (
           <BreadCrumbBackBone isMobile={isMobile} />
         ) : (
-          <BreadCrumbDisplay
-            isMobile={isMobile}
-            layerFolder={current_folder_copy}
-          />
+          <BreadCrumbDisplay isMobile={isMobile} layerFolder={breadcrumbs} />
         )}
       </div>
     </div>

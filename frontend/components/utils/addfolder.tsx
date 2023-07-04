@@ -1,8 +1,10 @@
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 
 interface AddFolderProps {
   close: () => void
 }
+
+const useAddFolder = () => {}
 
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const { close } = prop

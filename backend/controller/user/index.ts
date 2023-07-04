@@ -27,7 +27,7 @@ interface UserInfo {
 
 export class UserController {
   @BodyChecker({ email: 'string', password: 'string' })
-  async register({
+  public async register({
     email,
     password,
   }: {
@@ -152,6 +152,7 @@ export class UserController {
     user_id: string,
     avatar_url: string
   ): Promise<number> {
+    console.log(user_id)
     const user = await User.findOne({ where: { user_id } })
 
     if (!user) return 401

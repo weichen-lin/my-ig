@@ -20,7 +20,7 @@ app.use('/user', User)
 app.use('/file', File)
 app.use('/auth', Auth)
 // app.use('/folder', Folder)
-// app.use('/disk', Disk)
+app.use('/disk', Disk)
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`)
