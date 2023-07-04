@@ -23,6 +23,12 @@ export const Folder = db.define(
     locate_at: {
       type: DataTypes.UUID,
     },
+    next_id: {
+      type: DataTypes.UUID,
+    },
+    full_path: {
+      type: DataTypes.ARRAY(DataTypes.JSON),
+    },
     is_deleted: { type: DataTypes.BOOLEAN },
     create_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
     last_modified_at: { type: DataTypes.DATE, defaultValue: literal('now()') },
