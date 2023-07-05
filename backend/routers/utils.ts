@@ -40,11 +40,7 @@ function CookieParser({ cookie, name }: CookieParser) {
 
 const user = new UserController()
 
-export const verify_token = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const verify_token = async (req: Request, res: Response, next: NextFunction) => {
   const bearerHeader = req.headers.authorization
   const [status, message] = user.verifyCookie(bearerHeader)
   if (status !== 200) {

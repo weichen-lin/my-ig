@@ -1,9 +1,15 @@
 import { Folder } from '../../models/folder.model'
 import { BodyChecker } from '../util'
 
+interface createFolderProps {
+  folder_name: string
+  locate_at: string | null
+  user_id: string
+}
+
 export default class FolderController {
   @BodyChecker({ folder_name: 'string', locate_at: 'string | null', user_id: 'string' })
-  public async createFolder(folder_name: string, locate_at: string | null, user_id: string): Promise<[number, string]> {
+  public async createFolder({ folder_name, user_id, locate_at }: createFolderProps): Promise<[number, string]> {
     if (!folder_name || folder_name === '') return [403, 'Invalid folder Name!']
 
     const checker = await Folder.findOne({
@@ -45,7 +51,7 @@ export default class FolderController {
 
       return [201, 'create success']
     } catch (e) {
-      return [403, 'success failed']
+      return [403, 'create failed']
     }
   }
 }

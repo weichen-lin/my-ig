@@ -21,9 +21,6 @@ export const Folder = db.define(
     locate_at: {
       type: DataTypes.UUID,
     },
-    next_id: {
-      type: DataTypes.UUID,
-    },
     full_path: {
       type: DataTypes.ARRAY(DataTypes.JSON),
     },
