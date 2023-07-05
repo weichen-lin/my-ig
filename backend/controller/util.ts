@@ -19,9 +19,12 @@ export const BodyChecker = (body: Record<string, string>) => {
       }
 
       Object.entries(body).forEach(([key, value]) => {
-        if (typeof param[key] !== value) {
-          return ErrorArgumentsMsg
-        }
+        const types = value.split('|')
+        types.forEach((e) => {
+          if (typeof param[key] !== e.trim()) {
+            return ErrorArgumentsMsg
+          }
+        })
       })
 
       return originalFunc.apply(this, args)
