@@ -12,7 +12,7 @@ import { Dialog } from 'components/utils'
 import { GetServerSideProps } from 'next'
 
 import { GuestChecker, LayoutHome } from 'components/layout'
-import { IgProvider } from 'context'
+import { IgProvider, GdriveProvider } from 'context'
 import { Loading } from 'components/utils'
 import { CookieParser, TokenProp } from 'hooks/utils'
 
@@ -47,31 +47,33 @@ export default function DiskPage(props: TokenProp) {
   const isLoading = true
 
   return (
-    <IgProvider token={token} current={current} folder={folder}>
-      <LayoutHome>
-        <div className='flex flex-col h-[90%] relative'>
-          <div className='flex flex-wrap w-[92%] items-center mx-auto'>
-            <Operator sortProps={sortProps} />
-            <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
-          </div>
-          <GdriveLikeDisk
-            isLoading={isLoading}
-            listMethod={sortProps.listMethod}
-            // selected={selected}
-            // dragged={dragged}
-            handleImageDisplay={infoProps.handleImageDisplay}
-            handleCurrentFolder={handleCurrentFolder}
-            // hoverHandler={hoverHandler}
-          />
-          {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
+    <IgProvider token={token}>
+      <GdriveProvider>
+        <LayoutHome>
+          <div className='flex flex-col h-[90%] relative'>
+            <div className='flex flex-wrap w-[92%] items-center mx-auto'>
+              <Operator sortProps={sortProps} />
+              <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
+            </div>
+            <GdriveLikeDisk
+              isLoading={isLoading}
+              listMethod={sortProps.listMethod}
+              // selected={selected}
+              // dragged={dragged}
+              handleImageDisplay={infoProps.handleImageDisplay}
+              handleCurrentFolder={handleCurrentFolder}
+              // hoverHandler={hoverHandler}
+            />
+            {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}
         infoProps={infoProps}
         tagProps={tagProps}
       /> */}
-          <Hinter />
-        </div>
-      </LayoutHome>
+            <Hinter />
+          </div>
+        </LayoutHome>
+      </GdriveProvider>
     </IgProvider>
   )
 }

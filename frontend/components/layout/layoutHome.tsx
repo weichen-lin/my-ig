@@ -7,13 +7,15 @@ import { RxHamburgerMenu } from 'react-icons/rx'
 import { useCallback, useState, createRef, useRef, useEffect } from 'react'
 
 import { useContext } from 'react'
-import { IgContext } from 'context'
+import { GdriveContext } from 'context'
 interface LayoutProps {
   children: JSX.Element
 }
 
 const LayoutHomePC = ({ children }: LayoutProps) => {
-  const kushareContext = useContext(IgContext)
+  const gdrive = useContext(GdriveContext)
+
+  const { openDialog, currentDialog, handleCloseDialog } = gdrive
 
   return (
     <div className='bg-slate-300 flex gap-x-1 md:pt-[1%] h-screen w-full justify-center'>
@@ -27,11 +29,8 @@ const LayoutHomePC = ({ children }: LayoutProps) => {
         </div>
         {children}
       </div>
-      {kushareContext?.openDialog && (
-        <Dialog
-          children={kushareContext?.currentDialog}
-          close={kushareContext?.handleCloseDialog}
-        />
+      {openDialog && (
+        <Dialog children={currentDialog} close={handleCloseDialog} />
       )}
     </div>
   )

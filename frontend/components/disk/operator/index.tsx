@@ -14,7 +14,7 @@ import { useIsMobile } from 'hooks/disk'
 import { PCButton, MobileButton } from './buttons'
 
 import { useContext, useRef, useEffect, createRef } from 'react'
-import { IgContext } from 'context'
+import { GdriveContext } from 'context'
 
 import { AddFolder } from 'components/utils'
 
@@ -25,21 +25,23 @@ export default function Operator(props: SortProps) {
   const { listMethod, handleListMethod } = sortProps
 
   const { isMobile } = useIsMobile()
-  const kushareContext = useContext(IgContext)
+  const gdrive = useContext(GdriveContext)
+  const { openDialog, handleCurrentDialog, handleCloseDialog } = gdrive
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     inputRef.current?.select()
     inputRef.current?.focus()
-  }, [kushareContext?.openDialog])
+  }, [openDialog])
 
   const Bottons = [
     {
       Icon: HiOutlinePlusSm,
       message: '建立',
       onClick: () => {
-        kushareContext?.handleCurrentDialog(
-          <AddFolder ref={inputRef} close={kushareContext?.handleCloseDialog} />
+        handleCurrentDialog(
+          <AddFolder ref={inputRef} close={handleCloseDialog} />
         )
       },
     },

@@ -5,7 +5,7 @@ import { FormatProp, ListMethod, GdriveSelectTarget } from 'hooks/disk'
 import { DiskDataInterface, CurrentFolder } from 'context'
 import type { HoverHandler } from 'hooks/disk/useGdrive'
 import { GdriveLikeDiskBackbonePC } from './gdrivebone'
-import { IgContext } from 'context'
+import { GdriveContext } from 'context'
 import { useContext } from 'react'
 import Image from 'next/image'
 import { memo } from 'react'
@@ -22,20 +22,31 @@ const EmptyContent = memo(() => {
   return (
     <div className='w-full h-full flex flex-col items-center gap-y-12 mt-[5%]'>
       <img src='static/empty.jpg' className='w-[350px] h-[300px]'></img>
-      <div className='text-gray-500 font-bold text-lg'>此位置目前無創建任何資料夾或是上傳任何圖片。</div>
+      <div className='text-gray-500 font-bold text-lg'>
+        此位置目前無創建任何資料夾或是上傳任何圖片。
+      </div>
     </div>
   )
 })
 
 export default function GdriveLikeDisk(props: any) {
-  const { listMethod, selected, dragged, handleImageDisplay, handleCurrentFolder, hoverHandler } = props
+  const {
+    listMethod,
+    selected,
+    dragged,
+    handleImageDisplay,
+    handleCurrentFolder,
+    hoverHandler,
+  } = props
 
-  const kushareContext = useContext(IgContext)
+  const gdrive = useContext(GdriveContext)
+  const { diskData, isFetching } = gdrive
 
-  const files = kushareContext?.diskData.files
-  const folders = kushareContext?.diskData.folders
+  const files = diskData.files
+  const folders = diskData.folders
 
-  const haveContent = ((files && files.length > 0) || (folders && folders.length > 0)) ?? false
+  const haveContent =
+    ((files && files.length > 0) || (folders && folders.length > 0)) ?? false
 
   const GdriveContent = ({ haveContent }: { haveContent: boolean }) => {
     return haveContent ? (
@@ -61,14 +72,18 @@ export default function GdriveLikeDisk(props: any) {
         {listMethod === ListMethod.Lattice && files && files.length > 0 && (
           <p className='w-[90%] xs:w-full text-gray-400'>檔案</p>
         )}
-        <Files listMethod={listMethod} files={files} handleImageDisplay={handleImageDisplay} />
+        <Files
+          listMethod={listMethod}
+          files={files}
+          handleImageDisplay={handleImageDisplay}
+        />
       </div>
     ) : (
       <EmptyContent />
     )
   }
 
-  return kushareContext?.isFetching ? (
+  return isFetching ? (
     <GdriveLikeDiskBackbonePC listMethod={listMethod} />
   ) : (
     <GdriveContent haveContent={haveContent} />
