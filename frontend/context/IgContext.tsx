@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  createRef,
-  useCallback,
-} from 'react'
+import { createContext, useState, useEffect, createRef, useCallback } from 'react'
 import Router from 'next/router'
 import axios from 'axios'
 import { useHints, Action, Hint } from 'hooks/disk'
@@ -22,7 +16,6 @@ interface IgType {
   userProfile?: User
   handleUserProfile: (key: keyof User, value: any) => void
   isAuth: boolean
-  current: string | undefined
   hints: Hint[]
   handleHints: (status: Action, message: string) => void
   openDialog: boolean
@@ -36,8 +29,7 @@ interface IgType {
 interface TokenCheckerProps {
   children: JSX.Element
   token: string | null
-  current: string
-  folder: string | null
+  folder?: string | null
 }
 
 export interface FileData {
@@ -63,7 +55,7 @@ interface DiskData {
 export const IgContext = createContext<IgType | null>(null)
 
 export const IgProvider = (props: TokenCheckerProps) => {
-  const { children, token, current, folder } = props
+  const { children, token, folder } = props
   const { hints, AddHints } = useHints()
 
   const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
@@ -145,7 +137,6 @@ export const IgProvider = (props: TokenCheckerProps) => {
         userProfile,
         handleUserProfile,
         isAuth,
-        current,
         hints,
         handleHints,
         openDialog,

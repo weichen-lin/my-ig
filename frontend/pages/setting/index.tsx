@@ -1,12 +1,4 @@
-import {
-  Sort,
-  GdriveLikeDisk,
-  Operator,
-  ImagePlayground,
-  UploadTasks,
-  BreadCrumbs,
-  Hinter,
-} from 'components/disk'
+import { Sort, GdriveLikeDisk, Operator, ImagePlayground, UploadTasks, BreadCrumbs, Hinter } from 'components/disk'
 import { GetServerSideProps } from 'next'
 
 import { LayoutHome } from 'components/layout'
@@ -35,9 +27,7 @@ export default function SettingPage(props: TokenProp) {
                   <MdOutlineCheck fill='#16a34a' />
                   已驗證
                 </div>
-                <button className='border p-1 w-16 rounded-md border-blue-300'>
-                  編輯
-                </button>
+                <button className='border p-1 w-16 rounded-md border-blue-300'>編輯</button>
               </div>
             </div>
           </div>
@@ -57,9 +47,7 @@ export default function SettingPage(props: TokenProp) {
               </div>
               {/* <p className='text-gray-300'>************</p> */}
               <div className='flex items-center'>
-                <button className='border p-1 w-16 rounded-md border-blue-300'>
-                  重設
-                </button>
+                <button className='border p-1 w-16 rounded-md border-blue-300'>重設</button>
               </div>
             </div>
           </div>
