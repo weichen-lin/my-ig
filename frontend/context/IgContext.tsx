@@ -1,8 +1,7 @@
-import { createContext, useState, useEffect, useCallback } from 'react'
+import { createContext } from 'react'
 import Router from 'next/router'
 import { useHints, Action, Hint } from 'hooks/disk'
-import { getUserInfo } from 'api/apis'
-import { useFetch } from 'hooks/utils'
+import { getUserInfo, useFetch } from 'api/'
 
 export interface User {
   user_id: string

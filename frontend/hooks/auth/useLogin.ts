@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react'
 import axios from 'axios'
 import Router from 'next/router'
-import { login, LoginBody } from 'api/apis'
-import { useFetch } from 'hooks/utils'
+import { login, LoginBody, useFetch } from 'api'
 
 export default function useLogin() {
   const [loginInfo, setLoginInfo] = useState<LoginBody>({

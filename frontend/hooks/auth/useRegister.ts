@@ -2,8 +2,7 @@ import { useState, useCallback } from 'react'
 import axios from 'axios'
 import Router from 'next/router'
 import { PwdValidate } from './utils'
-import { useFetch } from 'hooks/utils'
-import { register } from 'api/apis'
+import { register, useFetch } from 'api'
 
 export type RegisterKeys = 'email' | 'password'
 
