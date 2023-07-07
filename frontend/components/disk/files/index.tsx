@@ -22,22 +22,13 @@ const EmptyContent = memo(() => {
   return (
     <div className='w-full h-full flex flex-col items-center gap-y-12 mt-[5%]'>
       <img src='static/empty.jpg' className='w-[350px] h-[300px]'></img>
-      <div className='text-gray-500 font-bold text-lg'>
-        此位置目前無創建任何資料夾或是上傳任何圖片。
-      </div>
+      <div className='text-gray-500 font-bold text-lg'>此位置目前無創建任何資料夾或是上傳任何圖片。</div>
     </div>
   )
 })
 
 export default function GdriveLikeDisk(props: any) {
-  const {
-    listMethod,
-    selected,
-    dragged,
-    handleImageDisplay,
-    handleCurrentFolder,
-    hoverHandler,
-  } = props
+  const { listMethod, selected, dragged, handleImageDisplay, handleCurrentFolder, hoverHandler } = props
 
   const gdrive = useContext(GdriveContext)
   const { diskData, isFetching } = gdrive
@@ -45,23 +36,22 @@ export default function GdriveLikeDisk(props: any) {
   const files = diskData.files
   const folders = diskData.folders
 
-  const haveContent =
-    ((files && files.length > 0) || (folders && folders.length > 0)) ?? false
+  const haveContent = ((files && files.length > 0) || (folders && folders.length > 0)) ?? false
 
   const GdriveContent = ({ haveContent }: { haveContent: boolean }) => {
     return haveContent ? (
       <div
         className={clsx(
-          'overflow-y-auto w-[92%] mx-auto pl-[1%] flex items-center mb-2 select-none h-full relative',
+          'overflow-y-auto w-[92%] mx-auto flex items-start mb-2 select-none h-full relative',
           `${
             listMethod === ListMethod.Lattice
-              ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3 flex-row'
+              ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3 flex-col'
               : 'flex-col w-full'
           }`
         )}
       >
         {listMethod === ListMethod.Lattice && folders && folders.length > 0 && (
-          <p className='w-[90%] xs:w-full text-gray-400'>資料夾</p>
+          <p className='text-gray-400 pl-[1%]'>資料夾</p>
         )}
         <Folders
           listMethod={listMethod}
@@ -70,22 +60,14 @@ export default function GdriveLikeDisk(props: any) {
           hoverHandler={hoverHandler}
         />
         {listMethod === ListMethod.Lattice && files && files.length > 0 && (
-          <p className='w-[90%] xs:w-full text-gray-400'>檔案</p>
+          <p className='text-gray-400 pl-[1%]'>檔案</p>
         )}
-        <Files
-          listMethod={listMethod}
-          files={files}
-          handleImageDisplay={handleImageDisplay}
-        />
+        <Files listMethod={listMethod} files={files} handleImageDisplay={handleImageDisplay} />
       </div>
     ) : (
       <EmptyContent />
     )
   }
 
-  return isFetching ? (
-    <GdriveLikeDiskBackbonePC listMethod={listMethod} />
-  ) : (
-    <GdriveContent haveContent={haveContent} />
-  )
+  return isFetching ? <GdriveLikeDiskBackbonePC listMethod={listMethod} /> : <GdriveContent haveContent={haveContent} />
 }

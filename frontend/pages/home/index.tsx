@@ -12,7 +12,7 @@ import { useScroll } from 'hooks/utils'
 const date = new Date()
 
 export default function DiskPage(props: TokenProp) {
-  const { token, current, folder } = props
+  const { token } = props
 
   const { sortProps, diskProps } = useDisk()
 

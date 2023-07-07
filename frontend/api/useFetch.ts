@@ -27,7 +27,7 @@ export default function useFetch<T, V>(
         props?.onSuccess && props.onSuccess(res.data)
       } catch (e) {
         if (axios.isAxiosError(e)) {
-          setError(e.message)
+          setError(e.response?.data)
         } else {
           setError('something went wrong')
         }

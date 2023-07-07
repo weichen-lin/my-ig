@@ -27,5 +27,8 @@ export const login = async (data: LoginBody) =>
 
 export const getUserInfo = async () => fetcher.get('/user/userinfo')
 
+export const getDiskData = async (locate_at: string | null) =>
+  fetcher.get(`/disk${locate_at ? `?locate_at=${locate_at}` : ''}`)
+
 export const createFolder = async (data: { folder_name: string; locate_at: string | null }) =>
   fetcher.post('/folder', data)

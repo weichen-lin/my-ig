@@ -16,20 +16,12 @@ export class FileController {
     return this.firebase.storage().bucket()
   }
 
-  public uploadAvatarFile = (
-    user_id: string,
-    req: Request
-  ): Promise<[number, string]> => {
+  public uploadAvatarFile = (user_id: string, req: Request): Promise<[number, string]> => {
     return new Promise((resolve, reject) => {
       const blob = this.firebase
         .storage()
         .bucket()
-        .file(
-          Buffer.from(
-            `avatar/${user_id}/${req?.file?.originalname ?? 'unknown file'}`,
-            'latin1'
-          ).toString('utf-8')
-        )
+        .file(Buffer.from(`avatar/${user_id}/${req?.file?.originalname ?? 'unknown file'}`, 'latin1').toString('utf-8'))
 
       const blobStream = blob.createWriteStream()
 

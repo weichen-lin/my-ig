@@ -7,6 +7,13 @@ interface createFolderProps {
   user_id: string
 }
 
+interface FolderElement {
+  folder_id: string
+  folder_name: string
+  locate_at: string | null
+  last_modified_at: Date
+}
+
 export default class FolderController {
   @BodyChecker({ folder_name: 'string', locate_at: 'string | null', user_id: 'string' })
   public async createFolder({ folder_name, user_id, locate_at }: createFolderProps): Promise<[number, string]> {
@@ -52,6 +59,33 @@ export default class FolderController {
       return [201, 'create success']
     } catch (e) {
       return [403, 'create failed']
+    }
+  }
+
+  @BodyChecker({ locate_at: 'string | null', user_id: 'string' })
+  public async getFolders({
+    user_id,
+    locate_at,
+  }: {
+    user_id: string
+    locate_at: string | null
+  }): Promise<FolderElement[]> {
+    try {
+      const folders = await Folder.findAll({
+        where: {
+          user_id,
+          locate_at,
+        },
+      })
+
+      return folders.map((folder) => ({
+        folder_id: folder.dataValues.folder_id,
+        folder_name: folder.dataValues.folder_name,
+        locate_at: folder.dataValues.locate_at,
+        last_modified_at: folder.dataValues.last_modified_at,
+      }))
+    } catch (e) {
+      return Promise.reject(e)
     }
   }
 }
