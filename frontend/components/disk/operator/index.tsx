@@ -40,9 +40,7 @@ export default function Operator(props: SortProps) {
       Icon: HiOutlinePlusSm,
       message: '建立',
       onClick: () => {
-        handleCurrentDialog(
-          <AddFolder ref={inputRef} close={handleCloseDialog} />
-        )
+        handleCurrentDialog(<AddFolder ref={inputRef} close={handleCloseDialog} />)
       },
     },
     {
@@ -56,36 +54,19 @@ export default function Operator(props: SortProps) {
       onClick: () => console.log('press button'),
     },
     {
-      Icon:
-        listMethod > ListMethod.Lattice
-          ? AiOutlineUnorderedList
-          : TbLayoutDashboard,
+      Icon: listMethod > ListMethod.Lattice ? AiOutlineUnorderedList : TbLayoutDashboard,
       message: '調整檢視',
       onClick: handleListMethod,
     },
   ]
 
   return (
-    <div
-      className={clsx(
-        'flex ml-3',
-        `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`
-      )}
-    >
+    <div className={clsx('flex ml-3', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
       {Bottons.map((e, index) =>
         isMobile ? (
-          <MobileButton
-            Icon={e.Icon}
-            onClick={e.onClick}
-            key={`button_${index}`}
-          />
+          <MobileButton Icon={e.Icon} onClick={e.onClick} key={`button_${index}`} />
         ) : (
-          <PCButton
-            Icon={e.Icon}
-            onClick={e.onClick}
-            message={e.message}
-            key={`button_${index}`}
-          />
+          <PCButton Icon={e.Icon} onClick={e.onClick} message={e.message} key={`button_${index}`} />
         )
       )}
     </div>

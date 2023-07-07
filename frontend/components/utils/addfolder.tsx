@@ -2,6 +2,7 @@ import { forwardRef, useState, useContext } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiError } from 'react-icons/bi'
 import { GdriveContext } from 'context'
+import { createFolder, useFetch } from 'api'
 
 interface AddFolderProps {
   close: () => void
@@ -10,6 +11,8 @@ interface AddFolderProps {
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const gdrive = useContext(GdriveContext)
   const { dialogLoading, handleCloseDialog } = gdrive
+
+  const { data, isLoading, error } = useFetch(createFolder)
 
   const Error = () => {
     return (
@@ -30,22 +33,11 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
         disabled={dialogLoading}
       />
       <div className='flex justify-end gap-x-2'>
-        <button
-          className='px-4 py-1 hover:bg-gray-100 rounded-lg'
-          onClick={handleCloseDialog}
-          disabled={dialogLoading}
-        >
+        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' onClick={handleCloseDialog} disabled={dialogLoading}>
           取消
         </button>
-        <button
-          className='px-4 py-1 hover:bg-gray-100 rounded-lg'
-          disabled={dialogLoading}
-        >
-          {dialogLoading ? (
-            <AiOutlineLoading3Quarters className='animate-spin w-5 h-5 mx-1' />
-          ) : (
-            '建立'
-          )}
+        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' disabled={dialogLoading}>
+          {dialogLoading ? <AiOutlineLoading3Quarters className='animate-spin w-5 h-5 mx-1' /> : '建立'}
         </button>
       </div>
       <Error />

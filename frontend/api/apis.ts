@@ -26,3 +26,6 @@ export const login = async (data: LoginBody) =>
   })
 
 export const getUserInfo = async () => fetcher.get('/user/userinfo')
+
+export const createFolder = async (data: { folder_name: string; locate_at: string | null }) =>
+  fetcher.post('/folder', data)
