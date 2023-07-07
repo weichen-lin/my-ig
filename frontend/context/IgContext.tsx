@@ -1,8 +1,8 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
 import Router from 'next/router'
-import axios from 'axios'
 import { useHints, Action, Hint } from 'hooks/disk'
-import fetcher from 'api/fetcher'
+import { getUserInfo } from 'api/apis'
+import { useFetch } from 'hooks/utils'
 
 export interface User {
   user_id: string
@@ -13,8 +13,8 @@ export interface User {
 }
 
 interface AuthContextType {
-  userProfile?: User
-  handleUserProfile: (key: keyof User, value: any) => void
+  userProfile: User | null
+  refresh: () => void
   isAuth: boolean
   hints: Hint[]
   handleHints: (status: Action, message: string) => void
@@ -33,66 +33,34 @@ export const IgContext = createContext<AuthContextType>({
     login_method: '',
     avatar_url: '',
   },
-  handleUserProfile: (key, value) => {},
+  refresh: () => {},
   isAuth: false,
   hints: [],
   handleHints: (status, message) => {},
 })
 
 export const IgProvider = (props: TokenCheckerProps) => {
-  const { children, token } = props
+  const { children } = props
   const { hints, AddHints } = useHints()
 
-  const [userProfile, setUserProfile] = useState<User>({
-    user_id: '',
-    email: '',
-    user_name: '',
-    login_method: '',
-    avatar_url: '',
+  const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
+    onError: () => {
+      localStorage.clear()
+      Router.push('/login')
+    },
+    needInitialRun: true,
   })
-  const [isAuth, setIsAuth] = useState(false)
-
-  const handleUserProfile = (key: keyof User, value: any) => {
-    setUserProfile((prev) => ({ ...prev, [key]: value }))
-  }
 
   const handleHints = (status: Action, message: string) => {
     AddHints(message, status)
   }
 
-  useEffect(() => {
-    const authUser = async () => {
-      if (!token) {
-        return Router.push('/login')
-      }
-
-      try {
-        const res = await axios.get('http://localhost:8080/user/userinfo', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (res.status === 200) {
-          setIsAuth(true)
-          setUserProfile(res.data)
-        }
-      } catch {
-        localStorage.clear()
-        return Router.push('/login')
-      }
-    }
-
-    authUser()
-  }, [])
-
   return (
     <IgContext.Provider
       value={{
-        userProfile,
-        handleUserProfile,
-        isAuth,
+        userProfile: data,
+        refresh,
+        isAuth: isLoading,
         hints,
         handleHints,
       }}

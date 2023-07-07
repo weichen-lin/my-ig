@@ -7,7 +7,7 @@ import { RxHamburgerMenu } from 'react-icons/rx'
 import { useCallback, useState, createRef, useRef, useEffect } from 'react'
 
 import { useContext } from 'react'
-import { GdriveContext } from 'context'
+import { GdriveContext, GdriveProvider } from 'context'
 interface LayoutProps {
   children: JSX.Element
 }
@@ -29,9 +29,7 @@ const LayoutHomePC = ({ children }: LayoutProps) => {
         </div>
         {children}
       </div>
-      {openDialog && (
-        <Dialog children={currentDialog} close={handleCloseDialog} />
-      )}
+      {openDialog && <Dialog children={currentDialog} close={handleCloseDialog} />}
     </div>
   )
 }
@@ -64,9 +62,9 @@ export default function LayoutHome(props: LayoutProps) {
   const { children } = props
   const { isFullScreen } = useIsMobile()
 
-  return isFullScreen ? (
-    <LayoutHomePC children={children} />
-  ) : (
-    <LayoutHomeMobile children={children} />
+  return (
+    <GdriveProvider>
+      {isFullScreen ? <LayoutHomePC children={children} /> : <LayoutHomeMobile children={children} />}
+    </GdriveProvider>
   )
 }

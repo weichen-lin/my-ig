@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback, FC } from 'react'
+import { createContext, useState, useEffect, useCallback } from 'react'
 import Router from 'next/router'
 import fetcher from 'api/fetcher'
 

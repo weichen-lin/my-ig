@@ -3,7 +3,6 @@ import { ListMethod } from './type'
 import { diskStatusInitState, diskInitState, CurrentFolder } from 'context'
 import { useRecoilState } from 'recoil'
 import fethcher from 'api/fetcher'
-import { APIS } from 'api/apis'
 
 type listMethodState = 0 | 1
 
@@ -43,9 +42,7 @@ export default function useDisk() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fethcher.get(
-        `${APIS.DISK}?${new URLSearchParams(queryParams)}`
-      )
+      const res = await fethcher.get(`/disk?${new URLSearchParams(queryParams)}`)
       return res
     }
 

@@ -1,11 +1,5 @@
 import { IconType } from 'react-icons'
-import {
-  CiHome,
-  CiShare2,
-  CiSettings,
-  CiCloudOn,
-  CiLogout,
-} from 'react-icons/ci'
+import { CiHome, CiShare2, CiSettings, CiCloudOn, CiLogout } from 'react-icons/ci'
 import { useState, useContext, useEffect, memo } from 'react'
 import Router, { useRouter } from 'next/router'
 import { IgContext } from 'context'
@@ -37,11 +31,7 @@ export const MenuItem = (props: MenuItemProps) => {
     <div
       className={clsx(
         'w-[97.5%] py-2 flex justify-start items-center',
-        `${
-          current
-            ? 'w-[100%] border-r-4 border-blue-500 pl-[1.25%]'
-            : 'hover:bg-slate-200 hover:cursor-pointer'
-        }`
+        `${current ? 'w-[100%] border-r-4 border-blue-500 pl-[1.25%]' : 'hover:bg-slate-200 hover:cursor-pointer'}`
       )}
       onClick={handleRoute}
     >
@@ -77,7 +67,7 @@ export const Menu = () => {
 
   const kushareContext = useContext(IgContext)
 
-  const userInfo = kushareContext?.userProfile
+  const { refresh, handleHints, userProfile, isAuth } = kushareContext
 
   const handleFileUpload = async (multiple: boolean) => {
     try {
@@ -103,9 +93,9 @@ export const Menu = () => {
                     'Content-Type': 'multipart/form-data',
                   },
                 })
-                .then((res) => {
-                  kushareContext?.handleUserProfile('avatar_url', res.data)
-                  kushareContext?.handleHints('success', '上傳成功')
+                .then(() => {
+                  refresh()
+                  handleHints('success', '上傳成功')
                 })
                 .catch((err) => console.log(err))
             }
@@ -151,17 +141,10 @@ export const Menu = () => {
     return (
       <div className='flex flex-col items-center gap-y-4'>
         <div className='overflow-hidden w-24 h-24'>
-          <img
-            src={userInfo?.avatar_url}
-            className='w-full h-full rounded-full border-2'
-          ></img>
+          <img src={userProfile?.avatar_url} className='w-full h-full rounded-full border-2'></img>
         </div>
         <p className='text-lg text-center w-full px-4 truncate max-w-[180px] 4xl:max-w-[260px]'>
-          {userInfo?.user_name ?? (
-            <span className='text-gray-400 text-sm select-none'>
-              未設定使用者名稱
-            </span>
-          )}
+          {userProfile?.user_name ?? <span className='text-gray-400 text-sm select-none'>未設定使用者名稱</span>}
         </p>
         <div className='relative w-[100px] h-16 mx-auto'>
           <div
@@ -183,7 +166,7 @@ export const Menu = () => {
 
   return (
     <>
-      {!kushareContext?.isAuth ? <MenuBackbone /> : <Avatar />}
+      {!isAuth ? <Avatar /> : <MenuBackbone />}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       {Menus.map((menu) => (
         <MenuItem
@@ -203,9 +186,7 @@ export const Menu = () => {
       {kushareContext?.isAuth && (
         <>
           <meter className='w-full px-3' min='0' max='15' value='5'></meter>
-          <p className='text-gray-500 text-sm text-left w-full px-3 select-none'>
-            已使用 5 GB，共 15 GB
-          </p>
+          <p className='text-gray-500 text-sm text-left w-full px-3 select-none'>已使用 5 GB，共 15 GB</p>
         </>
       )}
       <div className='flex-1'></div>
