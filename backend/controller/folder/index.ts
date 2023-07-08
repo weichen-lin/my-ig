@@ -76,6 +76,7 @@ export default class FolderController {
           user_id,
           locate_at,
         },
+        order: [['last_modified_at', 'DESC']],
       })
 
       return folders.map((folder) => ({

@@ -1,6 +1,8 @@
 import fetcher from './fetcher'
 import axios from 'axios'
 
+const BaseUrl = 'http://localhost:8080'
+
 export type RegisterKeys = 'email' | 'password'
 
 export interface RegisterBody extends Record<RegisterKeys, string> {
@@ -16,12 +18,12 @@ export interface LoginBody extends Record<LoginKeys, string> {
 }
 
 export const register = async (data: RegisterBody) =>
-  axios.post(`http://localhost:8080/user/register`, data, {
+  axios.post(`${BaseUrl}/user/register`, data, {
     withCredentials: true,
   })
 
 export const login = async (data: LoginBody) =>
-  axios.post(`http://localhost:8080/user/login`, data, {
+  axios.post(`${BaseUrl}/user/login`, data, {
     withCredentials: true,
   })
 

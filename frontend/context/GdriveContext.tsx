@@ -1,7 +1,9 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
 import Router from 'next/router'
 import fetcher from 'api/fetcher'
-
+import { useFetch, getDiskData } from 'api'
+import { useRouter } from 'next/router'
+import { ro } from 'date-fns/locale'
 export interface User {
   user_id: string
   email: string
@@ -19,6 +21,7 @@ export interface GdriveContextType {
   dialogLoading: boolean
   handleDialogLoading: (e: boolean) => void
   diskData: DiskData
+  refresh: () => void
 }
 
 export interface FileData {
@@ -53,14 +56,22 @@ export const GdriveContext = createContext<GdriveContextType>({
     files: [],
     folders: [],
   },
+  refresh: () => {},
 })
 
 export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [currentDialog, setCurrentDialog] = useState<JSX.Element | null>(null)
-  const [diskData, setDiskData] = useState<DiskData>({ files: [], folders: [] })
-  const [isFetching, setIsFetching] = useState(true)
   const [dialogLoading, setDialogLoading] = useState(false)
+  const [needRefresh, setNeedRefresh] = useState(false)
+  const router = useRouter()
+
+  const { isLoading, data, run } = useFetch(getDiskData, {
+    onError: () => {
+      localStorage.clear()
+      router.push('/login')
+    },
+  })
 
   const handleCurrentDialog = (children: JSX.Element) => {
     setOpenDialog(true)
@@ -76,22 +87,14 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
     setDialogLoading(e)
   }
 
-  useEffect(() => {
-    const getDiskData = async () => {
-      try {
-        const res = await fetcher.get('http://localhost:8080/disk')
-        if (res.status === 200) {
-          const data = res.data
-          setIsFetching(false)
-          setDiskData(data)
-        }
-      } catch {
-        localStorage.clear()
-        return Router.push('/login')
-      }
-    }
-    getDiskData()
+  const refresh = useCallback(() => {
+    setNeedRefresh((prev) => !prev)
   }, [])
+
+  useEffect(() => {
+    const locate_at = (router.query.f ?? null) as string | null
+    run(locate_at)
+  }, [needRefresh])
 
   return (
     <GdriveContext.Provider
@@ -100,10 +103,11 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
         currentDialog,
         handleCurrentDialog,
         handleCloseDialog,
-        isFetching,
+        isFetching: isLoading,
         dialogLoading,
         handleDialogLoading,
-        diskData,
+        diskData: data ?? { files: [], folders: [] },
+        refresh,
       }}
     >
       {children}

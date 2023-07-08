@@ -10,10 +10,13 @@ interface AddFolderProps {
 
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const gdrive = useContext(GdriveContext)
-  const { handleCloseDialog } = gdrive
+  const { handleCloseDialog, refresh } = gdrive
 
   const { isLoading, error, run } = useFetch(createFolder, {
-    onSuccess: handleCloseDialog,
+    onSuccess: () => {
+      handleCloseDialog()
+      refresh()
+    },
   })
 
   const [folderName, setFolderName] = useState('未命名資料夾')
@@ -42,11 +45,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
         onChange={handleFolderNameChange}
       />
       <div className='flex justify-end gap-x-2'>
-        <button
-          className='px-4 py-1 hover:bg-gray-100 rounded-lg'
-          onClick={handleCloseDialog}
-          disabled={isLoading}
-        >
+        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' onClick={handleCloseDialog} disabled={isLoading}>
           取消
         </button>
         <button
@@ -58,11 +57,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
             }
           }}
         >
-          {isLoading ? (
-            <AiOutlineLoading3Quarters className='animate-spin w-5 h-5 mx-1' />
-          ) : (
-            '建立'
-          )}
+          {isLoading ? <AiOutlineLoading3Quarters className='animate-spin w-5 h-5 mx-1' /> : '建立'}
         </button>
       </div>
       {error && <Error message={error} />}
