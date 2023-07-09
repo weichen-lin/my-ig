@@ -1,4 +1,4 @@
-import { DataTypes, Transaction, literal } from 'sequelize'
+import { DataTypes, Transaction, literal, Model } from 'sequelize'
 import { db } from './db'
 
 export const Folder = db.define(

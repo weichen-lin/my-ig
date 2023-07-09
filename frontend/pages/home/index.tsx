@@ -36,7 +36,7 @@ export default function DiskPage(props: TokenProp) {
         <div className='flex flex-col h-[90%] relative'>
           <div className='flex flex-wrap w-[92%] items-center mx-auto'>
             <Operator sortProps={sortProps} />
-            <BreadCrumbs sortProps={sortProps} isLoading={isLoading} />
+            <BreadCrumbs />
           </div>
           <GdriveLikeDisk
             isLoading={isLoading}

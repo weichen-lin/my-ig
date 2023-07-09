@@ -34,3 +34,6 @@ export const getDiskData = async (locate_at: string | null) =>
 
 export const createFolder = async (data: { folder_name: string; locate_at: string | null }) =>
   fetcher.post('/folder', data)
+
+export const getBreadCrumb = async (locate_at: string | null) =>
+  fetcher.get(`/disk/breadcrumb${locate_at ? `?locate_at=${locate_at}` : ''}`)

@@ -21,8 +21,11 @@ router.get('/', verify_token, async (req, res) => {
 
 router.get('/breadcrumb', verify_token, async (req, res) => {
   const user_id = res.locals.user_id
+  const locate_at = (req.query.locate_at ?? null) as string | null
 
-  return res.status(200).send([])
+  const breadCrumb = await folderController.getBreadCrumb({ user_id, locate_at })
+
+  return res.status(200).send(breadCrumb)
 })
 
 export default router
