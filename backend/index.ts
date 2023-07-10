@@ -1,6 +1,7 @@
 import express from 'express'
 import { init_Models } from './models'
 import { User, Folder, Disk, File, Auth } from './routers'
+import { debug } from 'console'
 
 const app = express()
 const port = process.env.BACKEND_PORT ?? '8080'

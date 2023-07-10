@@ -83,7 +83,6 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
 export default function BreadCrumbs() {
   const router = useRouter()
   const { isMobile } = useIsMobile()
-
   const { data, isLoading, run } = useFetch(getBreadCrumb)
 
   useEffect(() => {

@@ -39,7 +39,8 @@ export const IgContext = createContext<AuthContextType>({
 })
 
 export const IgProvider = (props: TokenCheckerProps) => {
-  const { children } = props
+  const { children, token } = props
+
   const { hints, AddHints } = useHints()
 
   const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
@@ -49,6 +50,8 @@ export const IgProvider = (props: TokenCheckerProps) => {
     },
     needInitialRun: true,
   })
+
+  console.log(isLoading)
 
   const handleHints = (status: Action, message: string) => {
     AddHints(message, status)
@@ -63,8 +66,6 @@ export const IgProvider = (props: TokenCheckerProps) => {
         hints,
         handleHints,
       }}
-    >
-      {children}
-    </IgContext.Provider>
+    ></IgContext.Provider>
   )
 }

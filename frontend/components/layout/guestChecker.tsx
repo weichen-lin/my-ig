@@ -2,10 +2,7 @@ import Router from 'next/router'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-export default function GuestChecker(props: {
-  token: string | null
-  children: JSX.Element
-}) {
+export default function GuestChecker(props: { token: string | null; children: JSX.Element }) {
   const { token, children } = props
   const [checkLogin, setCheckLogin] = useState(false)
 

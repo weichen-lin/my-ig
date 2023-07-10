@@ -54,8 +54,9 @@ export const verify_token = async (req: Request, res: Response, next: NextFuncti
 
 export const assign_token = async (req: Request, res: Response) => {
   const cookie = req.headers.cookie
+  console.log(cookie)
   const token = CookieParser({ cookie, name: 'my-ig-token' })
-  if (!token) return [401, 'Unauthorized']
+  if (!token) return res.status(401).send('Unauthorized')
   const [status, message] = user.verifyJWTToken(token)
   if (status === 200) {
     return res.status(status).json({ token })
