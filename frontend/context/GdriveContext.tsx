@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useState, useEffect, useCallback, useContext } from 'react'
 import Router from 'next/router'
 import fetcher from 'api/fetcher'
 import { useFetch, getDiskData } from 'api'
@@ -113,4 +113,8 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
       {children}
     </GdriveContext.Provider>
   )
+}
+
+export default function useGdrive() {
+  return useContext(GdriveContext)
 }

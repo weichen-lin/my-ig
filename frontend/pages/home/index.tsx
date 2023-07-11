@@ -31,7 +31,7 @@ export default function DiskPage(props: TokenProp) {
   const isLoading = true
 
   return (
-    <IgProvider token={token}>
+    <IgProvider>
       <LayoutHome>
         <div className='flex flex-col h-[90%] relative'>
           <div className='flex flex-wrap w-[92%] items-center mx-auto'>
@@ -60,18 +60,12 @@ export default function DiskPage(props: TokenProp) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
-  const url = req.url
+// export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
+//   const folder = params?.folder ?? null
 
-  const cookie = req.headers.cookie
-  const token = CookieParser({ cookie, name: 'my-ig-token' })
-  const folder = params?.folder ?? null
-
-  return {
-    props: {
-      token,
-      current: url?.split('/').pop(),
-      folder,
-    },
-  }
-}
+//   return {
+//     props: {
+//       folder,
+//     },
+//   }
+// }

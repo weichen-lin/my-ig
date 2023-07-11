@@ -1,8 +1,8 @@
 import { IconType } from 'react-icons'
 import { CiHome, CiShare2, CiSettings, CiCloudOn, CiLogout } from 'react-icons/ci'
-import { useState, useContext, useEffect, memo } from 'react'
+import { useState, useEffect } from 'react'
 import Router, { useRouter } from 'next/router'
-import { IgContext } from 'context'
+import { useIgContext } from 'context'
 import clsx from 'clsx'
 import { MdUploadFile } from 'react-icons/md'
 import fetcher from 'api/fetcher'
@@ -65,9 +65,7 @@ export const Menu = () => {
 
   const current = router_split.length > 1 ? router_split[1] : ''
 
-  const kushareContext = useContext(IgContext)
-
-  const { refresh, handleHints, userProfile, isAuth } = kushareContext
+  const { handleHints, userProfile, isAuth, handleUserProfile } = useIgContext()
 
   const handleFileUpload = async (multiple: boolean) => {
     try {
@@ -93,14 +91,14 @@ export const Menu = () => {
                     'Content-Type': 'multipart/form-data',
                   },
                 })
-                .then(() => {
-                  refresh()
+                .then((res) => {
+                  handleUserProfile('avatar_url', res.data)
                   handleHints('success', '上傳成功')
                 })
                 .catch((err) => console.log(err))
             }
             img.onerror = (e) => {
-              kushareContext?.handleHints('success', '上傳格式錯誤')
+              handleHints('success', '上傳格式錯誤')
             }
           }
         })
@@ -183,7 +181,7 @@ export const Menu = () => {
       ))}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       <MenuItem Icon={CiCloudOn} name='儲存空間' />
-      {kushareContext?.isAuth && (
+      {isAuth && (
         <>
           <meter className='w-full px-3' min='0' max='15' value='5'></meter>
           <p className='text-gray-500 text-sm text-left w-full px-3 select-none'>已使用 5 GB，共 15 GB</p>

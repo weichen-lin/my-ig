@@ -35,7 +35,7 @@ export default function Operator(props: SortProps) {
     inputRef.current?.focus()
   }, [openDialog])
 
-  const Bottons = [
+  const Buttons = [
     {
       Icon: HiOutlinePlusSm,
       message: '建立',
@@ -62,7 +62,7 @@ export default function Operator(props: SortProps) {
 
   return (
     <div className={clsx('flex ml-3', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
-      {Bottons.map((e, index) =>
+      {Buttons.map((e, index) =>
         isMobile ? (
           <MobileButton Icon={e.Icon} onClick={e.onClick} key={`button_${index}`} />
         ) : (

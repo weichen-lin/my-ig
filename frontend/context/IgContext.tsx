@@ -1,4 +1,4 @@
-import { createContext } from 'react'
+import { createContext, useEffect, useState, useContext } from 'react'
 import Router from 'next/router'
 import { useHints, Action, Hint } from 'hooks/disk'
 import { getUserInfo, useFetch } from 'api/'
@@ -17,55 +17,78 @@ interface AuthContextType {
   isAuth: boolean
   hints: Hint[]
   handleHints: (status: Action, message: string) => void
+  handleUserProfile: (key: keyof User, data: string) => void
 }
 
 interface TokenCheckerProps {
   children: JSX.Element
-  token: string | null
 }
 
 export const IgContext = createContext<AuthContextType>({
-  userProfile: {
-    user_id: '',
-    email: '',
-    user_name: '',
-    login_method: '',
-    avatar_url: '',
-  },
+  userProfile: null,
   refresh: () => {},
   isAuth: false,
   hints: [],
   handleHints: (status, message) => {},
+  handleUserProfile: (key, data) => {},
 })
 
 export const IgProvider = (props: TokenCheckerProps) => {
-  const { children, token } = props
+  const { children } = props
+
+  const handlerError = () => {
+    localStorage.clear()
+    Router.push('/login')
+  }
 
   const { hints, AddHints } = useHints()
 
   const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
-    onError: () => {
-      localStorage.clear()
-      Router.push('/login')
-    },
+    onError: handlerError,
     needInitialRun: true,
   })
-
-  console.log(isLoading)
 
   const handleHints = (status: Action, message: string) => {
     AddHints(message, status)
   }
 
+  const authCheck = data && !isLoading
+
+  const [userProfile, setUserProfile] = useState<User | null>(null)
+
+  const handleUserProfile = (key: keyof User, data: string) => {
+    setUserProfile((prev) => {
+      if (prev) {
+        return {
+          ...prev,
+          [key]: data,
+        }
+      } else {
+        return null
+      }
+    })
+  }
+
+  useEffect(() => {
+    setUserProfile(data)
+  }, [data])
+
   return (
     <IgContext.Provider
       value={{
-        userProfile: data,
+        userProfile,
         refresh,
         isAuth: isLoading,
         hints,
         handleHints,
+        handleUserProfile,
       }}
-    ></IgContext.Provider>
+    >
+      {authCheck && children}
+    </IgContext.Provider>
   )
+}
+
+export default function useIgContext() {
+  return useContext(IgContext)
 }

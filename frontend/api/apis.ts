@@ -27,6 +27,8 @@ export const login = async (data: LoginBody) =>
     withCredentials: true,
   })
 
+export const authUser = async () => axios.get(`${BaseUrl}/auth`, { withCredentials: true })
+
 export const getUserInfo = async () => fetcher.get('/user/userinfo')
 
 export const getDiskData = async (locate_at: string | null) =>
