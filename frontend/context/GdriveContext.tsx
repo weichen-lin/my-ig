@@ -22,6 +22,8 @@ export interface GdriveContextType {
   handleDialogLoading: (e: boolean) => void
   diskData: DiskData
   refresh: () => void
+  listMethod: ListMethod
+  handleListMethod: () => void
 }
 
 export interface FileData {
@@ -44,6 +46,11 @@ interface DiskData {
   folders: FolderData[]
 }
 
+enum ListMethod {
+  Lattice,
+  List,
+}
+
 export const GdriveContext = createContext<GdriveContextType>({
   openDialog: false,
   currentDialog: null,
@@ -57,6 +64,8 @@ export const GdriveContext = createContext<GdriveContextType>({
     folders: [],
   },
   refresh: () => {},
+  listMethod: ListMethod.Lattice,
+  handleListMethod: () => {},
 })
 
 export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
@@ -64,6 +73,7 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
   const [currentDialog, setCurrentDialog] = useState<JSX.Element | null>(null)
   const [dialogLoading, setDialogLoading] = useState(false)
   const [needRefresh, setNeedRefresh] = useState(false)
+  const [listMethod, setListMethod] = useState<ListMethod>(ListMethod.Lattice)
   const router = useRouter()
 
   const { isLoading, data, run } = useFetch(getDiskData, {
@@ -87,6 +97,16 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
     setDialogLoading(e)
   }
 
+  const handleListMethod = () => {
+    setListMethod((prev) => {
+      if (prev === ListMethod.Lattice) {
+        return ListMethod.List
+      } else {
+        return ListMethod.Lattice
+      }
+    })
+  }
+
   const refresh = useCallback(() => {
     setNeedRefresh((prev) => !prev)
   }, [])
@@ -108,6 +128,8 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
         handleDialogLoading,
         diskData: data ?? { files: [], folders: [] },
         refresh,
+        listMethod,
+        handleListMethod,
       }}
     >
       {children}

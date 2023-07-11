@@ -13,20 +13,14 @@ import { useIsMobile } from 'hooks/disk'
 
 import { PCButton, MobileButton } from './buttons'
 
-import { useContext, useRef, useEffect, createRef } from 'react'
-import { GdriveContext } from 'context'
+import { useContext, useRef, useEffect } from 'react'
+import { useGdrive } from 'context'
 
 import { AddFolder } from 'components/utils'
 
-interface SortProps extends Pick<DiskProps, 'sortProps'> {}
-
-export default function Operator(props: SortProps) {
-  const { sortProps } = props
-  const { listMethod, handleListMethod } = sortProps
-
+export default function Operator() {
   const { isMobile } = useIsMobile()
-  const gdrive = useContext(GdriveContext)
-  const { openDialog, handleCurrentDialog, handleCloseDialog } = gdrive
+  const { openDialog, handleCurrentDialog, handleCloseDialog, listMethod, handleListMethod } = useGdrive()
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -61,7 +55,7 @@ export default function Operator(props: SortProps) {
   ]
 
   return (
-    <div className={clsx('flex ml-3', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
+    <div className={clsx('flex ml-3 mt-2', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
       {Buttons.map((e, index) =>
         isMobile ? (
           <MobileButton Icon={e.Icon} onClick={e.onClick} key={`button_${index}`} />

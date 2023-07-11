@@ -45,7 +45,7 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
     <div className='flex items-center flex-1'>
       {!isMobile && (
         <span
-          className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 pr-3 rounded-lg truncate select-none font-bold py-1`}
+          className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 pr-3 rounded-lg truncate select-none font-bold py-1 my-2`}
         >
           我的 Kushare
         </span>
@@ -71,7 +71,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
   ) : (
     <>
       <span
-        className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1 mb-2`}
+        className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold my-2 py-1`}
       >
         我的 Kushare
       </span>
@@ -92,7 +92,7 @@ export default function BreadCrumbs() {
   }, [])
 
   return (
-    <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-8'}`)}>
+    <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-3'}`)}>
       <div className='font-bold text-xl flex items-center text-gray-500'>
         {isLoading ? <BreadCrumbBackBone isMobile={isMobile} /> : <BreadCrumbDisplay isMobile={isMobile} data={data} />}
       </div>

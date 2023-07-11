@@ -1,7 +1,5 @@
 import { Sort, GdriveLikeDisk, Operator, ImagePlayground, UploadTasks, BreadCrumbs, Hinter } from 'components/disk'
 
-import { GetServerSideProps } from 'next'
-
 import { LayoutHome } from 'components/layout'
 import { IgProvider } from 'context'
 import { CookieParser, TokenProp } from 'hooks/utils'
@@ -28,19 +26,15 @@ export default function DiskPage(props: TokenProp) {
 
   // const operatorProps = useOperator()
 
-  const isLoading = true
-
   return (
     <IgProvider>
       <LayoutHome>
         <div className='flex flex-col h-[90%] relative'>
           <div className='flex flex-wrap w-[92%] items-center mx-auto'>
-            <Operator sortProps={sortProps} />
+            <Operator />
             <BreadCrumbs />
           </div>
           <GdriveLikeDisk
-            isLoading={isLoading}
-            listMethod={sortProps.listMethod}
             // selected={selected}
             // dragged={dragged}
             handleImageDisplay={infoProps.handleImageDisplay}

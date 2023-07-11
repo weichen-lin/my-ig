@@ -181,7 +181,7 @@ export const Menu = () => {
       ))}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       <MenuItem Icon={CiCloudOn} name='儲存空間' />
-      {isAuth && (
+      {!isAuth && (
         <>
           <meter className='w-full px-3' min='0' max='15' value='5'></meter>
           <p className='text-gray-500 text-sm text-left w-full px-3 select-none'>已使用 5 GB，共 15 GB</p>

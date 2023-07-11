@@ -26,9 +26,9 @@ const EmptyContent = () => {
 }
 
 export default function GdriveLikeDisk(props: any) {
-  const { listMethod, selected, dragged, handleImageDisplay, handleCurrentFolder, hoverHandler } = props
+  const { selected, dragged, handleImageDisplay, handleCurrentFolder, hoverHandler } = props
 
-  const { diskData, isFetching } = useGdrive()
+  const { diskData, isFetching, listMethod } = useGdrive()
 
   const files = diskData.files
   const folders = diskData.folders
@@ -42,13 +42,13 @@ export default function GdriveLikeDisk(props: any) {
           'overflow-y-auto w-[92%] mx-auto flex items-start mb-2 select-none h-full relative',
           `${
             listMethod === ListMethod.Lattice
-              ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3 flex-col'
+              ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3 md:flex-col'
               : 'flex-col w-full'
           }`
         )}
       >
         {listMethod === ListMethod.Lattice && folders && folders.length > 0 && (
-          <p className='text-gray-400 pl-[1%]'>資料夾</p>
+          <p className='text-gray-400 xss:pl-[5%] xs:pl-[1%] mt-2 xss:w-full xs:w-[20%]'>資料夾</p>
         )}
         <Folders
           listMethod={listMethod}
@@ -57,7 +57,7 @@ export default function GdriveLikeDisk(props: any) {
           hoverHandler={hoverHandler}
         />
         {listMethod === ListMethod.Lattice && files && files.length > 0 && (
-          <p className='text-gray-400 pl-[1%]'>檔案</p>
+          <p className='text-gray-400 pl-[1%] mt-2'>檔案</p>
         )}
         <Files listMethod={listMethod} files={files} handleImageDisplay={handleImageDisplay} />
       </div>

@@ -1,28 +1,24 @@
 import Search from 'components/disk/search'
-import { useAuth } from 'hooks/auth'
-import { Loading, AddFolder, Dialog } from 'components/utils'
+import { Loading, Dialog } from 'components/utils'
 import { Hinter, FullScreenMenu, MobileMenu } from 'components/disk'
 import { useIsMobile } from 'hooks/disk'
 import { RxHamburgerMenu } from 'react-icons/rx'
-import { useCallback, useState, createRef, useRef, useEffect } from 'react'
+import { useCallback, useState } from 'react'
 
-import { useContext } from 'react'
-import { GdriveContext, GdriveProvider } from 'context'
+import { useGdrive, GdriveProvider } from 'context'
 interface LayoutProps {
   children: JSX.Element
 }
 
 const LayoutHomePC = ({ children }: LayoutProps) => {
-  const gdrive = useContext(GdriveContext)
-
-  const { openDialog, currentDialog, handleCloseDialog } = gdrive
+  const { openDialog, currentDialog, handleCloseDialog } = useGdrive()
 
   return (
     <div className='bg-slate-300 flex gap-x-1 md:pt-[1%] h-screen w-full justify-center'>
       <FullScreenMenu />
-      <div className='flex-col md:h-[98%] bg-white md:rounded-lg flex gap-y-4 max-w-[1280px] w-full'>
-        <div className='flex w-[90%] mx-auto h-[10%]'>
-          <div className='xss:hidden md:block mr-4 h-12 mt-3'>
+      <div className='flex-col md:h-[98%] bg-white md:rounded-lg flex pt-1 max-w-[1280px] w-full justify-around'>
+        <div className='flex w-[90%] mx-auto h-[10%] gap-x-8 items-center'>
+          <div className='xss:hidden md:block h-12'>
             <img className='h-full mx-auto' src='/icon/layout/logo.png'></img>
           </div>
           <Search />
