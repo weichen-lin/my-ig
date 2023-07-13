@@ -4,6 +4,7 @@ import { FormatProp, SelectionValue, ListMethod, SelectionStringList } from 'hoo
 import { FolderData, CurrentFolder } from 'context'
 import type { HoverHandler } from 'hooks/disk/useGdrive'
 import { ListBackBone } from 'components/disk/files/listbackbone'
+import { useState } from 'react'
 
 interface FolderInfo {
   folder_id: string
@@ -73,6 +74,12 @@ function Folder(props: { folderInfo: FolderInfo; listMethod: ListMethod }) {
             : 'w-full flex-col'
         }`
       )}
+      onClick={() => {
+        console.log('single click')
+      }}
+      onDoubleClick={() => {
+        console.log('double click')
+      }}
     >
       {listMethod === ListMethod.Lattice ? <LatticeFolder /> : <ListFolder />}
     </div>
