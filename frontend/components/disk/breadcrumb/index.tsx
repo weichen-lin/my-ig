@@ -7,24 +7,7 @@ import { useIsMobile } from 'hooks/disk'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useFetch, getBreadCrumb } from 'api'
-
-const BreadCrumb = (props: { folderInfo: CurrentFolder; isLastOne: boolean }) => {
-  const { folderInfo, isLastOne } = props
-
-  return (
-    <div className='hover:cursor-pointer flex flex-1 items-center'>
-      <MdKeyboardArrowRight className='w-6 h-6' fill={'gray'} />
-      <span
-        className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1'
-        onClick={() => {
-          if (isLastOne) return
-        }}
-      >
-        {folderInfo.folder_name}
-      </span>
-    </div>
-  )
-}
+import { useGdrive } from 'context'
 
 const BreadCrumbMobile = (props: { folderInfo: CurrentFolder[]; isLastOne: boolean }) => {
   const { folderInfo } = props
@@ -58,6 +41,28 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
 
 const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) => {
   const { isMobile, data } = props
+  const router = useRouter()
+  const { refresh } = useGdrive()
+
+  const BreadCrumb = (props: { folderInfo: CurrentFolder; isLastOne: boolean }) => {
+    const { folderInfo, isLastOne } = props
+
+    return (
+      <div className='hover:cursor-pointer flex flex-1 items-center'>
+        <MdKeyboardArrowRight className='w-6 h-6' fill={'gray'} />
+        <span
+          className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1'
+          onClick={async () => {
+            if (isLastOne) return
+            await router.push(`/home?f=${folderInfo.folder_id}`, undefined, { shallow: false })
+            refresh()
+          }}
+        >
+          {folderInfo.folder_name}
+        </span>
+      </div>
+    )
+  }
 
   return isMobile ? (
     <>
@@ -72,10 +77,15 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
     <>
       <span
         className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold my-2 py-1`}
+        onClick={async () => {
+          await router.push('/home')
+          refresh()
+        }}
       >
         我的 Kushare
       </span>
-      {data?.length > 0 && data.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} />)}
+      {data?.length > 0 &&
+        data.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} key={`folder_${e.folder_id}`} />)}
     </>
   )
 }
@@ -86,10 +96,10 @@ export default function BreadCrumbs() {
   const { data, isLoading, run } = useFetch(getBreadCrumb)
 
   useEffect(() => {
-    const locate_at = (router.query.f ?? null) as string | null
+    const folder_id = (router.query.f ?? null) as string | null
 
-    run(locate_at)
-  }, [])
+    run(folder_id)
+  }, [router.query.f])
 
   return (
     <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-3'}`)}>

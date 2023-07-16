@@ -13,6 +13,8 @@ router.get('/', verify_token, async (req, res) => {
   const user_id = res.locals.user_id
   const locate_at = (req.query.locate_at ?? null) as string | null
 
+  console.log({ user_id, locate_at })
+
   const folders = await folderController.getFolders({ user_id, locate_at })
   const files = []
 
@@ -21,9 +23,9 @@ router.get('/', verify_token, async (req, res) => {
 
 router.get('/breadcrumb', verify_token, async (req, res) => {
   const user_id = res.locals.user_id
-  const locate_at = (req.query.locate_at ?? null) as string | null
+  const folder_id = (req.query.folder_id ?? null) as string | null
 
-  const breadCrumb = await folderController.getBreadCrumb({ user_id, locate_at })
+  const breadCrumb = await folderController.getBreadCrumb({ user_id, folder_id })
 
   return res.status(200).send(breadCrumb)
 })

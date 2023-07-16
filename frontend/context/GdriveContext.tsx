@@ -113,6 +113,7 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
 
   useEffect(() => {
     const locate_at = (router.query.f ?? null) as string | null
+    console.log({ locate_at })
     run(locate_at)
   }, [needRefresh])
 

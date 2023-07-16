@@ -90,28 +90,33 @@ export default class FolderController {
     }
   }
 
-  @BodyChecker({ locate_at: 'string | null', user_id: 'string' })
+  @BodyChecker({ folder_id: 'string | null', user_id: 'string' })
   public async getBreadCrumb({
     user_id,
-    locate_at,
+    folder_id,
   }: {
     user_id: string
-    locate_at: string | null
+    folder_id: string | null
   }): Promise<FolderElement[]> {
     try {
       const breadCrumb = await Folder.findOne({
         where: {
           user_id,
-          locate_at,
+          folder_id,
         },
       })
 
-      return (
+      const data =
         breadCrumb?.dataValues.full_path.map((folder: { folder_id: string; folder_name: string }) => ({
           folder_id: folder.folder_id,
           folder_name: folder.folder_name,
         })) ?? []
-      )
+
+      if (folder_id) {
+        data.unshift({ folder_id: breadCrumb?.dataValues.folder_id, folder_name: breadCrumb?.dataValues.folder_name })
+      }
+
+      return data
     } catch (e) {
       return Promise.reject(e)
     }

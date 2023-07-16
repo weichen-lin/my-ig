@@ -1,7 +1,7 @@
 import { atom } from 'recoil'
 
 export interface CurrentFolder {
-  folder_uuid: string
+  folder_id: string
   folder_name: string
 }
 

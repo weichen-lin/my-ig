@@ -1,6 +1,6 @@
 import { IconType } from 'react-icons'
 import { CiHome, CiShare2, CiSettings, CiCloudOn, CiLogout } from 'react-icons/ci'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Router, { useRouter } from 'next/router'
 import { useIgContext } from 'context'
 import clsx from 'clsx'
@@ -51,12 +51,21 @@ export const Menu = () => {
 
   const router = useRouter()
 
-  useEffect(() => {
+  const menu_routing = useCallback((menu: { pathname: string }) => {
     router.events.on('routeChangeStart', () => {
       setIsRouting(true)
     })
 
     router.events.on('routeChangeComplete', () => {
+      setIsRouting(false)
+    })
+    router.push(`${menu.pathname}`)
+
+    router.events.off('routeChangeStart', () => {
+      setIsRouting(true)
+    })
+
+    router.events.off('routeChangeComplete', () => {
       setIsRouting(false)
     })
   }, [])
@@ -172,7 +181,7 @@ export const Menu = () => {
           name={menu.name}
           handleRoute={() => {
             if (menu.pathname !== current) {
-              Router.push(`${menu.pathname}`)
+              menu_routing(menu)
             }
           }}
           current={menu.pathname === current}

@@ -1,6 +1,6 @@
 import { useRef, useCallback } from 'react'
 
-const DELAY = 250
+const DELAY = 200
 
 const debounce = (callback: (...arg: any) => any, delay: number) => {
   let debounceTimer: ReturnType<typeof setTimeout>
@@ -10,12 +10,14 @@ const debounce = (callback: (...arg: any) => any, delay: number) => {
   }
 }
 
-export default function useSingleAndDoubleClick(onClick, onDoubleClick) {
+type anyfunc = (...args: any[]) => any
+
+export default function useSingleAndDoubleClick(onClick: anyfunc, onDoubleClick: anyfunc) {
   const clicks = useRef(0)
 
   const callFunction = useCallback(
     debounce(() => {
-      clicks.current === 3 ? onDoubleClick() : onClick()
+      clicks.current === 1 ? onClick() : onDoubleClick()
       clicks.current = 0
     }, DELAY),
     []
@@ -26,9 +28,5 @@ export default function useSingleAndDoubleClick(onClick, onDoubleClick) {
     callFunction()
   }
 
-  const handleDoubleClick = () => {
-    clicks.current++
-  }
-
-  return { handleClick, handleDoubleClick }
+  return { handleClick }
 }

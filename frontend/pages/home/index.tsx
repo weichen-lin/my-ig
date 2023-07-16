@@ -53,13 +53,3 @@ export default function DiskPage(props: TokenProp) {
     </IgProvider>
   )
 }
-
-// export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
-//   const folder = params?.folder ?? null
-
-//   return {
-//     props: {
-//       folder,
-//     },
-//   }
-// }
