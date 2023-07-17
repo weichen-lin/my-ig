@@ -1,6 +1,6 @@
 import { IconType } from 'react-icons'
 import { CiHome, CiShare2, CiSettings, CiCloudOn, CiLogout } from 'react-icons/ci'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import Router, { useRouter } from 'next/router'
 import { useIgContext } from 'context'
 import clsx from 'clsx'
@@ -48,7 +48,6 @@ export const MenuItem = (props: MenuItemProps) => {
 
 export const Menu = () => {
   const [isRouting, setIsRouting] = useState(false)
-
   const router = useRouter()
 
   const menu_routing = useCallback((menu: { pathname: string }) => {
@@ -170,6 +169,8 @@ export const Menu = () => {
       </div>
     )
   }
+
+  console.log('trigger at menu')
 
   return (
     <>

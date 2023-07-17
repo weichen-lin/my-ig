@@ -8,4 +8,4 @@ function FullScreenMenu() {
     </div>
   )
 }
-export default memo(FullScreenMenu)
+export default FullScreenMenu

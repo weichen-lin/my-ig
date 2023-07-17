@@ -36,20 +36,17 @@ export default function useGdrive() {
   const [diskData, setDiskData] = useRecoilState(diskInitState)
   const [selected, setSelected] = useState<GdriveSelectTarget>({
     folders: new Set(),
-    files: new Set()
+    files: new Set(),
   })
   const [dragged, setDragged] = useState<GdriveSelectTarget>({
     folders: new Set(),
-    files: new Set()
+    files: new Set(),
   })
   const [isMoving, setIsMoving] = useState(false)
 
   const root = createRef<HTMLDivElement>()
 
-  const handleSelected = ({
-    stored,
-    changed: { added, removed }
-  }: SelectionEvent) => {
+  const handleSelected = ({ stored, changed: { added, removed } }: SelectionEvent) => {
     const stored_files = stored.filter((e) => e.includes('file'))
     const stored_folders = stored.filter((e) => e.includes('folder'))
 
@@ -78,10 +75,7 @@ export default function useGdrive() {
     setSelected({ folders: new_folders, files: new_files })
   }
 
-  const handleDragged = ({
-    stored,
-    changed: { added, removed }
-  }: SelectionEvent) => {
+  const handleDragged = ({ stored, changed: { added, removed } }: SelectionEvent) => {
     const stored_files = stored.filter((e) => e.includes('file'))
     const stored_folders = stored.filter((e) => e.includes('folder'))
 
@@ -153,22 +147,14 @@ export default function useGdrive() {
 
   const hoverHandler = {
     handleFolderOnHover,
-    isMoving
+    isMoving,
   }
 
-  const handleMoving = (
-    type: 'file' | 'folder',
-    update_locate_at: string,
-    obj_need_update_w_prefix: string
-  ) => {
+  const handleMoving = (type: 'file' | 'folder', update_locate_at: string, obj_need_update_w_prefix: string) => {
     window.folderOnHover?.set('current_folder', '')
 
-    const need_update = obj_need_update_w_prefix.replace(
-      `selectable-${type}-`,
-      ''
-    )
-    const api =
-      type === 'file' ? APIS.UPDATE_FILE_LOCATE : APIS.UPDATE_FOLDER_LOCATE
+    const need_update = obj_need_update_w_prefix.replace(`selectable-${type}-`, '')
+    const api = type === 'file' ? APIS.UPDATE_FILE_LOCATE : APIS.UPDATE_FOLDER_LOCATE
 
     return fetcher
       .patch(api, { update_locate_at, need_update })
@@ -198,8 +184,8 @@ export default function useGdrive() {
             width: 200,
             margin: 0,
             height: 48,
-            textAlign: 'left'
-          }
+            textAlign: 'left',
+          },
         },
         revert: {
           func: handleRevert,
@@ -207,34 +193,33 @@ export default function useGdrive() {
             width: 220,
             margin: 0,
             opacity: '100%',
-            willChange: 'top left width height'
-          }
+            willChange: 'top left width height',
+          },
         },
-        iconPositionX: 200
+        iconPositionX: 200,
       },
       dragEndCallback: async () => {
-        const isDragEndOnFolder =
-          window.folderOnHover?.get('current_folder') ?? ''
+        const isDragEndOnFolder = window.folderOnHover?.get('current_folder') ?? ''
 
         if (!isDragEndOnFolder) return false
 
         setDiskStatus((prev) => ({ ...prev, shouldRefresh: true }))
         setIsMoving(true)
 
-        const FILE_MOVING = Array.from(
-          window.draggedElement?.get('files') ?? []
-        ).map((e) => handleMoving('file', isDragEndOnFolder, e))
+        const FILE_MOVING = Array.from(window.draggedElement?.get('files') ?? []).map((e) =>
+          handleMoving('file', isDragEndOnFolder, e)
+        )
 
-        const FOLDER_MOVING = Array.from(
-          window.draggedElement?.get('folders') ?? []
-        ).map((e) => handleMoving('folder', isDragEndOnFolder, e))
+        const FOLDER_MOVING = Array.from(window.draggedElement?.get('folders') ?? []).map((e) =>
+          handleMoving('folder', isDragEndOnFolder, e)
+        )
 
         await Promise.all([...FILE_MOVING, ...FOLDER_MOVING])
 
         setIsMoving(false)
 
         return false
-      }
+      },
     })
 
     return () => selection?.destroy()

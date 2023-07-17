@@ -10,17 +10,15 @@ import { useScroll } from 'hooks/utils'
 const date = new Date()
 
 export default function DiskPage(props: TokenProp) {
-  const { token } = props
+  // const { sortProps, diskProps } = useDisk()
 
-  const { sortProps, diskProps } = useDisk()
-
-  const { isFetching, diskData, handleCurrentFolder } = diskProps
+  // const { isFetching, diskData, handleCurrentFolder } = diskProps
 
   // const { selected, dragged, hoverHandler } = useGdrive()
 
-  const { infoProps, tagProps } = useImageDisplay()
+  // const { infoProps, tagProps } = useImageDisplay()
 
-  const { isScrollDown, handleOnScroll } = useScroll()
+  // const { isScrollDown, handleOnScroll } = useScroll()
 
   // const customDatePickerProps = useDatetime()
 
@@ -35,11 +33,11 @@ export default function DiskPage(props: TokenProp) {
             <BreadCrumbs />
           </div>
           <GdriveLikeDisk
-            // selected={selected}
-            // dragged={dragged}
-            handleImageDisplay={infoProps.handleImageDisplay}
-            handleCurrentFolder={handleCurrentFolder}
-            // hoverHandler={hoverHandler}
+          // selected={selected}
+          // dragged={dragged}
+          // handleImageDisplay={infoProps.handleImageDisplay}
+          // handleCurrentFolder={handleCurrentFolder}
+          // hoverHandler={hoverHandler}
           />
           {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground

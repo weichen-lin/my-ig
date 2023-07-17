@@ -35,7 +35,7 @@ function Folder(props: { folderInfo: FolderInfo; listMethod: ListMethod }) {
 
   const onDoubleClick = async () => {
     await router.push(`/home?f=${folderInfo.folder_id}`, undefined, { shallow: false })
-    refresh()
+    // refresh()
   }
 
   const onClick = () => {
