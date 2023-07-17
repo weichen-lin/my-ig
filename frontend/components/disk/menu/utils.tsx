@@ -170,8 +170,6 @@ export const Menu = () => {
     )
   }
 
-  console.log('trigger at menu')
-
   return (
     <>
       {!isAuth ? <Avatar /> : <MenuBackbone />}

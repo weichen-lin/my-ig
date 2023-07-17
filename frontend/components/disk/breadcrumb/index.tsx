@@ -55,7 +55,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
           onClick={async () => {
             if (isLastOne) return
             await router.push(`/home?f=${folderInfo.folder_id}`, undefined, { shallow: false })
-            // refresh()
+            refresh()
           }}
         >
           {folderInfo.folder_name}

@@ -54,7 +54,7 @@ export const IgProvider = (props: TokenCheckerProps) => {
 
   const authCheck = data && !isLoading
 
-  const [userProfile, setUserProfile] = useState<User | null>(data)
+  const [userProfile, setUserProfile] = useState<User | null>(null)
 
   const handleUserProfile = (key: keyof User, data: string) => {
     setUserProfile((prev) => {
@@ -69,10 +69,16 @@ export const IgProvider = (props: TokenCheckerProps) => {
     })
   }
 
+  useEffect(() => {
+    if (data) {
+      setUserProfile(data)
+    }
+  }, [data])
+
   return (
     <IgContext.Provider
       value={{
-        userProfile: data,
+        userProfile,
         refresh,
         isAuth: isLoading,
         hints,
