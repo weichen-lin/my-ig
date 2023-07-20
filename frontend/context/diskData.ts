@@ -10,6 +10,6 @@ export const diskInitState = atom<DiskDataInterface>({
   key: 'diskData',
   default: {
     folders: [],
-    files: []
-  }
+    files: [],
+  },
 })

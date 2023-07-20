@@ -2,10 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 function generate_uuid() {
   var d = Date.now()
-  if (
-    typeof performance !== 'undefined' &&
-    typeof performance.now === 'function'
-  ) {
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
     d += performance.now() //use high-precision timer if available
   }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

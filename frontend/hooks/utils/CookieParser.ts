@@ -6,6 +6,7 @@ interface CookieParser {
 export interface TokenProp {
   token: string | null
   current: string
+  folder: string | null
 }
 
 export default function CookieParser({ cookie, name }: CookieParser) {

@@ -1,8 +1,7 @@
-import { createContext, useState, useEffect } from 'react'
-import { Loading } from 'components/utils'
+import { createContext, useEffect, useState, useContext } from 'react'
 import Router from 'next/router'
-import axios from 'axios'
 import { useHints, Action, Hint } from 'hooks/disk'
+import { getUserInfo, useFetch } from 'api/'
 
 export interface User {
   user_id: string
@@ -12,81 +11,86 @@ export interface User {
   avatar_url: string
 }
 
-interface IgType {
-  userProfile?: User
-  handleUserProfile: (key: keyof User, value: any) => void
+interface AuthContextType {
+  userProfile: User | null
+  refresh: () => void
   isAuth: boolean
-  current: string | undefined
   hints: Hint[]
   handleHints: (status: Action, message: string) => void
+  handleUserProfile: (key: keyof User, data: string) => void
 }
 
 interface TokenCheckerProps {
   children: JSX.Element
-  token: string | null
-  current: string
 }
 
-export const IgContext = createContext<IgType | null>(null)
+export const IgContext = createContext<AuthContextType>({
+  userProfile: null,
+  refresh: () => {},
+  isAuth: false,
+  hints: [],
+  handleHints: (status, message) => {},
+  handleUserProfile: (key, data) => {},
+})
 
 export const IgProvider = (props: TokenCheckerProps) => {
-  const { children, token, current } = props
+  const { children } = props
 
-  const [userProfile, setUserProfile] = useState<User | undefined>(undefined)
+  const handlerError = () => {
+    localStorage.clear()
+    Router.push('/login')
+  }
 
-  const [isAuth, setIsAuth] = useState(false)
   const { hints, AddHints } = useHints()
 
-  useEffect(() => {
-    const authUser = () => {
-      if (!token) {
-        return Router.push('/login')
-      }
-
-      return axios
-        .get('http://localhost:8080/user/userinfo', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          setIsAuth(true)
-          setUserProfile(res.data)
-        })
-        .catch(() => {
-          Router.push('/login')
-        })
-    }
-    authUser()
-  }, [])
-
-  const handleUserProfile = (key: keyof User, value: any) => {
-    setUserProfile((prev) => {
-      if (prev) {
-        return { ...prev, [key]: value }
-      } else {
-        return undefined
-      }
-    })
-  }
+  const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
+    onError: handlerError,
+    needInitialRun: true,
+  })
 
   const handleHints = (status: Action, message: string) => {
     AddHints(message, status)
   }
 
-  return isAuth ? (
+  const authCheck = data && !isLoading
+
+  const [userProfile, setUserProfile] = useState<User | null>(null)
+
+  const handleUserProfile = (key: keyof User, data: string) => {
+    setUserProfile((prev) => {
+      if (prev) {
+        return {
+          ...prev,
+          [key]: data,
+        }
+      } else {
+        return null
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (data) {
+      setUserProfile(data)
+    }
+  }, [data])
+
+  return (
     <IgContext.Provider
       value={{
         userProfile,
-        handleUserProfile,
-        isAuth,
-        current,
+        refresh,
+        isAuth: isLoading,
         hints,
         handleHints,
+        handleUserProfile,
       }}
     >
-      {children}
+      {authCheck && children}
     </IgContext.Provider>
-  ) : null
+  )
+}
+
+export default function useIgContext() {
+  return useContext(IgContext)
 }

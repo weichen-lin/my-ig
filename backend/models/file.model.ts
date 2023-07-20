@@ -6,11 +6,11 @@ export const File = db.define(
   'file',
   {
     user_id: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
       allowNull: false,
     },
     file_id: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
       defaultValue: literal(`uuid_generate_v4()`),
       primaryKey: true,
     },
@@ -18,7 +18,7 @@ export const File = db.define(
       type: DataTypes.STRING(100),
     },
     locate_at: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
     },
     file_url: {
       type: DataTypes.TEXT,
@@ -67,8 +67,7 @@ const createFile = async (
         locate_at: current_folder,
       },
     })
-    if (fileNameChecker)
-      return { status: File_CRUD_STATUS.FILE_NAME_DUPLICATED, uuid: '' }
+    if (fileNameChecker) return { status: File_CRUD_STATUS.FILE_NAME_DUPLICATED, uuid: '' }
   } catch {
     return { status: File_CRUD_STATUS.FAILED, uuid: '' }
   }
@@ -97,11 +96,7 @@ const findFiles = async (user_uuid: string, locate_at: string) => {
   })
 }
 
-const checkFileExist = async (
-  user_uuid: string,
-  file_name: string,
-  locate_at: string
-) => {
+const checkFileExist = async (user_uuid: string, file_name: string, locate_at: string) => {
   return await File.findOne({
     where: {
       user_uuid: user_uuid,
@@ -111,11 +106,7 @@ const checkFileExist = async (
   })
 }
 
-const updateFileDescription = async (
-  user_uuid: string,
-  file_uuid: string,
-  description: string
-) => {
+const updateFileDescription = async (user_uuid: string, file_uuid: string, description: string) => {
   const target_file = await File.findOne({
     where: { file_uuid, user_uuid },
   })
@@ -132,11 +123,7 @@ const updateFileDescription = async (
   }
 }
 
-const updateTags = async (
-  user_uuid: string,
-  file_uuid: string,
-  tag: string
-) => {
+const updateTags = async (user_uuid: string, file_uuid: string, tag: string) => {
   const target_file = await File.findOne({
     where: { file_uuid, user_uuid },
   })
@@ -164,13 +151,7 @@ const updateTags = async (
   }
 }
 
-const updateFileLocateAt = async (
-  file_uuid_need_update: string,
-  user_uuid: string,
-  update_locate_at: string
-) => {
-  console.log()
-
+const updateFileLocateAt = async (file_uuid_need_update: string, user_uuid: string, update_locate_at: string) => {
   const target_file = await File.findOne({
     lock: Transaction.LOCK.UPDATE,
     where: { file_uuid: file_uuid_need_update, user_uuid },
@@ -180,10 +161,7 @@ const updateFileLocateAt = async (
   }
 
   try {
-    target_file.update(
-      { locate_at: update_locate_at },
-      { where: { user_uuid, file_uuid: file_uuid_need_update } }
-    )
+    target_file.update({ locate_at: update_locate_at }, { where: { user_uuid, file_uuid: file_uuid_need_update } })
     return File_CRUD_STATUS.SUCCESS
   } catch {
     return File_CRUD_STATUS.FAILED

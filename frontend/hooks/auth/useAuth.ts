@@ -21,7 +21,10 @@ export default function useAuth(token: string) {
           },
         })
         .then((e) => Router.push('/home'))
-        .catch((e) => Router.push('/login'))
+        .catch((e) => {
+          localStorage.clear()
+          Router.push('/login')
+        })
     }
     authUser()
   }, [])

@@ -4,11 +4,9 @@ import { CiSearch } from 'react-icons/ci'
 export default function Search() {
   return (
     <div className='flex w-full items-center'>
-      <div className='relative mb-2 flex-1'>
+      <div className='relative flex-1'>
         <div className={clsx('absolute', 'w-8 h-8 xs:w-12 xs:h-12 top-3')}>
-          <CiSearch
-            className={clsx('w-6 h-6 my-2 mx-2 xs:w-6 xs:h-6 xs:m-3')}
-          />
+          <CiSearch className={clsx('w-6 h-6 my-2 mx-2 xs:w-6 xs:h-6 xs:m-3')} />
         </div>
         <input
           className={clsx(

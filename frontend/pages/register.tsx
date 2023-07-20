@@ -1,13 +1,6 @@
 import { Layout, RegisterChecker } from 'components/layout'
 import { CookieParser } from 'hooks/utils'
-import {
-  AuthInput,
-  AuthButton,
-  AuthStatus,
-  EmailChecker,
-  PasswordChecker,
-} from 'components/auth'
-import clsx from 'clsx'
+import { AuthInput, AuthButton, AuthStatus, EmailChecker, PasswordChecker } from 'components/auth'
 import { useRegister } from 'hooks/auth'
 import { GetServerSideProps } from 'next'
 
@@ -18,8 +11,8 @@ export default function RegisterPage(props: { token: string }) {
     isRequest,
     registerInfo,
     handleRegisterInfo,
-    errMsg,
-    handleRegister,
+    error,
+    run,
     successMsg,
     goLogin,
     btnDisabled,
@@ -55,22 +48,21 @@ export default function RegisterPage(props: { token: string }) {
             <AuthButton
               label='註冊'
               isRequest={isRequest}
-              onClick={handleRegister}
+              onClick={() => {
+                run(registerInfo)
+              }}
               disabled={btnDisabled}
             />
             <p className='w-full md:w-2/3 md:mx-auto text-center text-gray-700'>
               已經有帳號了嗎？
-              <span
-                className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100'
-                onClick={goLogin}
-              >
+              <span className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100' onClick={goLogin}>
                 點此登入
               </span>
             </p>
           </div>
-          {errMsg && (
+          {error && (
             <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
-              <AuthStatus message={errMsg} status='failed' />
+              <AuthStatus message={error} status='failed' />
             </div>
           )}
           {successMsg && (

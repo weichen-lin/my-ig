@@ -40,11 +40,7 @@ function CookieParser({ cookie, name }: CookieParser) {
 
 const user = new UserController()
 
-export const verify_token = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const verify_token = async (req: Request, res: Response, next: NextFunction) => {
   const bearerHeader = req.headers.authorization
   const [status, message] = user.verifyCookie(bearerHeader)
   if (status !== 200) {
@@ -59,11 +55,12 @@ export const verify_token = async (
 export const assign_token = async (req: Request, res: Response) => {
   const cookie = req.headers.cookie
   const token = CookieParser({ cookie, name: 'my-ig-token' })
-  if (!token) return [401, 'Unauthorized']
+  if (!token) return res.status(401).send('Unauthorized')
   const [status, message] = user.verifyJWTToken(token)
   if (status === 200) {
     return res.status(status).json({ token })
   } else {
+    res.clearCookie('my-ig-token')
     return res.status(status).send(message)
   }
 }

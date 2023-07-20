@@ -8,12 +8,10 @@ import { CurrentFolder } from 'context'
 import { HiArrowSmUp, HiOutlinePlusSm } from 'react-icons/hi'
 import { AiOutlineUnorderedList } from 'react-icons/ai'
 import { TbLayoutDashboard } from 'react-icons/tb'
-import {
-  MdKeyboardArrowRight,
-  MdManageSearch,
-  MdOutlineDriveFolderUpload,
-} from 'react-icons/md'
+import { MdKeyboardArrowRight, MdManageSearch, MdOutlineDriveFolderUpload } from 'react-icons/md'
 import { LuPlusSquare } from 'react-icons/lu'
+
+import { useGdrive } from 'context'
 
 import { useIsMobile } from 'hooks/disk'
 import { IconType } from 'react-icons/lib'
@@ -51,21 +49,14 @@ const BreadCrumb = (props: {
 }
 
 const BreadCrumbBackBone = () => {
-  return (
-    <div className='w-[200px] h-9 bg-gray-300/20 animate-pulse rounded-2xl'></div>
-  )
+  return <div className='w-[200px] h-9 bg-gray-300/20 animate-pulse rounded-2xl'></div>
 }
 
 interface SortProps extends Pick<DiskProps, 'sortProps'> {}
 
 export default function Manipulator(props: SortProps) {
   const { sortProps } = props
-  const {
-    listMethod,
-    handleListMethod,
-    current_folder,
-    handleBreadChangeFolder,
-  } = sortProps
+  const { listMethod, current_folder, handleBreadChangeFolder } = sortProps
 
   const test = [
     {
@@ -85,6 +76,8 @@ export default function Manipulator(props: SortProps) {
       folder_name: '層級4',
     },
   ]
+
+  const { handleListMethod } = useGdrive()
 
   const current_folder_copy = [...test]
 
@@ -107,10 +100,7 @@ export default function Manipulator(props: SortProps) {
       onClick: () => console.log('press button'),
     },
     {
-      Icon:
-        listMethod > ListMethod.Lattice
-          ? AiOutlineUnorderedList
-          : TbLayoutDashboard,
+      Icon: listMethod > ListMethod.Lattice ? AiOutlineUnorderedList : TbLayoutDashboard,
       message: '調整檢視',
       onClick: handleListMethod,
     },
@@ -118,10 +108,7 @@ export default function Manipulator(props: SortProps) {
 
   return (
     <div
-      className={clsx(
-        'w-[90%] mx-auto flex flex-wrap mt-1',
-        `${isMobile ? 'justify-around' : 'justify-start gap-4'}`
-      )}
+      className={clsx('w-[90%] mx-auto flex flex-wrap mt-1', `${isMobile ? 'justify-around' : 'justify-start gap-4'}`)}
     >
       {Bottons.map((e) =>
         isMobile ? (
@@ -149,9 +136,7 @@ export default function Manipulator(props: SortProps) {
         </span>
         {isMobile && current_folder_copy.length > 0 ? (
           <div className='flex w-full justify-between items-center'>
-            <MdKeyboardArrowRight
-              className={clsx('w-6 h-6 my-2 ml-1 mr-2 rotate-180')}
-            />
+            <MdKeyboardArrowRight className={clsx('w-6 h-6 my-2 ml-1 mr-2 rotate-180')} />
             <span className='flex flex-1 justify-center'>
               <BreadCrumb
                 folderInfo={
@@ -194,10 +179,7 @@ const MobileButton = (props: ButtonProps) => {
   const { Icon, onClick } = props
 
   return (
-    <div
-      className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'
-      onClick={onClick}
-    >
+    <div className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200' onClick={onClick}>
       <Icon className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
     </div>
   )

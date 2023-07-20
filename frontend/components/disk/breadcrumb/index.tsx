@@ -1,47 +1,22 @@
 import clsx from 'clsx'
-
-import type { DiskProps, DatetimeProps } from 'hooks/disk'
 import { CurrentFolder } from 'context'
 
 import { MdKeyboardArrowRight } from 'react-icons/md'
 
 import { useIsMobile } from 'hooks/disk'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useFetch, getBreadCrumb } from 'api'
+import { useGdrive } from 'context'
 
-const BreadCrumb = (props: {
-  folderInfo: CurrentFolder
-  isLastOne: boolean
-  // handleBreadChangeFolder: (e: CurrentFolder) => void
-}) => {
-  const { folderInfo, isLastOne } = props
-
-  return (
-    <div className='hover:cursor-pointer flex flex-1 items-center'>
-      <MdKeyboardArrowRight className='w-6 h-6' fill={'gray'} />
-      <span
-        className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1'
-        onClick={() => {
-          if (isLastOne) return
-          // handleBreadChangeFolder(folderInfo)
-        }}
-      >
-        {folderInfo.folder_name}
-      </span>
-    </div>
-  )
-}
-
-const BreadCrumbMobile = (props: {
-  folderInfo: CurrentFolder[]
-  isLastOne: boolean
-  // handleBreadChangeFolder: (e: CurrentFolder) => void
-}) => {
+const BreadCrumbMobile = (props: { folderInfo: CurrentFolder[]; isLastOne: boolean }) => {
   const { folderInfo } = props
 
-  const lastone = folderInfo.pop()
+  const lastone = folderInfo.length > 0 ? folderInfo.pop() : null
 
   return (
     <div className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold'>
-      {lastone?.folder_name}
+      {lastone && lastone?.folder_name}
     </div>
   )
 }
@@ -53,7 +28,7 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
     <div className='flex items-center flex-1'>
       {!isMobile && (
         <span
-          className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 pr-3 rounded-lg truncate select-none font-bold py-1`}
+          className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 pr-3 rounded-lg truncate select-none font-bold py-1 my-2`}
         >
           我的 Kushare
         </span>
@@ -64,77 +39,71 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
   )
 }
 
-interface SortProps extends Pick<DiskProps, 'sortProps'> {
-  isLoading: boolean
-}
+const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) => {
+  const { isMobile, data } = props
+  const router = useRouter()
+  const { refresh } = useGdrive()
 
-const BreadCrumbDisplay = (props: {
-  isMobile: boolean
-  layerFolder: CurrentFolder[]
-}) => {
-  const { isMobile, layerFolder } = props
+  const BreadCrumb = (props: { folderInfo: CurrentFolder; isLastOne: boolean }) => {
+    const { folderInfo, isLastOne } = props
+
+    return (
+      <div className='hover:cursor-pointer flex flex-1 items-center'>
+        <MdKeyboardArrowRight className='w-6 h-6' fill={'gray'} />
+        <span
+          className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1'
+          onClick={async () => {
+            if (isLastOne) return
+            await router.push(`/home?f=${folderInfo.folder_id}`, undefined, { shallow: false })
+            refresh()
+          }}
+        >
+          {folderInfo.folder_name}
+        </span>
+      </div>
+    )
+  }
 
   return isMobile ? (
     <>
-      {layerFolder.length > 0 && (
+      {data.length > 0 && (
         <div className='flex items-center'>
           <MdKeyboardArrowRight className={clsx('w-8 h-8 mr-2 rotate-180')} />
-          <BreadCrumbMobile folderInfo={layerFolder} isLastOne={false} />
+          <BreadCrumbMobile folderInfo={data} isLastOne={false} />
         </div>
       )}
     </>
   ) : (
     <>
       <span
-        className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1`}
+        className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold my-2 py-1`}
+        onClick={async () => {
+          await router.push('/home')
+          refresh()
+        }}
       >
         我的 Kushare
       </span>
-      {layerFolder.length > 0 &&
-        layerFolder.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} />)}
+      {data?.length > 0 &&
+        data.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} key={`folder_${e.folder_id}`} />)}
     </>
   )
 }
 
-export default function BreadCrumbs(props: SortProps) {
-  const { sortProps, isLoading } = props
-  const { current_folder, handleBreadChangeFolder } = sortProps
-
-  const test = [
-    {
-      folder_uuid: 'asdasdad',
-      folder_name:
-        '層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1層級adadasdasdasdasdasd1',
-    },
-    {
-      folder_uuid: 'asdasdad',
-      folder_name: '層級2',
-    },
-    {
-      folder_uuid: 'asdasdad',
-      folder_name: '層級3',
-    },
-    {
-      folder_uuid: 'asdasdad',
-      folder_name: '層級4',
-    },
-  ]
-
-  const current_folder_copy = [...test]
-
+export default function BreadCrumbs() {
+  const router = useRouter()
   const { isMobile } = useIsMobile()
+  const { data, isLoading, run } = useFetch(getBreadCrumb)
+
+  useEffect(() => {
+    const folder_id = (router.query.f ?? null) as string | null
+    run(folder_id)
+  }, [router.query.f])
 
   return (
-    <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-4'}`)}>
+    <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-3'}`)}>
       <div className='font-bold text-xl flex items-center text-gray-500'>
-        {isLoading ? (
-          <BreadCrumbBackBone isMobile={isMobile} />
-        ) : (
-          <BreadCrumbDisplay
-            isMobile={isMobile}
-            layerFolder={current_folder_copy}
-          />
-        )}
+        {isLoading ? <BreadCrumbBackBone isMobile={isMobile} /> : <BreadCrumbDisplay isMobile={isMobile} data={data} />}
       </div>
     </div>
   )

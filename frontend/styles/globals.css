@@ -89,12 +89,17 @@
 }
 
 @keyframes popup {
-  10% {
+  0% {
     transform: scale(0);
   }
   100% {
     transform: scale(1);
   }
+}
+
+.popupItem {
+  transform-origin: center;
+  animation: popup 0.3s forwards ease-in-out;
 }
 
 /* className={clsx(

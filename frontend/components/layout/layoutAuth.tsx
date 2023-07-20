@@ -41,17 +41,11 @@ const LayoutAuthMobile = (props: { children: JSX.Element }) => {
 
 export default function LayoutAuth(props: LayoutProps) {
   const { children, token } = props
-  const { isFullScreen } = useIsMobile()
+  // const { isFullScreen } = useIsMobile()
 
   if (!token) return null
 
   return (
-    <IgProvider token={token}>
-      {isFullScreen ? (
-        <LayoutAuthPC children={children} />
-      ) : (
-        <LayoutAuthMobile children={children} />
-      )}
-    </IgProvider>
+    <IgProvider>{true ? <LayoutAuthPC children={children} /> : <LayoutAuthMobile children={children} />}</IgProvider>
   )
 }
