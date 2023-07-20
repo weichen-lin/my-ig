@@ -25,6 +25,18 @@ router.post('/', verify_token, async (req, res) => {
   }
 })
 
+router.post('/disk', verify_token, async (req, res) => {
+  const user_id = res.locals.user_id
+  const [status, msg] = await fileController.uploadAvatarFile(user_id, req)
+
+  if (status === 201) {
+    const updateStatus = await userController.addAvatarUrl(user_id, msg)
+    return res.status(updateStatus).send(msg)
+  } else {
+    return res.status(status).send(msg)
+  }
+})
+
 // router.get('/', async (req, res) => {
 //   const buffer = await urlToBuffer('')
 

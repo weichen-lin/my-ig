@@ -1,27 +1,26 @@
 import clsx from 'clsx'
-import { IconType } from 'react-icons/lib'
+import { Icon } from '@iconify/react'
 
 interface ButtonProps {
-  Icon: IconType
+  name: string
   onClick: () => void
   message?: string
 }
 
 export const MobileButton = (props: ButtonProps) => {
-  const { Icon, onClick } = props
+  const { name, onClick } = props
 
   return (
-    <div
+    <Icon
       className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'
       onClick={onClick}
-    >
-      <Icon className='w-6 h-6 xs:w-[20px] xs:h-[20px] m-1 xs:m-[6px] cursor-pointer' />
-    </div>
+      icon={name}
+    />
   )
 }
 
 export const PCButton = (props: ButtonProps) => {
-  const { Icon, onClick, message } = props
+  const { name, onClick, message } = props
 
   return (
     <button
@@ -31,7 +30,7 @@ export const PCButton = (props: ButtonProps) => {
       )}
       onClick={onClick}
     >
-      <Icon className='w-8 h-6' />
+      <Icon className='w-6 h-6' icon={name} />
       {message}
     </button>
   )

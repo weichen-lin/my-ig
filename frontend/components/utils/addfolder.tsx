@@ -1,16 +1,14 @@
-import { forwardRef, useState, useContext, ChangeEvent } from 'react'
+import { forwardRef, useState, ChangeEvent } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiError } from 'react-icons/bi'
-import { GdriveContext } from 'context'
 import { createFolder, useFetch } from 'api'
-
+import { useGdrive } from 'context'
 interface AddFolderProps {
   close: () => void
 }
 
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
-  const gdrive = useContext(GdriveContext)
-  const { handleCloseDialog, refresh } = gdrive
+  const { handleCloseDialog, refresh } = useGdrive()
 
   const { isLoading, error, run } = useFetch(createFolder, {
     onSuccess: () => {
