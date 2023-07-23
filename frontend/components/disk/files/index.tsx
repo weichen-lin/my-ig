@@ -39,12 +39,8 @@ export default function GdriveLikeDisk(props: any) {
     return haveContent ? (
       <div
         className={clsx(
-          'overflow-y-auto w-[92%] mx-auto flex items-start mb-2 select-none h-full relative',
-          `${
-            listMethod === ListMethod.Lattice
-              ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3 md:flex-col'
-              : 'flex-col w-full'
-          }`
+          'overflow-y-auto w-[92%] mx-auto flex items-start mb-2 select-none h-full relative flex-col',
+          `${listMethod === ListMethod.Lattice ? 'gap-y-2 xs:gap-x-6 md:gap-y-6 mt-3' : 'w-full'}`
         )}
       >
         {listMethod === ListMethod.Lattice && folders && folders.length > 0 && (

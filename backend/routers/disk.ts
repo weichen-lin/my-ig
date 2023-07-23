@@ -6,17 +6,15 @@ const router = express.Router()
 
 router.use(express.json())
 
-// const fileController = new FileController()
+const fileController = new FileController()
 const folderController = new FolderController()
 
 router.get('/', verify_token, async (req, res) => {
   const user_id = res.locals.user_id
   const locate_at = (req.query.locate_at ?? null) as string | null
 
-  console.log({ user_id, locate_at })
-
   const folders = await folderController.getFolders({ user_id, locate_at })
-  const files = []
+  const files = await fileController.getFiles(user_id, locate_at)
 
   return res.status(200).json({ files, folders })
 })
