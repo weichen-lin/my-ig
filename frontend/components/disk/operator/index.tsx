@@ -78,11 +78,11 @@ export default function Operator() {
       message: '上傳',
       onClick: () => handleFileUpload(true),
     },
-    {
-      name: 'majesticons:filter-line',
-      message: '設定過濾',
-      onClick: () => console.log('press button'),
-    },
+    // {
+    //   name: 'majesticons:filter-line',
+    //   message: '設定過濾',
+    //   onClick: () => console.log('press button'),
+    // },
     {
       name: listMethod > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
       message: '調整檢視',
@@ -91,7 +91,9 @@ export default function Operator() {
   ]
 
   return (
-    <div className={clsx('flex ml-3 mt-2', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
+    <div
+      className={clsx('flex ml-3 mt-2 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}
+    >
       {Buttons.map((e, index) =>
         isMobile ? (
           <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />

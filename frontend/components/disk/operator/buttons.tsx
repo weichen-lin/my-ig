@@ -12,7 +12,7 @@ export const MobileButton = (props: ButtonProps) => {
 
   return (
     <Icon
-      className='w-8 h-8 xs:w-8 xs:h-8 rounded-md cursor-pointer hover:bg-slate-200'
+      className='w-6 h-6 xs:w-7 xs:h-7 rounded-md cursor-pointer hover:bg-slate-200'
       onClick={onClick}
       icon={name}
     />
@@ -35,3 +35,5 @@ export const PCButton = (props: ButtonProps) => {
     </button>
   )
 }
+
+export const OperatorButton = (props: ButtonProps) => {}
