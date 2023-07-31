@@ -3,17 +3,19 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiError } from 'react-icons/bi'
 import { createFolder, useFetch } from 'api'
 import { useGdrive } from 'context'
+
 interface AddFolderProps {
   close: () => void
 }
 
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
-  const { handleCloseDialog, refresh } = useGdrive()
+  const { close } = prop
+  const { refresh } = useGdrive()
 
   const { isLoading, error, run } = useFetch(createFolder, {
     onSuccess: () => {
-      handleCloseDialog()
       refresh()
+      close()
     },
   })
 
@@ -43,7 +45,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
         onChange={handleFolderNameChange}
       />
       <div className='flex justify-end gap-x-2'>
-        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' onClick={handleCloseDialog} disabled={isLoading}>
+        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' onClick={close} disabled={isLoading}>
           取消
         </button>
         <button

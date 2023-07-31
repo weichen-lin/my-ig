@@ -1,21 +1,27 @@
 import clsx from 'clsx'
-
 import { ListMethod } from 'hooks/disk'
-
-import type { DiskProps } from 'hooks/disk'
-
 import { useIsMobile } from 'hooks/disk'
+import { Loading, Dialog } from 'components/utils'
 
 import { PCButton, MobileButton } from './buttons'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useGdrive } from 'context'
 
 import { AddFolder } from 'components/utils'
 
 export default function Operator() {
   const { isMobile } = useIsMobile()
-  const { openDialog, handleCurrentDialog, handleCloseDialog, listMethod, handleListMethod } = useGdrive()
+  const [openDialog, setOpenDialog] = useState(false)
+  const { listMethod, handleListMethod } = useGdrive()
+
+  const handleCloseDialog = useCallback(() => {
+    setOpenDialog(false)
+  }, [])
+
+  const handlOpenDialog = useCallback(() => {
+    setOpenDialog(true)
+  }, [])
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -69,9 +75,7 @@ export default function Operator() {
     {
       name: 'bx:plus',
       message: '建立',
-      onClick: () => {
-        handleCurrentDialog(<AddFolder ref={inputRef} close={handleCloseDialog} />)
-      },
+      onClick: handlOpenDialog,
     },
     {
       name: 'basil:upload-solid',
@@ -100,6 +104,9 @@ export default function Operator() {
         ) : (
           <PCButton name={e.name} onClick={e.onClick} message={e.message} key={`button_${index}`} />
         )
+      )}
+      {openDialog && (
+        <Dialog children={<AddFolder ref={inputRef} close={handleCloseDialog} />} close={handleCloseDialog} />
       )}
     </div>
   )
