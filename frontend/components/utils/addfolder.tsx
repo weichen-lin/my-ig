@@ -3,6 +3,7 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiError } from 'react-icons/bi'
 import { createFolder, useFetch } from 'api'
 import { useGdrive } from 'context'
+import { useRouter } from 'next/router'
 
 interface AddFolderProps {
   close: () => void
@@ -11,6 +12,8 @@ interface AddFolderProps {
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const { close } = prop
   const { refresh } = useGdrive()
+
+  const router = useRouter()
 
   const { isLoading, error, run } = useFetch(createFolder, {
     onSuccess: () => {
@@ -53,7 +56,8 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
           disabled={isLoading}
           onClick={() => {
             if (folderName) {
-              run({ folder_name: folderName, locate_at: null })
+              const locate_at = (router.query.f as string) ?? null
+              run({ folder_name: folderName, locate_at: locate_at })
             }
           }}
         >
