@@ -113,7 +113,7 @@ export default class FolderController {
         })) ?? []
 
       if (folder_id) {
-        data.unshift({ folder_id: breadCrumb?.dataValues.folder_id, folder_name: breadCrumb?.dataValues.folder_name })
+        data.push({ folder_id: breadCrumb?.dataValues.folder_id, folder_name: breadCrumb?.dataValues.folder_name })
       }
 
       return data

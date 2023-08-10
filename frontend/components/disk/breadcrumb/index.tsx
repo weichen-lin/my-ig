@@ -44,6 +44,8 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
   const router = useRouter()
   const { refresh } = useGdrive()
 
+  const atRoot = data?.length === 0
+
   const BreadCrumb = (props: { folderInfo: CurrentFolder; isLastOne: boolean }) => {
     const { folderInfo, isLastOne } = props
 
@@ -76,8 +78,12 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
   ) : (
     <>
       <span
-        className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold my-2 py-1`}
+        className={clsx(
+          'max-w-[160px] px-3 rounded-lg truncate select-none font-bold my-2 py-1',
+          `${!atRoot && 'hover:cursor-pointer hover:bg-slate-200'}`
+        )}
         onClick={async () => {
+          if (atRoot) return
           await router.push('/home')
           refresh()
         }}
