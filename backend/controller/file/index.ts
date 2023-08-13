@@ -49,7 +49,7 @@ export class FileController {
   public uploadDiskFile = (user_id: string, req: Request): Promise<[number, string]> => {
     return new Promise((resolve, reject) => {
       const locate_at = req.body.locate_at === '' || !req.body.locate_at ? null : req.body.locate_at
-      console.log(locate_at)
+
       const blob = this.firebase
         .storage()
         .bucket()

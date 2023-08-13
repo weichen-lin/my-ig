@@ -15,6 +15,9 @@ router.use(multer().single('myfile'))
 
 router.post('/', verify_token, async (req, res) => {
   const user_id = res.locals.user_id
+
+  console.log(req)
+  // body: [Object: null prototype] { test: 'test' },
   const [status, msg] = await fileController.uploadAvatarFile(user_id, req)
 
   if (status === 201) {

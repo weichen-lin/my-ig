@@ -2,18 +2,19 @@ import clsx from 'clsx'
 import { ListMethod } from 'hooks/disk'
 import { useIsMobile } from 'hooks/disk'
 import { Loading, Dialog } from 'components/utils'
-
+import fetcher from 'api/fetcher'
 import { PCButton, MobileButton } from './buttons'
-
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { useGdrive } from 'context'
-
+import Router from 'next/router'
 import { AddFolder } from 'components/utils'
 
 export default function Operator() {
   const { isMobile } = useIsMobile()
   const [openDialog, setOpenDialog] = useState(false)
   const { listMethod, handleListMethod } = useGdrive()
+
+  const locate_at = Router?.query?.f ?? null
 
   const handleCloseDialog = useCallback(() => {
     setOpenDialog(false)
@@ -31,36 +32,33 @@ export default function Operator() {
         multiple: multiple,
       })
 
-      // await Promise.all(
-      //   FileHandlers.map(async (filehandle, index) => {
-      //     const file = await filehandle.getFile()
+      await Promise.all(
+        FileHandlers.map(async (filehandle, index) => {
+          const file = await filehandle.getFile()
 
-      //     const imgReader = new FileReader()
-      //     imgReader.readAsDataURL(file)
-      //     imgReader.onloadend = () => {
-      //       const img = new Image()
-      //       img.src = imgReader.result as string
-      //       img.onload = () => {
-      //         const formData = new FormData()
-      //         formData.append('myfile', file, file.name)
-      //         fetcher
-      //           .post('http://localhost:8080/file', formData, {
-      //             headers: {
-      //               'Content-Type': 'multipart/form-data',
-      //             },
-      //           })
-      //           .then((res) => {
-      //             handleUserProfile('avatar_url', res.data)
-      //             handleHints('success', '上傳成功')
-      //           })
-      //           .catch((err) => console.log(err))
-      //       }
-      //       img.onerror = (e) => {
-      //         handleHints('success', '上傳格式錯誤')
-      //       }
-      //     }
-      //   })
-      // )
+          const imgReader = new FileReader()
+          imgReader.readAsDataURL(file)
+          imgReader.onloadend = () => {
+            const img = new Image()
+            img.src = imgReader.result as string
+            img.onload = () => {
+              const formData = new FormData()
+              formData.append('myfile', file, file.name)
+              fetcher
+                .post('http://localhost:8080/upload', formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                  },
+                })
+                .then((res) => {})
+                .catch((err) => console.log(err))
+            }
+            img.onerror = (e) => {
+              // handleHints('success', '上傳格式錯誤')
+            }
+          }
+        })
+      )
     } catch (e) {
       console.log('cancel select')
     }

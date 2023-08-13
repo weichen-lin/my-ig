@@ -93,6 +93,7 @@ export const Menu = () => {
             img.onload = () => {
               const formData = new FormData()
               formData.append('myfile', file, file.name)
+              formData.append('test', 'test')
               fetcher
                 .post('http://localhost:8080/file', formData, {
                   headers: {
