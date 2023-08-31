@@ -20,10 +20,8 @@
 }
 
 .imageCarousel {
-  transform: translateX(calc(var(--direction) * -6rem))
-    rotateY(calc(var(--offset) * 50deg))
-    scaleY(calc(1 + var(--abs-offset) * -0.1))
-    translateZ(calc(var(--abs-offset) * -30rem));
+  transform: translateX(calc(var(--direction) * -6rem)) rotateY(calc(var(--offset) * 50deg))
+    scaleY(calc(1 + var(--abs-offset) * -0.1)) translateZ(calc(var(--abs-offset) * -30rem));
   filter: blur(calc(var(--abs-offset) * 0.8rem));
 }
 

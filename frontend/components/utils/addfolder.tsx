@@ -1,21 +1,24 @@
-import { forwardRef, useState, useContext, ChangeEvent } from 'react'
+import { forwardRef, useState, ChangeEvent } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiError } from 'react-icons/bi'
-import { GdriveContext } from 'context'
 import { createFolder, useFetch } from 'api'
+import { useGdrive } from 'context'
+import { useRouter } from 'next/router'
 
 interface AddFolderProps {
   close: () => void
 }
 
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
-  const gdrive = useContext(GdriveContext)
-  const { handleCloseDialog, refresh } = gdrive
+  const { close } = prop
+  const { refresh } = useGdrive()
+
+  const router = useRouter()
 
   const { isLoading, error, run } = useFetch(createFolder, {
     onSuccess: () => {
-      handleCloseDialog()
       refresh()
+      close()
     },
   })
 
@@ -45,7 +48,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
         onChange={handleFolderNameChange}
       />
       <div className='flex justify-end gap-x-2'>
-        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' onClick={handleCloseDialog} disabled={isLoading}>
+        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' onClick={close} disabled={isLoading}>
           取消
         </button>
         <button
@@ -53,7 +56,8 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
           disabled={isLoading}
           onClick={() => {
             if (folderName) {
-              run({ folder_name: folderName, locate_at: null })
+              const locate_at = (router.query.f as string) ?? null
+              run({ folder_name: folderName, locate_at: locate_at })
             }
           }}
         >

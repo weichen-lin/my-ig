@@ -1,8 +1,8 @@
 export interface FileData {
-  name: string
+  file_name: string
   url: string
   last_modified_at: string
-  id: string
+  file_id: string
   tags: string[]
   description: string | null
 }

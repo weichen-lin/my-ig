@@ -1,4 +1,4 @@
-import { LatticeFolderBackbone } from './folders'
+import { FolderBackbone } from './folders'
 import { LatticeFileBackbone } from './files'
 import { ListBackBone } from './listbackbone'
 import clsx from 'clsx'
@@ -11,7 +11,7 @@ export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
   const { listMethod } = props
   const { isFullScreen } = useIsMobile()
 
-  const FolderBackbone = () => {
+  const FolderBackbones = () => {
     return (
       <div
         className={clsx(
@@ -24,7 +24,7 @@ export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
           }`
         )}
       >
-        {listMethod === ListMethod.Lattice ? <LatticeFolderBackbone /> : <ListBackBone />}
+        {listMethod === ListMethod.Lattice ? <FolderBackbone /> : <ListBackBone />}
       </div>
     )
   }
@@ -61,7 +61,7 @@ export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
       {listMethod === ListMethod.Lattice && <p className='w-[90%] xs:w-full text-gray-400'>資料夾</p>}
       <div className='flex flex-col xs:flex-row xs:flex-wrap w-full gap-x-4 mx-auto items-center'>
         {Array.from(Array(BACKBONE_NUMBER).keys()).map((e) => (
-          <FolderBackbone key={`folder-bone-${e}`} />
+          <FolderBackbones key={`folder-bone-${e}`} />
         ))}
       </div>
       {listMethod === ListMethod.Lattice && <p className='w-[90%] xs:w-full text-gray-400'>檔案</p>}

@@ -25,7 +25,6 @@ const LayoutHomePC = ({ children }: LayoutProps) => {
         </div>
         {children}
       </div>
-      {openDialog && <Dialog children={currentDialog} close={handleCloseDialog} />}
     </div>
   )
 }
