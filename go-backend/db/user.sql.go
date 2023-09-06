@@ -7,6 +7,8 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -32,4 +34,20 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.LastModifiedAt,
 	)
 	return i, err
+}
+
+const getUser = `-- name: GetUser :one
+SELECT ID FROM "user" WHERE email = $1 and password= $2
+`
+
+type GetUserParams struct {
+	Email    string
+	Password string
+}
+
+func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, getUser, arg.Email, arg.Password)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
