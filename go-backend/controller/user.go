@@ -16,7 +16,7 @@ type UserRegisterParams struct {
 	Password string `json:"password" binding:"required"`
 }
 
-type UserController struct { 
+type UserController struct {
 	Conn *sql.DB
 }
 
@@ -61,19 +61,19 @@ func (s *UserController) UserRegister(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(createUserErr))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, user.ID)
 	return
 }
 
-type  UserLoginParams struct {
+type UserLoginParams struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 func (s *UserController) UserLogin(ctx *gin.Context) {
 	var params UserRegisterParams
-	
+
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

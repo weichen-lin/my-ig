@@ -20,13 +20,12 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 	var user UserWithRealPwd
 	transaction := NewTransaction(conn)
 	tx, err := transaction.db.BeginTx(ctx, nil)
-	
+
 	if err != nil {
 		return user, err
 	}
 
 	q := New(tx)
-
 
 	fakePwd := faker.Password()[:10]
 	hashedPwd, err := util.HashPassword(fakePwd)
@@ -47,7 +46,7 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 	}
 
 	user = UserWithRealPwd{
-		User: &userFromDB,
+		User:    &userFromDB,
 		RealPwd: fakePwd,
 	}
 
@@ -59,8 +58,6 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 
 	return user, nil
 }
-
-
 func Test_Createuser(t *testing.T) {
 
 	tx := NewTransaction(conn)
@@ -100,7 +97,7 @@ func Test_Createuser(t *testing.T) {
 func Test_Getuser(t *testing.T) {
 	var userWithPWD UserWithRealPwd
 	var err error
-	
+
 	userWithPWD, err = createUserForTest(context.Background())
 	t.Log(userWithPWD)
 	require.NoError(t, err)
@@ -110,13 +107,13 @@ func Test_Getuser(t *testing.T) {
 	tx := NewTransaction(conn)
 
 	arg := GetUserParams{
-		Email: userWithPWD.User.Email,
+		Email:    userWithPWD.User.Email,
 		Password: userWithPWD.User.Password,
 	}
 
 	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
 		q := New(tx)
-	
+
 		ID, err := q.GetUser(context.Background(), arg)
 		require.NoError(t, err)
 		require.NotEmpty(t, ID)

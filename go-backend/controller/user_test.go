@@ -13,14 +13,14 @@ import (
 )
 
 func Test_UserRegister_InvalidEmail(t *testing.T) {
-	
+
 	router := gin.Default()
 	c := UserController{Conn: conn}
 
-	router.POST("/user/register", c.UserRegister )
+	router.POST("/user/register", c.UserRegister)
 
 	params := []byte(`{"email":"sadasdasd","password":"123456", "name":"test"}`)
-	
+
 	req, _ := http.NewRequest("POST", "/user/register", bytes.NewBuffer(params))
 	req.Header.Add("Content-Type", "application/json")
 
@@ -31,11 +31,11 @@ func Test_UserRegister_InvalidEmail(t *testing.T) {
 }
 
 func Test_UserRegister_Nil(t *testing.T) {
-	
+
 	router := gin.Default()
 	c := UserController{Conn: conn}
 
-	router.POST("/user/register", c.UserRegister )
+	router.POST("/user/register", c.UserRegister)
 
 	nilReq, _ := http.NewRequest("POST", "/user/register", nil)
 
@@ -46,21 +46,21 @@ func Test_UserRegister_Nil(t *testing.T) {
 }
 
 func Test_UserRegister(t *testing.T) {
-	
+
 	router := gin.Default()
 	c := UserController{Conn: conn}
 
-	router.POST("/user/register", c.UserRegister )
+	router.POST("/user/register", c.UserRegister)
 
 	params := []byte(`{"email":"sadasdasd@fasfsa.com","password":"123as456", "name":"tesasdast"}`)
-	
+
 	req, _ := http.NewRequest("POST", "/user/register", bytes.NewBuffer(params))
 	req.Header.Add("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
 
 	router.ServeHTTP(w, req)
-	
+
 	var user db.User
 
 	json.Unmarshal([]byte(w.Body.String()), &user)
