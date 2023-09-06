@@ -9,7 +9,6 @@ import (
 	"github.com/weichen-lin/myig/util"
 )
 
-
 func PathRoute(r *gin.Engine) *gin.Engine {
 
 	config, err := util.Loadconfig(".", "test")
@@ -22,12 +21,13 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	env := controller.Server{
+	userController := controller.UserController{
 		Conn: conn,
 	}
 
-	user := r.Group("/user") 
-	user.POST("/create", env.Createuser)
+	user := r.Group("/user")
+	user.POST("/register", userController.UserRegister)
+	user.POST("/login", userController.UserLogin)
 
 	return r
 }

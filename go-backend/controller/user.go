@@ -10,21 +10,23 @@ import (
 	"github.com/weichen-lin/myig/util"
 )
 
-type CreateUserParams struct {
+type UserRegisterParams struct {
 	Email    string `json:"email" binding:"required"`
-	Name string `json:"name" binding:"required"`
+	Name     string `json:"name" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
-func (s *Server) Createuser(ctx *gin.Context) {
-	var params CreateUserParams
+type UserController struct { 
+	Conn *sql.DB
+}
+
+func (s *UserController) UserRegister(ctx *gin.Context) {
+	var params UserRegisterParams
 
 	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(http.StatusBadGateway, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	tx := db.NewTransaction(s.Conn)
 
 	hashedPassword, hashedPwdErr := util.HashPassword(params.Password)
 	if hashedPwdErr != nil {
@@ -38,9 +40,11 @@ func (s *Server) Createuser(ctx *gin.Context) {
 		return
 	}
 
+	tx := db.NewTransaction(s.Conn)
+
 	arg := db.CreateUserParams{
-		Email:   params.Email,
-		Name: params.Name,
+		Email:    params.Email,
+		Name:     params.Name,
 		Password: hashedPassword,
 	}
 
@@ -55,7 +59,26 @@ func (s *Server) Createuser(ctx *gin.Context) {
 
 	if createUserErr != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(createUserErr))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, user.ID)
+	return
+}
+
+type  UserLoginParams struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+func (s *UserController) UserLogin(ctx *gin.Context) {
+	var params UserRegisterParams
+	
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	// tx := db.NewTransaction(s.Conn)
+
 }
