@@ -15,7 +15,7 @@ import (
 func Test_UserRegister_InvalidEmail(t *testing.T) {
 
 	router := gin.Default()
-	c := UserController{Conn: conn}
+	c := Controller{Conn: conn}
 
 	router.POST("/user/register", c.UserRegister)
 
@@ -33,7 +33,7 @@ func Test_UserRegister_InvalidEmail(t *testing.T) {
 func Test_UserRegister_Nil(t *testing.T) {
 
 	router := gin.Default()
-	c := UserController{Conn: conn}
+	c := Controller{Conn: conn}
 
 	router.POST("/user/register", c.UserRegister)
 
@@ -48,7 +48,7 @@ func Test_UserRegister_Nil(t *testing.T) {
 func Test_UserRegister(t *testing.T) {
 
 	router := gin.Default()
-	c := UserController{Conn: conn}
+	c := Controller{Conn: conn}
 
 	router.POST("/user/register", c.UserRegister)
 

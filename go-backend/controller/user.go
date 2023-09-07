@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"net/mail"
 
@@ -16,12 +17,11 @@ type UserRegisterParams struct {
 	Password string `json:"password" binding:"required"`
 }
 
-type UserController struct {
-	Conn *sql.DB
-}
-
-func (s *UserController) UserRegister(ctx *gin.Context) {
+func (s *Controller) UserRegister(ctx *gin.Context) {
 	var params UserRegisterParams
+
+	value := ctx.MustGet("user_id").(string)
+	fmt.Println(value)
 
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -71,14 +71,12 @@ type UserLoginParams struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func (s *UserController) UserLogin(ctx *gin.Context) {
+func (s *Controller) UserLogin(ctx *gin.Context) {
 	var params UserRegisterParams
 
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
 	// tx := db.NewTransaction(s.Conn)
-
 }
