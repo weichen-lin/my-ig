@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/mail"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/weichen-lin/myig/db"
 	"github.com/weichen-lin/myig/util"
+)
+
+var (
+	ErrUserAlreadyExist = fmt.Errorf("User already exists!")
 )
 
 type UserRegisterParams struct {
@@ -20,23 +25,20 @@ type UserRegisterParams struct {
 func (s *Controller) UserRegister(ctx *gin.Context) {
 	var params UserRegisterParams
 
-	value := ctx.MustGet("user_id").(string)
-	fmt.Println(value)
-
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	hashedPassword, hashedPwdErr := util.HashPassword(params.Password)
-	if hashedPwdErr != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(hashedPwdErr))
+	hashedPassword, err := util.HashPassword(params.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	_, EmailErr := mail.ParseAddress(params.Email)
-	if EmailErr != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(EmailErr))
+	_, ParseErr := mail.ParseAddress(params.Email)
+	if ParseErr != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ParseErr))
 		return
 	}
 
@@ -53,15 +55,40 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 	createUserErr := tx.ExecTx(ctx, func(tx *sql.Tx) error {
 		var err error
 		q := db.New(tx)
+
+		_, err = q.GetUserByEmail(ctx, params.Email)
+		if err == nil {
+			return ErrUserAlreadyExist
+		}
+
 		user, err = q.CreateUser(ctx, arg)
 		return err
 	}, false)
 
-	if createUserErr != nil {
+	switch createUserErr {
+	case ErrUserAlreadyExist:
+		ctx.JSON(http.StatusConflict, errorResponse(createUserErr))
+		return
+	case nil:
+		break
+	default:
 		ctx.JSON(http.StatusInternalServerError, errorResponse(createUserErr))
 		return
 	}
 
+	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	token, err := jwtMaker.CreateToken(user.ID.String(), time.Now().Add(time.Hour * 24 * 3))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.Header("Set-Cookie", "token="+token+"; Path=/; HttpOnly")
 	ctx.JSON(http.StatusOK, user.ID)
 	return
 }

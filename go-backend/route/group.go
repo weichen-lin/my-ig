@@ -21,10 +21,10 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	ctl := controller.Controller{Conn: conn}
+	ctl := controller.Controller{Conn: conn, SecretKey: config.SecretKey}
 
 	user := r.Group("/user")
-	user.POST("/register", ctl.AuthMiddleware(), ctl.UserRegister)
+	user.POST("/register", ctl.UserRegister)
 	user.POST("/login", ctl.UserLogin)
 
 	return r

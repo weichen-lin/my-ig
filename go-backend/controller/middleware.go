@@ -4,22 +4,33 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/weichen-lin/myig/util"
 )
 
+
 func (c *Controller) AuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		header := c.GetHeader("Authorization")
+
+	return func(ctx *gin.Context) {
+		header := ctx.GetHeader("Authorization")
 		if header == "" {
-			c.String(http.StatusUnauthorized, "Need Authorization")
-			c.Abort()
+			ctx.String(http.StatusUnauthorized, "Invalid Authorization")
+			ctx.Abort()
 		}
 
-		// _, err := c.Maker.VerifyToken(header)
-		// if err != nil {
-		// 	c.String(http.StatusUnauthorized, "Invalid Authorization")
-		// 	c.Abort()
-		// }
+		jwtMaker, err := util.NewJWTMaker(c.SecretKey)
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, "Invalid Authorization")
+			ctx.Abort()
+		}
 
-		c.Next()
+		payload, err := jwtMaker.VerifyToken(header)
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, "Invalid Authorization")
+			ctx.Abort()
+		}
+		
+		ctx.Set("userId", payload.UserId)
+
+		ctx.Next()
 	}
 }

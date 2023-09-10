@@ -94,12 +94,11 @@ func Test_Createuser(t *testing.T) {
 	}, true)
 }
 
-func Test_Getuser(t *testing.T) {
+func Test_GetUser(t *testing.T) {
 	var userWithPWD UserWithRealPwd
 	var err error
 
 	userWithPWD, err = createUserForTest(context.Background())
-	t.Log(userWithPWD)
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
@@ -115,6 +114,29 @@ func Test_Getuser(t *testing.T) {
 		q := New(tx)
 
 		ID, err := q.GetUser(context.Background(), arg)
+		require.NoError(t, err)
+		require.NotEmpty(t, ID)
+		require.Equal(t, ID.String(), userWithPWD.User.ID.String())
+
+		return nil
+	}, false)
+}
+
+func Test_GetUserByEmail(t *testing.T) {
+	var userWithPWD UserWithRealPwd
+	var err error
+
+	userWithPWD, err = createUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, userWithPWD.User)
+	require.NotEmpty(t, userWithPWD.RealPwd)
+
+	tx := NewTransaction(conn)
+
+	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
+		q := New(tx)
+
+		ID, err := q.GetUserByEmail(context.Background(), userWithPWD.User.Email)
 		require.NoError(t, err)
 		require.NotEmpty(t, ID)
 		require.Equal(t, ID.String(), userWithPWD.User.ID.String())
