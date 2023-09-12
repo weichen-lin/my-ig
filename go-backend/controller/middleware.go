@@ -7,7 +7,6 @@ import (
 	"github.com/weichen-lin/myig/util"
 )
 
-
 func (c *Controller) AuthMiddleware() gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
@@ -28,7 +27,7 @@ func (c *Controller) AuthMiddleware() gin.HandlerFunc {
 			ctx.String(http.StatusInternalServerError, "Invalid Authorization")
 			ctx.Abort()
 		}
-		
+
 		ctx.Set("userId", payload.UserId)
 
 		ctx.Next()

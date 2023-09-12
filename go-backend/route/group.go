@@ -21,7 +21,9 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	ctl := controller.Controller{Conn: conn, SecretKey: config.SecretKey}
+	app, err := util.GetFirebase()
+
+	ctl := controller.Controller{Conn: conn, SecretKey: config.SecretKey, App: app}
 
 	user := r.Group("/user")
 	user.POST("/register", ctl.UserRegister)

@@ -106,7 +106,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	token, err := jwtMaker.CreateToken(user.ID.String(), time.Now().Add(time.Hour * 24 * 3))
+	token, err := jwtMaker.CreateToken(user.ID.String(), time.Now().Add(time.Hour*24*3))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -144,7 +144,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("file size too large")))
 		return
 	}
-	
+
 	file, err := uploadFile.Open()
 	defer file.Close()
 
@@ -157,11 +157,11 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 	}
 
 	mtype := mimetype.Detect(fileBytes)
-	
+
 	if !ArrayContains(ImageTypes, mtype.String()) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("file type not supported")))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, "OK")
 }
