@@ -41,6 +41,6 @@ dist
 # npm auth
 .npmrc
 
-/credential
+**/*/credential.json
 
 deploy/secret.yaml
