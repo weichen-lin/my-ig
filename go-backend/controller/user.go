@@ -8,6 +8,7 @@ import (
 	"net/mail"
 	"time"
 
+	"cloud.google.com/go/storage"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
 	"github.com/weichen-lin/myig/db"
@@ -163,5 +164,40 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, "OK")
+	// UPLOAD FILE TO FIREBASE
+
+	// obj := s.BucketHandler.Object(uploadFile.Filename)
+	// writer := obj.NewWriter(ctx)
+	
+	// defer writer.Close()
+
+	// if _, err := io.Copy(writer, bytes.NewReader(fileBytes)); err != nil {
+	// 	fmt.Println(err)
+	// 	ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("upload failed")))
+	// }
+
+	// if err := obj.ACL().Set(context.Background(), storage.AllAuthenticatedUsers, storage.RoleReader); err != nil {
+	// 	fmt.Println(err)
+	// 	ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("set ACL error")))
+	// 	return
+	// }
+
+	// GET SIGNED URL
+
+	opts := &storage.SignedURLOptions{
+		Scheme:  storage.SigningSchemeV4,
+		Method:  "GET",
+		Expires: time.Now().Add(15 * time.Minute),
+	}
+	
+	url, err := s.BucketHandler.SignedURL("4a507024d6325.gif", opts)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("get signed url error")))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, url)
+	// ctx.JSON(http.StatusOK, "OK")
 }
