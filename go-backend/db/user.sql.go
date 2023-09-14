@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -61,4 +62,28 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (uuid.UUID, 
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
+}
+
+const updateUserAvatar = `-- name: UpdateUserAvatar :one
+UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING id, email, password, name, avatar_url, created_at, last_modified_at
+`
+
+type UpdateUserAvatarParams struct {
+	AvatarUrl sql.NullString
+	ID        uuid.UUID
+}
+
+func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUserAvatar, arg.AvatarUrl, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.Name,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.LastModifiedAt,
+	)
+	return i, err
 }
