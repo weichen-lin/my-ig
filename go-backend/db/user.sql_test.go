@@ -136,10 +136,15 @@ func Test_GetUserByEmail(t *testing.T) {
 	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
 		q := New(tx)
 
-		ID, err := q.GetUserByEmail(context.Background(), userWithPWD.Email)
+		info, err := q.GetUserByEmail(context.Background(), userWithPWD.Email)
 		require.NoError(t, err)
-		require.NotEmpty(t, ID)
-		require.Equal(t, ID.String(), userWithPWD.ID.String())
+		require.NotEmpty(t, info)
+		require.Equal(t, info.ID.String(), userWithPWD.ID.String())
+		require.Equal(t, info.Email, userWithPWD.Email)
+		require.NotEqual(t, info.Password, userWithPWD.RealPwd)
+
+		checkErr := util.ComparePassword(info.Password, userWithPWD.RealPwd)
+		require.NoError(t, checkErr)
 
 		return nil
 	}, false)
