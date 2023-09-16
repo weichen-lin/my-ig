@@ -64,7 +64,30 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (uuid.UUID, 
 	return id, err
 }
 
-const updateUserAvatar = `-- name: UpdateUserAvatar :one
+const getUserById = `-- name: GetUserById :one
+SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1
+`
+
+type GetUserByIdRow struct {
+	ID        uuid.UUID
+	Email     string
+	Name      string
+	AvatarUrl sql.NullString
+}
+
+func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, id)
+	var i GetUserByIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Name,
+		&i.AvatarUrl,
+	)
+	return i, err
+}
+
+const updateUserAvatar = `-- name: UpdateUserAvatar :exec
 UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING id, email, password, name, avatar_url, created_at, last_modified_at
 `
 
@@ -73,17 +96,7 @@ type UpdateUserAvatarParams struct {
 	ID        uuid.UUID
 }
 
-func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserAvatar, arg.AvatarUrl, arg.ID)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.Password,
-		&i.Name,
-		&i.AvatarUrl,
-		&i.CreatedAt,
-		&i.LastModifiedAt,
-	)
-	return i, err
+func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserAvatar, arg.AvatarUrl, arg.ID)
+	return err
 }
