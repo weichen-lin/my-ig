@@ -11,7 +11,7 @@ import (
 )
 
 type UserWithRealPwd struct {
-	*User
+	User
 	RealPwd string
 }
 
@@ -27,8 +27,8 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 
 	q := New(tx)
 
-	fakePwd := faker.Password()[:10]
-	hashedPwd, err := util.HashPassword(fakePwd)
+	pwdBeforeBcrypt := faker.Password()[:10]
+	hashedPwd, err := util.HashPassword(pwdBeforeBcrypt)
 	if err != nil {
 		return user, err
 	}
@@ -46,8 +46,8 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 	}
 
 	user = UserWithRealPwd{
-		User:    &userFromDB,
-		RealPwd: fakePwd,
+		userFromDB,
+		pwdBeforeBcrypt,
 	}
 
 	err = tx.Commit()
@@ -106,8 +106,8 @@ func Test_GetUser(t *testing.T) {
 	tx := NewTransaction(conn)
 
 	arg := GetUserParams{
-		Email:    userWithPWD.User.Email,
-		Password: userWithPWD.User.Password,
+		Email:    userWithPWD.Email,
+		Password: userWithPWD.Password,
 	}
 
 	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
@@ -116,7 +116,7 @@ func Test_GetUser(t *testing.T) {
 		ID, err := q.GetUser(context.Background(), arg)
 		require.NoError(t, err)
 		require.NotEmpty(t, ID)
-		require.Equal(t, ID.String(), userWithPWD.User.ID.String())
+		require.Equal(t, ID.String(), userWithPWD.ID.String())
 
 		return nil
 	}, false)
@@ -136,10 +136,76 @@ func Test_GetUserByEmail(t *testing.T) {
 	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
 		q := New(tx)
 
-		ID, err := q.GetUserByEmail(context.Background(), userWithPWD.User.Email)
+		ID, err := q.GetUserByEmail(context.Background(), userWithPWD.Email)
 		require.NoError(t, err)
 		require.NotEmpty(t, ID)
-		require.Equal(t, ID.String(), userWithPWD.User.ID.String())
+		require.Equal(t, ID.String(), userWithPWD.ID.String())
+
+		return nil
+	}, false)
+}
+
+func Test_UpdateUserAvatar(t *testing.T) {
+	var userWithPWD UserWithRealPwd
+	var err error
+
+	userWithPWD, err = createUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, userWithPWD.User)
+	require.NotEmpty(t, userWithPWD.RealPwd)
+
+	tx := NewTransaction(conn)
+
+	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
+		q := New(tx)
+
+		f := faker.URL()
+
+		params := UpdateUserAvatarParams{
+			AvatarUrl: sql.NullString{
+				String: f,
+				Valid:  true,
+			},
+			ID: userWithPWD.ID,
+		}
+
+		err := q.UpdateUserAvatar(context.Background(), params)
+		require.NoError(t, err)
+
+		user, err := q.GetUserById(context.Background(), params.ID)
+		require.NoError(t, err)
+		require.NotEmpty(t, user)
+
+		require.Equal(t, params.AvatarUrl, user.AvatarUrl)
+		require.Equal(t, params.ID.String(), user.ID.String())
+
+		return nil
+	}, false)
+}
+
+func Test_GetUserById(t *testing.T) {
+	var userWithPWD UserWithRealPwd
+	var err error
+
+	userWithPWD, err = createUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, userWithPWD.User)
+	require.NotEmpty(t, userWithPWD.RealPwd)
+
+	tx := NewTransaction(conn)
+
+	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
+		q := New(tx)
+
+		user, err := q.GetUserById(context.Background(), userWithPWD.ID)
+		require.NoError(t, err)
+		require.NotEmpty(t, user)
+
+		require.Equal(t, userWithPWD.Email, user.Email)
+		require.Equal(t, userWithPWD.Name, user.Name)
+		require.Equal(t, userWithPWD.ID.String(), user.ID.String())
+		require.Equal(t, userWithPWD.AvatarUrl.String, user.AvatarUrl.String)
+
 
 		return nil
 	}, false)
