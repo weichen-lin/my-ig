@@ -5,7 +5,7 @@ INSERT INTO "user" (email, password, name) VALUES ($1, $2, $3) RETURNING *;
 SELECT ID FROM "user" WHERE email = $1 and password= $2;
 
 -- name: GetUserByEmail :one
-SELECT ID FROM "user" WHERE email = $1;
+SELECT ID, email, password FROM "user" WHERE email = $1;
 
 -- name: GetUserById :one
 SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1;
