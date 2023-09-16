@@ -2,17 +2,18 @@ package controller
 
 import (
 	"bytes"
-	"context"
 	"database/sql"
 	"fmt"
 	"io"
 	"net/http"
 	"net/mail"
+	"net/url"
 	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/weichen-lin/myig/db"
 	"github.com/weichen-lin/myig/util"
 )
@@ -80,10 +81,9 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 	var user db.User
 
 	createUserErr := tx.ExecTx(ctx, func(tx *sql.Tx) error {
-		var err error
 		q := db.New(tx)
 
-		_, err = q.GetUserByEmail(ctx, params.Email)
+		_, err := q.GetUserByEmail(ctx, params.Email)
 		if err == nil {
 			return ErrUserAlreadyExist
 		}
@@ -136,6 +136,18 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 }
 
 func (s *Controller) UploadAvatar(ctx *gin.Context) {
+	userId_string, ok := ctx.Value("userId").(string)
+	if !ok {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		return
+	}
+
+	userId, err := uuid.Parse(userId_string)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		return
+	}
+
 	uploadFile, err := ctx.FormFile("file")
 
 	if err != nil {
@@ -169,16 +181,11 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 	// UPLOAD FILE TO FIREBASE
 	obj := s.BucketHandler.Object(uploadFile.Filename)
 	writer := obj.NewWriter(ctx)
-	
+
 	defer writer.Close()
 
 	if _, err := io.Copy(writer, bytes.NewReader(fileBytes)); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("upload failed")))
-	}
-
-	if err := obj.ACL().Set(context.Background(), storage.AllAuthenticatedUsers, storage.RoleReader); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("set ACL error")))
-		return
 	}
 
 	// GET SIGNED URL
@@ -186,8 +193,10 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		Method:  "GET",
 		Expires: time.Now().AddDate(100, 0, 0),
 	}
-	
-	url, err := s.BucketHandler.SignedURL(uploadFile.Filename, opts)
+
+	signedUrl, err := s.BucketHandler.SignedURL(uploadFile.Filename, opts)
+
+	_, urlErr := url.ParseRequestURI(signedUrl)
 
 	if err != nil {
 		fmt.Println(err)
@@ -195,6 +204,38 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, url)
+	if urlErr != nil {
+		fmt.Println(urlErr)
+		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("invaid signed url")))
+		return
+	}
+
+	tx := db.NewTransaction(s.Conn)
+
+	arg := db.UpdateUserAvatarParams{
+		AvatarUrl: sql.NullString{
+			String: signedUrl,
+			Valid:  true,
+		},
+		ID: userId,
+	}
+
+	updateErr := tx.ExecTx(ctx, func(tx *sql.Tx) error {
+		q := db.New(tx)
+
+		err := q.UpdateUserAvatar(ctx, arg)
+		if err != nil {
+			return fmt.Errorf("update avatar failed!")
+		}
+
+		return err
+	}, false)
+
+	if updateErr != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(updateErr))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, signedUrl)
 	return
 }
