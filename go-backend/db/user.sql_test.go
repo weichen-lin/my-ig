@@ -206,7 +206,6 @@ func Test_GetUserById(t *testing.T) {
 		require.Equal(t, userWithPWD.ID.String(), user.ID.String())
 		require.Equal(t, userWithPWD.AvatarUrl.String, user.AvatarUrl.String)
 
-
 		return nil
 	}, false)
 }

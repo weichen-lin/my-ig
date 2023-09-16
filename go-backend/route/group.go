@@ -31,7 +31,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	user := r.Group("/user")
 	user.POST("/register", ctl.UserRegister)
 	user.POST("/login", ctl.UserLogin)
-	user.POST("/avatar", ctl.AuthMiddleware(),ctl.UploadAvatar)
+	user.POST("/avatar", ctl.AuthMiddleware(), ctl.UploadAvatar)
 
 	return r
 }
