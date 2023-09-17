@@ -73,3 +73,13 @@ func Test_UserRegister(t *testing.T) {
 	require.NotEmpty(t, user.CreatedAt)
 	require.NotEmpty(t, user.LastModifiedAt)
 }
+
+// To DO
+// func Test_UploadAvatar(t *testing.T) {
+	
+// 	router := gin.Default()
+// 	c := Controller{Conn: conn}
+
+// 	router.POST("/user/avatar", c.UploadAvatar)
+
+// }

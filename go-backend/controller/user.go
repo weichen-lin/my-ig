@@ -120,29 +120,61 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 	return
 }
 
-type UserLoginParams struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
 func (s *Controller) UserLogin(ctx *gin.Context) {
-	var params UserRegisterParams
+	var params db.GetUserParams
 
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	// tx := db.NewTransaction(s.Conn)
-}
 
-func (s *Controller) UploadAvatar(ctx *gin.Context) {
-	userId_string, ok := ctx.Value("userId").(string)
-	if !ok {
+	tx := db.NewTransaction(s.Conn)
+	var id uuid.UUID
+
+	getUserErr := tx.ExecTx(ctx, func(tx *sql.Tx) error {
+		q := db.New(tx)
+
+		info, err := q.GetUserByEmail(ctx, params.Email)
+		if err == sql.ErrNoRows || err != nil {
+			return err
+		}
+
+		err = util.ComparePassword(info.Password, params.Password)
+		if err != nil {
+			return err
+		}
+
+		id = info.ID
+
+		return nil
+	}, false)
+
+	if getUserErr != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
 		return
 	}
 
-	userId, err := uuid.Parse(userId_string)
+	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	token, err := jwtMaker.CreateToken(id.String(), time.Now().Add(time.Hour*24*3))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.Header("Set-Cookie", "token="+token+"; Path=/; HttpOnly")
+	ctx.JSON(http.StatusOK, id)
+	return
+}
+
+func (s *Controller) UploadAvatar(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
 		return
