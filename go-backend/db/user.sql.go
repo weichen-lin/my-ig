@@ -8,7 +8,7 @@ package db
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -45,9 +45,9 @@ type GetUserParams struct {
 	Password string
 }
 
-func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (pgtype.UUID, error) {
+func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, getUser, arg.Email, arg.Password)
-	var id pgtype.UUID
+	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
 }
@@ -57,7 +57,7 @@ SELECT ID, email, password FROM "user" WHERE email = $1
 `
 
 type GetUserByEmailRow struct {
-	ID       pgtype.UUID
+	ID       uuid.UUID
 	Email    string
 	Password string
 }
@@ -74,13 +74,13 @@ SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1
 `
 
 type GetUserByIdRow struct {
-	ID        pgtype.UUID
+	ID        uuid.UUID
 	Email     string
 	Name      string
 	AvatarUrl *string
 }
 
-func (q *Queries) GetUserById(ctx context.Context, id pgtype.UUID) (GetUserByIdRow, error) {
+func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
 	row := q.db.QueryRow(ctx, getUserById, id)
 	var i GetUserByIdRow
 	err := row.Scan(
@@ -98,7 +98,7 @@ UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING id, email, password, n
 
 type UpdateUserAvatarParams struct {
 	AvatarUrl *string
-	ID        pgtype.UUID
+	ID        uuid.UUID
 }
 
 func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error {
