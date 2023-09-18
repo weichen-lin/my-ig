@@ -17,7 +17,7 @@ type UserWithRealPwd struct {
 func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 	var err error
 	var user UserWithRealPwd
-	tx, err := conn.Begin(ctx)
+	tx, err := pool.Begin(ctx)
 	if err != nil {
 		return user, err
 	}
@@ -58,7 +58,7 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 
 func Test_Createuser(t *testing.T) {
 
-	tx, err := conn.Begin(context.Background())
+	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)
@@ -90,7 +90,7 @@ func Test_Createuser(t *testing.T) {
 }
 
 func Test_GetUser(t *testing.T) {
-	tx, err := conn.Begin(context.Background())
+	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)
@@ -115,7 +115,7 @@ func Test_GetUser(t *testing.T) {
 }
 
 func Test_GetUserByEmail(t *testing.T) {
-	tx, err := conn.Begin(context.Background())
+	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)
@@ -140,7 +140,7 @@ func Test_GetUserByEmail(t *testing.T) {
 }
 
 func Test_UpdateUserAvatar(t *testing.T) {
-	tx, err := conn.Begin(context.Background())
+	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)
@@ -170,7 +170,7 @@ func Test_UpdateUserAvatar(t *testing.T) {
 }
 
 func Test_GetUserById(t *testing.T) {
-	tx, err := conn.Begin(context.Background())
+	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)

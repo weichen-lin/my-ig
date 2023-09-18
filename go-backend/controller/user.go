@@ -70,7 +70,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Conn.Begin(ctx)
+	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -122,7 +122,7 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Conn.Begin(ctx)
+	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -229,7 +229,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Conn.Begin(ctx)
+	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -259,7 +259,7 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Conn.Begin(ctx)
+	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

@@ -9,13 +9,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
-	"github.com/weichen-lin/myig/db"
 )
 
 func Test_UserRegister_InvalidEmail(t *testing.T) {
 
 	router := gin.Default()
-	c := Controller{Conn: conn}
+	c := Controller{Pool: pool}
 
 	router.POST("/user/register", c.UserRegister)
 
@@ -33,7 +32,7 @@ func Test_UserRegister_InvalidEmail(t *testing.T) {
 func Test_UserRegister_Nil(t *testing.T) {
 
 	router := gin.Default()
-	c := Controller{Conn: conn}
+	c := Controller{Pool: pool}
 
 	router.POST("/user/register", c.UserRegister)
 
@@ -48,7 +47,8 @@ func Test_UserRegister_Nil(t *testing.T) {
 func Test_UserRegister(t *testing.T) {
 
 	router := gin.Default()
-	c := Controller{Conn: conn}
+	c := Controller{Pool: pool, SecretKey: config.SecretKey}
+	t.Log(config.SecretKey)
 
 	router.POST("/user/register", c.UserRegister)
 
@@ -61,17 +61,12 @@ func Test_UserRegister(t *testing.T) {
 
 	router.ServeHTTP(w, req)
 
-	var user db.User
+	var userId string
 
-	json.Unmarshal([]byte(w.Body.String()), &user)
-
+	json.Unmarshal([]byte(w.Body.String()), &userId)
+	t.Log(w.Body.String())
 	require.Equal(t, http.StatusOK, w.Code)
-	require.Equal(t, "sadasdasd@fasfsa.com", user.Email)
-	require.Equal(t, "tesasdast", user.Name)
-	require.NotEmpty(t, user.ID)
-	require.NotEmpty(t, user.Password)
-	require.NotEmpty(t, user.CreatedAt)
-	require.NotEmpty(t, user.LastModifiedAt)
+	require.NotEmpty(t, userId)
 }
 
 // To DO

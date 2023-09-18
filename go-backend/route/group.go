@@ -2,9 +2,10 @@ package route
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/weichen-lin/myig/controller"
 	"github.com/weichen-lin/myig/util"
@@ -17,7 +18,9 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	conn, err := pgx.Connect(context.Background(), config.DBSource)
+	fmt.Println(config)
+
+	pool, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
 		panic(err)
 	}
@@ -27,7 +30,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	ctl := controller.Controller{Conn: conn, SecretKey: config.SecretKey, BucketHandler: bucketHandler}
+	ctl := controller.Controller{Pool: pool, SecretKey: config.SecretKey, BucketHandler: bucketHandler}
 
 	user := r.Group("/user")
 
