@@ -3,7 +3,6 @@ package controller
 import (
 	"bytes"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -71,7 +70,12 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	tx := db.NewTransaction(s.Conn)
+	tx, err := s.Conn.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	q := db.New(tx)
 
 	arg := db.CreateUserParams{
 		Email:    params.Email,
@@ -79,28 +83,15 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		Password: hashedPassword,
 	}
 
-	var user db.User
-
-	createUserErr := tx.ExecTx(ctx, func(tx *sql.Tx) error {
-		q := db.New(tx)
-
-		_, err := q.GetUserByEmail(ctx, params.Email)
-		if err == nil {
-			return ErrUserAlreadyExist
-		}
-
-		user, err = q.CreateUser(ctx, arg)
-		return err
-	}, false)
-
-	switch createUserErr {
-	case ErrUserAlreadyExist:
-		ctx.JSON(http.StatusConflict, errorResponse(createUserErr))
+	_, err = q.GetUserByEmail(ctx, params.Email)
+	if err == nil {
+		ctx.JSON(http.StatusConflict, errorResponse(ErrUserAlreadyExist))
 		return
-	case nil:
-		break
-	default:
-		ctx.JSON(http.StatusInternalServerError, errorResponse(createUserErr))
+	}
+
+	user, err := q.CreateUser(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
@@ -109,6 +100,8 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+
+	
 
 	token, err := jwtMaker.CreateToken(user.ID.String(), time.Now().Add(time.Hour*24*3))
 	if err != nil {
@@ -129,28 +122,21 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	tx := db.NewTransaction(s.Conn)
-	var id uuid.UUID
+	tx, err := s.Conn.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	q := db.New(tx)
 
-	getUserErr := tx.ExecTx(ctx, func(tx *sql.Tx) error {
-		q := db.New(tx)
+	info, err := q.GetUserByEmail(ctx, params.Email)
+	if err == sql.ErrNoRows || err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		return
+	}
 
-		info, err := q.GetUserByEmail(ctx, params.Email)
-		if err == sql.ErrNoRows || err != nil {
-			return err
-		}
-
-		err = util.ComparePassword(info.Password, params.Password)
-		if err != nil {
-			return err
-		}
-
-		id = info.ID
-
-		return nil
-	}, false)
-
-	if getUserErr != nil {
+	err = util.ComparePassword(info.Password, params.Password)
+	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
 		return
 	}
@@ -161,14 +147,14 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	token, err := jwtMaker.CreateToken(id.String(), time.Now().Add(time.Hour*24*3))
+	token, err := jwtMaker.CreateToken(info.ID.String(), time.Now().Add(time.Hour*24*3))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
 	ctx.Header("Set-Cookie", "token="+token+"; Path=/; HttpOnly")
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, info.ID)
 	return
 }
 
@@ -243,30 +229,21 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 
-	tx := db.NewTransaction(s.Conn)
+	tx, err := s.Conn.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	q := db.New(tx)
 
 	arg := db.UpdateUserAvatarParams{
-		AvatarUrl: sql.NullString{
-			String: signedUrl,
-			Valid:  true,
-		},
+		AvatarUrl: &signedUrl,
 		ID: userId,
 	}
 
-	updateErr := tx.ExecTx(ctx, func(tx *sql.Tx) error {
-		q := db.New(tx)
-
-		err := q.UpdateUserAvatar(ctx, arg)
-		if err != nil {
-			return fmt.Errorf("update avatar failed!")
-		}
-
-		return err
-	}, false)
-
-	if updateErr != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(updateErr))
-		return
+	err = q.UpdateUserAvatar(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
 	ctx.JSON(http.StatusOK, signedUrl)
@@ -282,33 +259,23 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 		return
 	}
 
-	tx := db.NewTransaction(s.Conn)
-
-	var user db.GetUserByIdRow
-
-	tx.ExecTx(ctx, func(tx *sql.Tx) error {
-		q := db.New(tx)
-		var err error
-		user, err = q.GetUserById(ctx, userId)
-		if err != nil {
-			if err == sql.ErrNoRows {
-				return fmt.Errorf("user not found")
-			}
-			return err
-		}
-		return nil
-	}, false)
-	
-	
-
-	// user.AvatarUrl = util.MyNullString(user.AvatarUrl)
-	userJson, err := json.Marshal(user)
+	tx, err := s.Conn.Begin(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	fmt.Println(userJson)
+	q := db.New(tx)
 
-	ctx.JSON(http.StatusOK, string(userJson))
+	user, err := q.GetUserById(ctx, userId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(fmt.Errorf("user not found")))
+			return 
+		}
+		ctx.JSON(http.StatusNotFound, errorResponse(err))
+		return 
+	}
+
+	ctx.JSON(http.StatusOK, user)
 	return
 }
