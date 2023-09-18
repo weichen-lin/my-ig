@@ -5,6 +5,8 @@
 package db
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -13,8 +15,8 @@ type File struct {
 	ID             uuid.UUID
 	Name           string
 	Url            *string
-	CreatedAt      pgtype.Timestamptz
-	LastModifiedAt pgtype.Timestamptz
+	CreatedAt      time.Time
+	LastModifiedAt time.Time
 	UserID         uuid.UUID
 	LocateAt       pgtype.UUID
 }
@@ -22,11 +24,12 @@ type File struct {
 type Folder struct {
 	ID             uuid.UUID
 	Name           string
-	LocateAt       pgtype.UUID
+	LocateAt       uuid.UUID
 	FullPath       interface{}
-	IsDeleted      *bool
-	CreatedAt      pgtype.Timestamptz
-	LastModifiedAt pgtype.Timestamptz
+	Depth          int32
+	IsDeleted      bool
+	CreatedAt      time.Time
+	LastModifiedAt time.Time
 	UserID         uuid.UUID
 }
 
@@ -36,6 +39,6 @@ type User struct {
 	Password       string
 	Name           string
 	AvatarUrl      *string
-	CreatedAt      pgtype.Timestamptz
-	LastModifiedAt pgtype.Timestamptz
+	CreatedAt      time.Time
+	LastModifiedAt time.Time
 }

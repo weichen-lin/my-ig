@@ -33,12 +33,14 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	ctl := controller.Controller{Pool: pool, SecretKey: config.SecretKey, BucketHandler: bucketHandler}
 
 	user := r.Group("/user")
-
 	user.GET("/info", ctl.AuthMiddleware(), ctl.GetUserInfo)
 	user.POST("/register", ctl.UserRegister)
 	user.POST("/login", ctl.UserLogin)
 	user.POST("/avatar", ctl.AuthMiddleware(), ctl.UploadAvatar)
 	user.DELETE("/logout", ctl.AuthMiddleware(), ctl.UserLogout)
+
+	folder := r.Group("/folder")
+	folder.POST("/create", ctl.AuthMiddleware(), ctl.CreateFolder)
 
 	return r
 }

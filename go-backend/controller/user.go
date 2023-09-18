@@ -94,6 +94,13 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	
+	err = tx.Commit(ctx)
+	if err != nil {
+		tx.Rollback(ctx)
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
 	if err != nil {
