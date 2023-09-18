@@ -1,15 +1,15 @@
 package db
 
 import (
-	"database/sql"
+	"context"
 	"os"
 	"testing"
 
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v5"
 	"github.com/weichen-lin/myig/util"
 )
 
-var conn *sql.DB
+var conn *pgx.Conn
 
 func TestMain(m *testing.M) {
 	config, err := util.Loadconfig("../", "test")
@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	conn, err = sql.Open(config.DBDriver, config.DBSource)
+	conn, err = pgx.Connect(context.Background(), config.DBSource)
 	if err != nil {
 		panic(err)
 	}

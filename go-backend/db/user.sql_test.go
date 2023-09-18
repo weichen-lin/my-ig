@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 
 	"github.com/bxcodec/faker/v3"
@@ -18,9 +17,7 @@ type UserWithRealPwd struct {
 func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 	var err error
 	var user UserWithRealPwd
-	transaction := NewTransaction(conn)
-	tx, err := transaction.db.BeginTx(ctx, nil)
-
+	tx, err := conn.Begin(ctx)
 	if err != nil {
 		return user, err
 	}
@@ -41,7 +38,7 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 
 	userFromDB, err := q.CreateUser(context.Background(), arg)
 	if err != nil {
-		tx.Rollback()
+		tx.Rollback(ctx)
 		return user, err
 	}
 
@@ -50,18 +47,22 @@ func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 		pwdBeforeBcrypt,
 	}
 
-	err = tx.Commit()
+	err = tx.Commit(ctx)
 	if err != nil {
-		tx.Rollback()
+		tx.Rollback(ctx)
 		return user, err
 	}
 
 	return user, nil
 }
+
 func Test_Createuser(t *testing.T) {
 
-	tx := NewTransaction(conn)
+	tx, err := conn.Begin(context.Background())
+	require.NoError(t, err)
 
+	q := New(tx)
+	
 	fakePwd := faker.Password()[:10]
 
 	hashedPwd, err := util.HashPassword(fakePwd)
@@ -73,144 +74,119 @@ func Test_Createuser(t *testing.T) {
 		Name:     faker.Username(),
 	}
 
-	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
-		q := New(tx)
+	user, err := q.CreateUser(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
 
-		user, err := q.CreateUser(context.Background(), arg)
-		require.NoError(t, err)
-		require.NotEmpty(t, user)
+	require.Equal(t, arg.Email, user.Email)
+	require.Equal(t, arg.Name, user.Name)
 
-		require.Equal(t, arg.Email, user.Email)
-		require.Equal(t, arg.Name, user.Name)
+	require.NotZero(t, user.ID)
+	require.NotEmpty(t, user.CreatedAt)
+	require.NotEmpty(t, user.LastModifiedAt)
 
-		require.NotZero(t, user.ID)
-		require.NotEmpty(t, user.CreatedAt)
-		require.NotEmpty(t, user.LastModifiedAt)
-
-		err = util.ComparePassword(user.Password, fakePwd)
-		require.NoError(t, err)
-
-		return nil
-	}, true)
+	err = util.ComparePassword(user.Password, fakePwd)
+	require.NoError(t, err)
 }
 
 func Test_GetUser(t *testing.T) {
+	tx, err := conn.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+	
 	var userWithPWD UserWithRealPwd
-	var err error
 
 	userWithPWD, err = createUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
 
-	tx := NewTransaction(conn)
 
 	arg := GetUserParams{
 		Email:    userWithPWD.Email,
 		Password: userWithPWD.Password,
 	}
 
-	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
-		q := New(tx)
-
-		ID, err := q.GetUser(context.Background(), arg)
-		require.NoError(t, err)
-		require.NotEmpty(t, ID)
-		require.Equal(t, ID.String(), userWithPWD.ID.String())
-
-		return nil
-	}, false)
+	ID, err := q.GetUser(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, ID)
+	require.Equal(t, ID, userWithPWD.ID)
 }
 
 func Test_GetUserByEmail(t *testing.T) {
+	tx, err := conn.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
 	var userWithPWD UserWithRealPwd
-	var err error
 
 	userWithPWD, err = createUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
 
-	tx := NewTransaction(conn)
+	info, err := q.GetUserByEmail(context.Background(), userWithPWD.Email)
 
-	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
-		q := New(tx)
+	require.NoError(t, err)
+	require.NotEmpty(t, info)
+	require.Equal(t, info.ID, userWithPWD.ID)
+	require.Equal(t, info.Email, userWithPWD.Email)
+	require.NotEqual(t, info.Password, userWithPWD.RealPwd)
 
-		info, err := q.GetUserByEmail(context.Background(), userWithPWD.Email)
-		require.NoError(t, err)
-		require.NotEmpty(t, info)
-		require.Equal(t, info.ID.String(), userWithPWD.ID.String())
-		require.Equal(t, info.Email, userWithPWD.Email)
-		require.NotEqual(t, info.Password, userWithPWD.RealPwd)
-
-		checkErr := util.ComparePassword(info.Password, userWithPWD.RealPwd)
-		require.NoError(t, checkErr)
-
-		return nil
-	}, false)
+	checkErr := util.ComparePassword(info.Password, userWithPWD.RealPwd)
+	require.NoError(t, checkErr)
 }
 
 func Test_UpdateUserAvatar(t *testing.T) {
+	tx, err := conn.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
 	var userWithPWD UserWithRealPwd
-	var err error
 
 	userWithPWD, err = createUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
 
-	tx := NewTransaction(conn)
+	f := faker.URL()
+	params := UpdateUserAvatarParams{
+		AvatarUrl: &f,
+		ID: userWithPWD.ID,
+	}
 
-	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
-		q := New(tx)
+	err = q.UpdateUserAvatar(context.Background(), params)
+	require.NoError(t, err)
 
-		f := faker.URL()
+	user, err := q.GetUserById(context.Background(), params.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
 
-		params := UpdateUserAvatarParams{
-			AvatarUrl: sql.NullString{
-				String: f,
-				Valid:  true,
-			},
-			ID: userWithPWD.ID,
-		}
-
-		err := q.UpdateUserAvatar(context.Background(), params)
-		require.NoError(t, err)
-
-		user, err := q.GetUserById(context.Background(), params.ID)
-		require.NoError(t, err)
-		require.NotEmpty(t, user)
-
-		require.Equal(t, params.AvatarUrl, user.AvatarUrl)
-		require.Equal(t, params.ID.String(), user.ID.String())
-
-		return nil
-	}, false)
+	require.Equal(t, params.AvatarUrl, user.AvatarUrl)
+	require.Equal(t, params.ID, user.ID)
 }
 
 func Test_GetUserById(t *testing.T) {
+	tx, err := conn.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
 	var userWithPWD UserWithRealPwd
-	var err error
 
 	userWithPWD, err = createUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
 
-	tx := NewTransaction(conn)
+	user, err := q.GetUserById(context.Background(), userWithPWD.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
 
-	tx.ExecTx(context.Background(), func(tx *sql.Tx) error {
-		q := New(tx)
-
-		user, err := q.GetUserById(context.Background(), userWithPWD.ID)
-		require.NoError(t, err)
-		require.NotEmpty(t, user)
-
-		require.Equal(t, userWithPWD.Email, user.Email)
-		require.Equal(t, userWithPWD.Name, user.Name)
-		require.Equal(t, userWithPWD.ID.String(), user.ID.String())
-		require.Equal(t, userWithPWD.AvatarUrl.String, user.AvatarUrl.String)
-
-		return nil
-	}, false)
+	require.Equal(t, userWithPWD.Email, user.Email)
+	require.Equal(t, userWithPWD.Name, user.Name)
+	require.Equal(t, userWithPWD.ID, user.ID)
+	require.Equal(t, userWithPWD.AvatarUrl, user.AvatarUrl)
 }

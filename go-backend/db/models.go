@@ -5,39 +5,36 @@
 package db
 
 import (
-	"database/sql"
-	"time"
-
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type File struct {
-	ID             uuid.UUID
+	ID             pgtype.UUID
 	Name           string
-	Url            sql.NullString
-	CreatedAt      time.Time
-	LastModifiedAt time.Time
-	UserID         uuid.UUID
-	LocateAt       uuid.NullUUID
+	Url            *string
+	CreatedAt      pgtype.Timestamptz
+	LastModifiedAt pgtype.Timestamptz
+	UserID         pgtype.UUID
+	LocateAt       pgtype.UUID
 }
 
 type Folder struct {
-	ID             uuid.UUID
+	ID             pgtype.UUID
 	Name           string
-	LocateAt       uuid.NullUUID
+	LocateAt       pgtype.UUID
 	FullPath       interface{}
-	IsDeleted      sql.NullBool
-	CreatedAt      time.Time
-	LastModifiedAt time.Time
-	UserID         uuid.UUID
+	IsDeleted      *bool
+	CreatedAt      pgtype.Timestamptz
+	LastModifiedAt pgtype.Timestamptz
+	UserID         pgtype.UUID
 }
 
 type User struct {
-	ID             uuid.UUID
+	ID             pgtype.UUID
 	Email          string
 	Password       string
 	Name           string
-	AvatarUrl      sql.NullString
-	CreatedAt      time.Time
-	LastModifiedAt time.Time
+	AvatarUrl      *string
+	CreatedAt      pgtype.Timestamptz
+	LastModifiedAt pgtype.Timestamptz
 }

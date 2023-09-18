@@ -7,9 +7,8 @@ package db
 
 import (
 	"context"
-	"database/sql"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -23,7 +22,7 @@ type CreateUserParams struct {
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.Password, arg.Name)
+	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Password, arg.Name)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -46,9 +45,9 @@ type GetUserParams struct {
 	Password string
 }
 
-func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (uuid.UUID, error) {
-	row := q.db.QueryRowContext(ctx, getUser, arg.Email, arg.Password)
-	var id uuid.UUID
+func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, getUser, arg.Email, arg.Password)
+	var id pgtype.UUID
 	err := row.Scan(&id)
 	return id, err
 }
@@ -58,13 +57,13 @@ SELECT ID, email, password FROM "user" WHERE email = $1
 `
 
 type GetUserByEmailRow struct {
-	ID       uuid.UUID
+	ID       pgtype.UUID
 	Email    string
 	Password string
 }
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i GetUserByEmailRow
 	err := row.Scan(&i.ID, &i.Email, &i.Password)
 	return i, err
@@ -75,14 +74,14 @@ SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1
 `
 
 type GetUserByIdRow struct {
-	ID        uuid.UUID
+	ID        pgtype.UUID
 	Email     string
 	Name      string
-	AvatarUrl sql.NullString
+	AvatarUrl *string
 }
 
-func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserById, id)
+func (q *Queries) GetUserById(ctx context.Context, id pgtype.UUID) (GetUserByIdRow, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
 	var i GetUserByIdRow
 	err := row.Scan(
 		&i.ID,
@@ -98,11 +97,11 @@ UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING id, email, password, n
 `
 
 type UpdateUserAvatarParams struct {
-	AvatarUrl sql.NullString
-	ID        uuid.UUID
+	AvatarUrl *string
+	ID        pgtype.UUID
 }
 
 func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserAvatar, arg.AvatarUrl, arg.ID)
+	_, err := q.db.Exec(ctx, updateUserAvatar, arg.AvatarUrl, arg.ID)
 	return err
 }
