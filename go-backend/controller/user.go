@@ -276,3 +276,9 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 	return
 }
+
+func (s *Controller) UserLogout(ctx *gin.Context) {
+	ctx.Header("Set-Cookie", "token="+""+"; Path=/; HttpOnly")
+	ctx.JSON(http.StatusOK, "logout success")
+	return
+}

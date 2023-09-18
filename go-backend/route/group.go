@@ -38,6 +38,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	user.POST("/register", ctl.UserRegister)
 	user.POST("/login", ctl.UserLogin)
 	user.POST("/avatar", ctl.AuthMiddleware(), ctl.UploadAvatar)
+	user.DELETE("/logout", ctl.AuthMiddleware(), ctl.UserLogout)
 
 	return r
 }
