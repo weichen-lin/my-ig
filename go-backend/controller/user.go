@@ -3,6 +3,7 @@ package controller
 import (
 	"bytes"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -269,5 +270,45 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, signedUrl)
+	return
+}
+
+func (s *Controller) GetUserInfo(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		return
+	}
+
+	tx := db.NewTransaction(s.Conn)
+
+	var user db.GetUserByIdRow
+
+	tx.ExecTx(ctx, func(tx *sql.Tx) error {
+		q := db.New(tx)
+		var err error
+		user, err = q.GetUserById(ctx, userId)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return fmt.Errorf("user not found")
+			}
+			return err
+		}
+		return nil
+	}, false)
+	
+	
+
+	// user.AvatarUrl = util.MyNullString(user.AvatarUrl)
+	userJson, err := json.Marshal(user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	fmt.Println(userJson)
+
+	ctx.JSON(http.StatusOK, string(userJson))
 	return
 }
