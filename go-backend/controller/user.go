@@ -101,8 +101,6 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	
-
 	token, err := jwtMaker.CreateToken(user.ID.String(), time.Now().Add(time.Hour*24*3))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -238,7 +236,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 
 	arg := db.UpdateUserAvatarParams{
 		AvatarUrl: &signedUrl,
-		ID: userId,
+		ID:        userId,
 	}
 
 	err = q.UpdateUserAvatar(ctx, arg)
@@ -270,12 +268,11 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(fmt.Errorf("user not found")))
-			return 
+			return
 		}
 		ctx.JSON(http.StatusNotFound, errorResponse(err))
-		return 
+		return
 	}
-
 	ctx.JSON(http.StatusOK, user)
 	return
 }

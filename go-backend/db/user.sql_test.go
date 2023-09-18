@@ -62,7 +62,7 @@ func Test_Createuser(t *testing.T) {
 	require.NoError(t, err)
 
 	q := New(tx)
-	
+
 	fakePwd := faker.Password()[:10]
 
 	hashedPwd, err := util.HashPassword(fakePwd)
@@ -94,14 +94,13 @@ func Test_GetUser(t *testing.T) {
 	require.NoError(t, err)
 
 	q := New(tx)
-	
+
 	var userWithPWD UserWithRealPwd
 
 	userWithPWD, err = createUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
-
 
 	arg := GetUserParams{
 		Email:    userWithPWD.Email,
@@ -155,7 +154,7 @@ func Test_UpdateUserAvatar(t *testing.T) {
 	f := faker.URL()
 	params := UpdateUserAvatarParams{
 		AvatarUrl: &f,
-		ID: userWithPWD.ID,
+		ID:        userWithPWD.ID,
 	}
 
 	err = q.UpdateUserAvatar(context.Background(), params)
