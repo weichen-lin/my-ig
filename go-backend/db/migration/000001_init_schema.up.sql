@@ -52,3 +52,14 @@ ALTER TABLE "file" ADD FOREIGN KEY ("locate_at") REFERENCES "folder" ("id");
 
 ALTER TABLE "folder" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
+CREATE OR REPLACE FUNCTION set_default_locate(userId uuid, locate_at uuid DEFAULT NULL)
+RETURNS uuid
+AS $$
+BEGIN
+	IF locate_at IS NULL THEN
+	    RETURN userId;
+    ELSE
+        return locate_at;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
