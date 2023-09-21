@@ -18,7 +18,7 @@ INSERT INTO "folder" (name, locate_at, full_path, user_id) VALUES ($1, $2, $3, $
 type CreateFolderParams struct {
 	Name     string
 	LocateAt uuid.UUID
-	FullPath interface{}
+	FullPath []interface{}
 	UserID   uuid.UUID
 }
 

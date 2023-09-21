@@ -24,7 +24,7 @@ CREATE TABLE "folder" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "name" varchar(100) NOT NULL,
   "locate_at" uuid NOT NULL,
-  "full_path" _json,
+  "full_path" _jsonb[],
   "depth" INT NOT NULL,
   "is_deleted" bool NOT NULL DEFAULT false,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
@@ -52,14 +52,48 @@ ALTER TABLE "file" ADD FOREIGN KEY ("locate_at") REFERENCES "folder" ("id");
 
 ALTER TABLE "folder" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
-CREATE OR REPLACE FUNCTION set_default_locate(userId uuid, locate_at uuid DEFAULT NULL)
-RETURNS uuid
-AS $$
+CREATE OR REPLACE FUNCTION set_default_locate (userId uuid, locate_at uuid DEFAULT NULL)
+	RETURNS uuid
+	AS $$
 BEGIN
 	IF locate_at IS NULL THEN
-	    RETURN userId;
-    ELSE
-        return locate_at;
-    END IF;
+		RETURN userId;
+	ELSE
+		RETURN locate_at;
+	END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION set_folder_full_path (folder_id uuid)
+	RETURNS jsonb []
+	AS $$
+BEGIN
+	RETURN (WITH RECURSIVE source AS ((
+				SELECT
+					id,
+					name,
+					locate_at,
+					depth
+				FROM
+					"folder"
+				WHERE
+					id = folder_id)
+			UNION (
+				SELECT
+					f.id,
+					f.name,
+					f.locate_at,
+					f.depth
+				FROM
+					folder f
+					JOIN source ON f.id = source.locate_at))
+		SELECT
+			array_agg(json_build_object('depth',
+					s.depth)) AS record
+		FROM
+			source s
+);
+END;
+$$
+LANGUAGE plpgsql;
