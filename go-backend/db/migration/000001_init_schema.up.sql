@@ -52,22 +52,10 @@ ALTER TABLE "file" ADD FOREIGN KEY ("locate_at") REFERENCES "folder" ("id");
 
 ALTER TABLE "folder" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
-CREATE OR REPLACE FUNCTION set_default_locate (userId uuid, locate_at uuid DEFAULT NULL)
-	RETURNS uuid
-	AS $$
-BEGIN
-	IF locate_at IS NULL THEN
-		RETURN userId;
-	ELSE
-		RETURN locate_at;
-	END IF;
-END;
-$$
-LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION set_folder_full_path (folder_id uuid)
+CREATE OR REPLACE FUNCTION public.set_folder_full_path (folder_id uuid)
 	RETURNS jsonb []
-	AS $$
+	LANGUAGE plpgsql
+	AS $function$
 BEGIN
 	RETURN (WITH RECURSIVE source AS ((
 				SELECT
@@ -90,10 +78,13 @@ BEGIN
 					JOIN source ON f.id = source.locate_at))
 		SELECT
 			array_agg(json_build_object('depth',
-					s.depth)) AS record
+					s.depth,
+					'id',
+					s.id,
+					'name',
+					s.name)) AS record
 		FROM
 			source s
 );
 END;
-$$
-LANGUAGE plpgsql;
+$function$

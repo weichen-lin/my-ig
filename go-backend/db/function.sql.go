@@ -11,21 +11,16 @@ import (
 	"github.com/google/uuid"
 )
 
-const getLocateAt = `-- name: getLocateAt :one
-SELECT  FROM set_default_locate($1, $2)
+const getFolderFullPath = `-- name: GetFolderFullPath :one
+SELECT FROM set_folder_full_path($1)
 `
 
-type getLocateAtParams struct {
-	Userid   uuid.UUID
-	LocateAt uuid.UUID
+type GetFolderFullPathRow struct {
 }
 
-type getLocateAtRow struct {
-}
-
-func (q *Queries) getLocateAt(ctx context.Context, arg getLocateAtParams) (getLocateAtRow, error) {
-	row := q.db.QueryRow(ctx, getLocateAt, arg.Userid, arg.LocateAt)
-	var i getLocateAtRow
+func (q *Queries) GetFolderFullPath(ctx context.Context, folderID uuid.UUID) (GetFolderFullPathRow, error) {
+	row := q.db.QueryRow(ctx, getFolderFullPath, folderID)
+	var i GetFolderFullPathRow
 	err := row.Scan()
 	return i, err
 }
