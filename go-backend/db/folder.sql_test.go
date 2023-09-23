@@ -2,9 +2,11 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 
 	"github.com/bxcodec/faker/v3"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -142,4 +144,54 @@ func Test_CreateFolderInFolder(t *testing.T) {
 	require.Equal(t, folder.Name, fullPath[0].Name)
 	require.Equal(t, rootFolder.Depth, fullPath[1].Depth)
 	require.Equal(t, folder.Depth, fullPath[0].Depth)
+}
+
+func Test_GetFolder(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg := CreateFolderParams{
+		Name: faker.Name(),
+		LocateAt: user.ID,
+		Depth: 1,
+		UserID: user.ID,
+	}
+
+	rootFolder, err := CreateFolder(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, rootFolder)
+	require.NotEmpty(t, rootFolder.ID)
+	require.Equal(t, arg.Name, rootFolder.Name)
+	require.Equal(t, arg.LocateAt, rootFolder.LocateAt)
+	require.Equal(t, arg.Depth, rootFolder.Depth)
+	require.Equal(t, arg.UserID, rootFolder.UserID)
+	require.Equal(t, false, rootFolder.IsDeleted)
+	require.NotEmpty(t, rootFolder.CreatedAt)
+	require.NotEmpty(t, rootFolder.LastModifiedAt)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	getRootFolder, err := q.GetFolder(context.Background(), rootFolder.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, getRootFolder)
+	require.Equal(t, rootFolder.ID, getRootFolder.ID)
+	require.Equal(t, rootFolder.Name, getRootFolder.Name)
+	require.Equal(t, rootFolder.LocateAt, getRootFolder.LocateAt)
+	require.Equal(t, rootFolder.Depth, getRootFolder.Depth)
+	require.Equal(t, rootFolder.UserID, getRootFolder.UserID)
+	require.Equal(t, rootFolder.IsDeleted, getRootFolder.IsDeleted)
+	require.Equal(t, rootFolder.CreatedAt, getRootFolder.CreatedAt)
+	require.Equal(t, rootFolder.LastModifiedAt, getRootFolder.LastModifiedAt)
+
+	ramdomId, err := uuid.NewRandom()
+	require.NoError(t, err)
+
+	folder, err := q.GetFolder(context.Background(), ramdomId)
+	require.Error(t, err)
+	require.Equal(t, "sql: no rows in result set", sql.ErrNoRows.Error())
+	require.Empty(t, folder)
 }
