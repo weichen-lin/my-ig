@@ -14,7 +14,7 @@ type UserWithRealPwd struct {
 	RealPwd string
 }
 
-func createUserForTest(ctx context.Context) (UserWithRealPwd, error) {
+func CreateUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 	var err error
 	var user UserWithRealPwd
 	tx, err := pool.Begin(ctx)
@@ -97,7 +97,7 @@ func Test_GetUser(t *testing.T) {
 
 	var userWithPWD UserWithRealPwd
 
-	userWithPWD, err = createUserForTest(context.Background())
+	userWithPWD, err = CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
@@ -121,7 +121,7 @@ func Test_GetUserByEmail(t *testing.T) {
 
 	var userWithPWD UserWithRealPwd
 
-	userWithPWD, err = createUserForTest(context.Background())
+	userWithPWD, err = CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
@@ -146,7 +146,7 @@ func Test_UpdateUserAvatar(t *testing.T) {
 
 	var userWithPWD UserWithRealPwd
 
-	userWithPWD, err = createUserForTest(context.Background())
+	userWithPWD, err = CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)
@@ -175,7 +175,7 @@ func Test_GetUserById(t *testing.T) {
 	q := New(tx)
 	var userWithPWD UserWithRealPwd
 
-	userWithPWD, err = createUserForTest(context.Background())
+	userWithPWD, err = CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, userWithPWD.User)
 	require.NotEmpty(t, userWithPWD.RealPwd)

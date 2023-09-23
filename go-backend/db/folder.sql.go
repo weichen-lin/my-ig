@@ -66,15 +66,15 @@ func (q *Queries) GetFolder(ctx context.Context, id uuid.UUID) (Folder, error) {
 }
 
 const updateFullPath = `-- name: UpdateFullPath :exec
-UPDATE "folder" SET id = $1 WHERE id = $2 RETURNING id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
+UPDATE "folder" SET full_path = $1 WHERE id = $2 RETURNING id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
 `
 
 type UpdateFullPathParams struct {
-	ID   uuid.UUID
-	ID_2 uuid.UUID
+	FullPath []interface{}
+	ID       uuid.UUID
 }
 
 func (q *Queries) UpdateFullPath(ctx context.Context, arg UpdateFullPathParams) error {
-	_, err := q.db.Exec(ctx, updateFullPath, arg.ID, arg.ID_2)
+	_, err := q.db.Exec(ctx, updateFullPath, arg.FullPath, arg.ID)
 	return err
 }
