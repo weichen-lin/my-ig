@@ -351,3 +351,91 @@ func Test_UpdateFolderName(t *testing.T) {
 	require.WithinDuration(t, renameArg.LastModifiedAt, renameFolder.LastModifiedAt, time.Second)
 	require.Equal(t, renameArg.ID, renameFolder.ID)
 }
+
+func Test_MoveFolder(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: user.ID,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	depth_1_folder, err := CreateFolderWithFullPathAtTest(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, depth_1_folder)
+
+	depth_2_folder, err := CreateFolderWithFullPathAtTest(context.Background(), CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: depth_1_folder.ID,
+		Depth:    depth_1_folder.Depth + 1,
+		UserID:   user.ID,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, depth_2_folder)
+
+	depth_3_folder, err := CreateFolderWithFullPathAtTest(context.Background(), CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: depth_2_folder.ID,
+		Depth:    depth_2_folder.Depth + 1,
+		UserID:   user.ID,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, depth_3_folder)
+
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+	
+	moveFolderArg := MoveFolderParams{
+		ID:     depth_3_folder.ID,
+		LocateAt: depth_1_folder.ID,
+		Depth: depth_1_folder.Depth + 1,
+		LastModifiedAt: time.Now(),
+		UserID: user.ID,
+	}
+
+	moveFolder, err := q.MoveFolder(context.Background(), moveFolderArg)
+	require.NoError(t, err)
+	require.NotEmpty(t, moveFolder)
+	require.Equal(t, moveFolderArg.ID, moveFolder.ID)
+	require.Equal(t, moveFolderArg.LocateAt, moveFolder.LocateAt)
+	require.Equal(t, moveFolderArg.Depth, moveFolder.Depth)
+	require.WithinDuration(t, moveFolderArg.LastModifiedAt, moveFolder.LastModifiedAt, time.Second)
+	require.Equal(t, moveFolderArg.UserID, moveFolder.UserID)
+
+	fullPath, err := q.GetFolderFullPath(context.Background(), moveFolder.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, fullPath)
+	require.Len(t, fullPath, 2)
+	
+	PathSlice := make([]interface{}, len(fullPath))
+	for i, v := range fullPath {
+		PathSlice[i] = v
+	}
+
+	err = q.UpdateFullPath(context.Background(), UpdateFullPathParams{
+		FullPath: PathSlice,
+		ID:       moveFolderArg.ID,
+	})
+
+	finalFolder, err := q.GetFolder(context.Background(), moveFolder.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, finalFolder)
+	require.NotEmpty(t, finalFolder.FullPath)
+	require.Len(t, fullPath, 2)
+	require.Equal(t, moveFolderArg.ID, finalFolder.ID)
+	require.Equal(t, moveFolderArg.LocateAt, finalFolder.LocateAt)
+	require.Equal(t, moveFolderArg.Depth, finalFolder.Depth)
+	require.WithinDuration(t, moveFolderArg.LastModifiedAt, finalFolder.LastModifiedAt, time.Second)
+	require.Equal(t, moveFolderArg.UserID, finalFolder.UserID)
+	require.Equal(t, moveFolderArg.Depth, finalFolder.Depth)
+	require.Equal(t, fullPath[1].Id.String(), depth_1_folder.ID.String())
+	require.Equal(t, fullPath[0].Id.String(), depth_3_folder.ID.String())
+	tx.Commit(context.Background())
+}

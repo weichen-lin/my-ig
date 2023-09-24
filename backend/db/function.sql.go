@@ -2,6 +2,8 @@ package db
 
 import (
 	"context"
+	"errors"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -21,8 +23,43 @@ func (q *Queries) GetFolderFullPath(ctx context.Context, folderID uuid.UUID) ([]
 	return set_folder_full_path, err
 }
 
-func CreateFolderWithFullPath(ctx context.Context, q *Queries, args CreateFolderParams) (Folder, error) {
+type MoveFolderReq struct {
+	ID     uuid.UUID `json:"id"`
+	MoveTo uuid.UUID `json:"moveTo"`
+	UserID uuid.UUID `json:"userId"`
+}
 
+func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderReq) error {
+	folder, err := q.GetFolder(ctx, args.ID)
+	if err == nil || folder.UserID != args.UserID {
+		return errors.New("Folder not found")
+	}
+
+	folderMoveTo, err := q.GetFolder(ctx, args.MoveTo)
+	if err == nil || folderMoveTo.UserID != args.UserID {
+		return errors.New("Folder not found")
+	}
+
+	if folder.LocateAt == args.MoveTo {
+		return errors.New("Can't move folder to itself")
+	}
+
+	_, err = q.MoveFolder(ctx, MoveFolderParams{
+		ID:     args.ID,
+		LocateAt: args.MoveTo,
+		Depth:  folderMoveTo.Depth + 1,
+		LastModifiedAt: time.Now(),
+		UserID: args.UserID,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func CreateFolderWithFullPath(ctx context.Context, q *Queries, args CreateFolderParams) (Folder, error) {
 	folder, err := q.CreateFolder(ctx, args)
 	if err != nil {
 		return Folder{}, err

@@ -12,3 +12,16 @@ SELECT * FROM "folder" WHERE locate_at = $1 AND name = $2 AND user_id = $3;
 
 -- name: UpdateFolderName :one
 UPDATE "folder" SET name = $1, last_modified_at = $2 WHERE id = $3 RETURNING *;
+
+-- name: MoveFolder :one
+UPDATE
+	"folder"
+SET
+	locate_at = $1,
+	depth = $2,
+	last_modified_at = $3
+WHERE
+	id = $4
+	AND user_id = $5
+RETURNING
+	*;

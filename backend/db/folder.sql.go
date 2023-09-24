@@ -93,6 +93,51 @@ func (q *Queries) GetFolder(ctx context.Context, id uuid.UUID) (Folder, error) {
 	return i, err
 }
 
+const moveFolder = `-- name: MoveFolder :one
+UPDATE
+	"folder"
+SET
+	locate_at = $1,
+	depth = $2,
+	last_modified_at = $3
+WHERE
+	id = $4
+	AND user_id = $5
+RETURNING
+	id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
+`
+
+type MoveFolderParams struct {
+	LocateAt       uuid.UUID
+	Depth          int32
+	LastModifiedAt time.Time
+	ID             uuid.UUID
+	UserID         uuid.UUID
+}
+
+func (q *Queries) MoveFolder(ctx context.Context, arg MoveFolderParams) (Folder, error) {
+	row := q.db.QueryRow(ctx, moveFolder,
+		arg.LocateAt,
+		arg.Depth,
+		arg.LastModifiedAt,
+		arg.ID,
+		arg.UserID,
+	)
+	var i Folder
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LocateAt,
+		&i.FullPath,
+		&i.Depth,
+		&i.IsDeleted,
+		&i.CreatedAt,
+		&i.LastModifiedAt,
+		&i.UserID,
+	)
+	return i, err
+}
+
 const updateFolderName = `-- name: UpdateFolderName :one
 UPDATE "folder" SET name = $1, last_modified_at = $2 WHERE id = $3 RETURNING id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
 `
