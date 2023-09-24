@@ -41,6 +41,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 
 	folder := r.Group("/folder")
 	folder.POST("/create", ctl.AuthMiddleware(), ctl.CreateFolder)
+	folder.PATCH("/rename", ctl.AuthMiddleware(), ctl.UpdateFolderName)
 
 	return r
 }
