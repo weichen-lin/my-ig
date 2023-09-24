@@ -14,7 +14,7 @@ func Test_GetFolderFullPath(t *testing.T) {
 
 	q := New(tx)
 
-	folderId, err :=  uuid.Parse("3174d38e-4c16-40c3-880c-ed64b34d3877")
+	folderId, err := uuid.Parse("3174d38e-4c16-40c3-880c-ed64b34d3877")
 	require.NoError(t, err)
 
 	fullPath, err := q.GetFolderFullPath(context.Background(), folderId)

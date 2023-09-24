@@ -94,7 +94,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	err = tx.Commit(ctx)
 	if err != nil {
 		tx.Rollback(ctx)

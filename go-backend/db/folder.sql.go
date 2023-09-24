@@ -11,6 +11,33 @@ import (
 	"github.com/google/uuid"
 )
 
+const checkFolderExist = `-- name: CheckFolderExist :one
+SELECT id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id FROM "folder" WHERE locate_at = $1 AND name = $2 AND user_id = $3
+`
+
+type CheckFolderExistParams struct {
+	LocateAt uuid.UUID
+	Name     string
+	UserID   uuid.UUID
+}
+
+func (q *Queries) CheckFolderExist(ctx context.Context, arg CheckFolderExistParams) (Folder, error) {
+	row := q.db.QueryRow(ctx, checkFolderExist, arg.LocateAt, arg.Name, arg.UserID)
+	var i Folder
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LocateAt,
+		&i.FullPath,
+		&i.Depth,
+		&i.IsDeleted,
+		&i.CreatedAt,
+		&i.LastModifiedAt,
+		&i.UserID,
+	)
+	return i, err
+}
+
 const createFolder = `-- name: CreateFolder :one
 INSERT INTO "folder" (name, locate_at, depth, user_id) VALUES ($1, $2, $3, $4) RETURNING id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
 `
