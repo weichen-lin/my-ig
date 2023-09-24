@@ -285,6 +285,13 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 }
 
 func (s *Controller) UserLogout(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	_, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		return
+	}
 	ctx.Header("Set-Cookie", "token="+""+"; Path=/; HttpOnly")
 	ctx.JSON(http.StatusOK, "logout success")
 	return

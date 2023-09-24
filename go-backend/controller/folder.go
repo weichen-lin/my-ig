@@ -11,7 +11,7 @@ import (
 
 var (
 	ErrFolderAlreadyExist = fmt.Errorf("folder already exists!")
-	ErrFolderNotExist = fmt.Errorf("parent folder not exists!")
+	ErrFolderNotExist     = fmt.Errorf("parent folder not exists!")
 )
 
 type CreateFolderReq struct {
@@ -78,7 +78,7 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 			Name:     params.Name,
 			LocateAt: currentFolderId,
 			UserID:   userId,
-			Depth: depth,
+			Depth:    depth,
 		})
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(ErrFolderNotExist))
