@@ -24,7 +24,7 @@ CREATE TABLE "folder" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "name" varchar(100) NOT NULL,
   "locate_at" uuid NOT NULL,
-  "full_path" _jsonb[],
+  "full_path" jsonb[],
   "depth" INT NOT NULL,
   "is_deleted" bool NOT NULL DEFAULT false,
   "created_at" timestamptz NOT NULL DEFAULT (now()),

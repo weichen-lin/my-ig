@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/bxcodec/faker/v3"
 	"github.com/google/uuid"
@@ -307,4 +308,46 @@ func Test_CheckFolderExistInFolder(t *testing.T) {
 	require.Error(t, err)
 	require.Empty(t, checkFolderNotExist)
 	require.Equal(t, "no rows in result set", err.Error())
+}
+
+func Test_UpdateFolderName(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: user.ID,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	rootFolder, err := CreateFolderWithFullPathAtTest(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, rootFolder)
+	require.NotEmpty(t, rootFolder.ID)
+	require.Equal(t, arg.Name, rootFolder.Name)
+	require.Equal(t, arg.LocateAt, rootFolder.LocateAt)
+	require.Equal(t, arg.Depth, rootFolder.Depth)
+	require.Equal(t, arg.UserID, rootFolder.UserID)
+	require.Equal(t, false, rootFolder.IsDeleted)
+	require.NotEmpty(t, rootFolder.CreatedAt)
+	require.NotEmpty(t, rootFolder.LastModifiedAt)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	renameArg := UpdateFolderNameParams{
+		Name:           faker.Name(),
+		ID:             rootFolder.ID,
+		LastModifiedAt: time.Now(),
+	}
+	renameFolder, err := q.UpdateFolderName(context.Background(), renameArg)
+	require.NoError(t, err)
+	require.NotEmpty(t, renameFolder)
+	require.Equal(t, renameArg.Name, renameFolder.Name)
+	require.WithinDuration(t, renameArg.LastModifiedAt, renameFolder.LastModifiedAt, time.Second)
+	require.Equal(t, renameArg.ID, renameFolder.ID)
 }

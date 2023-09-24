@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -77,6 +78,33 @@ SELECT id, name, locate_at, full_path, depth, is_deleted, created_at, last_modif
 
 func (q *Queries) GetFolder(ctx context.Context, id uuid.UUID) (Folder, error) {
 	row := q.db.QueryRow(ctx, getFolder, id)
+	var i Folder
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LocateAt,
+		&i.FullPath,
+		&i.Depth,
+		&i.IsDeleted,
+		&i.CreatedAt,
+		&i.LastModifiedAt,
+		&i.UserID,
+	)
+	return i, err
+}
+
+const updateFolderName = `-- name: UpdateFolderName :one
+UPDATE "folder" SET name = $1, last_modified_at = $2 WHERE id = $3 RETURNING id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
+`
+
+type UpdateFolderNameParams struct {
+	Name           string
+	LastModifiedAt time.Time
+	ID             uuid.UUID
+}
+
+func (q *Queries) UpdateFolderName(ctx context.Context, arg UpdateFolderNameParams) (Folder, error) {
+	row := q.db.QueryRow(ctx, updateFolderName, arg.Name, arg.LastModifiedAt, arg.ID)
 	var i Folder
 	err := row.Scan(
 		&i.ID,
