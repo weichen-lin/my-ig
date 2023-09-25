@@ -186,3 +186,61 @@ type MoveFolderReq struct {
 	ID       string `json:"id" binding:"required"`
 	LocateAt string `json:"locateAt" binding:"required"`
 }
+
+func (s *Controller) MoveFolder(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		return
+	}
+
+	var params MoveFolderReq
+
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	currentId, err := uuid.Parse(params.ID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	moveToId, err := uuid.Parse(params.LocateAt)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+
+	err = q.MoveFolderWithId(ctx, db.MoveFolderFuncParams{
+		ID:     currentId,
+		MoveTo: moveToId,
+		UserID: userId,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		tx.Rollback(ctx)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "success")
+	return
+}
