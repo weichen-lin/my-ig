@@ -5,10 +5,11 @@ import (
 )
 
 type Config struct {
-	DBDriver      string `mapstructure:"DBDriver"`
-	DBSource      string `mapstructure:"DBSource"`
-	ServerAddress string `mapstructure:"ServerAddress"`
-	SecretKey     string `mapstructure:"SecretKey"`
+	DBDriver       string `mapstructure:"DBDriver"`
+	DBSource       string `mapstructure:"DBSource"`
+	ServerAddress  string `mapstructure:"ServerAddress"`
+	SecretKey      string `mapstructure:"SecretKey"`
+	FireBaseBucket string `mapstructure:"FireBaseBucket"`
 }
 
 func Loadconfig(path string, env string) (config Config, err error) {

@@ -9,7 +9,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-func GetFirebase() (*storage.BucketHandle, error) {
+func GetFirebase(bucketName string) (*storage.BucketHandle, error) {
 	opt := option.WithCredentialsFile("./credential.json")
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
@@ -21,7 +21,7 @@ func GetFirebase() (*storage.BucketHandle, error) {
 		return nil, fmt.Errorf("error initializing at firebase Storage: %v", err)
 	}
 
-	bucketHandler, err := client.Bucket("kushare-7abab.appspot.com")
+	bucketHandler, err := client.Bucket(bucketName)
 
 	return bucketHandler, nil
 }

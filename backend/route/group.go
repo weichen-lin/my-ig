@@ -25,7 +25,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	bucketHandler, err := util.GetFirebase()
+	bucketHandler, err := util.GetFirebase(config.FireBaseBucket)
 	if err != nil {
 		panic(err)
 	}
