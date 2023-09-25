@@ -13,18 +13,18 @@ CREATE TABLE "user" (
 CREATE TABLE "file" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "name" varchar(100) NOT NULL,
-  "url" text,
+  "url" text NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "last_modified_at" timestamptz NOT NULL DEFAULT (now()),
   "user_id" uuid NOT NULL,
-  "locate_at" uuid
+  "locate_at" uuid NOT NULL
 );
 
 CREATE TABLE "folder" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "name" varchar(100) NOT NULL,
   "locate_at" uuid NOT NULL,
-  "full_path" json_build_object[],
+  "full_path" json[],
   "depth" INT NOT NULL,
   "is_deleted" bool NOT NULL DEFAULT false,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
@@ -48,7 +48,7 @@ CREATE INDEX ON "folder" ("name", "locate_at");
 
 ALTER TABLE "file" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
-ALTER TABLE "file" ADD FOREIGN KEY ("locate_at") REFERENCES "folder" ("id");
+-- ALTER TABLE "file" ADD FOREIGN KEY ("locate_at") REFERENCES "folder" ("id");
 
 ALTER TABLE "folder" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
