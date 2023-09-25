@@ -386,18 +386,17 @@ func Test_MoveFolder(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, depth_3_folder)
 
-
 	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)
-	
+
 	moveFolderArg := MoveFolderParams{
-		ID:     depth_3_folder.ID,
-		LocateAt: depth_1_folder.ID,
-		Depth: depth_1_folder.Depth + 1,
+		ID:             depth_3_folder.ID,
+		LocateAt:       depth_1_folder.ID,
+		Depth:          depth_1_folder.Depth + 1,
 		LastModifiedAt: time.Now(),
-		UserID: user.ID,
+		UserID:         user.ID,
 	}
 
 	moveFolder, err := q.MoveFolder(context.Background(), moveFolderArg)
@@ -413,7 +412,7 @@ func Test_MoveFolder(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, fullPath)
 	require.Len(t, fullPath, 2)
-	
+
 	PathSlice := make([]interface{}, len(fullPath))
 	for i, v := range fullPath {
 		PathSlice[i] = v

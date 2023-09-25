@@ -45,11 +45,11 @@ func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderFuncParam
 	}
 
 	_, err = q.MoveFolder(ctx, MoveFolderParams{
-		ID:     args.ID,
-		LocateAt: args.MoveTo,
-		Depth:  folderMoveTo.Depth + 1,
+		ID:             args.ID,
+		LocateAt:       args.MoveTo,
+		Depth:          folderMoveTo.Depth + 1,
 		LastModifiedAt: time.Now(),
-		UserID: args.UserID,
+		UserID:         args.UserID,
 	})
 
 	if err != nil {
