@@ -58,7 +58,7 @@ func Test_CreateFolderAtRoot(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
@@ -95,7 +95,7 @@ func Test_CreateFolderInFolder(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
@@ -151,7 +151,7 @@ func Test_GetFolder(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
@@ -201,7 +201,7 @@ func Test_CheckFolderExistAtRoot(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
@@ -224,7 +224,7 @@ func Test_CheckFolderExistAtRoot(t *testing.T) {
 	q := New(tx)
 
 	checkFolderExist, err := q.CheckFolderExist(context.Background(), CheckFolderExistParams{
-		LocateAt: rootFolder.UserID,
+		LocateAt: uuid.Nil,
 		Name:     rootFolder.Name,
 		UserID:   rootFolder.UserID,
 	})
@@ -247,7 +247,7 @@ func Test_CheckFolderExistInFolder(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
@@ -317,7 +317,7 @@ func Test_UpdateFolderName(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
@@ -359,7 +359,7 @@ func Test_MoveFolder_3_to_1(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
@@ -446,7 +446,7 @@ func Test_MoveFolderFunc(t *testing.T) {
 
 	arg := CreateFolderParams{
 		Name:     faker.Name(),
-		LocateAt: user.ID,
+		LocateAt: uuid.Nil,
 		Depth:    1,
 		UserID:   user.ID,
 	}
