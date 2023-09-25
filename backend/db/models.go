@@ -8,17 +8,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type File struct {
 	ID             uuid.UUID
 	Name           string
-	Url            *string
+	Url            string
 	CreatedAt      time.Time
 	LastModifiedAt time.Time
 	UserID         uuid.UUID
-	LocateAt       pgtype.UUID
+	LocateAt       uuid.UUID
 }
 
 type Folder struct {
