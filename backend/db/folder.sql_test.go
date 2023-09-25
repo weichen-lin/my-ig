@@ -352,7 +352,7 @@ func Test_UpdateFolderName(t *testing.T) {
 	require.Equal(t, renameArg.ID, renameFolder.ID)
 }
 
-func Test_MoveFolder(t *testing.T) {
+func Test_MoveFolder_3_to_1(t *testing.T) {
 	user, err := CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
@@ -437,4 +437,65 @@ func Test_MoveFolder(t *testing.T) {
 	require.Equal(t, fullPath[1].Id.String(), depth_1_folder.ID.String())
 	require.Equal(t, fullPath[0].Id.String(), depth_3_folder.ID.String())
 	tx.Commit(context.Background())
+}
+
+func Test_MoveFolder(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: user.ID,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	depth_1_folder, err := CreateFolderWithFullPathAtTest(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, depth_1_folder)
+
+	depth_2_folder, err := CreateFolderWithFullPathAtTest(context.Background(), CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: depth_1_folder.ID,
+		Depth:    depth_1_folder.Depth + 1,
+		UserID:   user.ID,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, depth_2_folder)
+
+	depth_3_folder, err := CreateFolderWithFullPathAtTest(context.Background(), CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: depth_2_folder.ID,
+		Depth:    depth_2_folder.Depth + 1,
+		UserID:   user.ID,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, depth_3_folder)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	err = q.MoveFolderWithId(context.Background(), MoveFolderFuncParams{
+		ID:     depth_3_folder.ID,
+		MoveTo: depth_1_folder.ID,
+		UserID: user.ID,
+	})
+
+	require.NoError(t, err)
+
+	checkFolder, err := q.GetFolder(context.Background(), depth_3_folder.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, checkFolder)
+	require.Equal(t, depth_1_folder.ID, checkFolder.LocateAt)
+
+	fullPath, err := q.GetFolderFullPath(context.Background(), depth_3_folder.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, fullPath)
+	require.Len(t, fullPath, 2)
+
+	require.Equal(t, fullPath[1].Id.String(), depth_1_folder.ID.String())
+	require.Equal(t, fullPath[0].Id.String(), depth_3_folder.ID.String())
 }

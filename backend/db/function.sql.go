@@ -31,25 +31,37 @@ type MoveFolderFuncParams struct {
 
 func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderFuncParams) error {
 	folder, err := q.GetFolder(ctx, args.ID)
-	if err == nil || folder.UserID != args.UserID {
-		return errors.New("Folder not found")
+	if err != nil || folder.UserID != args.UserID {
+		return errors.New("current folder not found")
 	}
 
 	folderMoveTo, err := q.GetFolder(ctx, args.MoveTo)
-	if err == nil || folderMoveTo.UserID != args.UserID {
-		return errors.New("Folder not found")
+	if err != nil || folderMoveTo.UserID != args.UserID {
+		return errors.New("target folder not found")
 	}
 
 	if folder.LocateAt == args.MoveTo {
 		return errors.New("Can't move folder to itself")
 	}
 
-	_, err = q.MoveFolder(ctx, MoveFolderParams{
+	folderAfterMove, err := q.MoveFolder(ctx, MoveFolderParams{
 		ID:             args.ID,
 		LocateAt:       args.MoveTo,
 		Depth:          folderMoveTo.Depth + 1,
 		LastModifiedAt: time.Now(),
 		UserID:         args.UserID,
+	})
+
+	fullPath, err := q.GetFolderFullPath(context.Background(), folderAfterMove.ID)
+
+	PathSlice := make([]interface{}, len(fullPath))
+	for i, v := range fullPath {
+		PathSlice[i] = v
+	}
+
+	err = q.UpdateFullPath(context.Background(), UpdateFullPathParams{
+		FullPath: PathSlice,
+		ID:       folderAfterMove.ID,
 	})
 
 	if err != nil {
