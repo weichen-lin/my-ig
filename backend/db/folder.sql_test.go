@@ -439,7 +439,7 @@ func Test_MoveFolder_3_to_1(t *testing.T) {
 	tx.Commit(context.Background())
 }
 
-func Test_MoveFolder(t *testing.T) {
+func Test_MoveFolderFunc(t *testing.T) {
 	user, err := CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
