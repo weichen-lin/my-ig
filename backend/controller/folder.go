@@ -75,7 +75,7 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 	})
 
 	if err != nil {
-		folder, err := db.CreateFolderWithFullPath(ctx, q, db.CreateFolderParams{
+		folder, err := q.CreateFolderWithFullPath(ctx, db.CreateFolderParams{
 			Name:     params.Name,
 			LocateAt: currentFolderId,
 			UserID:   userId,
