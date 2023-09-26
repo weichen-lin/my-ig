@@ -190,6 +190,13 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
+	err = tx.Commit(ctx)
+	if err != nil {
+		tx.Rollback(ctx)
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
 	ctx.JSON(http.StatusOK, signedUrl)
 	return
 }
