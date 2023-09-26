@@ -71,7 +71,7 @@ func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderFuncParam
 	return nil
 }
 
-func CreateFolderWithFullPath(ctx context.Context, q *Queries, args CreateFolderParams) (Folder, error) {
+func (q *Queries) CreateFolderWithFullPath(ctx context.Context, args CreateFolderParams) (Folder, error) {
 	folder, err := q.CreateFolder(ctx, args)
 	if err != nil {
 		return Folder{}, err
