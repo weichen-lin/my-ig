@@ -1,17 +1,12 @@
 package controller
 
 import (
-	"bytes"
 	"database/sql"
 	"fmt"
-	"io"
 	"net/http"
 	"net/mail"
-	"net/url"
 	"time"
 
-	"cloud.google.com/go/storage"
-	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/weichen-lin/myig/db"
@@ -172,65 +167,9 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 
-	uploadFile, err := ctx.FormFile("file")
-
+	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	if uploadFile.Size > maxFileSize {
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("file size too large")))
-		return
-	}
-
-	file, err := uploadFile.Open()
-	defer file.Close()
-
-	fileBytes := make([]byte, uploadFile.Size)
-
-	_, err = io.ReadFull(file, fileBytes)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("read file error")))
-		return
-	}
-
-	mtype := mimetype.Detect(fileBytes)
-
-	if !ArrayContains(ImageTypes, mtype.String()) {
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("file type not supported")))
-		return
-	}
-
-	// UPLOAD FILE TO FIREBASE
-	obj := s.BucketHandler.Object(uploadFile.Filename)
-	writer := obj.NewWriter(ctx)
-
-	defer writer.Close()
-
-	if _, err := io.Copy(writer, bytes.NewReader(fileBytes)); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("upload failed")))
-	}
-
-	// GET SIGNED URL
-	opts := &storage.SignedURLOptions{
-		Method:  "GET",
-		Expires: time.Now().AddDate(100, 0, 0),
-	}
-
-	signedUrl, err := s.BucketHandler.SignedURL(uploadFile.Filename, opts)
-
-	_, urlErr := url.ParseRequestURI(signedUrl)
-
-	if err != nil {
-		fmt.Println(err)
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("get signed url error")))
-		return
-	}
-
-	if urlErr != nil {
-		fmt.Println(urlErr)
-		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("invaid signed url")))
+		ctx.JSON(httpStatus, errorResponse(err))
 		return
 	}
 
