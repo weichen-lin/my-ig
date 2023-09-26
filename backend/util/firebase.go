@@ -56,10 +56,13 @@ func GetFirebase(bucketName string) (*storage.BucketHandle, error) {
 
 func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle) (string, int, error) {
 	uploadFile, err := ctx.FormFile("file")
+	
+	if uploadFile == nil {
+		return "", http.StatusBadRequest, fmt.Errorf("file not found")
+	}
 
 	if uploadFile.Size > maxFileSize {
 		return "", http.StatusBadRequest, fmt.Errorf("file size too large")
-
 	}
 
 	file, err := uploadFile.Open()
