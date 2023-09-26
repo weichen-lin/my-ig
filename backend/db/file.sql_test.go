@@ -21,9 +21,9 @@ func Test_CreateFile(t *testing.T) {
 	q := New(tx)
 
 	arg := CreateFileParams{
-		Name: faker.Name(),
-		Url: faker.URL(),
-		UserID: user.ID,
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
 		LocateAt: uuid.Nil,
 	}
 
@@ -36,4 +36,6 @@ func Test_CreateFile(t *testing.T) {
 	require.NotEmpty(t, file.ID)
 	require.WithinDuration(t, file.CreatedAt, time.Now(), time.Second)
 	require.WithinDuration(t, file.LastModifiedAt, time.Now(), time.Second)
+
+	tx.Commit(context.Background())
 }

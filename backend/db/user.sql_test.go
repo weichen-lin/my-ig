@@ -87,6 +87,9 @@ func Test_Createuser(t *testing.T) {
 
 	err = util.ComparePassword(user.Password, fakePwd)
 	require.NoError(t, err)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_GetUser(t *testing.T) {
@@ -111,6 +114,9 @@ func Test_GetUser(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, ID)
 	require.Equal(t, ID, userWithPWD.ID)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_GetUserByEmail(t *testing.T) {
@@ -136,6 +142,9 @@ func Test_GetUserByEmail(t *testing.T) {
 
 	checkErr := util.ComparePassword(info.Password, userWithPWD.RealPwd)
 	require.NoError(t, checkErr)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_UpdateUserAvatar(t *testing.T) {
@@ -166,6 +175,9 @@ func Test_UpdateUserAvatar(t *testing.T) {
 
 	require.Equal(t, params.AvatarUrl, user.AvatarUrl)
 	require.Equal(t, params.ID, user.ID)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_GetUserById(t *testing.T) {
@@ -188,4 +200,7 @@ func Test_GetUserById(t *testing.T) {
 	require.Equal(t, userWithPWD.Name, user.Name)
 	require.Equal(t, userWithPWD.ID, user.ID)
 	require.Equal(t, userWithPWD.AvatarUrl, user.AvatarUrl)
+
+	tx.Commit(context.Background())
+
 }
