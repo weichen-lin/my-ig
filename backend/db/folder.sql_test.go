@@ -86,6 +86,9 @@ func Test_CreateFolderAtRoot(t *testing.T) {
 	require.Equal(t, folder.ID, fullPath[0].Id)
 	require.Equal(t, folder.Name, fullPath[0].Name)
 	require.Equal(t, folder.Depth, fullPath[0].Depth)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_CreateFolderInFolder(t *testing.T) {
@@ -142,6 +145,9 @@ func Test_CreateFolderInFolder(t *testing.T) {
 	require.Equal(t, folder.Name, fullPath[0].Name)
 	require.Equal(t, rootFolder.Depth, fullPath[1].Depth)
 	require.Equal(t, folder.Depth, fullPath[0].Depth)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_GetFolder(t *testing.T) {
@@ -192,6 +198,9 @@ func Test_GetFolder(t *testing.T) {
 	require.Error(t, err)
 	require.Equal(t, "no rows in result set", err.Error())
 	require.Empty(t, folder)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_CheckFolderExistAtRoot(t *testing.T) {
@@ -238,6 +247,9 @@ func Test_CheckFolderExistAtRoot(t *testing.T) {
 	require.Equal(t, rootFolder.IsDeleted, checkFolderExist.IsDeleted)
 	require.Equal(t, rootFolder.CreatedAt, checkFolderExist.CreatedAt)
 	require.Equal(t, rootFolder.LastModifiedAt, checkFolderExist.LastModifiedAt)
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_CheckFolderExistInFolder(t *testing.T) {
@@ -308,6 +320,9 @@ func Test_CheckFolderExistInFolder(t *testing.T) {
 	require.Error(t, err)
 	require.Empty(t, checkFolderNotExist)
 	require.Equal(t, "no rows in result set", err.Error())
+
+	tx.Commit(context.Background())
+
 }
 
 func Test_UpdateFolderName(t *testing.T) {
@@ -350,6 +365,8 @@ func Test_UpdateFolderName(t *testing.T) {
 	require.Equal(t, renameArg.Name, renameFolder.Name)
 	require.WithinDuration(t, renameArg.LastModifiedAt, renameFolder.LastModifiedAt, time.Second)
 	require.Equal(t, renameArg.ID, renameFolder.ID)
+
+	tx.Commit(context.Background())
 }
 
 func Test_MoveFolder_3_to_1(t *testing.T) {
@@ -498,4 +515,7 @@ func Test_MoveFolderFunc(t *testing.T) {
 
 	require.Equal(t, fullPath[1].Id.String(), depth_1_folder.ID.String())
 	require.Equal(t, fullPath[0].Id.String(), depth_3_folder.ID.String())
+
+	tx.Commit(context.Background())
+
 }
