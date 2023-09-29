@@ -167,7 +167,9 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 
-	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler)
+	fullName := fmt.Sprintf("%s/avatar", userId)
+
+	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, fullName)
 	if err != nil {
 		ctx.JSON(httpStatus, errorResponse(err))
 		return
@@ -196,7 +198,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, signedUrl)
 	return
 }

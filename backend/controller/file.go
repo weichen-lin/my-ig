@@ -7,50 +7,77 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/google/uuid"
+	"github.com/weichen-lin/myig/db"
+	"github.com/weichen-lin/myig/util"
 )
 
 type CreateFileReq struct {
-	File *multipart.FileHeader `form:"file" binding:"required"`
-	Name string `form:"name" binding:"required"`
-	LocateAt string `form:"locateAt" binding:"required"`
+	File     *multipart.FileHeader `form:"file" binding:"required"`
+	Name     string                `form:"name" binding:"required"`
+	LocateAt string                `form:"locateAt" binding:"required"`
 }
 
-func (s Controller) CreateFile (ctx *gin.Context){
+func (s Controller) CreateFile(ctx *gin.Context) {
 	var params CreateFileReq
 	if err := ctx.ShouldBindWith(&params, binding.FormMultipart); err != nil {
-        _ = ctx.AbortWithError(http.StatusBadRequest, err)
-        return
-    }
-    fmt.Printf(params.File.Filename)
-    fmt.Printf(params.Name)
-    fmt.Printf(params.LocateAt)
-	ctx.JSON(http.StatusOK, "OK")
+		_ = ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid request"))
+		return
+	}
+	fmt.Printf(params.File.Filename)
+	fmt.Printf(params.Name)
+	fmt.Printf(params.LocateAt)
 
-	// id := ctx.Value("userId").(string)
+	id := ctx.Value("userId").(string)
 
-	// userId, err := uuid.Parse(id)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
-	// 	return
-	// }
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		return
+	}
 
-	// signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler)
-	// if err != nil {
-	// 	ctx.JSON(httpStatus, errorResponse(err))
-	// 	return
-	// }
+	locateAt, err := util.ParseLocateAt(params.LocateAt)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("locate at failed")))
+		return
+	}
 
-	// tx, err := s.Pool.Begin(ctx)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	// 	return
-	// }
-	// q := db.New(tx)
+	fullName := fmt.Sprintf("%s/files", userId)
 
-	// arg := db.CreateFileParams{
-	// 	Url: &signedUrl,
-	// 	ID:        userId,
-	// }
+	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, fullName)
+	if err != nil {
+		ctx.JSON(httpStatus, errorResponse(err))
+		return
+	}
 
-	// file, err := q.CreateFile(ctx, db.CreateFileParams{)
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	q := db.New(tx)
+
+	arg := db.CreateFileParams{
+		Url:      signedUrl,
+		Name:     params.Name,
+		UserID:   userId,
+		LocateAt: locateAt,
+	}
+
+	file, err := q.CreateFile(ctx, arg)
+	if err != nil {
+		_ = tx.Rollback(ctx)
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		_ = tx.Rollback(ctx)
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{"id": file.ID})
+	return
 }

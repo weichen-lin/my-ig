@@ -54,9 +54,9 @@ func GetFirebase(bucketName string) (*storage.BucketHandle, error) {
 	return bucketHandler, nil
 }
 
-func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle) (string, int, error) {
+func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, path string) (string, int, error) {
 	uploadFile, err := ctx.FormFile("file")
-	
+
 	if uploadFile == nil {
 		return "", http.StatusBadRequest, fmt.Errorf("file not found")
 	}
@@ -82,7 +82,8 @@ func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle) (string, int, er
 	}
 
 	// UPLOAD FILE TO FIREBASE
-	obj := bucket.Object(uploadFile.Filename)
+	fullName := path + "/" + uploadFile.Filename
+	obj := bucket.Object(fullName)
 	writer := obj.NewWriter(ctx)
 
 	defer writer.Close()

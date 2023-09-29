@@ -46,6 +46,6 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 
 	file := r.Group("/file")
 	file.POST("/create", ctl.AuthMiddleware(), ctl.CreateFile)
-	
+
 	return r
 }
