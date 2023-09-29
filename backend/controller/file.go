@@ -24,9 +24,6 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 		_ = ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid request"))
 		return
 	}
-	fmt.Printf(params.File.Filename)
-	fmt.Printf(params.Name)
-	fmt.Printf(params.LocateAt)
 
 	id := ctx.Value("userId").(string)
 
