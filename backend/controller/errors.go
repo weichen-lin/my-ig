@@ -17,6 +17,10 @@ var (
 )
 
 var (
+	ErrFileIdInvalid = fmt.Errorf("Invalid fileId parameter")
+)
+
+var (
 	ErrFolderAlreadyExist = fmt.Errorf("Folder already exists!")
 	ErrFolderNotExist     = fmt.Errorf("Parent folder not exists!")
 )

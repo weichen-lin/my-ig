@@ -2,7 +2,7 @@ package util
 
 import "github.com/google/uuid"
 
-func ParseLocateAt(s string) (uuid.UUID, error) {
+func ParseUUID(s string) (uuid.UUID, error) {
 	if len(s) == 0 || s == "" {
 		return uuid.Nil, nil
 	}

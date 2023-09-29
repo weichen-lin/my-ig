@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"net/http"
 
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
@@ -33,7 +34,7 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 		return
 	}
 
-	locateAt, err := util.ParseLocateAt(params.LocateAt)
+	locateAt, err := util.ParseUUID(params.LocateAt)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(ErrLocateAtFailed))
 		return
@@ -76,5 +77,57 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"id": file.ID})
+	return
+}
+
+func (s Controller) GetFile(ctx *gin.Context) {
+	fileIdFromParam := ctx.Param("id")
+	if fileIdFromParam == "" {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrInvalidRequest))
+		return
+	}
+
+	fileId, err := util.ParseUUID(fileIdFromParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrFileIdInvalid))
+		return
+	}
+	
+
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	q := db.New(tx)
+
+	arg := db.GetFileParams{
+		ID:    fileId,
+		UserID: userId,
+	}
+
+	file, err := q.GetFile(ctx, arg)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	buffer, err := util.DownLoadFile(file.Url)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	mimetype := mimetype.Detect(buffer)
+	ctx.Data(http.StatusOK, mimetype.String(), buffer)
 	return
 }
