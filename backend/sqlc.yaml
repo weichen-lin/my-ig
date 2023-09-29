@@ -13,4 +13,8 @@ sql:
             db_type: 'uuid'
           - go_type: 'time.Time'
             db_type: 'timestamptz'
+          - column: 'folder.full_path'
+            go_type:
+              type: '[]Path'
+
         emit_pointers_for_null_types: true
