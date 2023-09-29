@@ -13,6 +13,7 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"google.golang.org/api/option"
 )
 
@@ -76,14 +77,17 @@ func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, prefix string) (
 	}
 
 	mtype := mimetype.Detect(fileBytes)
+	
+	ext := mtype.Extension()
 
 	if !ArrayContains(ImageTypes, mtype.String()) {
 		return "", http.StatusBadRequest, fmt.Errorf("file type not supported")
 	}
 
 	// UPLOAD FILE TO FIREBASE
-	fullName := prefix + "/" + uploadFile.Filename
-	obj := bucket.Object(fullName)
+	fileId := uuid.New().String()
+	fullPath := prefix + "/" + fileId + ext
+	obj := bucket.Object(fullPath)
 	writer := obj.NewWriter(ctx)
 
 	defer writer.Close()
@@ -98,7 +102,7 @@ func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, prefix string) (
 		Expires: time.Now().AddDate(100, 0, 0),
 	}
 
-	signedUrl, err := bucket.SignedURL(uploadFile.Filename, opts)
+	signedUrl, err := bucket.SignedURL(fullPath, opts)
 
 	_, urlErr := url.ParseRequestURI(signedUrl)
 
