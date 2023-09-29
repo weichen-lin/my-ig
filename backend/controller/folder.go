@@ -45,7 +45,7 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 
 	q := db.New(tx)
 
-	locateAt, err := util.ParseLocateAt(params.LocateAt)
+	locateAt, err := util.ParseUUID(params.LocateAt)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrLocateAtFailed))
 		return
