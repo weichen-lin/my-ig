@@ -41,3 +41,27 @@ func (q *Queries) CreateFile(ctx context.Context, arg CreateFileParams) (File, e
 	)
 	return i, err
 }
+
+const getFile = `-- name: GetFile :one
+SELECT id, name, url, created_at, last_modified_at, user_id, locate_at FROM "file" WHERE id = $1 and user_id = $2
+`
+
+type GetFileParams struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) {
+	row := q.db.QueryRow(ctx, getFile, arg.ID, arg.UserID)
+	var i File
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Url,
+		&i.CreatedAt,
+		&i.LastModifiedAt,
+		&i.UserID,
+		&i.LocateAt,
+	)
+	return i, err
+}

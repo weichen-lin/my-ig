@@ -170,7 +170,7 @@ UPDATE "folder" SET full_path = $1 WHERE id = $2 RETURNING id, name, locate_at, 
 `
 
 type UpdateFullPathParams struct {
-	FullPath []interface{}
+	FullPath []Path
 	ID       uuid.UUID
 }
 

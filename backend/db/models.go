@@ -24,7 +24,7 @@ type Folder struct {
 	ID             uuid.UUID
 	Name           string
 	LocateAt       uuid.UUID
-	FullPath       []interface{}
+	FullPath       []Path
 	Depth          int32
 	IsDeleted      bool
 	CreatedAt      time.Time

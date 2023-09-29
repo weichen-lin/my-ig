@@ -54,13 +54,8 @@ func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderFuncParam
 
 	fullPath, err := q.GetFolderFullPath(context.Background(), folderAfterMove.ID)
 
-	PathSlice := make([]interface{}, len(fullPath))
-	for i, v := range fullPath {
-		PathSlice[i] = v
-	}
-
 	err = q.UpdateFullPath(context.Background(), UpdateFullPathParams{
-		FullPath: PathSlice,
+		FullPath: fullPath,
 		ID:       folderAfterMove.ID,
 	})
 
@@ -82,13 +77,8 @@ func (q *Queries) CreateFolderWithFullPath(ctx context.Context, args CreateFolde
 		return Folder{}, err
 	}
 
-	PathSlice := make([]interface{}, len(fullPath))
-	for i, v := range fullPath {
-		PathSlice[i] = v
-	}
-
 	err = q.UpdateFullPath(ctx, UpdateFullPathParams{
-		FullPath: PathSlice,
+		FullPath: fullPath,
 		ID:       folder.ID,
 	})
 

@@ -28,13 +28,8 @@ func CreateFolderWithFullPathAtTest(ctx context.Context, args CreateFolderParams
 		return Folder{}, err
 	}
 
-	PathSlice := make([]interface{}, len(fullPath))
-	for i, v := range fullPath {
-		PathSlice[i] = v
-	}
-
 	err = q.UpdateFullPath(ctx, UpdateFullPathParams{
-		FullPath: PathSlice,
+		FullPath: fullPath,
 		ID:       folder.ID,
 	})
 
@@ -430,13 +425,8 @@ func Test_MoveFolder_3_to_1(t *testing.T) {
 	require.NotEmpty(t, fullPath)
 	require.Len(t, fullPath, 2)
 
-	PathSlice := make([]interface{}, len(fullPath))
-	for i, v := range fullPath {
-		PathSlice[i] = v
-	}
-
 	err = q.UpdateFullPath(context.Background(), UpdateFullPathParams{
-		FullPath: PathSlice,
+		FullPath: fullPath,
 		ID:       moveFolderArg.ID,
 	})
 
