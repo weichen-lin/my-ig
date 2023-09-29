@@ -54,7 +54,7 @@ func GetFirebase(bucketName string) (*storage.BucketHandle, error) {
 	return bucketHandler, nil
 }
 
-func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, path string) (string, int, error) {
+func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, prefix string) (string, int, error) {
 	uploadFile, err := ctx.FormFile("file")
 
 	if uploadFile == nil {
@@ -82,7 +82,7 @@ func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, path string) (st
 	}
 
 	// UPLOAD FILE TO FIREBASE
-	fullName := path + "/" + uploadFile.Filename
+	fullName := prefix + "/" + uploadFile.Filename
 	obj := bucket.Object(fullName)
 	writer := obj.NewWriter(ctx)
 

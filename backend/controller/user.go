@@ -13,19 +13,6 @@ import (
 	"github.com/weichen-lin/myig/util"
 )
 
-var (
-	ErrUserAlreadyExist = fmt.Errorf("User already exists!")
-	ErrEmailInvalid     = fmt.Errorf("Email is invalid!")
-)
-
-var (
-	ImageTypes = []string{
-		"image/jpeg",
-		"image/png",
-		"image/gif",
-	}
-)
-
 const (
 	maxFileSize = 10 << 20 // 10MB
 )
@@ -131,13 +118,13 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 
 	info, err := q.GetUserByEmail(ctx, params.Email)
 	if err == sql.ErrNoRows || err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 
 	err = util.ComparePassword(info.Password, params.Password)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 
@@ -163,7 +150,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 
 	userId, err := uuid.Parse(id)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 
@@ -208,7 +195,7 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 
 	userId, err := uuid.Parse(id)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 
@@ -222,7 +209,7 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 	user, err := q.GetUserById(ctx, userId)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(fmt.Errorf("user not found")))
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrUserNotFound))
 			return
 		}
 		ctx.JSON(http.StatusNotFound, errorResponse(err))
@@ -237,7 +224,7 @@ func (s *Controller) UserLogout(ctx *gin.Context) {
 
 	_, err := uuid.Parse(id)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 	ctx.Header("Set-Cookie", "token="+""+"; Path=/; HttpOnly")

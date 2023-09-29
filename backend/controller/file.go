@@ -21,7 +21,7 @@ type CreateFileReq struct {
 func (s Controller) CreateFile(ctx *gin.Context) {
 	var params CreateFileReq
 	if err := ctx.ShouldBindWith(&params, binding.FormMultipart); err != nil {
-		_ = ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid request"))
+		_ = ctx.AbortWithError(http.StatusBadRequest, ErrInvalidRequest)
 		return
 	}
 
@@ -29,19 +29,19 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 
 	userId, err := uuid.Parse(id)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 
 	locateAt, err := util.ParseLocateAt(params.LocateAt)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("locate at failed")))
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrLocateAtFailed))
 		return
 	}
 
-	fullName := fmt.Sprintf("%s/files", userId)
+	prefix := fmt.Sprintf("%s/files", userId)
 
-	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, fullName)
+	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, prefix)
 	if err != nil {
 		ctx.JSON(httpStatus, errorResponse(err))
 		return
