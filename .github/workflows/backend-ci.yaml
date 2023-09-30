@@ -1,0 +1,48 @@
+name: CI - Run Go Uni Tests
+
+on: ['pull_request']
+
+jobs:
+  test:
+    name: Unit test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: test_local
+          POSTGRES_DB: myig
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install golang migration
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz &&
+          sudo mv migrate /usr/bin/migrate &&
+          which migrate
+
+      - name: Run db migrations
+        working-directory: ./backend
+        run: make migrate-up
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Uni tests
+        working-directory: ./backend
+        run: |
+          echo ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential_encode.json &&
+          base64 -d credential_encode.json > ./credential.json &&
+          make test

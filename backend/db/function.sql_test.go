@@ -110,4 +110,5 @@ func Test_FolderMoveMent(t *testing.T) {
 
 	require.Error(t, err)
 	require.EqualError(t, err, ErrFolderMoveToItself.Error())
+	tx.Commit(context.Background())
 }
