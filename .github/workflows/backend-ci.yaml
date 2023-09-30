@@ -43,5 +43,5 @@ jobs:
         working-directory: ./backend
         run: |
           echo ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential_encode.json &&
-          base64 -d <<< credential_encode.json > ./credential.json && 
+          base64 -d credential_encode.json > ./credential.json && 
           make test
