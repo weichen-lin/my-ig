@@ -1,6 +1,6 @@
 name: CI - Run Go Uni Tests
 
-on: ['push', 'pull_request']
+on: ['pull_request']
 
 jobs:
   test:
@@ -38,6 +38,11 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.21'
+
+      - name: Add credential
+        working-directory: ./backend
+        run: |
+          base64 -d <<< ${{ secrets.FIREBASE_TOKEN }} > ./credential.json
 
       - name: Uni tests
         working-directory: ./backend
