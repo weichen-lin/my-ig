@@ -46,4 +46,4 @@ jobs:
 
       - name: Uni tests
         working-directory: ./backend
-        run: make test
+        run: go test -coverpkg=./... -cover ./...
