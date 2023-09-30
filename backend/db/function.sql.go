@@ -29,19 +29,25 @@ type MoveFolderFuncParams struct {
 	UserID uuid.UUID `json:"userId"`
 }
 
+var (
+	ErrCurrentFolderNotFound = errors.New("current folder not found")
+	ErrTargetFolderNotFound  = errors.New("target folder not found")
+	ErrFolderMoveToItself    = errors.New("can't move folder to itself")
+)
+
 func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderFuncParams) error {
 	folder, err := q.GetFolder(ctx, args.ID)
 	if err != nil || folder.UserID != args.UserID {
-		return errors.New("current folder not found")
+		return ErrCurrentFolderNotFound
 	}
 
 	folderMoveTo, err := q.GetFolder(ctx, args.MoveTo)
 	if err != nil || folderMoveTo.UserID != args.UserID {
-		return errors.New("target folder not found")
+		return ErrTargetFolderNotFound
 	}
 
 	if folder.LocateAt == args.MoveTo {
-		return errors.New("Can't move folder to itself")
+		return ErrFolderMoveToItself
 	}
 
 	folderAfterMove, err := q.MoveFolder(ctx, MoveFolderParams{

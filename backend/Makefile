@@ -26,3 +26,6 @@ sqlc:
 
 format:
 	find $(PWD) -name "*.go" -exec gofmt -w {} \;
+
+test:
+	go test -v -cover ./...

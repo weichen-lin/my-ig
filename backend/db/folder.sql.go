@@ -72,6 +72,20 @@ func (q *Queries) CreateFolder(ctx context.Context, arg CreateFolderParams) (Fol
 	return i, err
 }
 
+const deleteFolder = `-- name: DeleteFolder :exec
+DELETE FROM "folder" WHERE id = $1 and user_id = $2
+`
+
+type DeleteFolderParams struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) DeleteFolder(ctx context.Context, arg DeleteFolderParams) error {
+	_, err := q.db.Exec(ctx, deleteFolder, arg.ID, arg.UserID)
+	return err
+}
+
 const getFolder = `-- name: GetFolder :one
 SELECT id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id FROM "folder" WHERE id = $1
 `

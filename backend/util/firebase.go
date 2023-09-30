@@ -77,7 +77,7 @@ func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, prefix string) (
 	}
 
 	mtype := mimetype.Detect(fileBytes)
-	
+
 	ext := mtype.Extension()
 
 	if !ArrayContains(ImageTypes, mtype.String()) {
@@ -116,21 +116,20 @@ func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, prefix string) (
 	return signedUrl, http.StatusOK, nil
 }
 
-func DownLoadFile(url string) ([]byte, error){
+func DownLoadFile(url string) ([]byte, error) {
 	res, err := http.Get(url)
-    if err != nil {
-        return nil, err
-    }
-    defer res.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
 
-    if res.StatusCode != http.StatusOK {
-        return nil, err
-    }
+	if res.StatusCode != http.StatusOK {
+		return nil, err
+	}
 
-    resData, err := io.ReadAll(res.Body)
-    if err != nil {
-        return nil, err
-    }
+	resData, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
 	return resData, nil
 }
-

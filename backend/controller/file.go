@@ -92,7 +92,6 @@ func (s Controller) GetFile(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(ErrFileIdInvalid))
 		return
 	}
-	
 
 	id := ctx.Value("userId").(string)
 
@@ -110,7 +109,7 @@ func (s Controller) GetFile(ctx *gin.Context) {
 	q := db.New(tx)
 
 	arg := db.GetFileParams{
-		ID:    fileId,
+		ID:     fileId,
 		UserID: userId,
 	}
 

@@ -507,5 +507,30 @@ func Test_MoveFolderFunc(t *testing.T) {
 	require.Equal(t, fullPath[0].Id.String(), depth_3_folder.ID.String())
 
 	tx.Commit(context.Background())
+}
 
+func Test_DeleteFolder(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: uuid.Nil,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	folder, err := CreateFolderWithFullPathAtTest(context.Background(), arg)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	err = q.DeleteFolder(context.Background(), DeleteFolderParams{
+		ID:     folder.ID,
+		UserID: user.ID,
+	})
+	require.NoError(t, err)
 }

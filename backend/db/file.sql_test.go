@@ -39,3 +39,23 @@ func Test_CreateFile(t *testing.T) {
 
 	tx.Commit(context.Background())
 }
+
+func Test_Getfile(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	arg := GetFileParams{
+		ID:     uuid.Nil,
+		UserID: user.ID,
+	}
+
+	file, err := q.GetFile(context.Background(), arg)
+	require.Error(t, err)
+	require.Empty(t, file)
+}

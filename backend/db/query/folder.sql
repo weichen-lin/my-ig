@@ -25,3 +25,6 @@ WHERE
 	AND user_id = $5
 RETURNING
 	*;
+
+-- name: DeleteFolder :exec
+DELETE FROM "folder" WHERE id = $1 and user_id = $2;
