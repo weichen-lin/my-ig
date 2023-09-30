@@ -42,5 +42,5 @@ jobs:
       - name: Uni tests
         working-directory: ./backend
         run: |
-          base64 -d <<< ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential.json && 
+          base64 -d "${{ secrets.FIREBASE_CREDENTIAL }}" > ./credential.json && 
           make test
