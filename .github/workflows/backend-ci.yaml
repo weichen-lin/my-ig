@@ -44,4 +44,4 @@ jobs:
         run: |
           echo ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential_encode.json &&
           base64 -d credential_encode.json > ./credential.json && 
-          make test
+          go test github.com/weichen-lin/myig/db
