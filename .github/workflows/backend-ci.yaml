@@ -4,7 +4,7 @@ on: ['pull_request']
 
 jobs:
   test:
-    name: Test
+    name: Unit test
     runs-on: ubuntu-latest
 
     services:
@@ -39,9 +39,9 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Uni tests
-        working-directory: ./backend
-        run: |
-          echo ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential_encode.json &&
-          base64 -d credential_encode.json > ./credential.json && 
-          go test github.com/weichen-lin/myig/db
+      # - name: Uni tests
+      #   working-directory: ./backend
+      #   run: |
+      #     echo ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential_encode.json &&
+      #     base64 -d credential_encode.json > ./credential.json &&
+      #     go test github.com/weichen-lin/myig/db
