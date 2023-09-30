@@ -42,7 +42,7 @@ jobs:
       - name: Add credential
         working-directory: ./backend
         run: |
-          base64 -d <<< ${{ secrets.FIREBASE_TOKEN }} > ./credential.json
+          base64 -d <<< ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential.json
 
       - name: Uni tests
         working-directory: ./backend
