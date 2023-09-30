@@ -16,7 +16,8 @@ jobs:
           POSTGRES_DB: myig
         ports:
           - 5432:5432
-        options: --health-cmd pg_isready
+        options: >-
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -39,9 +40,9 @@ jobs:
         with:
           go-version: '1.21'
 
-      # - name: Uni tests
-      #   working-directory: ./backend
-      #   run: |
-      #     echo ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential_encode.json &&
-      #     base64 -d credential_encode.json > ./credential.json &&
-      #     go test github.com/weichen-lin/myig/db
+      - name: Uni tests
+        working-directory: ./backend
+        run: |
+          echo ${{ secrets.FIREBASE_CREDENTIAL }} > ./credential_encode.json &&
+          base64 -d credential_encode.json > ./credential.json &&
+          ls -la
