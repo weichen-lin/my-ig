@@ -244,7 +244,6 @@ func Test_CheckFolderExistAtRoot(t *testing.T) {
 	require.Equal(t, rootFolder.LastModifiedAt, checkFolderExist.LastModifiedAt)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_CheckFolderExistInFolder(t *testing.T) {
@@ -533,4 +532,5 @@ func Test_DeleteFolder(t *testing.T) {
 		UserID: user.ID,
 	})
 	require.NoError(t, err)
+	tx.Commit(context.Background())
 }

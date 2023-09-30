@@ -58,4 +58,6 @@ func Test_Getfile(t *testing.T) {
 	file, err := q.GetFile(context.Background(), arg)
 	require.Error(t, err)
 	require.Empty(t, file)
+
+	tx.Commit(context.Background())
 }
