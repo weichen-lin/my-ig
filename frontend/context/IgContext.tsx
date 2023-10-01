@@ -21,6 +21,8 @@ interface AuthContextType {
 }
 
 interface TokenCheckerProps {
+  token: string | null
+  current: string | null
   children: JSX.Element
 }
 

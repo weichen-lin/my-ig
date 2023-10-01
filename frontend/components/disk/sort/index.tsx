@@ -112,9 +112,9 @@ export default function Manipulator(props: SortProps) {
     >
       {Bottons.map((e) =>
         isMobile ? (
-          <MobileButton Icon={e.Icon} onClick={e.onClick} />
+          <MobileButton Icon={e.Icon} onClick={e.onClick} key={e.message}/>
         ) : (
-          <PCButton Icon={e.Icon} onClick={e.onClick} message={e.message} />
+          <PCButton Icon={e.Icon} onClick={e.onClick} message={e.message} key={e.message}/>
         )
       )}
       <div
@@ -127,7 +127,7 @@ export default function Manipulator(props: SortProps) {
           <BreadCrumb
             folderInfo={{
               folder_name: 'My Kushare',
-              folder_uuid: '',
+              folder_id: '',
             }}
             isLastOne={current_folder_copy.length === 0}
             needTruncate={false}
@@ -140,9 +140,9 @@ export default function Manipulator(props: SortProps) {
             <span className='flex flex-1 justify-center'>
               <BreadCrumb
                 folderInfo={
-                  current_folder_copy?.pop() ?? {
+                  {
                     folder_name: 'My Kushare',
-                    folder_uuid: '',
+                    folder_id: '',
                   }
                 }
                 isLastOne={true}
@@ -155,7 +155,10 @@ export default function Manipulator(props: SortProps) {
           <span className='hidden md:flex'>
             {current_folder_copy.map((e, index) => (
               <BreadCrumb
-                folderInfo={e}
+                folderInfo={{
+                  folder_name: 'My Kushare',
+                  folder_id: '',
+                }}
                 isLastOne={index === current_folder_copy.length - 1}
                 needTruncate={index !== current_folder_copy.length - 1}
                 key={`BreadCrumb_${index}`}

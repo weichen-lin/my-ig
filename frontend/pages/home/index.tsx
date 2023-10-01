@@ -11,7 +11,7 @@ const date = new Date()
 
 export default function DiskPage(props: TokenProp) {
   return (
-    <IgProvider>
+    <IgProvider token={""} current={""}>
       <LayoutHome>
         <div className='flex flex-col h-[90%]'>
           <div className='flex flex-wrap w-[92%] items-center mx-auto'>

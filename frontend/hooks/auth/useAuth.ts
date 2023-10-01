@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { APIS } from 'api/apis'
+// import { APIS } from 'api/apis'
 import Router from 'next/router'
 
 export default function useAuth(token: string) {

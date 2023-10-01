@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { diskInitState, diskStatusInitState } from 'context'
 import fetcher from 'api/fetcher'
-import { APIS } from 'api/apis'
+// import { APIS } from 'api/apis'
 
 export type ImageDisplayProps = ReturnType<typeof useImageDisplay>
 
@@ -28,11 +28,11 @@ export default function useImageDisplay() {
   }
 
   const handleAddTag = () => {
-    const id = diskData.files[currentIndex]?.id ?? ''
+    const id = ""
     setIsAddTag((prev) => !prev)
 
     fetcher
-      .patch(APIS.UPDATE_TAG, { id, tag })
+      .patch("", { id, tag })
       .then((res) => {
         if (res.status === 200) {
           const tags = diskData.files[currentIndex]?.tags ?? []
@@ -56,12 +56,12 @@ export default function useImageDisplay() {
   }
 
   const handleEdit = () => {
-    const id = diskData.files[currentIndex]?.id ?? ''
+    const id = ""
     setIsEdit((prev) => !prev)
 
     if (!isEdit) return
     fetcher
-      .patch(APIS.UPDATE_DESCRIPTION, { id, description: text })
+      .patch("", { id, description: text })
       .then((res) => {
         if (res.status === 200) {
           setDiskData((prev) => ({
@@ -83,7 +83,7 @@ export default function useImageDisplay() {
   }
 
   const handleImageDisplay = (id: string) => {
-    const index = diskData.files.map((e) => e.id).indexOf(id)
+    const index = diskData.files.map((e) => "").indexOf(id)
     if (index < 0) return
     setCurrentIndex(index)
     setIsOpen(true)

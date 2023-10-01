@@ -5,7 +5,7 @@ import Selectable from 'selection'
 import { useRecoilValue, useRecoilState } from 'recoil'
 import { diskStatusInitState, diskInitState } from 'context'
 
-import { APIS } from 'api/apis'
+// import { APIS } from 'api/apis'
 import fetcher from 'api/fetcher'
 
 interface SelectionEvent {
@@ -154,7 +154,7 @@ export default function useGdrive() {
     window.folderOnHover?.set('current_folder', '')
 
     const need_update = obj_need_update_w_prefix.replace(`selectable-${type}-`, '')
-    const api = type === 'file' ? APIS.UPDATE_FILE_LOCATE : APIS.UPDATE_FOLDER_LOCATE
+    const api = type === 'file' ? "/file/move" : "/folder/move"
 
     return fetcher
       .patch(api, { update_locate_at, need_update })

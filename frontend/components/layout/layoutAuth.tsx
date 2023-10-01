@@ -46,6 +46,6 @@ export default function LayoutAuth(props: LayoutProps) {
   if (!token) return null
 
   return (
-    <IgProvider>{true ? <LayoutAuthPC children={children} /> : <LayoutAuthMobile children={children} />}</IgProvider>
+    <IgProvider token={token} current={"asdsa"}>{true ? <LayoutAuthPC children={children} /> : <LayoutAuthMobile children={children} />}</IgProvider>
   )
 }
