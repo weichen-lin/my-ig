@@ -10,7 +10,10 @@ export default function Layout(props: LayoutProps) {
     <div className='w-full h-screen flex flex-col justify-start gap-y-12'>
       <div>
         <img
-          className={clsx('mx-auto mt-48', 'h-[80px] md:h-[120px]')}
+          className={clsx(
+            'mx-auto xss:mt-24 xl:mt-48',
+            'h-[80px] md:h-[120px]'
+          )}
           src='/icon/layout/logo.png'
         ></img>
       </div>

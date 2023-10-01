@@ -1,4 +1,9 @@
-import { useRef, DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from 'react'
+import {
+  useRef,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  MouseEventHandler
+} from 'react'
 
 interface DialogProps {
   children: JSX.Element | null
@@ -27,7 +32,7 @@ const Dialog = ({ children, close }: DialogProps) => {
       className='z-20 bg-slate-700/30 w-screen h-screen absolute top-0 left-0 flex items-center'
       onClick={handleClick}
     >
-      <div className='relative w-[300px] sm:w-[350px] opacity-100 m-auto '>
+      <div className='relative w-[300px] xss:w-[280px] sm:w-[350px] opacity-100 m-auto '>
         <div className='popupItem' ref={ref}>
           {children}
         </div>

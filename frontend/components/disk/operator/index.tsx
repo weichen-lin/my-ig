@@ -29,7 +29,7 @@ export default function Operator() {
   const handleFileUpload = async (multiple: boolean) => {
     try {
       const FileHandlers = await window?.showOpenFilePicker({
-        multiple: multiple,
+        multiple: multiple
       })
 
       await Promise.all(
@@ -47,8 +47,8 @@ export default function Operator() {
               fetcher
                 .post('http://localhost:8080/upload', formData, {
                   headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
+                    'Content-Type': 'multipart/form-data'
+                  }
                 })
                 .then((res) => {})
                 .catch((err) => console.log(err))
@@ -73,12 +73,12 @@ export default function Operator() {
     {
       name: 'bx:plus',
       message: '建立',
-      onClick: handlOpenDialog,
+      onClick: handlOpenDialog
     },
     {
       name: 'basil:upload-solid',
       message: '上傳',
-      onClick: () => handleFileUpload(true),
+      onClick: () => handleFileUpload(true)
     },
     // {
     //   name: 'majesticons:filter-line',
@@ -86,25 +86,41 @@ export default function Operator() {
     //   onClick: () => console.log('press button'),
     // },
     {
-      name: listMethod > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
+      name:
+        listMethod > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
       message: '調整檢視',
-      onClick: handleListMethod,
-    },
+      onClick: handleListMethod
+    }
   ]
 
   return (
     <div
-      className={clsx('flex ml-3 mt-2 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}
+      className={clsx(
+        'flex ml-3 mt-2 gap-x-4',
+        `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`
+      )}
     >
       {Buttons.map((e, index) =>
         isMobile ? (
-          <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />
+          <MobileButton
+            name={e.name}
+            onClick={e.onClick}
+            key={`button_${index}`}
+          />
         ) : (
-          <PCButton name={e.name} onClick={e.onClick} message={e.message} key={`button_${index}`} />
+          <PCButton
+            name={e.name}
+            onClick={e.onClick}
+            message={e.message}
+            key={`button_${index}`}
+          />
         )
       )}
       {openDialog && (
-        <Dialog children={<AddFolder ref={inputRef} close={handleCloseDialog} />} close={handleCloseDialog} />
+        <Dialog
+          children={<AddFolder ref={inputRef} close={handleCloseDialog} />}
+          close={handleCloseDialog}
+        />
       )}
     </div>
   )

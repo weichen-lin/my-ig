@@ -1,4 +1,10 @@
-import { createContext, useState, useEffect, useCallback, useContext } from 'react'
+import {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  useContext
+} from 'react'
 import Router from 'next/router'
 import fetcher from 'api/fetcher'
 import { useFetch, getDiskData } from 'api'
@@ -48,7 +54,7 @@ interface DiskData {
 
 enum ListMethod {
   Lattice,
-  List,
+  List
 }
 
 export const GdriveContext = createContext<GdriveContextType>({
@@ -61,11 +67,11 @@ export const GdriveContext = createContext<GdriveContextType>({
   handleDialogLoading: (e) => {},
   diskData: {
     files: [],
-    folders: [],
+    folders: []
   },
   refresh: () => {},
   listMethod: ListMethod.Lattice,
-  handleListMethod: () => {},
+  handleListMethod: () => {}
 })
 
 export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
@@ -80,7 +86,7 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
     onError: () => {
       localStorage.clear()
       // router.push('/login')
-    },
+    }
   })
 
   const handleCurrentDialog = (children: JSX.Element) => {
@@ -129,7 +135,7 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
         diskData: data ?? { files: [], folders: [] },
         refresh,
         listMethod,
-        handleListMethod,
+        handleListMethod
       }}
     >
       {children}
