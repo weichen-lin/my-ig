@@ -1,4 +1,4 @@
-import { Layout, RegisterChecker } from 'components/layout'
+import { Layout, RegisterChecker, GuestChecker } from 'components/layout'
 import { CookieParser } from 'hooks/utils'
 import { AuthInput, AuthButton, AuthStatus, EmailChecker, PasswordChecker } from 'components/auth'
 import { useRegister } from 'hooks/auth'

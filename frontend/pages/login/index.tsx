@@ -5,6 +5,7 @@ import { CookieParser } from 'hooks/utils'
 import { GetServerSideProps } from 'next'
 import { FcGoogle } from 'react-icons/fc'
 import { IoLogoGithub, IoLogoFacebook, IoIosMail } from 'react-icons/io'
+import { error } from 'console'
 
 const IconClass = 'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 

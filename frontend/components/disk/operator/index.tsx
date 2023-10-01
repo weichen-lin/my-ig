@@ -14,7 +14,7 @@ export default function Operator() {
   const [openDialog, setOpenDialog] = useState(false)
   const { listMethod, handleListMethod } = useGdrive()
 
-  const locate_at = Router?.query?.f ?? null
+  const locate_at = null
 
   const handleCloseDialog = useCallback(() => {
     setOpenDialog(false)

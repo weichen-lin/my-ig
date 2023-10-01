@@ -23,7 +23,7 @@ export const IgProvider = (props: TokenCheckerProps) => {
 
   const handlerError = () => {
     localStorage.clear()
-    Router.push('/login')
+    // Router.push('/login')
   }
 
   const { hints, AddHints } = useHints()
@@ -71,7 +71,7 @@ export const IgProvider = (props: TokenCheckerProps) => {
         handleUserProfile,
       }}
     >
-      {authCheck && children}
+      {children}
     </IgContext.Provider>
   )
 }
