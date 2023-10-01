@@ -40,7 +40,7 @@ export const PasswordChecker = (props?: { value: string }) => {
       )}
     >
       {rules.map((e) => (
-        <RuleChecker status={e.status} rule={e.rule} />
+        <RuleChecker status={e.status} rule={e.rule} key={e.rule}/>
       ))}
     </ul>
   )

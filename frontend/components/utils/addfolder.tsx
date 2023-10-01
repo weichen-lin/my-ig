@@ -69,4 +69,6 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   )
 })
 
+
+AddFolder.displayName = 'AddFolder'
 export default AddFolder
