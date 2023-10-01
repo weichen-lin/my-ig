@@ -1,5 +1,11 @@
 import { IconType } from 'react-icons'
-import { CiHome, CiShare2, CiSettings, CiCloudOn, CiLogout } from 'react-icons/ci'
+import {
+  CiHome,
+  CiShare2,
+  CiSettings,
+  CiCloudOn,
+  CiLogout
+} from 'react-icons/ci'
 import { useState, useEffect, useCallback, memo, useContext } from 'react'
 import Router, { useRouter } from 'next/router'
 import clsx from 'clsx'
@@ -31,7 +37,11 @@ export const MenuItem = (props: MenuItemProps) => {
     <div
       className={clsx(
         'w-[97.5%] py-2 flex justify-start items-center',
-        `${current ? 'w-[100%] border-r-4 border-blue-500 pl-[1.25%]' : 'hover:bg-slate-200 hover:cursor-pointer'}`
+        `${
+          current
+            ? 'w-[100%] border-r-4 border-blue-500 pl-[1.25%]'
+            : 'hover:bg-slate-200 hover:cursor-pointer'
+        }`
       )}
       onClick={handleRoute}
     >
@@ -50,7 +60,7 @@ export const Menu = () => {
   const [isRouting, setIsRouting] = useState(false)
   const router = useRouter()
 
-  const menu_routing = useCallback((menu: { pathname: string }) => {
+  const MenuRouting = useCallback((menu: { pathname: string }) => {
     router.events.on('routeChangeStart', () => {
       setIsRouting(true)
     })
@@ -73,12 +83,13 @@ export const Menu = () => {
 
   const current = router_split.length > 1 ? router_split[1] : ''
 
-  const { handleHints, userProfile, isAuth, handleUserProfile } = useContext(IgContext)
+  const { handleHints, userProfile, isAuth, handleUserProfile } =
+    useContext(IgContext)
 
   const handleFileUpload = async (multiple: boolean) => {
     try {
       const FileHandlers = await window?.showOpenFilePicker({
-        multiple: multiple,
+        multiple: multiple
       })
 
       await Promise.all(
@@ -97,8 +108,8 @@ export const Menu = () => {
               fetcher
                 .post('http://localhost:8080/file', formData, {
                   headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
+                    'Content-Type': 'multipart/form-data'
+                  }
                 })
                 .then((res) => {
                   handleUserProfile('avatar_url', res.data)
@@ -130,28 +141,35 @@ export const Menu = () => {
     {
       Icon: CiHome,
       name: '首頁',
-      pathname: 'home',
+      pathname: 'home'
     },
     {
       Icon: CiShare2,
       name: '分享',
-      pathname: 'share',
+      pathname: 'share'
     },
     {
       Icon: CiSettings,
       name: '設定',
-      pathname: 'setting',
-    },
+      pathname: 'setting'
+    }
   ]
 
   const Avatar = () => {
     return (
       <div className='flex flex-col items-center gap-y-4'>
         <div className='overflow-hidden w-24 h-24'>
-          <img src={userProfile?.avatar_url} className='w-full h-full rounded-full border-2'></img>
+          <img
+            src={userProfile?.avatar_url}
+            className='w-full h-full rounded-full border-2'
+          ></img>
         </div>
         <p className='text-lg text-center w-full px-4 truncate max-w-[180px] 4xl:max-w-[260px]'>
-          {userProfile?.user_name ?? <span className='text-gray-400 text-sm select-none'>未設定使用者名稱</span>}
+          {userProfile?.user_name ?? (
+            <span className='text-gray-400 text-sm select-none'>
+              未設定使用者名稱
+            </span>
+          )}
         </p>
         <div className='relative w-[100px] h-16 mx-auto'>
           <div
@@ -181,7 +199,7 @@ export const Menu = () => {
           name={menu.name}
           handleRoute={() => {
             if (menu.pathname !== current) {
-              menu_routing(menu)
+              MenuRouting(menu)
             }
           }}
           current={menu.pathname === current}
@@ -193,7 +211,9 @@ export const Menu = () => {
       {!isAuth && (
         <>
           <meter className='w-full px-3' min='0' max='15' value='5'></meter>
-          <p className='text-gray-500 text-sm text-left w-full px-3 select-none'>已使用 5 GB，共 15 GB</p>
+          <p className='text-gray-500 text-sm text-left w-full px-3 select-none'>
+            已使用 5 GB，共 15 GB
+          </p>
         </>
       )}
       <div className='flex-1'></div>

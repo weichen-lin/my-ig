@@ -10,15 +10,16 @@ export default function useAuth(token: string) {
     const authUser = () => {
       if (!token) {
         Router.push('/login')
+        setIsAuth(true)
         return
       }
 
       return axios
         .get('http://localhost:8080/user/userinfo', {
           headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+            Authorization: token,
+            'Content-Type': 'application/json'
+          }
         })
         .then((e) => Router.push('/home'))
         .catch((e) => {

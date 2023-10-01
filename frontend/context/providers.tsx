@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Router from 'next/router'
 import { useHints, Action } from 'hooks/disk'
 import { getUserInfo, useFetch } from 'api/'
-import { IgContext } from './contexts'
+import { IgContext, Sidebar } from './contexts'
 
 export interface User {
   user_id: string
@@ -30,7 +30,7 @@ export const IgProvider = (props: TokenCheckerProps) => {
 
   const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
     onError: handlerError,
-    needInitialRun: true,
+    needInitialRun: true
   })
 
   const handleHints = (status: Action, message: string) => {
@@ -46,7 +46,7 @@ export const IgProvider = (props: TokenCheckerProps) => {
       if (prev) {
         return {
           ...prev,
-          [key]: data,
+          [key]: data
         }
       } else {
         return null
@@ -68,10 +68,17 @@ export const IgProvider = (props: TokenCheckerProps) => {
         isAuth: isLoading,
         hints,
         handleHints,
-        handleUserProfile,
+        handleUserProfile
       }}
     >
       {children}
     </IgContext.Provider>
   )
+}
+
+export const SidebarProvider = (props: { children: JSX.Element }) => {
+  const { children } = props
+  const [user, setUser] = useState<User | null>(null)
+
+  return <Sidebar.Provider value={{ user }}>{children}</Sidebar.Provider>
 }
