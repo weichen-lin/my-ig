@@ -2,51 +2,55 @@ import { FolderBackbone } from './folders'
 import { LatticeFileBackbone } from './files'
 import { ListBackBone } from './listbackbone'
 import clsx from 'clsx'
-import { ListMethod } from 'hooks/disk'
+import { ListMethod } from 'store'
 import { useIsMobile } from 'hooks/disk'
+import { useRecoilValue } from 'recoil'
+import { listMethodState } from 'store'
 
 const BACKBONE_NUMBER = 5
 
-export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
+const FolderBackbones = (props: { listMethod: ListMethod }) => {
   const { listMethod } = props
+  return (
+    <div
+      className={clsx(
+        'flex',
+        'transition-all duration-100 ease-out',
+        `${
+          listMethod === ListMethod.Lattice
+            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] my-2'
+            : 'w-full flex-col'
+        }`
+      )}
+    >
+      {listMethod === ListMethod.Lattice ? <FolderBackbone /> : <ListBackBone />}
+    </div>
+  )
+}
+
+const FileBackbone = (props: { listMethod: ListMethod }) => {
+  const { listMethod } = props
+
+  return (
+    <div
+      className={clsx(
+        'flex',
+        'transition-all duration-100 ease-out',
+        `${
+          listMethod === ListMethod.Lattice
+            ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] mb-4'
+            : 'w-full flex-col'
+        }`
+      )}
+    >
+      {listMethod === ListMethod.Lattice ? <LatticeFileBackbone /> : <ListBackBone />}
+    </div>
+  )
+}
+
+export const KushareDriveBackbonePC = () => {
+  const listMethod = useRecoilValue(listMethodState)
   const { isFullScreen } = useIsMobile()
-
-  const FolderBackbones = () => {
-    return (
-      <div
-        className={clsx(
-          'flex',
-          'transition-all duration-100 ease-out',
-          `${
-            listMethod === ListMethod.Lattice
-              ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] my-2'
-              : 'w-full flex-col'
-          }`
-        )}
-      >
-        {listMethod === ListMethod.Lattice ? <FolderBackbone /> : <ListBackBone />}
-      </div>
-    )
-  }
-
-  const FileBackbone = () => {
-    const { listMethod } = props
-    return (
-      <div
-        className={clsx(
-          'flex',
-          'transition-all duration-100 ease-out',
-          `${
-            listMethod === ListMethod.Lattice
-              ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] mb-4'
-              : 'w-full flex-col'
-          }`
-        )}
-      >
-        {listMethod === ListMethod.Lattice ? <LatticeFileBackbone /> : <ListBackBone />}
-      </div>
-    )
-  }
 
   return (
     <div
@@ -61,13 +65,13 @@ export const GdriveLikeDiskBackbonePC = (props: { listMethod: ListMethod }) => {
       {listMethod === ListMethod.Lattice && <p className='w-[90%] xs:w-full text-gray-400'>資料夾</p>}
       <div className='flex flex-col xs:flex-row xs:flex-wrap w-full gap-x-4 mx-auto items-center'>
         {Array.from(Array(BACKBONE_NUMBER).keys()).map((e) => (
-          <FolderBackbones key={`folder-bone-${e}`} />
+          <FolderBackbones key={`folder-bone-${e}`} listMethod={listMethod} />
         ))}
       </div>
       {listMethod === ListMethod.Lattice && <p className='w-[90%] xs:w-full text-gray-400'>檔案</p>}
       <div className='flex flex-col xs:flex-row xs:flex-wrap w-full gap-x-4 mx-auto items-center'>
         {Array.from(Array(BACKBONE_NUMBER).keys()).map((e) => (
-          <FileBackbone key={`folder-bone-${e}`} />
+          <FileBackbone key={`folder-bone-${e}`} listMethod={listMethod} />
         ))}
       </div>
     </div>

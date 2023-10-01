@@ -45,7 +45,6 @@ export default function SettingPage(props: TokenProp) {
                   }}
                 />
               </div>
-              {/* <p className='text-gray-300'>************</p> */}
               <div className='flex items-center'>
                 <button className='border p-1 w-16 rounded-md border-blue-300'>重設</button>
               </div>

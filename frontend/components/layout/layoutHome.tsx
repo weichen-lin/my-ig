@@ -4,6 +4,7 @@ import { Hinter, FullScreenMenu, MobileMenu } from 'components/disk'
 import { useIsMobile } from 'hooks/disk'
 import { RxHamburgerMenu } from 'react-icons/rx'
 import { useCallback, useState } from 'react'
+import { RecoilRoot } from 'recoil'
 
 import { useGdrive, GdriveProvider } from 'context'
 interface LayoutProps {
@@ -58,12 +59,8 @@ export default function LayoutHome(props: LayoutProps) {
   const { isFullScreen } = useIsMobile()
 
   return (
-    <GdriveProvider>
-      {isFullScreen ? (
-        <LayoutHomePC children={children} />
-      ) : (
-        <LayoutHomeMobile children={children} />
-      )}
-    </GdriveProvider>
+    <RecoilRoot>
+      {isFullScreen ? <LayoutHomePC children={children} /> : <LayoutHomeMobile children={children} />}
+    </RecoilRoot>
   )
 }

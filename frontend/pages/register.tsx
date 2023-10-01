@@ -1,19 +1,13 @@
 import { Layout } from 'components/layout'
 import { CookieParser } from 'hooks/utils'
-import {
-  AuthInput,
-  AuthButton,
-  AuthStatus,
-  EmailChecker,
-  PasswordChecker
-} from 'components/auth'
+import { AuthInput, AuthButton, AuthStatus, EmailChecker, PasswordChecker } from 'components/auth'
 import { useRegister, useAuth } from 'hooks/auth'
 import { GetServerSideProps } from 'next'
 import { Loading } from 'components/utils'
 
 export default function RegisterPage(props: { token: string }) {
   const { token } = props
-  const { isAuth } = useAuth(token)
+  const { isAuth } = useAuth({ token: token, isRegisterPage: true })
 
   const {
     isRequest,
@@ -25,7 +19,7 @@ export default function RegisterPage(props: { token: string }) {
     goLogin,
     btnDisabled,
     validateEmail,
-    validatePwd
+    validatePwd,
   } = useRegister()
 
   return (
@@ -64,10 +58,7 @@ export default function RegisterPage(props: { token: string }) {
           />
           <p className='w-full md:w-2/3 md:mx-auto text-center text-gray-700'>
             已經有帳號了嗎？
-            <span
-              className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100'
-              onClick={goLogin}
-            >
+            <span className='ml-2 text-blue-700 hover:cursor-pointer hover:bg-gray-100' onClick={goLogin}>
               點此登入
             </span>
           </p>
@@ -93,7 +84,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      token
-    }
+      token,
+    },
   }
 }

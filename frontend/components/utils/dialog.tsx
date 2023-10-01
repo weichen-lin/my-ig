@@ -1,24 +1,11 @@
-import {
-  useRef,
-  DetailedHTMLProps,
-  HTMLAttributes,
-  MouseEventHandler
-} from 'react'
+import { useRef, DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from 'react'
 
 interface DialogProps {
-  children: JSX.Element | null
+  component: JSX.Element | null
   close: (...params: any) => void
 }
 
-interface ValidRefTarget {
-  contains(target: EventTarget | null): any
-}
-
-type HTMLElementEvent<T extends HTMLDivElement> = Event & {
-  target: T
-}
-
-const Dialog = ({ children, close }: DialogProps) => {
+const Dialog = ({ component, close }: DialogProps) => {
   const ref = useRef<HTMLDivElement>(null)
 
   const handleClick = (e: any) => {
@@ -34,7 +21,7 @@ const Dialog = ({ children, close }: DialogProps) => {
     >
       <div className='relative w-[300px] xss:w-[280px] sm:w-[350px] opacity-100 m-auto '>
         <div className='popupItem' ref={ref}>
-          {children}
+          {component}
         </div>
       </div>
     </div>
