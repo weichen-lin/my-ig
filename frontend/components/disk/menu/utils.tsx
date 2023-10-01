@@ -1,11 +1,11 @@
 import { IconType } from 'react-icons'
 import { CiHome, CiShare2, CiSettings, CiCloudOn, CiLogout } from 'react-icons/ci'
-import { useState, useEffect, useCallback, memo } from 'react'
+import { useState, useEffect, useCallback, memo, useContext } from 'react'
 import Router, { useRouter } from 'next/router'
-import { useIgContext } from 'context'
 import clsx from 'clsx'
 import { MdUploadFile } from 'react-icons/md'
 import fetcher from 'api/fetcher'
+import { IgContext } from 'context'
 
 export interface MenuItemProps {
   Icon: IconType
@@ -73,7 +73,7 @@ export const Menu = () => {
 
   const current = router_split.length > 1 ? router_split[1] : ''
 
-  const { handleHints, userProfile, isAuth, handleUserProfile } = useIgContext()
+  const { handleHints, userProfile, isAuth, handleUserProfile } = useContext(IgContext)
 
   const handleFileUpload = async (multiple: boolean) => {
     try {

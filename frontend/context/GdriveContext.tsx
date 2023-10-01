@@ -79,7 +79,7 @@ export const GdriveProvider = ({ children }: { children: JSX.Element }) => {
   const { isLoading, data, run } = useFetch(getDiskData, {
     onError: () => {
       localStorage.clear()
-      router.push('/login')
+      // router.push('/login')
     },
   })
 
