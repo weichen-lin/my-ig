@@ -1,6 +1,9 @@
 name: CI - Run Go Uni Tests
 
-on: ['pull_request']
+on: 
+  push:
+    paths:
+      - backend/**
 
 jobs:
   test:
