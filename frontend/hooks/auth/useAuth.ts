@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-// import { APIS } from 'api/apis'
 import Router from 'next/router'
 
-export default function useAuth(token: string) {
+interface AuthProps {
+  token: string | null
+  isRegisterPage: boolean
+}
+
+export default function useAuth(props: AuthProps) {
+  const { token, isRegisterPage } = props
   const [isAuth, setIsAuth] = useState(false)
 
   useEffect(() => {
     const authUser = () => {
       if (!token) {
-        Router.push('/login')
+        !isRegisterPage && Router.push('/login')
         setIsAuth(true)
         return
       }
@@ -18,13 +23,13 @@ export default function useAuth(token: string) {
         .get('http://localhost:8080/user/userinfo', {
           headers: {
             Authorization: token,
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         })
         .then((e) => Router.push('/home'))
         .catch((e) => {
           localStorage.clear()
-          Router.push('/login')
+          !isRegisterPage && Router.push('/login')
         })
     }
     authUser()

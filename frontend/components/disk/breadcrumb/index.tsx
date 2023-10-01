@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { CurrentFolder } from 'context'
-
+import { useSetRecoilState } from 'recoil'
+import { driveState } from 'store'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 
 import { useIsMobile } from 'hooks/disk'
@@ -9,10 +10,7 @@ import { useRouter } from 'next/router'
 import { useFetch, getBreadCrumb } from 'api'
 import { useGdrive } from 'context'
 
-const BreadCrumbMobile = (props: {
-  folderInfo: CurrentFolder[]
-  isLastOne: boolean
-}) => {
+const BreadCrumbMobile = (props: { folderInfo: CurrentFolder[]; isLastOne: boolean }) => {
   const { folderInfo } = props
 
   const lastone = folderInfo.length > 0 ? folderInfo.pop() : null
@@ -42,20 +40,14 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
   )
 }
 
-const BreadCrumbDisplay = (props: {
-  isMobile: boolean
-  data: CurrentFolder[]
-}) => {
+const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) => {
   const { isMobile, data } = props
   const router = useRouter()
   const { refresh } = useGdrive()
 
   const atRoot = data?.length === 0
 
-  const BreadCrumb = (props: {
-    folderInfo: CurrentFolder
-    isLastOne: boolean
-  }) => {
+  const BreadCrumb = (props: { folderInfo: CurrentFolder; isLastOne: boolean }) => {
     const { folderInfo, isLastOne } = props
 
     return (
@@ -66,7 +58,7 @@ const BreadCrumbDisplay = (props: {
           onClick={async () => {
             if (isLastOne) return
             await router.push(`/home?f=${folderInfo.folder_id}`, undefined, {
-              shallow: false
+              shallow: false,
             })
             refresh()
           }}
@@ -102,13 +94,7 @@ const BreadCrumbDisplay = (props: {
         我的 Kushare
       </span>
       {data?.length > 0 &&
-        data.map((e) => (
-          <BreadCrumb
-            folderInfo={e}
-            isLastOne={false}
-            key={`folder_${e.folder_id}`}
-          />
-        ))}
+        data.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} key={`folder_${e.folder_id}`} />)}
     </>
   )
 }
@@ -117,20 +103,19 @@ export default function BreadCrumbs() {
   const router = useRouter()
   const { isMobile } = useIsMobile()
   const { data, isLoading, run } = useFetch(getBreadCrumb)
+  const setDrive = useSetRecoilState(driveState)
 
   useEffect(() => {
     const folder_id = (router.query.f ?? null) as string | null
+    setDrive((e) => ({ ...e, isLoading: true }))
     run(folder_id)
+    setDrive((e) => ({ ...e, isLoading: false }))
   }, [router.query.f])
 
   return (
     <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-3'}`)}>
       <div className='font-bold text-xl flex items-center text-gray-500'>
-        {isLoading ? (
-          <BreadCrumbBackBone isMobile={isMobile} />
-        ) : (
-          <BreadCrumbDisplay isMobile={isMobile} data={data} />
-        )}
+        {isLoading ? <BreadCrumbBackBone isMobile={isMobile} /> : <BreadCrumbDisplay isMobile={isMobile} data={data} />}
       </div>
     </div>
   )

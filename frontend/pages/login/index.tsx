@@ -7,26 +7,15 @@ import { FcGoogle } from 'react-icons/fc'
 import { IoLogoGithub, IoLogoFacebook, IoIosMail } from 'react-icons/io'
 import { Loading } from 'components/utils'
 
-const IconClass =
-  'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
+const IconClass = 'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 
-const IconClassFacebook =
-  'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
+const IconClassFacebook = 'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 
 export default function LoginPage(props: { token: string }) {
   const { token } = props
-  const { isAuth } = useAuth(token)
+  const { isAuth } = useAuth({ token: token, isRegisterPage: false })
 
-  const {
-    isRequest,
-    loginInfo,
-    handleAuthInfo,
-    error,
-    run,
-    successMsg,
-    goRegister,
-    btnDisabled
-  } = useLogin()
+  const { isRequest, loginInfo, handleAuthInfo, error, run, successMsg, goRegister, btnDisabled } = useLogin()
 
   return (
     <Layout>
@@ -50,12 +39,7 @@ export default function LoginPage(props: { token: string }) {
               handleAuthInfo('password', e.target.value)
             }}
           />
-          <AuthButton
-            label='登入'
-            isRequest={isRequest}
-            onClick={() => run(loginInfo)}
-            disabled={btnDisabled}
-          />
+          <AuthButton label='登入' isRequest={isRequest} onClick={() => run(loginInfo)} disabled={btnDisabled} />
           <div className='w-full md:w-2/3 mx-auto lg:min-w-[300px] flex justify-center items-center'>
             <FcGoogle className={IconClass} />
             <IoLogoFacebook className={IconClassFacebook} fill='#385997' />
@@ -85,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      token
-    }
+      token,
+    },
   }
 }

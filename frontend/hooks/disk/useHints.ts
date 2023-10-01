@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
+import { useRecoilState } from 'recoil'
+import { HintState } from 'store'
 
 function generate_uuid() {
   var d = Date.now()
@@ -24,7 +26,7 @@ export type Action = 'success' | 'failed'
 const hintsTimeout = new Map<Hint['id'], ReturnType<typeof setTimeout>>()
 
 export default function useHints() {
-  const [hints, setHints] = useState<Hint[]>([])
+  const [hints, setHints] = useRecoilState(HintState)
 
   const clearHint = useCallback((hintId: string) => {
     if (hintsTimeout.has(hintId)) {

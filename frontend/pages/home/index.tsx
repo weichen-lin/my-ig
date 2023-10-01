@@ -1,27 +1,7 @@
-import {
-  Sort,
-  GdriveLikeDisk,
-  Operator,
-  ImagePlayground,
-  UploadTasks,
-  BreadCrumbs,
-  Hinter
-} from 'components/disk'
-
+import { Sort, KushareDrive, Operator, ImagePlayground, UploadTasks, BreadCrumbs, Hinter } from 'components/disk'
 import { LayoutHome } from 'components/layout'
-import { IgProvider } from 'context'
-import { CookieParser, TokenProp } from 'hooks/utils'
 
-import {
-  useDisk,
-  useGdrive,
-  useImageDisplay,
-  useDatetime,
-  useOperator
-} from 'hooks/disk'
-import { useScroll } from 'hooks/utils'
-
-export default function DiskPage(props: TokenProp) {
+export default function Drive() {
   return (
     <LayoutHome>
       <div className='flex flex-col h-[90%]'>
@@ -29,7 +9,7 @@ export default function DiskPage(props: TokenProp) {
           <Operator />
           <BreadCrumbs />
         </div>
-        <GdriveLikeDisk />
+        <KushareDrive />
         <Hinter />
       </div>
     </LayoutHome>
