@@ -1,6 +1,6 @@
 import { useState, useEffect, createRef } from 'react'
 // import Selectable from '@weichen-lin/gdrive-select-and-drag'
-import Selectable from 'selection'
+// import Selectable from 'selection'
 
 import { useRecoilValue, useRecoilState } from 'recoil'
 import { diskStatusInitState, diskInitState } from 'context'
@@ -166,64 +166,64 @@ export default function useGdrive() {
       })
   }
 
-  useEffect(() => {
-    window.folderOnHover = new Map()
-    window.draggedElement = new Map()
+  // useEffect(() => {
+  //   window.folderOnHover = new Map()
+  //   window.draggedElement = new Map()
 
-    const selection = new Selectable({
-      boundary: root?.current as HTMLDivElement,
-      canStartSelect: diskStatus.canSelect,
-      selectAreaClassName: 'selection-area',
-      selectablePrefix: 'selectable',
-      select_cb: handleSelected,
-      drag_cb: handleDragged,
-      transformFunc: {
-        transform: {
-          func: handleTransform,
-          css: {
-            width: 200,
-            margin: 0,
-            height: 48,
-            textAlign: 'left',
-          },
-        },
-        revert: {
-          func: handleRevert,
-          css: {
-            width: 220,
-            margin: 0,
-            opacity: '100%',
-            willChange: 'top left width height',
-          },
-        },
-        iconPositionX: 200,
-      },
-      dragEndCallback: async () => {
-        const isDragEndOnFolder = window.folderOnHover?.get('current_folder') ?? ''
+  //   const selection = new Selectable({
+  //     boundary: root?.current as HTMLDivElement,
+  //     canStartSelect: diskStatus.canSelect,
+  //     selectAreaClassName: 'selection-area',
+  //     selectablePrefix: 'selectable',
+  //     select_cb: handleSelected,
+  //     drag_cb: handleDragged,
+  //     transformFunc: {
+  //       transform: {
+  //         func: handleTransform,
+  //         css: {
+  //           width: 200,
+  //           margin: 0,
+  //           height: 48,
+  //           textAlign: 'left',
+  //         },
+  //       },
+  //       revert: {
+  //         func: handleRevert,
+  //         css: {
+  //           width: 220,
+  //           margin: 0,
+  //           opacity: '100%',
+  //           willChange: 'top left width height',
+  //         },
+  //       },
+  //       iconPositionX: 200,
+  //     },
+  //     dragEndCallback: async () => {
+  //       const isDragEndOnFolder = window.folderOnHover?.get('current_folder') ?? ''
 
-        if (!isDragEndOnFolder) return false
+  //       if (!isDragEndOnFolder) return false
 
-        setDiskStatus((prev) => ({ ...prev, shouldRefresh: true }))
-        setIsMoving(true)
+  //       setDiskStatus((prev) => ({ ...prev, shouldRefresh: true }))
+  //       setIsMoving(true)
 
-        const FILE_MOVING = Array.from(window.draggedElement?.get('files') ?? []).map((e) =>
-          handleMoving('file', isDragEndOnFolder, e)
-        )
+  //       const FILE_MOVING = Array.from(window.draggedElement?.get('files') ?? []).map((e) =>
+  //         handleMoving('file', isDragEndOnFolder, e)
+  //       )
 
-        const FOLDER_MOVING = Array.from(window.draggedElement?.get('folders') ?? []).map((e) =>
-          handleMoving('folder', isDragEndOnFolder, e)
-        )
+  //       const FOLDER_MOVING = Array.from(window.draggedElement?.get('folders') ?? []).map((e) =>
+  //         handleMoving('folder', isDragEndOnFolder, e)
+  //       )
 
-        await Promise.all([...FILE_MOVING, ...FOLDER_MOVING])
+  //       await Promise.all([...FILE_MOVING, ...FOLDER_MOVING])
 
-        setIsMoving(false)
+  //       setIsMoving(false)
 
-        return false
-      },
-    })
+  //       return false
+  //     },
+  //   })
 
-    return () => selection?.destroy()
-  }, [diskStatus.canSelect])
+  //   return () => selection?.destroy()
+  // }, [diskStatus.canSelect])
 
   return { root, selected, dragged, hoverHandler }
 }
