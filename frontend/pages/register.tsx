@@ -7,7 +7,7 @@ import { Loading } from 'components/utils'
 
 export default function RegisterPage(props: { token: string }) {
   const { token } = props
-  const { isAuth } = useAuth({ token: token, isRegisterPage: true })
+  const { isAuth } = useAuth({ token: token, needRouting: false })
 
   const {
     isRequest,

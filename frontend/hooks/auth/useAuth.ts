@@ -4,17 +4,17 @@ import Router from 'next/router'
 
 interface AuthProps {
   token: string | null
-  isRegisterPage: boolean
+  needRouting: boolean
 }
 
 export default function useAuth(props: AuthProps) {
-  const { token, isRegisterPage } = props
+  const { token, needRouting } = props
   const [isAuth, setIsAuth] = useState(false)
 
   useEffect(() => {
     const authUser = () => {
       if (!token) {
-        !isRegisterPage && Router.push('/login')
+        needRouting && Router.push('/login')
         setIsAuth(true)
         return
       }
@@ -29,7 +29,7 @@ export default function useAuth(props: AuthProps) {
         .then((e) => Router.push('/home'))
         .catch((e) => {
           localStorage.clear()
-          !isRegisterPage && Router.push('/login')
+          needRouting && Router.push('/login')
         })
     }
     authUser()
