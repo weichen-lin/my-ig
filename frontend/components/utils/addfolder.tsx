@@ -2,7 +2,6 @@ import { forwardRef, useState, ChangeEvent } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiError } from 'react-icons/bi'
 import { createFolder, useFetch } from 'api'
-import { useGdrive } from 'context'
 import { useRouter } from 'next/router'
 import clsx from 'clsx'
 
@@ -12,15 +11,13 @@ interface AddFolderProps {
 
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const { close } = prop
-  const { refresh } = useGdrive()
 
   const router = useRouter()
 
   const { isLoading, error, run } = useFetch(createFolder, {
     onSuccess: () => {
-      refresh()
       close()
-    }
+    },
   })
 
   const [folderName, setFolderName] = useState('未命名資料夾')
@@ -52,11 +49,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
         onChange={handleFolderNameChange}
       />
       <div className='flex justify-end gap-x-2'>
-        <button
-          className='px-4 py-1 hover:bg-gray-100 rounded-lg'
-          onClick={close}
-          disabled={isLoading}
-        >
+        <button className='px-4 py-1 hover:bg-gray-100 rounded-lg' onClick={close} disabled={isLoading}>
           取消
         </button>
         <button
@@ -69,11 +62,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
             }
           }}
         >
-          {isLoading ? (
-            <AiOutlineLoading3Quarters className='animate-spin w-5 h-5 mx-1' />
-          ) : (
-            '建立'
-          )}
+          {isLoading ? <AiOutlineLoading3Quarters className='animate-spin w-5 h-5 mx-1' /> : '建立'}
         </button>
       </div>
       {error && <Error message={error} />}

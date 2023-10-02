@@ -1,23 +1,26 @@
 import clsx from 'clsx'
-import { CurrentFolder } from 'context'
 import { useSetRecoilState } from 'recoil'
 import { driveState } from 'store'
-import { MdKeyboardArrowRight } from 'react-icons/md'
 
 import { useIsMobile } from 'hooks/disk'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useFetch, getBreadCrumb } from 'api'
-import { useGdrive } from 'context'
+import { Icon } from '@iconify/react'
 
-const BreadCrumbMobile = (props: { folderInfo: CurrentFolder[]; isLastOne: boolean }) => {
+interface Folder {
+  id: string
+  name: string
+}
+
+const BreadCrumbMobile = (props: { folderInfo: Folder[]; isLastOne: boolean }) => {
   const { folderInfo } = props
 
   const lastone = folderInfo.length > 0 ? folderInfo.pop() : null
 
   return (
     <div className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold'>
-      {lastone && lastone?.folder_name}
+      {lastone && lastone?.name}
     </div>
   )
 }
@@ -26,7 +29,7 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
   const { isMobile } = props
 
   return (
-    <div className='flex items-center flex-1'>
+    <div className='flex items-center flex-1 px-3'>
       {!isMobile && (
         <span
           className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 pr-3 rounded-lg truncate select-none font-bold py-1 my-2`}
@@ -34,36 +37,34 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
           我的 Kushare
         </span>
       )}
-      <MdKeyboardArrowRight className='w-6 h-6' fill={'gray'} />
+      <Icon icon='ic:baseline-chevron-right' className='w-6 h-6' fill={'gray'} />
       <div className='ml-4 xss:w-[100px] xs:w-[150px] md:w-[200px] h-9 bg-gray-300/20 animate-pulse rounded-2xl'></div>
     </div>
   )
 }
 
-const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) => {
+const BreadCrumbDisplay = (props: { isMobile: boolean; data: Folder[] }) => {
   const { isMobile, data } = props
   const router = useRouter()
-  const { refresh } = useGdrive()
 
   const atRoot = data?.length === 0
 
-  const BreadCrumb = (props: { folderInfo: CurrentFolder; isLastOne: boolean }) => {
+  const BreadCrumb = (props: { folderInfo: Folder; isLastOne: boolean }) => {
     const { folderInfo, isLastOne } = props
 
     return (
       <div className='hover:cursor-pointer flex flex-1 items-center'>
-        <MdKeyboardArrowRight className='w-6 h-6' fill={'gray'} />
+        <Icon icon='ic:baseline-chevron-right' className='w-6 h-6' fill={'gray'} />
         <span
           className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1'
           onClick={async () => {
             if (isLastOne) return
-            await router.push(`/home?f=${folderInfo.folder_id}`, undefined, {
+            await router.push(`/home?f=${folderInfo.id}`, undefined, {
               shallow: false,
             })
-            refresh()
           }}
         >
-          {folderInfo.folder_name}
+          {folderInfo.name}
         </span>
       </div>
     )
@@ -73,7 +74,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
     <>
       {data?.length > 0 && (
         <div className='flex items-center'>
-          <MdKeyboardArrowRight className={clsx('w-8 h-8 mr-2 rotate-180')} />
+          <Icon icon='ic:baseline-chevron-right' className={clsx('w-8 h-8 mr-2 rotate-180')} />
           <BreadCrumbMobile folderInfo={data} isLastOne={false} />
         </div>
       )}
@@ -88,13 +89,11 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: CurrentFolder[] }) 
         onClick={async () => {
           if (atRoot) return
           await router.push('/home')
-          refresh()
         }}
       >
         我的 Kushare
       </span>
-      {data?.length > 0 &&
-        data.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} key={`folder_${e.folder_id}`} />)}
+      {data?.length > 0 && data.map((e) => <BreadCrumb folderInfo={e} isLastOne={false} key={`folder_${e.id}`} />)}
     </>
   )
 }

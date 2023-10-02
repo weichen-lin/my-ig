@@ -1,6 +1,8 @@
 import { Sort, KushareDrive, Operator, ImagePlayground, UploadTasks, BreadCrumbs, Hinter } from 'components/disk'
 import { LayoutHome } from 'components/layout'
-import { RecoilRoot } from 'recoil'
+import { RecoilRoot, RecoilEnv } from 'recoil'
+
+RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
 export default function Drive() {
   return (

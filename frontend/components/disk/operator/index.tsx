@@ -1,11 +1,10 @@
 import clsx from 'clsx'
 import { ListMethod, listMethodState } from 'store'
 import { useIsMobile } from 'hooks/disk'
-import { Loading, Dialog } from 'components/utils'
+import { Dialog } from 'components/utils'
 import fetcher from 'api/fetcher'
 import { PCButton, MobileButton } from './buttons'
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { useGdrive } from 'context'
 import { AddFolder } from 'components/utils'
 import { useRecoilValue } from 'recoil'
 
@@ -91,9 +90,7 @@ export default function Operator() {
   ]
 
   return (
-    <div
-      className={clsx('flex ml-3 mt-2 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}
-    >
+    <div className={clsx('flex ml-3 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
       {Buttons.map((e, index) =>
         isMobile ? (
           <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />
