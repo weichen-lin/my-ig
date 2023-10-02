@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useRecoilState } from 'recoil'
 import { HintState } from 'store'
 
@@ -54,5 +54,5 @@ export default function useHints() {
     setHints((prev) => [...prev, newHint])
   }
 
-  return { hints, AddHints }
+  return { AddHints }
 }
