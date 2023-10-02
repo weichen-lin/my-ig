@@ -1,4 +1,4 @@
-import { Sort, GdriveLikeDisk, Operator, ImagePlayground, UploadTasks, BreadCrumbs, Hinter } from 'components/disk'
+import { Sort, Operator, ImagePlayground, UploadTasks, BreadCrumbs, Hinter } from 'components/disk'
 
 import { GetServerSideProps } from 'next'
 
@@ -31,22 +31,13 @@ export default function DiskPage(props: TokenProp) {
   const isLoading = true
 
   return (
-    <IgProvider token={"asdsa"} current={"asdasd"}>
+    <IgProvider token={'asdsa'} current={'asdasd'}>
       <LayoutHome>
         <div className='flex flex-col h-[90%] relative'>
           <div className='flex flex-wrap w-[92%] items-center mx-auto'>
             {/* <Operator sortProps={sortProps} /> */}
             <BreadCrumbs />
           </div>
-          <GdriveLikeDisk
-            isLoading={isLoading}
-            listMethod={sortProps.listMethod}
-            // selected={selected}
-            // dragged={dragged}
-            handleImageDisplay={infoProps.handleImageDisplay}
-            handleCurrentFolder={handleCurrentFolder}
-            // hoverHandler={hoverHandler}
-          />
           {/* <UploadTasks uploaderProps={operatorProps.uploaderProps} />
       <ImagePlayground
         data={diskData?.files ?? []}
@@ -66,8 +57,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
   const cookie = req.headers.cookie
   const token = CookieParser({ cookie, name: 'my-ig-token' })
   const locate_at = params?.locate_at ?? null
-
-  console.log({ cookie, token, locate_at })
 
   return {
     props: {

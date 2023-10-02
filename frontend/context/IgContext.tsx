@@ -18,11 +18,11 @@ export const IgProvider = (props: KushareRootProps) => {
     // Router.push('/login')
   }
 
-  const { hints, AddHints } = useHints()
+  const { AddHints } = useHints()
 
   const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
     onError: handlerError,
-    needInitialRun: true
+    needInitialRun: true,
   })
 
   const handleHints = (status: Action, message: string) => {
@@ -38,7 +38,7 @@ export const IgProvider = (props: KushareRootProps) => {
       if (prev) {
         return {
           ...prev,
-          [key]: data
+          [key]: data,
         }
       } else {
         return null
@@ -58,9 +58,8 @@ export const IgProvider = (props: KushareRootProps) => {
         userProfile,
         refresh,
         isAuth: isLoading,
-        hints,
         handleHints,
-        handleUserProfile
+        handleUserProfile,
       }}
     >
       {authCheck && children}

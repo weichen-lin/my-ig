@@ -12,7 +12,6 @@ interface KushareRoot {
   userProfile: User | null
   refresh: () => void
   isAuth: boolean
-  hints: Hint[]
   handleHints: (status: Action, message: string) => void
   handleUserProfile: (key: keyof User, data: string) => void
 }
@@ -21,18 +20,16 @@ export const IgContext = createContext<KushareRoot>({
   userProfile: null,
   refresh: () => {},
   isAuth: false,
-  hints: [],
   handleHints: (status, message) => {},
-  handleUserProfile: (key, data) => {}
+  handleUserProfile: (key, data) => {},
 })
 
 export const KushareRoot = createContext<KushareRoot>({
   userProfile: null,
   refresh: () => {},
   isAuth: false,
-  hints: [],
   handleHints: (status, message) => {},
-  handleUserProfile: (key, data) => {}
+  handleUserProfile: (key, data) => {},
 })
 
 interface SidebarContext {
@@ -40,7 +37,7 @@ interface SidebarContext {
 }
 
 export const Sidebar = createContext<SidebarContext>({
-  user: null
+  user: null,
 })
 
 interface OperatorContext {
@@ -48,7 +45,7 @@ interface OperatorContext {
 }
 
 export const Operator = createContext<OperatorContext>({
-  openDialog: false
+  openDialog: false,
 })
 
 interface HintsContext {
@@ -56,5 +53,5 @@ interface HintsContext {
 }
 
 export const Hints = createContext<HintsContext>({
-  hints: []
+  hints: [],
 })
