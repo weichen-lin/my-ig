@@ -13,7 +13,7 @@ const IconClassFacebook = 'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hov
 
 export default function LoginPage(props: { token: string }) {
   const { token } = props
-  const { isAuth } = useAuth({ token: token, isRegisterPage: false })
+  const { isAuth } = useAuth({ token: token, needRouting: false })
 
   const { isRequest, loginInfo, handleAuthInfo, error, run, successMsg, goRegister, btnDisabled } = useLogin()
 

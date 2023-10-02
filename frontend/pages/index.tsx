@@ -7,7 +7,7 @@ const cookieName = process.env.USER_AUTH_COOKIE_NAME ?? ''
 
 export default function IndexPage(props: { token: string }) {
   const { token } = props
-  const { isAuth } = useAuth({ token: token, isRegisterPage: false })
+  const { isAuth } = useAuth({ token: token, needRouting: true })
   return !isAuth ? <Loading /> : <></>
 }
 
