@@ -5,6 +5,12 @@ export enum ListMethod {
   List,
 }
 
+export interface CommonProps {
+  id: string
+  name: string
+  last_modified_at: string
+}
+
 export const diskLoadingState = atom({
   key: 'diskLoadingState',
   default: true,

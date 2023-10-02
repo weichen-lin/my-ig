@@ -1,9 +1,10 @@
 import clsx from 'clsx'
-import { FormatProp, ListMethod, SelectionValue, SelectionStringList } from 'hooks/disk'
+import { FormatProp, SelectionValue, SelectionStringList } from 'hooks/disk'
 import { FileData } from 'context/type'
 import { useState, useCallback, memo } from 'react'
 import { Icon } from '@iconify/react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
+import { ListMethod } from 'store'
 
 interface FilesProps extends FormatProp, SelectionStringList {
   files: FileData[]
@@ -30,7 +31,7 @@ export default function Files(props: any) {
 Files.displayName = 'Files'
 
 export const File = memo((props: FileProps) => {
-  const { fileInfo, listMethod, handleImageDisplay } = props
+  const { fileInfo, listMethod } = props
   const { file_id, file_name, last_modified_at } = fileInfo
   const [isSelect, setIsSelect] = useState(false)
 
@@ -128,7 +129,6 @@ export const LatticeFileBackbone = () => {
 }
 
 LatticeFileBackbone.displayName = 'LatticeFileBackbone'
-
 
 const handleTime = (e: string) => {
   const date = new Date(e) ?? new Date()

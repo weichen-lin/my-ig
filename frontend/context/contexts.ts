@@ -1,5 +1,4 @@
 import { createContext } from 'react'
-import { Action, Hint } from 'hooks/disk'
 
 export interface User {
   user_id: string
@@ -8,50 +7,14 @@ export interface User {
   avatar_url: string
 }
 
-interface KushareRoot {
-  userProfile: User | null
-  refresh: () => void
-  isAuth: boolean
-  handleHints: (status: Action, message: string) => void
-  handleUserProfile: (key: keyof User, data: string) => void
-}
-
-export const IgContext = createContext<KushareRoot>({
-  userProfile: null,
-  refresh: () => {},
-  isAuth: false,
-  handleHints: (status, message) => {},
-  handleUserProfile: (key, data) => {},
-})
-
-export const KushareRoot = createContext<KushareRoot>({
-  userProfile: null,
-  refresh: () => {},
-  isAuth: false,
-  handleHints: (status, message) => {},
-  handleUserProfile: (key, data) => {},
-})
-
-interface SidebarContext {
+interface KushareAuthProps {
   user: User | null
+  isAuth: boolean
+  handleUser: (key: keyof User, data: string) => void
 }
 
-export const Sidebar = createContext<SidebarContext>({
+export const KushareAuth = createContext<KushareAuthProps>({
   user: null,
-})
-
-interface OperatorContext {
-  openDialog: boolean
-}
-
-export const Operator = createContext<OperatorContext>({
-  openDialog: false,
-})
-
-interface HintsContext {
-  hints: Hint[]
-}
-
-export const Hints = createContext<HintsContext>({
-  hints: [],
+  isAuth: false,
+  handleUser: (key, data) => {},
 })

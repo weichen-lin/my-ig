@@ -3,7 +3,7 @@ import Files from 'components/disk/files/files'
 import Folders from 'components/disk/files/folders'
 import { KushareDriveBackbonePC } from './gdrivebone'
 import { useRecoilValue } from 'recoil'
-import { listMethodState, ListMethod, driveState } from 'store'
+import { listMethodState, ListMethod, driveState, CommonProps } from 'store'
 
 const EmptyContent = () => {
   return (
@@ -17,9 +17,12 @@ const EmptyContent = () => {
 export default function KushareDrive() {
   const drive = useRecoilValue(driveState)
   const listMethod = useRecoilValue(listMethodState)
-  const { isLoading, files, folders } = drive
+  const { isLoading } = drive
 
   if (isLoading) return <KushareDriveBackbonePC />
+
+  const files: CommonProps[] = [{ id: '1', name: 'test', last_modified_at: '2021-10-10' }]
+  const folders: CommonProps[] = [{ id: '1', name: 'test', last_modified_at: '2021-10-10' }]
 
   return files.length > 0 && folders.length > 0 ? (
     <div

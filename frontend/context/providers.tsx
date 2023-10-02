@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import Router from 'next/router'
-import { useHints, Action } from 'hooks/disk'
 import { getUserInfo, useFetch } from 'api/'
-import { IgContext, Sidebar } from './contexts'
+import { KushareAuth } from './contexts'
 
 export interface User {
   user_id: string
@@ -18,7 +16,7 @@ interface TokenCheckerProps {
   children: JSX.Element
 }
 
-export const IgProvider = (props: TokenCheckerProps) => {
+export const KushareAuthProvider = (props: { children: JSX.Element }) => {
   const { children } = props
 
   const handlerError = () => {
@@ -26,27 +24,19 @@ export const IgProvider = (props: TokenCheckerProps) => {
     // Router.push('/login')
   }
 
-  const { hints, AddHints } = useHints()
-
   const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
     onError: handlerError,
-    needInitialRun: true
+    needInitialRun: true,
   })
 
-  const handleHints = (status: Action, message: string) => {
-    AddHints(message, status)
-  }
+  const [user, setUser] = useState<User | null>(null)
 
-  const authCheck = data && !isLoading
-
-  const [userProfile, setUserProfile] = useState<User | null>(null)
-
-  const handleUserProfile = (key: keyof User, data: string) => {
-    setUserProfile((prev) => {
+  const handleUser = (key: keyof User, data: string) => {
+    setUser((prev) => {
       if (prev) {
         return {
           ...prev,
-          [key]: data
+          [key]: data,
         }
       } else {
         return null
@@ -56,29 +46,19 @@ export const IgProvider = (props: TokenCheckerProps) => {
 
   useEffect(() => {
     if (data) {
-      setUserProfile(data)
+      setUser(data)
     }
   }, [data])
 
   return (
-    <IgContext.Provider
+    <KushareAuth.Provider
       value={{
-        userProfile,
-        refresh,
+        user,
         isAuth: isLoading,
-        hints,
-        handleHints,
-        handleUserProfile
+        handleUser,
       }}
     >
       {children}
-    </IgContext.Provider>
+    </KushareAuth.Provider>
   )
-}
-
-export const SidebarProvider = (props: { children: JSX.Element }) => {
-  const { children } = props
-  const [user, setUser] = useState<User | null>(null)
-
-  return <Sidebar.Provider value={{ user }}>{children}</Sidebar.Provider>
 }

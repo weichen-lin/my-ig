@@ -1,16 +1,16 @@
 import clsx from 'clsx'
 import { FcFolder } from 'react-icons/fc'
-import { FormatProp, SelectionValue, ListMethod, SelectionStringList } from 'hooks/disk'
-import { FolderData, CurrentFolder, useGdrive } from 'context'
-import type { HoverHandler } from 'hooks/disk/useGdrive'
+import { ListMethod } from 'store'
+import { FormatProp, SelectionValue, SelectionStringList } from 'hooks/disk'
+import { FolderData } from 'context'
 import { ListBackBone } from 'components/disk/files/listbackbone'
 import { useState } from 'react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
 import { useRouter } from 'next/router'
 
-interface FolderInfo {
-  folder_id: string
-  folder_name: string
+interface CommonProps {
+  id: string
+  name: string
   last_modified_at: string
 }
 
@@ -19,25 +19,23 @@ export default function Folders(props: any) {
 
   return (
     <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
-      {folders?.map((e: FolderInfo) => (
-        <Folder folderInfo={e} listMethod={listMethod} key={`folder_index_${e.folder_id}`} />
+      {folders?.map((e: CommonProps) => (
+        <Folder folderInfo={e} listMethod={listMethod} key={`folder_index_${e.id}`} />
       ))}
     </div>
   )
 }
 
-function Folder(props: { folderInfo: FolderInfo; listMethod: ListMethod }) {
+function Folder(props: { folderInfo: CommonProps; listMethod: ListMethod }) {
   const { folderInfo, listMethod } = props
-  const { folder_name, last_modified_at } = folderInfo
+  const { name, last_modified_at } = folderInfo
   const [isSelect, setIsSelect] = useState(false)
   const router = useRouter()
-  const { refresh } = useGdrive()
 
   const onDoubleClick = async () => {
-    await router.push(`/home?f=${folderInfo.folder_id}`, undefined, {
+    await router.push(`/home?f=${folderInfo.id}`, undefined, {
       shallow: false,
     })
-    refresh()
   }
 
   const onClick = () => {
@@ -69,7 +67,7 @@ function Folder(props: { folderInfo: FolderInfo; listMethod: ListMethod }) {
         )}
       >
         <FcFolder className='mx-2 h-6 w-6' />
-        <div className='flex-1 truncate px-2 pr-1'>{folder_name}</div>
+        <div className='flex-1 truncate px-2 pr-1'>{name}</div>
         {listMethod === ListMethod.List && (
           <div className='DATE hidden w-[200px] px-4 text-right text-gray-400 md:block'>
             {handleTime(last_modified_at)}
