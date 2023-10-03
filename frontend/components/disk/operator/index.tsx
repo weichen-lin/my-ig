@@ -6,12 +6,12 @@ import fetcher from 'api/fetcher'
 import { PCButton, MobileButton } from './buttons'
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { AddFolder } from 'components/utils'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState } from 'recoil'
 
 export default function Operator() {
   const { isMobile } = useIsMobile()
   const [openDialog, setOpenDialog] = useState(false)
-  const listMethod = useRecoilValue(listMethodState)
+  const [method, setMethod] = useRecoilState(listMethodState)
 
   const handleCloseDialog = useCallback(() => {
     setOpenDialog(false)
@@ -77,15 +77,15 @@ export default function Operator() {
       message: '上傳',
       onClick: () => handleFileUpload(true),
     },
-    // {
-    //   name: 'majesticons:filter-line',
-    //   message: '設定過濾',
-    //   onClick: () => console.log('press button'),
-    // },
     {
-      name: listMethod > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
-      message: '調整檢視',
+      name: 'ic:outline-filter-alt',
+      message: '設定過濾',
       onClick: () => console.log('press button'),
+    },
+    {
+      name: method > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
+      message: '調整檢視',
+      onClick: () => setMethod((prev) => (prev === ListMethod.Lattice ? ListMethod.List : ListMethod.Lattice)),
     },
   ]
 

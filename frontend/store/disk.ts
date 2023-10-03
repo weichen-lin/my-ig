@@ -11,6 +11,10 @@ export interface CommonProps {
   last_modified_at: string
 }
 
+export interface ListProps {
+  listMethod: ListMethod
+}
+
 export const diskLoadingState = atom({
   key: 'diskLoadingState',
   default: true,

@@ -1,5 +1,4 @@
 import clsx from 'clsx'
-import { FcFolder } from 'react-icons/fc'
 import { ListMethod } from 'store'
 import { FormatProp, SelectionValue, SelectionStringList } from 'hooks/disk'
 import { FolderData } from 'context'
@@ -7,6 +6,7 @@ import { ListBackBone } from 'components/disk/files/listbackbone'
 import { useState } from 'react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
 import { useRouter } from 'next/router'
+import { Icon } from '@iconify/react'
 
 interface CommonProps {
   id: string
@@ -14,26 +14,14 @@ interface CommonProps {
   last_modified_at: string
 }
 
-export default function Folders(props: any) {
-  const { listMethod, folders, handleCurrentFolder, selected, dragged, hoverHandler } = props
-
-  return (
-    <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
-      {folders?.map((e: CommonProps) => (
-        <Folder folderInfo={e} listMethod={listMethod} key={`folder_index_${e.id}`} />
-      ))}
-    </div>
-  )
-}
-
-function Folder(props: { folderInfo: CommonProps; listMethod: ListMethod }) {
-  const { folderInfo, listMethod } = props
-  const { name, last_modified_at } = folderInfo
+export function Folder(props: { info: CommonProps; method: ListMethod }) {
+  const { info, method } = props
+  const { name, last_modified_at } = info
   const [isSelect, setIsSelect] = useState(false)
   const router = useRouter()
 
   const onDoubleClick = async () => {
-    await router.push(`/home?f=${folderInfo.id}`, undefined, {
+    await router.push(`/home?f=${info.id}`, undefined, {
       shallow: false,
     })
   }
@@ -48,9 +36,9 @@ function Folder(props: { folderInfo: CommonProps; listMethod: ListMethod }) {
   return (
     <div
       className={clsx(
-        'flex transition-all duration-1000 ease-in-out',
+        'flex transition-all duration-300 ease-in-out',
         `${
-          listMethod === ListMethod.Lattice
+          method === ListMethod.Lattice
             ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]'
             : 'w-full flex-col'
         }`
@@ -60,18 +48,16 @@ function Folder(props: { folderInfo: CommonProps; listMethod: ListMethod }) {
       <div
         className={clsx(
           'flex h-12 w-full cursor-pointer items-center justify-between rounded-lg',
-          `${isSelect ? 'border-[1px] border-blue-700 bg-blue-300/70' : 'hover:bg-slate-200'}`,
+          `${isSelect ? 'border-[1px] border-blue-400 bg-blue-200/70' : 'hover:bg-slate-200'}`,
           'transition-all duration-300 ease-in-out',
-          `${listMethod === ListMethod.Lattice ? 'border-2' : 'rounded-none border-b-2'}`,
+          `${method === ListMethod.Lattice ? 'border-2' : 'rounded-none border-b-2'}`,
           `${false ? 'opacity-50' : 'opacity-100'}`
         )}
       >
-        <FcFolder className='mx-2 h-6 w-6' />
+        <Icon icon='ic:round-folder' color='#F8D775' className='mx-2 h-6 w-6' />
         <div className='flex-1 truncate px-2 pr-1'>{name}</div>
-        {listMethod === ListMethod.List && (
-          <div className='DATE hidden w-[200px] px-4 text-right text-gray-400 md:block'>
-            {handleTime(last_modified_at)}
-          </div>
+        {method === ListMethod.List && (
+          <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(last_modified_at)}</div>
         )}
       </div>
     </div>
