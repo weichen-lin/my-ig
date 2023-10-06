@@ -32,6 +32,10 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 
 	ctl := controller.Controller{Pool: pool, SecretKey: config.SecretKey, BucketHandler: bucketHandler}
 
+	mode := controller.DevMode{IsDev: config.IsDev}
+
+	r.Use(controller.CORSMiddleware(mode))
+
 	user := r.Group("/user")
 	user.GET("/info", ctl.AuthMiddleware(), ctl.GetUserInfo)
 	user.POST("/register", ctl.UserRegister)
