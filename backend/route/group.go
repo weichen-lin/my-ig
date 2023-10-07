@@ -2,8 +2,9 @@ package route
 
 import (
 	"context"
-	"fmt"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -17,8 +18,6 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(config)
 
 	pool, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
@@ -34,9 +33,10 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 
 	mode := controller.DevMode{IsDev: config.IsDev}
 
-	r.Use(controller.CORSMiddleware(mode))
+	r.Use(cors.New(CorsConfig(&mode)))
 
 	user := r.Group("/user")
+	user.GET("/auth", ctl.ValiedateToken)
 	user.GET("/info", ctl.AuthMiddleware(), ctl.GetUserInfo)
 	user.POST("/register", ctl.UserRegister)
 	user.POST("/login", ctl.UserLogin)
@@ -44,6 +44,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	user.DELETE("/logout", ctl.AuthMiddleware(), ctl.UserLogout)
 
 	folder := r.Group("/folder")
+	folder.GET("/:id", ctl.AuthMiddleware(), ctl.GetFile)
 	folder.POST("/create", ctl.AuthMiddleware(), ctl.CreateFolder)
 	folder.PATCH("/rename", ctl.AuthMiddleware(), ctl.UpdateFolderName)
 	folder.PATCH("/move", ctl.AuthMiddleware(), ctl.MoveFolder)
@@ -52,5 +53,27 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	file.GET("/:id", ctl.AuthMiddleware(), ctl.GetFile)
 	file.POST("/create", ctl.AuthMiddleware(), ctl.CreateFile)
 
+	disk := r.Group("/disk")
+	disk.GET("/" , ctl.AuthMiddleware(), ctl.GetDisk)
+	
 	return r
+}
+
+
+func CorsConfig(mode *controller.DevMode) cors.Config {
+
+    corsConf := cors.Config{
+        MaxAge:                 12 * time.Hour,
+        AllowBrowserExtensions: true,
+    }
+	corsConf.AllowMethods = []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"}
+	corsConf.AllowHeaders = []string{"Authorization", "Content-Type", "Upgrade", "Origin",
+            "Connection", "Accept-Encoding", "Accept-Language", "Host"}
+
+    if mode.IsDev {
+        corsConf.AllowOrigins = []string{"http://localhost:3000"}
+		corsConf.AllowCredentials = true
+    }
+
+    return corsConf
 }

@@ -128,5 +128,4 @@ func (s Controller) GetFile(ctx *gin.Context) {
 
 	mimetype := mimetype.Detect(buffer)
 	ctx.Data(http.StatusOK, mimetype.String(), buffer)
-	return
 }

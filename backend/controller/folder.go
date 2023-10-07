@@ -239,3 +239,41 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, "success")
 	return
 }
+
+func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
+	id_from_param := ctx.Param("f")
+
+	folderId, err := util.ParseUUID(id_from_param)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrFolderIdInvalid))
+		return
+	}
+
+	id_from_ctx := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id_from_ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	q := db.New(tx)
+
+	folder, err := q.GetFolder(ctx, folderId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if folder.UserID != userId {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, folder.FullPath)
+}
