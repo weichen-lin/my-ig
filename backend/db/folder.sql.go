@@ -152,6 +152,45 @@ func (q *Queries) MoveFolder(ctx context.Context, arg MoveFolderParams) (Folder,
 	return i, err
 }
 
+const selectFolders = `-- name: SelectFolders :many
+SELECT id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id FROM "folder" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC
+`
+
+type SelectFoldersParams struct {
+	LocateAt uuid.UUID
+	UserID   uuid.UUID
+}
+
+func (q *Queries) SelectFolders(ctx context.Context, arg SelectFoldersParams) ([]Folder, error) {
+	rows, err := q.db.Query(ctx, selectFolders, arg.LocateAt, arg.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Folder
+	for rows.Next() {
+		var i Folder
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.LocateAt,
+			&i.FullPath,
+			&i.Depth,
+			&i.IsDeleted,
+			&i.CreatedAt,
+			&i.LastModifiedAt,
+			&i.UserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateFolderName = `-- name: UpdateFolderName :one
 UPDATE "folder" SET name = $1, last_modified_at = $2 WHERE id = $3 RETURNING id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
 `

@@ -65,3 +65,40 @@ func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) 
 	)
 	return i, err
 }
+
+const selectFiles = `-- name: SelectFiles :many
+SELECT id, name, url, created_at, last_modified_at, user_id, locate_at FROM "file" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC
+`
+
+type SelectFilesParams struct {
+	LocateAt uuid.UUID
+	UserID   uuid.UUID
+}
+
+func (q *Queries) SelectFiles(ctx context.Context, arg SelectFilesParams) ([]File, error) {
+	rows, err := q.db.Query(ctx, selectFiles, arg.LocateAt, arg.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []File
+	for rows.Next() {
+		var i File
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Url,
+			&i.CreatedAt,
+			&i.LastModifiedAt,
+			&i.UserID,
+			&i.LocateAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

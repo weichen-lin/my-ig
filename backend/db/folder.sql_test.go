@@ -534,3 +534,43 @@ func Test_DeleteFolder(t *testing.T) {
 	require.NoError(t, err)
 	tx.Commit(context.Background())
 }
+
+func Test_GetFolders(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg_1 := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: uuid.Nil,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	folder_1, err := CreateFolderWithFullPathAtTest(context.Background(), arg_1)
+	require.NoError(t, err)
+	require.NotEmpty(t, folder_1)
+
+	arg_2 := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: uuid.Nil,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	folder_2, err := CreateFolderWithFullPathAtTest(context.Background(), arg_2)
+	require.NoError(t, err)
+	require.NotEmpty(t, folder_2)
+	
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+	
+	folders, err := q.SelectFolders(context.Background(), SelectFoldersParams{
+		UserID: user.ID,
+		LocateAt: uuid.Nil,
+	})
+	require.NoError(t, err)
+	require.Len(t, folders, 2)
+}

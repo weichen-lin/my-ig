@@ -61,3 +61,47 @@ func Test_Getfile(t *testing.T) {
 
 	tx.Commit(context.Background())
 }
+
+func Test_Getfiles(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	arg_1 := CreateFileParams{
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	file_1, err := q.CreateFile(context.Background(), arg_1)
+	require.NoError(t, err)
+	require.NotEmpty(t, file_1)
+
+	arg_2 := CreateFileParams{
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	file_2, err := q.CreateFile(context.Background(), arg_2)
+	require.NoError(t, err)
+	require.NotEmpty(t, file_2)
+
+	arg := SelectFilesParams{
+		UserID: user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	files, err := q.SelectFiles(context.Background(), arg)
+	require.NoError(t, err)
+	require.Len(t, files, 2)
+
+	tx.Commit(context.Background())
+}
