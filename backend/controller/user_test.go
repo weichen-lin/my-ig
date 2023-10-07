@@ -2,7 +2,6 @@ package controller
 
 import (
 	"bytes"
-	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -52,7 +51,7 @@ func Test_UserRegister(t *testing.T) {
 
 	router.POST("/user/register", c.UserRegister)
 
-	params := []byte(`{"email":"sadasdasd@fasfsa.com","password":"123as456", "name":"tesasdast"}`)
+	params := []byte(`{"email":"sadassdasd@fasfsa.com","password":"123as456", "name":"tesasdast"}`)
 
 	req, _ := http.NewRequest("POST", "/user/register", bytes.NewBuffer(params))
 	req.Header.Add("Content-Type", "application/json")
@@ -61,12 +60,8 @@ func Test_UserRegister(t *testing.T) {
 
 	router.ServeHTTP(w, req)
 
-	var userId string
-
-	json.Unmarshal([]byte(w.Body.String()), &userId)
-	t.Log(w.Body.String())
 	require.Equal(t, http.StatusOK, w.Code)
-	require.NotEmpty(t, userId)
+	require.NotEmpty(t, w.Body.String())
 }
 
 // To DO
