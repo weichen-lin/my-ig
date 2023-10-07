@@ -69,7 +69,7 @@ export default function RegisterPage(props: { token: string }) {
           </p>
           {error && (
             <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
-              <AuthStatus message={error} status='failed' />
+              <AuthStatus message={''} status='failed' />
             </div>
           )}
           {successMsg && (

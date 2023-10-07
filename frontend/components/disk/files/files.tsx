@@ -39,7 +39,7 @@ export const File = (props: { info: CommonProps; method: ListMethod }) => {
         {name}
       </div>
       {!isLattice && (
-        <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(date.toISOString())}</div>
+        <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(last_modified_at)}</div>
       )}
     </div>
   )
