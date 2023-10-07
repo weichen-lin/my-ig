@@ -54,26 +54,25 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	file.POST("/create", ctl.AuthMiddleware(), ctl.CreateFile)
 
 	disk := r.Group("/disk")
-	disk.GET("/" , ctl.AuthMiddleware(), ctl.GetDisk)
-	
+	disk.GET("/", ctl.AuthMiddleware(), ctl.GetDisk)
+
 	return r
 }
 
-
 func CorsConfig(mode *controller.DevMode) cors.Config {
 
-    corsConf := cors.Config{
-        MaxAge:                 12 * time.Hour,
-        AllowBrowserExtensions: true,
-    }
+	corsConf := cors.Config{
+		MaxAge:                 12 * time.Hour,
+		AllowBrowserExtensions: true,
+	}
 	corsConf.AllowMethods = []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"}
 	corsConf.AllowHeaders = []string{"Authorization", "Content-Type", "Upgrade", "Origin",
-            "Connection", "Accept-Encoding", "Accept-Language", "Host"}
+		"Connection", "Accept-Encoding", "Accept-Language", "Host"}
 
-    if mode.IsDev {
-        corsConf.AllowOrigins = []string{"http://localhost:3000"}
+	if mode.IsDev {
+		corsConf.AllowOrigins = []string{"http://localhost:3000"}
 		corsConf.AllowCredentials = true
-    }
+	}
 
-    return corsConf
+	return corsConf
 }

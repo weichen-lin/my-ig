@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	maxFileSize = 10 << 20 // 10MB
+	maxFileSize   = 10 << 20 // 10MB
 	userTokenName = "token"
 )
 

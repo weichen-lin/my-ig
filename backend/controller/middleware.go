@@ -11,7 +11,7 @@ func (c *Controller) AuthMiddleware() gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 		header := ctx.GetHeader("Authorization")
-		
+
 		if header == "" {
 			ctx.String(http.StatusUnauthorized, "Invalid Authorization")
 			ctx.Abort()
