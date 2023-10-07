@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useSetRecoilState } from 'recoil'
-import { driveState } from 'store'
+import { breadcrumbState } from 'store'
 
 import { useIsMobile } from 'hooks/disk'
 import { useEffect } from 'react'
@@ -102,13 +102,17 @@ export default function BreadCrumbs() {
   const router = useRouter()
   const { isMobile } = useIsMobile()
   const { data, isLoading, run } = useFetch(getBreadCrumb)
-  const setDrive = useSetRecoilState(driveState)
+  const setBreadCrumb = useSetRecoilState(breadcrumbState)
 
   useEffect(() => {
     const folder_id = (router.query.f ?? null) as string | null
-    setDrive((e) => ({ ...e, isLoading: true }))
+    if (!folder_id) {
+      setBreadCrumb((e) => ({ ...e, isLoading: false }))
+      return
+    }
+
     run(folder_id)
-    setDrive((e) => ({ ...e, isLoading: false }))
+    setBreadCrumb((e) => ({ ...e, breadcrumbs: data, isLoading: false }))
   }, [router.query.f])
 
   return (

@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react'
-import axios from 'axios'
 import Router from 'next/router'
-import { login, LoginBody, useFetch } from 'api'
+import { userLogin, LoginBody, useFetch } from 'api'
 
 export default function useLogin() {
   const [loginInfo, setLoginInfo] = useState<LoginBody>({
@@ -10,7 +9,7 @@ export default function useLogin() {
   })
   const [successMsg, setSuccessMsg] = useState<string | null>('')
 
-  const { error, isLoading, run } = useFetch(login, {
+  const { error, isLoading, run } = useFetch(userLogin, {
     onSuccess: () => {
       setSuccessMsg('登入成功！')
       setTimeout(() => {

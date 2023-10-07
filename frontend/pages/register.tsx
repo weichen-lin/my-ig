@@ -4,10 +4,15 @@ import { AuthInput, AuthButton, AuthStatus, EmailChecker, PasswordChecker } from
 import { useRegister, useAuth } from 'hooks/auth'
 import { GetServerSideProps } from 'next'
 import { Loading } from 'components/utils'
+import { RecoilEnv } from 'recoil'
+
+RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
+
+const cookieName = process.env.NEXT_PUBLIC_COOKIE_NAME ?? ''
 
 export default function RegisterPage(props: { token: string }) {
   const { token } = props
-  const { isAuth } = useAuth({ token: token, needRouting: false })
+  const { checkAuth } = useAuth({ token: token, needRouting: false })
 
   const {
     isRequest,
@@ -24,7 +29,7 @@ export default function RegisterPage(props: { token: string }) {
 
   return (
     <Layout>
-      {!isAuth ? (
+      {!checkAuth ? (
         <Loading />
       ) : (
         <div className='w-4/5 md:min-w-[350px] max-w-[350px] mx-auto flex flex-col gap-y-8 justify-between'>
@@ -80,7 +85,7 @@ export default function RegisterPage(props: { token: string }) {
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const cookie = req.headers.cookie
-  const token = CookieParser({ cookie, name: 'my-ig-token' })
+  const token = CookieParser({ cookie, name: cookieName })
 
   return {
     props: {

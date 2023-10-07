@@ -39,9 +39,12 @@ export const driveState = atom({
   },
 })
 
-const breadcrumbState = atom({
+export const breadcrumbState = atom({
   key: 'breadcrumbState',
-  default: [],
+  default: {
+    isLoading: true,
+    breadcrumbs: [],
+  },
 })
 
 export const listMethodState = atom({

@@ -7,33 +7,38 @@ interface AuthProps {
   needRouting: boolean
 }
 
+const authUserUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/user/info`
+
 export default function useAuth(props: AuthProps) {
   const { token, needRouting } = props
-  const [isAuth, setIsAuth] = useState(false)
+  const [checkAuth, setCheckAuth] = useState(false)
 
   useEffect(() => {
-    const authUser = () => {
+    const authUser = async () => {
       if (!token) {
         needRouting && Router.push('/login')
-        setIsAuth(true)
+        setCheckAuth(true)
         return
       }
 
-      return axios
-        .get('http://localhost:8080/user/userinfo', {
+      try {
+        const res = await axios.get(authUserUrl, {
           headers: {
             Authorization: token,
             'Content-Type': 'application/json',
           },
         })
-        .then((e) => Router.push('/home'))
-        .catch((e) => {
-          localStorage.clear()
-          needRouting && Router.push('/login')
-        })
+
+        if (res.status === 200) {
+          Router.push('/home')
+        }
+      } catch {
+        localStorage.clear()
+        needRouting && Router.push('/login')
+      }
     }
     authUser()
   }, [])
 
-  return { isAuth }
+  return { checkAuth }
 }

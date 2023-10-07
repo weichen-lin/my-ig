@@ -1,7 +1,7 @@
 import fetcher from './fetcher'
 import axios from 'axios'
 
-const BaseUrl = 'http://localhost:8080'
+const BaseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 export type RegisterKeys = 'email' | 'password'
 
@@ -22,14 +22,14 @@ export const register = async (data: RegisterBody) =>
     withCredentials: true,
   })
 
-export const login = async (data: LoginBody) =>
+export const userLogin = async (data: LoginBody) =>
   axios.post(`${BaseUrl}/user/login`, data, {
     withCredentials: true,
   })
 
-export const authUser = async () => axios.get(`${BaseUrl}/auth`, { withCredentials: true })
+export const authUser = async () => axios.get(`${BaseUrl}/info`, { withCredentials: true })
 
-export const getUserInfo = async () => fetcher.get('/user/userinfo')
+export const getUserInfo = async () => fetcher.get('/user/info')
 
 export const getDiskData = async (locate_at: string | null) =>
   fetcher.get(`/disk${locate_at ? `?locate_at=${locate_at}` : ''}`)

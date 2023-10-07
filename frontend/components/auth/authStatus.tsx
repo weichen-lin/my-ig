@@ -14,9 +14,7 @@ interface StatusIcon {
 
 const statusObj: StatusIcon = {
   success: <SuccessIcon className='h-6 w-6 mx-2 xs:h-8 xs:w-8 xs:m-[10px]' />,
-  failed: (
-    <ErrorIcon className='h-[20px] w-[20px] my-[8px] mx-[6px] xs:h-8 xs:w-8 xs:m-[10px]' />
-  ),
+  failed: <ErrorIcon className='h-[20px] w-[20px] my-[8px] mx-[6px] xs:h-8 xs:w-8 xs:m-[10px]' />,
 }
 
 export default function AuthStatus(props: InputSuccessProps) {

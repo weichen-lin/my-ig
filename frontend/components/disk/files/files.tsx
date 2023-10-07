@@ -39,7 +39,7 @@ export const File = (props: { info: CommonProps; method: ListMethod }) => {
         {name}
       </div>
       {!isLattice && (
-        <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(last_modified_at)}</div>
+        <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(date.toISOString())}</div>
       )}
     </div>
   )
@@ -97,7 +97,7 @@ export const LatticeFileBackbone = () => {
       )}
     >
       <div className='h-full w-full bg-slate-100'></div>
-      <div className='my-2 h-8 w-[180px] truncate rounded-xl bg-slate-100 px-2 text-center'></div>
+      <div className='my-2 h-8 w-5/6 truncate rounded-xl bg-slate-100 px-2 text-center'></div>
     </div>
   )
 }

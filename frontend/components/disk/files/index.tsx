@@ -23,11 +23,11 @@ export default function KushareDrive() {
 
   const files: CommonProps[] = [
     { id: '1', name: 'test', last_modified_at: '2021-10-10' },
-    { id: '1', name: 'test', last_modified_at: '2021-10-10' },
-    { id: '1', name: 'test', last_modified_at: '2021-10-10' },
-    { id: '1', name: 'test', last_modified_at: '2021-10-10' },
-    { id: '1', name: 'test', last_modified_at: '2021-10-10' },
-    { id: '1', name: 'test', last_modified_at: '2021-10-10' },
+    { id: '2', name: 'test', last_modified_at: '2021-10-10' },
+    { id: '3', name: 'test', last_modified_at: '2021-10-10' },
+    { id: '4', name: 'test', last_modified_at: '2021-10-10' },
+    { id: '5', name: 'test', last_modified_at: '2021-10-10' },
+    { id: '6', name: 'test', last_modified_at: '2021-10-10' },
   ]
   const folders: CommonProps[] = [
     { id: '1', name: 'test', last_modified_at: '2021-10-10' },

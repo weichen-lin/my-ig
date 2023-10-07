@@ -73,7 +73,7 @@ export const FolderBackbone = () => {
       )}
     >
       <div className='mx-2 h-6 w-6 rounded-md bg-slate-100'></div>
-      <div className='h-2/3 w-[140px] rounded-md bg-slate-100'></div>
+      <div className='h-2/3 w-[calc(100%-48px)] rounded-md bg-slate-100'></div>
     </div>
   )
 }
