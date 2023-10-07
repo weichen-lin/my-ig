@@ -1,24 +1,32 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 
-const fetcher = axios.create({ baseURL: 'http://localhost:8080' })
+const baseURL = process.env.NEXT_PUBLIC_BASE_URL
+
+const fetcher = axios.create({ baseURL: baseURL })
 
 fetcher.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-  const accessToken = localStorage.getItem('accessToken')
+  const tokenName = process.env.NEXT_PUBLIC_COOKIE_NAME
+  if (!tokenName) {
+    return Promise.reject('No Cookie Name!')
+  }
 
-  if (accessToken && config.url !== '/auth') {
-    config.headers.Authorization = `Bearer ${accessToken}`
+  const accessToken = localStorage.getItem(tokenName)
+
+  if (accessToken && config.url !== '/user/auth') {
+    config.headers.Authorization = accessToken
     return config
   }
 
   if (!accessToken) {
     try {
-      const res = await axios.get(`http://localhost:8080/auth`, {
+      const res = await axios.get(`${baseURL}/user/auth`, {
         withCredentials: true,
       })
 
-      const accessToken = res.data.token
-      localStorage.setItem('accessToken', accessToken)
-      config.headers.Authorization = `Bearer ${accessToken}`
+      const accessToken = res.data
+
+      localStorage.setItem(tokenName, accessToken)
+      config.headers.Authorization = accessToken
       return config
     } catch {
       return Promise.reject('Authorized Failed!')

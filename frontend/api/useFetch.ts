@@ -3,6 +3,10 @@ import axios, { AxiosResponse } from 'axios'
 
 type API<T, V> = (params: T) => Promise<AxiosResponse<V, any>>
 
+interface Error {
+  error: string
+}
+
 export default function useFetch<T, V>(
   api: API<T, V>,
   props?: {
@@ -12,7 +16,7 @@ export default function useFetch<T, V>(
   }
 ) {
   const [data, setData] = useState<V | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
   const [refreshControl, setRefreshControl] = useState<boolean>(false)
   const [needRefresh, setNeedRefresh] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -29,7 +33,7 @@ export default function useFetch<T, V>(
         if (axios.isAxiosError(e)) {
           setError(e.response?.data)
         } else {
-          setError('something went wrong')
+          setError({ error: 'something wrong' })
         }
 
         props?.onError && props.onError(e)
@@ -47,6 +51,7 @@ export default function useFetch<T, V>(
 
   useEffect(() => {
     if (props?.needInitialRun || needRefresh) {
+      console.log('run ****************')
       run({} as T)
       if (needRefresh) setNeedRefresh(false)
     }

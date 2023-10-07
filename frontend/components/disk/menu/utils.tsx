@@ -1,14 +1,15 @@
-import { IconType } from 'react-icons'
-import { CiHome, CiShare2, CiSettings, CiCloudOn, CiLogout } from 'react-icons/ci'
-import { useState, useEffect, useCallback, memo } from 'react'
+import { CiCloudOn, CiLogout } from 'react-icons/ci'
+import { useState, useCallback, useContext } from 'react'
 import Router, { useRouter } from 'next/router'
-import { useIgContext } from 'context'
 import clsx from 'clsx'
 import { MdUploadFile } from 'react-icons/md'
 import fetcher from 'api/fetcher'
+import { KushareAuth } from 'context'
+import { useHints } from 'hooks/disk'
+import { Icon } from '@iconify/react'
 
 export interface MenuItemProps {
-  Icon: IconType
+  IconName: string
   name: string
   handleRoute?: () => void
   current?: boolean
@@ -26,7 +27,7 @@ export const Switcher = () => {
 }
 
 export const MenuItem = (props: MenuItemProps) => {
-  const { Icon, name, handleRoute, current } = props
+  const { IconName, name, handleRoute, current } = props
   return handleRoute ? (
     <div
       className={clsx(
@@ -35,12 +36,12 @@ export const MenuItem = (props: MenuItemProps) => {
       )}
       onClick={handleRoute}
     >
-      <Icon className='w-7 h-7 mx-3' fill={`${current ? '#3B82F6' : ''}`} />
+      <Icon icon={IconName} className='w-7 h-7 mx-3' />
       <span className={`${current ? 'text-blue-500' : ''}`}>{name}</span>
     </div>
   ) : (
     <div className='w-[97.5%] py-2 flex justify-start items-center'>
-      <Icon className='w-7 h-7 mx-3' />
+      <Icon icon={IconName} className='w-7 h-7 mx-3' />
       <span className='select-none'>{name}</span>
     </div>
   )
@@ -48,9 +49,11 @@ export const MenuItem = (props: MenuItemProps) => {
 
 export const Menu = () => {
   const [isRouting, setIsRouting] = useState(false)
+  const { user, isAuth, handleUser } = useContext(KushareAuth)
+  const { AddHints } = useHints()
   const router = useRouter()
 
-  const menu_routing = useCallback((menu: { pathname: string }) => {
+  const MenuRouting = useCallback((menu: { pathname: string }) => {
     router.events.on('routeChangeStart', () => {
       setIsRouting(true)
     })
@@ -72,8 +75,6 @@ export const Menu = () => {
   const router_split = router.pathname.split('/')
 
   const current = router_split.length > 1 ? router_split[1] : ''
-
-  const { handleHints, userProfile, isAuth, handleUserProfile } = useIgContext()
 
   const handleFileUpload = async (multiple: boolean) => {
     try {
@@ -101,13 +102,13 @@ export const Menu = () => {
                   },
                 })
                 .then((res) => {
-                  handleUserProfile('avatar_url', res.data)
-                  handleHints('success', '上傳成功')
+                  handleUser('avatar_url', res.data)
+                  AddHints('上傳成功', 'success')
                 })
                 .catch((err) => console.log(err))
             }
             img.onerror = (e) => {
-              handleHints('success', '上傳格式錯誤')
+              AddHints('上傳成功', 'success')
             }
           }
         })
@@ -128,17 +129,17 @@ export const Menu = () => {
 
   const Menus = [
     {
-      Icon: CiHome,
+      IconName: 'ic:round-home',
       name: '首頁',
       pathname: 'home',
     },
     {
-      Icon: CiShare2,
+      IconName: 'ic:twotone-share',
       name: '分享',
       pathname: 'share',
     },
     {
-      Icon: CiSettings,
+      IconName: 'ic:baseline-settings',
       name: '設定',
       pathname: 'setting',
     },
@@ -147,11 +148,15 @@ export const Menu = () => {
   const Avatar = () => {
     return (
       <div className='flex flex-col items-center gap-y-4'>
-        <div className='overflow-hidden w-24 h-24'>
-          <img src={userProfile?.avatar_url} className='w-full h-full rounded-full border-2'></img>
+        <div className='overflow-hidden w-24 h-24 rounded-full border-2'>
+          {user && user.avatar_url ? (
+            <img src={user?.avatar_url} className='rounded-full'></img>
+          ) : (
+            <Icon icon='pixelarticons:user' className='w-16 h-16 m-4' />
+          )}
         </div>
         <p className='text-lg text-center w-full px-4 truncate max-w-[180px] 4xl:max-w-[260px]'>
-          {userProfile?.user_name ?? <span className='text-gray-400 text-sm select-none'>未設定使用者名稱</span>}
+          {user?.user_name ?? <span className='text-gray-400 text-sm select-none'>未設定使用者名稱</span>}
         </p>
         <div className='relative w-[100px] h-16 mx-auto'>
           <div
@@ -177,11 +182,11 @@ export const Menu = () => {
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
       {Menus.map((menu) => (
         <MenuItem
-          Icon={menu.Icon}
+          IconName={menu.IconName}
           name={menu.name}
           handleRoute={() => {
             if (menu.pathname !== current) {
-              menu_routing(menu)
+              MenuRouting(menu)
             }
           }}
           current={menu.pathname === current}
@@ -189,7 +194,7 @@ export const Menu = () => {
         />
       ))}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
-      <MenuItem Icon={CiCloudOn} name='儲存空間' />
+      <MenuItem IconName='ic:baseline-cloud' name='儲存空間' />
       {!isAuth && (
         <>
           <meter className='w-full px-3' min='0' max='15' value='5'></meter>
@@ -197,7 +202,7 @@ export const Menu = () => {
         </>
       )}
       <div className='flex-1'></div>
-      <MenuItem Icon={CiLogout} name='登出' handleRoute={handleLogout} />
+      <MenuItem IconName='ic:outline-logout' name='登出' handleRoute={handleLogout} />
       {isRouting && <Switcher />}
     </>
   )

@@ -16,19 +16,19 @@ export const PasswordChecker = (props?: { value: string }) => {
   const rules = [
     {
       status: lengthChecker,
-      rule: 'At least 8 chars',
+      rule: '至少 8個字元',
     },
     {
       status: upperCaseChecker,
-      rule: 'At least 1 big letter',
+      rule: '至少一個大寫字母',
     },
     {
       status: numberChecker,
-      rule: 'At least 1 number',
+      rule: '至少一個數字',
     },
     {
       status: symbolChecker,
-      rule: 'At least 1 special char',
+      rule: '至少一個特殊符號',
     },
   ]
 
@@ -40,7 +40,7 @@ export const PasswordChecker = (props?: { value: string }) => {
       )}
     >
       {rules.map((e) => (
-        <RuleChecker status={e.status} rule={e.rule} />
+        <RuleChecker status={e.status} rule={e.rule} key={e.rule}/>
       ))}
     </ul>
   )

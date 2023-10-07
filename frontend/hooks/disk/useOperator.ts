@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from 'react'
 import fetcher from 'api/fetcher'
-import { APIS } from 'api/apis'
+// import { APIS } from 'api/apis'
 import { FolderResponse, FolderStatus } from 'api/errors'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { diskInitState, diskStatusInitState } from 'context'
@@ -48,7 +48,7 @@ export default function useOperator() {
     }
 
     fetcher
-      .post(APIS.FOLDER, {
+      .post("", {
         folder_name,
         current_folder: current_folder.folder_uuid,
       })
@@ -115,26 +115,13 @@ export default function useOperator() {
                 diskStatus_copy.current_folder.pop() ?? ''
               )
               fetcher
-                .post(APIS.FILE, formData, {
+                .post("", formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data',
                   },
                 })
                 .then((res) => {
-                  setDiskData((prev) => ({
-                    ...prev,
-                    files: [
-                      ...prev.files,
-                      {
-                        name: file.name,
-                        url: res?.data?.url,
-                        last_modified_at: '',
-                        id: res?.data?.id,
-                        tags: [''],
-                        description: '',
-                      },
-                    ],
-                  }))
+                  
                   setUploader((prev) => ({
                     ...prev,
                     uploadfiles: new Map(

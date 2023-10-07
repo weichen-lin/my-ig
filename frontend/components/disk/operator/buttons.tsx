@@ -35,5 +35,3 @@ export const PCButton = (props: ButtonProps) => {
     </button>
   )
 }
-
-export const OperatorButton = (props: ButtonProps) => {}

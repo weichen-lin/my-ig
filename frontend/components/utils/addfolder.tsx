@@ -2,8 +2,8 @@ import { forwardRef, useState, ChangeEvent } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiError } from 'react-icons/bi'
 import { createFolder, useFetch } from 'api'
-import { useGdrive } from 'context'
 import { useRouter } from 'next/router'
+import clsx from 'clsx'
 
 interface AddFolderProps {
   close: () => void
@@ -11,13 +11,11 @@ interface AddFolderProps {
 
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const { close } = prop
-  const { refresh } = useGdrive()
 
   const router = useRouter()
 
   const { isLoading, error, run } = useFetch(createFolder, {
     onSuccess: () => {
-      refresh()
       close()
     },
   })
@@ -41,7 +39,10 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
     <div className='rounded-lg bg-white drop-shadow-lg flex flex-col p-4 gap-y-4 w-full'>
       <p className='text-lg text-gray-500 select-none'>新資料夾</p>
       <input
-        className='p-2 border-2 focus:border-blue-300 outline-none rounded-md text-black text-base select-all'
+        className={clsx(
+          'p-2 border-2 focus:border-blue-300 outline-none',
+          'rounded-md text-black text-base select-all'
+        )}
         ref={ref}
         disabled={isLoading}
         value={folderName}
@@ -69,4 +70,5 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   )
 })
 
+AddFolder.displayName = 'AddFolder'
 export default AddFolder

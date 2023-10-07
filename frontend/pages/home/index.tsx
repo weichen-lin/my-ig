@@ -1,27 +1,36 @@
-import { Sort, GdriveLikeDisk, Operator, ImagePlayground, UploadTasks, BreadCrumbs, Hinter } from 'components/disk'
-
+import { Sort, KushareDrive, Operator, BreadCrumbs, Hinter } from 'components/disk'
 import { LayoutHome } from 'components/layout'
-import { IgProvider } from 'context'
-import { CookieParser, TokenProp } from 'hooks/utils'
+import { RecoilRoot, RecoilEnv } from 'recoil'
+import { GetServerSideProps } from 'next'
+import { CookieParser } from 'hooks/utils'
 
-import { useDisk, useGdrive, useImageDisplay, useDatetime, useOperator } from 'hooks/disk'
-import { useScroll } from 'hooks/utils'
+RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
+const cookieName = process.env.USER_AUTH_COOKIE_NAME ?? ''
 
-const date = new Date()
-
-export default function DiskPage(props: TokenProp) {
+export default function Drive() {
   return (
-    <IgProvider>
+    <RecoilRoot>
       <LayoutHome>
         <div className='flex flex-col h-[90%]'>
           <div className='flex flex-wrap w-[92%] items-center mx-auto'>
             <Operator />
             <BreadCrumbs />
           </div>
-          <GdriveLikeDisk />
+          <KushareDrive />
           <Hinter />
         </div>
       </LayoutHome>
-    </IgProvider>
+    </RecoilRoot>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookie = req.headers.cookie
+  const token = CookieParser({ cookie, name: cookieName })
+
+  return {
+    props: {
+      token,
+    },
+  }
 }

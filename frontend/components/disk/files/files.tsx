@@ -1,35 +1,12 @@
 import clsx from 'clsx'
-import { FormatProp, ListMethod, SelectionValue, SelectionStringList } from 'hooks/disk'
-import { FileData } from 'context/type'
 import { useState, useCallback, memo } from 'react'
 import { Icon } from '@iconify/react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
+import { CommonProps, ListMethod } from 'store'
 
-interface FilesProps extends FormatProp, SelectionStringList {
-  files: FileData[]
-  handleImageDisplay: (e: string) => void
-}
-
-interface FileProps extends FormatProp {
-  fileInfo: FileData
-  handleImageDisplay: (e: string) => void
-}
-
-export default function Files(props: any) {
-  const { listMethod, files, handleImageDisplay, selected, dragged } = props
-
-  return (
-    <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
-      {files?.map((e: FileData) => (
-        <File listMethod={listMethod} fileInfo={e} handleImageDisplay={handleImageDisplay} key={`file_${e.file_id}`} />
-      ))}
-    </div>
-  )
-}
-
-export const File = memo((props: FileProps) => {
-  const { fileInfo, listMethod, handleImageDisplay } = props
-  const { file_id, file_name, last_modified_at } = fileInfo
+export const File = (props: { info: CommonProps; method: ListMethod }) => {
+  const { info, method } = props
+  const { id, name, last_modified_at } = info
   const [isSelect, setIsSelect] = useState(false)
 
   const date = new Date()
@@ -44,29 +21,31 @@ export const File = memo((props: FileProps) => {
 
   const { handleClick } = useSingleAndDoubleClick(onClick, onDoubleClick)
 
-  const isLattice = listMethod === ListMethod.Lattice
+  const isLattice = method === ListMethod.Lattice
 
   return (
     <div
       className={clsx(
         'flex w-full cursor-pointer items-center justify-between',
-        `${isSelect ? 'border-[1px] border-blue-700 bg-blue-500/50' : 'hover:bg-slate-200'}`,
+        `${isSelect ? 'border-[1px] border-blue-400 bg-blue-500/50' : 'hover:bg-slate-200'}`,
         `${false ? 'opacity-50' : 'opacity-100'}`,
         `${isLattice ? 'h-[200px] flex-col rounded-lg border-[1px] border-b-2 bg-[#f2f6fc]' : 'h-12 border-b-[1px]'}`,
         `${isLattice ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]' : 'mb-[1px] w-full'}`
       )}
       onClick={handleClick}
     >
-      <CustomImage src={`http://localhost:8080/file/${file_id}`} listMethod={listMethod} />
+      <CustomImage src={`http://localhost:8080/file/${id}`} listMethod={method} />
       <div className={clsx('truncate', `${isLattice ? 'my-2 h-8 w-[200px] px-2 text-center' : 'flex-1 px-2'}`)}>
-        {file_name}
+        {name}
       </div>
       {!isLattice && (
-        <div className='hidden w-[200px] px-2 text-right text-gray-400 md:block'>{handleTime(date.toISOString())}</div>
+        <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(last_modified_at)}</div>
       )}
     </div>
   )
-})
+}
+
+File.displayName = 'File'
 
 const CustomImage = (props: { src: string; listMethod: ListMethod }) => {
   const [isLoaded, setIsLoaded] = useState(true)
@@ -118,10 +97,12 @@ export const LatticeFileBackbone = () => {
       )}
     >
       <div className='h-full w-full bg-slate-100'></div>
-      <div className='my-2 h-8 w-[180px] truncate rounded-xl bg-slate-100 px-2 text-center'></div>
+      <div className='my-2 h-8 w-5/6 truncate rounded-xl bg-slate-100 px-2 text-center'></div>
     </div>
   )
 }
+
+LatticeFileBackbone.displayName = 'LatticeFileBackbone'
 
 const handleTime = (e: string) => {
   const date = new Date(e) ?? new Date()

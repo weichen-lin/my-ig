@@ -1,20 +1,17 @@
 import clsx from 'clsx'
-import { ListMethod } from 'hooks/disk'
+import { ListMethod, listMethodState } from 'store'
 import { useIsMobile } from 'hooks/disk'
-import { Loading, Dialog } from 'components/utils'
+import { Dialog } from 'components/utils'
 import fetcher from 'api/fetcher'
 import { PCButton, MobileButton } from './buttons'
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { useGdrive } from 'context'
-import Router from 'next/router'
 import { AddFolder } from 'components/utils'
+import { useRecoilState } from 'recoil'
 
 export default function Operator() {
   const { isMobile } = useIsMobile()
   const [openDialog, setOpenDialog] = useState(false)
-  const { listMethod, handleListMethod } = useGdrive()
-
-  const locate_at = Router?.query?.f ?? null
+  const [method, setMethod] = useRecoilState(listMethodState)
 
   const handleCloseDialog = useCallback(() => {
     setOpenDialog(false)
@@ -80,22 +77,20 @@ export default function Operator() {
       message: '上傳',
       onClick: () => handleFileUpload(true),
     },
-    // {
-    //   name: 'majesticons:filter-line',
-    //   message: '設定過濾',
-    //   onClick: () => console.log('press button'),
-    // },
     {
-      name: listMethod > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
+      name: 'ic:outline-filter-alt',
+      message: '設定過濾',
+      onClick: () => console.log('press button'),
+    },
+    {
+      name: method > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
       message: '調整檢視',
-      onClick: handleListMethod,
+      onClick: () => setMethod((prev) => (prev === ListMethod.Lattice ? ListMethod.List : ListMethod.Lattice)),
     },
   ]
 
   return (
-    <div
-      className={clsx('flex ml-3 mt-2 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}
-    >
+    <div className={clsx('flex ml-3 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
       {Buttons.map((e, index) =>
         isMobile ? (
           <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />
@@ -104,7 +99,7 @@ export default function Operator() {
         )
       )}
       {openDialog && (
-        <Dialog children={<AddFolder ref={inputRef} close={handleCloseDialog} />} close={handleCloseDialog} />
+        <Dialog component={<AddFolder ref={inputRef} close={handleCloseDialog} />} close={handleCloseDialog} />
       )}
     </div>
   )
