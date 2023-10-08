@@ -48,6 +48,7 @@ func (s *Controller) ValiedateToken(ctx *gin.Context) {
 
 	_, err = jwtMaker.VerifyToken(cookie)
 	if err != nil {
+		ctx.Header("Set-Cookie", "token="+""+"; Path=/; HttpOnly")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
