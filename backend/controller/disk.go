@@ -10,9 +10,9 @@ import (
 )
 
 func (s *Controller) GetDisk(ctx *gin.Context) {
-	id_from_param := ctx.Param("id")
+	f := ctx.DefaultQuery("f", "")
 
-	locateAt, err := util.ParseUUID(id_from_param)
+	locateAt, err := util.ParseUUID(f)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(ErrFolderIdInvalid))
 		return
@@ -26,12 +26,10 @@ func (s *Controller) GetDisk(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Pool.Begin(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	q := db.New(tx)
+	conn, err := s.Pool.Acquire(ctx)
+	
+	q := db.New(conn)
+	defer conn.Release()
 	
 	files, err := q.SelectFiles(ctx, db.SelectFilesParams{
 		UserID:   userId,

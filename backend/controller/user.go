@@ -54,6 +54,7 @@ func (s *Controller) ValiedateToken(ctx *gin.Context) {
 	}
 
 	ctx.String(http.StatusOK, cookie)
+	return
 }
 
 func (s *Controller) UserRegister(ctx *gin.Context) {

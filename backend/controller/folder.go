@@ -241,7 +241,7 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 }
 
 func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
-	id_from_param := ctx.Param("id")
+	id_from_param := ctx.DefaultQuery("id", "")
 
 	folderId, err := util.ParseUUID(id_from_param)
 	if err != nil {
@@ -257,12 +257,10 @@ func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Pool.Begin(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	q := db.New(tx)
+	conn, err := s.Pool.Acquire(ctx)
+	
+	q := db.New(conn)
+	defer conn.Release()
 
 	folder, err := q.GetFolder(ctx, folderId)
 	if err != nil {
