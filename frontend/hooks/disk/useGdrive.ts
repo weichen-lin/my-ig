@@ -11,13 +11,8 @@ export default function useGdrive() {
   const { data, isLoading, run } = useFetch(getDiskData)
 
   useEffect(() => {
-    const fetchData = async () => {
-      setDiskLoading(true)
-      run(router.query.f as string)
-      setDiskLoading(false)
-    }
-    fetchData()
-  }, [router.query.f])
+    run(router.query.f as string)
+  }, [router?.query?.f])
 
   useEffect(() => {
     setDrive(data)

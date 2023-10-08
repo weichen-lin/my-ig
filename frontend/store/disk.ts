@@ -38,12 +38,15 @@ export const driveState = atom({
   },
 })
 
-export const breadcrumbState = atom({
+export interface Breadcrumb {
+  id: string
+  name: string
+  depth: number
+}
+
+export const breadcrumbState = atom<Breadcrumb[]>({
   key: 'breadcrumbState',
-  default: {
-    isLoading: true,
-    breadcrumbs: [],
-  },
+  default: [],
 })
 
 export const listMethodState = atom({
