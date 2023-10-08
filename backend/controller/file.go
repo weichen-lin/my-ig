@@ -54,6 +54,7 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	arg := db.CreateFileParams{
 		Url:      signedUrl,
@@ -77,7 +78,6 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"id": file.ID})
-	return
 }
 
 func (s Controller) GetFile(ctx *gin.Context) {
@@ -101,12 +101,10 @@ func (s Controller) GetFile(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Pool.Begin(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	q := db.New(tx)
+	conn, err := s.Pool.Acquire(ctx)
+	
+	q := db.New(conn)
+	defer conn.Release()
 
 	arg := db.GetFileParams{
 		ID:     fileId,
