@@ -21,7 +21,7 @@ export default function useFetch<T, V>(
   const [needRefresh, setNeedRefresh] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const run = useCallback((params: T) => {
+  const run = (params: T) => {
     const fetchData = async () => {
       setIsLoading(true)
       setError(null)
@@ -42,7 +42,7 @@ export default function useFetch<T, V>(
       }
     }
     fetchData()
-  }, [])
+  }
 
   const refresh = useCallback(() => {
     setNeedRefresh(true)
@@ -51,7 +51,6 @@ export default function useFetch<T, V>(
 
   useEffect(() => {
     if (props?.needInitialRun || needRefresh) {
-      console.log('run ****************')
       run({} as T)
       if (needRefresh) setNeedRefresh(false)
     }

@@ -48,7 +48,7 @@ const FileBackbone = (props: { listMethod: ListMethod }) => {
   )
 }
 
-export const KushareDriveBackbonePC = () => {
+export const KushareDriveBackbone = () => {
   const listMethod = useRecoilValue(listMethodState)
   const { isFullScreen } = useIsMobile()
 
