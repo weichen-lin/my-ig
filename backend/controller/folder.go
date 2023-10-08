@@ -241,7 +241,7 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 }
 
 func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
-	id_from_param := ctx.Param("f")
+	id_from_param := ctx.Param("id")
 
 	folderId, err := util.ParseUUID(id_from_param)
 	if err != nil {

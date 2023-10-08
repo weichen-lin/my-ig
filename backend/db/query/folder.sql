@@ -30,4 +30,4 @@ RETURNING
 DELETE FROM "folder" WHERE id = $1 and user_id = $2;
 
 -- name: SelectFolders :many
-SELECT * FROM "folder" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC;
+SELECT id, name, last_modified_at FROM "folder" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC;

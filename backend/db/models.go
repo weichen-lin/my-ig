@@ -11,33 +11,33 @@ import (
 )
 
 type File struct {
-	ID             uuid.UUID
-	Name           string
-	Url            string
-	CreatedAt      time.Time
-	LastModifiedAt time.Time
-	UserID         uuid.UUID
-	LocateAt       uuid.UUID
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	Url            string    `json:"url"`
+	CreatedAt      time.Time `json:"createdAt"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
+	UserID         uuid.UUID `json:"userId"`
+	LocateAt       uuid.UUID `json:"locateAt"`
 }
 
 type Folder struct {
-	ID             uuid.UUID
-	Name           string
-	LocateAt       uuid.UUID
-	FullPath       []Path
-	Depth          int32
-	IsDeleted      bool
-	CreatedAt      time.Time
-	LastModifiedAt time.Time
-	UserID         uuid.UUID
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	LocateAt       uuid.UUID `json:"locateAt"`
+	FullPath       []Path    `json:"fullPath"`
+	Depth          int32     `json:"depth"`
+	IsDeleted      bool      `json:"isDeleted"`
+	CreatedAt      time.Time `json:"createdAt"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
+	UserID         uuid.UUID `json:"userId"`
 }
 
 type User struct {
-	ID             uuid.UUID
-	Email          string
-	Password       string
-	Name           string
-	AvatarUrl      *string
-	CreatedAt      time.Time
-	LastModifiedAt time.Time
+	ID             uuid.UUID `json:"id"`
+	Email          string    `json:"email"`
+	Password       string    `json:"password"`
+	Name           string    `json:"name"`
+	AvatarUrl      *string   `json:"avatarUrl"`
+	CreatedAt      time.Time `json:"createdAt"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
 }

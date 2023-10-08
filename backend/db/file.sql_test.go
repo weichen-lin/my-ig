@@ -95,7 +95,7 @@ func Test_Getfiles(t *testing.T) {
 	require.NotEmpty(t, file_2)
 
 	arg := SelectFilesParams{
-		UserID: user.ID,
+		UserID:   user.ID,
 		LocateAt: uuid.Nil,
 	}
 

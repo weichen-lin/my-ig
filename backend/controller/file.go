@@ -16,7 +16,7 @@ import (
 type CreateFileReq struct {
 	File     *multipart.FileHeader `form:"file" binding:"required"`
 	Name     string                `form:"name" binding:"required"`
-	LocateAt string                `form:"locateAt" binding:"required"`
+	LocateAt string                `form:"locateAt"`
 }
 
 func (s Controller) CreateFile(ctx *gin.Context) {

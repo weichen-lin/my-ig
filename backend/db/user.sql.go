@@ -16,9 +16,9 @@ INSERT INTO "user" (email, password, name) VALUES ($1, $2, $3) RETURNING id, ema
 `
 
 type CreateUserParams struct {
-	Email    string
-	Password string
-	Name     string
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -41,8 +41,8 @@ SELECT ID FROM "user" WHERE email = $1 and password= $2
 `
 
 type GetUserParams struct {
-	Email    string
-	Password string
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (uuid.UUID, error) {
@@ -57,9 +57,9 @@ SELECT ID, email, password FROM "user" WHERE email = $1
 `
 
 type GetUserByEmailRow struct {
-	ID       uuid.UUID
-	Email    string
-	Password string
+	ID       uuid.UUID `json:"id"`
+	Email    string    `json:"email"`
+	Password string    `json:"password"`
 }
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
@@ -74,10 +74,10 @@ SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1
 `
 
 type GetUserByIdRow struct {
-	ID        uuid.UUID
-	Email     string
-	Name      string
-	AvatarUrl *string
+	ID        uuid.UUID `json:"id"`
+	Email     string    `json:"email"`
+	Name      string    `json:"name"`
+	AvatarUrl *string   `json:"avatarUrl"`
 }
 
 func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
@@ -97,8 +97,8 @@ UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING id, email, password, n
 `
 
 type UpdateUserAvatarParams struct {
-	AvatarUrl *string
-	ID        uuid.UUID
+	AvatarUrl *string   `json:"avatarUrl"`
+	ID        uuid.UUID `json:"id"`
 }
 
 func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error {

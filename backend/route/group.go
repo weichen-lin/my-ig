@@ -32,8 +32,9 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	ctl := controller.Controller{Pool: pool, SecretKey: config.SecretKey, BucketHandler: bucketHandler}
 
 	mode := controller.DevMode{IsDev: config.IsDev}
-
-	r.Use(cors.New(CorsConfig(&mode)))
+	if mode.IsDev {
+		r.Use(cors.New(CorsConfig(&mode)))
+	}
 
 	user := r.Group("/user")
 	user.GET("/auth", ctl.ValiedateToken)
@@ -44,7 +45,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	user.DELETE("/logout", ctl.AuthMiddleware(), ctl.UserLogout)
 
 	folder := r.Group("/folder")
-	folder.GET("/:id", ctl.AuthMiddleware(), ctl.GetFile)
+	folder.GET("/:id", ctl.AuthMiddleware(), ctl.GetBreadCrumbs)
 	folder.POST("/create", ctl.AuthMiddleware(), ctl.CreateFolder)
 	folder.PATCH("/rename", ctl.AuthMiddleware(), ctl.UpdateFolderName)
 	folder.PATCH("/move", ctl.AuthMiddleware(), ctl.MoveFolder)
@@ -54,7 +55,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	file.POST("/create", ctl.AuthMiddleware(), ctl.CreateFile)
 
 	disk := r.Group("/disk")
-	disk.GET("/", ctl.AuthMiddleware(), ctl.GetDisk)
+	disk.GET("/:id", ctl.AuthMiddleware(), ctl.GetDisk)
 
 	return r
 }
@@ -65,14 +66,11 @@ func CorsConfig(mode *controller.DevMode) cors.Config {
 		MaxAge:                 12 * time.Hour,
 		AllowBrowserExtensions: true,
 	}
+	corsConf.AllowOrigins = []string{"http://localhost:3000"}
+	corsConf.AllowCredentials = true
 	corsConf.AllowMethods = []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"}
 	corsConf.AllowHeaders = []string{"Authorization", "Content-Type", "Upgrade", "Origin",
 		"Connection", "Accept-Encoding", "Accept-Language", "Host"}
-
-	if mode.IsDev {
-		corsConf.AllowOrigins = []string{"http://localhost:3000"}
-		corsConf.AllowCredentials = true
-	}
 
 	return corsConf
 }
