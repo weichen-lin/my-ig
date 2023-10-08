@@ -44,6 +44,7 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 	}
 
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	locateAt, err := util.ParseUUID(params.LocateAt)
 	if err != nil {
@@ -135,6 +136,7 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 	}
 
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	folder, err := q.GetFolder(ctx, folderId)
 	if err != nil {
@@ -160,13 +162,6 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	err = tx.Commit(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		tx.Rollback(ctx)
 		return
 	}
 
@@ -217,6 +212,7 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 	}
 
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	err = q.MoveFolderWithId(ctx, db.MoveFolderFuncParams{
 		ID:     currentId,
@@ -226,13 +222,6 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	err = tx.Commit(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		tx.Rollback(ctx)
 		return
 	}
 
@@ -258,7 +247,7 @@ func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
 	}
 
 	conn, err := s.Pool.Acquire(ctx)
-	
+
 	q := db.New(conn)
 	defer conn.Release()
 

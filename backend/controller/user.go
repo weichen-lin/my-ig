@@ -83,6 +83,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	arg := db.CreateUserParams{
 		Email:    params.Email,
@@ -98,13 +99,6 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 
 	user, err := q.CreateUser(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	err = tx.Commit(ctx)
-	if err != nil {
-		tx.Rollback(ctx)
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -139,6 +133,7 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	info, err := q.GetUserByEmail(ctx, params.Email)
 	if err == sql.ErrNoRows || err != nil {
@@ -191,6 +186,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	arg := db.UpdateUserAvatarParams{
 		AvatarUrl: &signedUrl,
@@ -200,13 +196,6 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 	err = q.UpdateUserAvatar(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	}
-
-	err = tx.Commit(ctx)
-	if err != nil {
-		tx.Rollback(ctx)
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
 	}
 
 	ctx.JSON(http.StatusOK, signedUrl)
@@ -227,6 +216,7 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
+	defer tx.Commit(ctx)
 
 	user, err := q.GetUserById(ctx, userId)
 	if err != nil {

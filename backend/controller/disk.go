@@ -27,10 +27,10 @@ func (s *Controller) GetDisk(ctx *gin.Context) {
 	}
 
 	conn, err := s.Pool.Acquire(ctx)
-	
+
 	q := db.New(conn)
 	defer conn.Release()
-	
+
 	files, err := q.SelectFiles(ctx, db.SelectFilesParams{
 		UserID:   userId,
 		LocateAt: locateAt,

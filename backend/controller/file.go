@@ -102,7 +102,7 @@ func (s Controller) GetFile(ctx *gin.Context) {
 	}
 
 	conn, err := s.Pool.Acquire(ctx)
-	
+
 	q := db.New(conn)
 	defer conn.Release()
 
