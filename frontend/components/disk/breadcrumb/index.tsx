@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 import { breadcrumbState } from 'store'
 
 import { useIsMobile } from 'hooks/disk'
@@ -87,7 +87,6 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Folder[] }) => {
           `${!atRoot && 'hover:cursor-pointer hover:bg-slate-200'}`
         )}
         onClick={async () => {
-          if (atRoot) return
           await router.push('/home')
         }}
       >
@@ -102,23 +101,38 @@ export default function BreadCrumbs() {
   const router = useRouter()
   const { isMobile } = useIsMobile()
   const { data, isLoading, run } = useFetch(getBreadCrumb)
-  const setBreadCrumb = useSetRecoilState(breadcrumbState)
+  const [breadcrumbs, setBreadCrumbs] = useRecoilState(breadcrumbState)
 
   useEffect(() => {
-    const folder_id = (router.query.f ?? null) as string | null
-    if (!folder_id) {
-      setBreadCrumb((e) => ({ ...e, isLoading: false }))
+    const f = (router.query.f ?? null) as string | null
+    if (!f) {
+      setBreadCrumbs((e) => ({ ...e, breadcrumbs: [], isLoading: false }))
+      return
+    }
+    run(f)
+  }, [router.query.f])
+
+  useEffect(() => {
+    const f = (router.query.f ?? null) as string | null
+    console.log('triggered', f)
+    if (!f) {
+      setBreadCrumbs((e) => ({ ...e, breadcrumbs: [], isLoading: false }))
       return
     }
 
-    run(folder_id)
-    setBreadCrumb((e) => ({ ...e, breadcrumbs: data, isLoading: false }))
-  }, [router.query.f])
+    setBreadCrumbs((e) => ({ ...e, breadcrumbs: data, isLoading: false }))
+  }, [data])
+
+  console.log({ breadcrumbs: breadcrumbs.breadcrumbs })
 
   return (
     <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-3'}`)}>
       <div className='font-bold text-xl flex items-center text-gray-500'>
-        {isLoading ? <BreadCrumbBackBone isMobile={isMobile} /> : <BreadCrumbDisplay isMobile={isMobile} data={data} />}
+        {isLoading ? (
+          <BreadCrumbBackBone isMobile={isMobile} />
+        ) : (
+          <BreadCrumbDisplay isMobile={isMobile} data={breadcrumbs.breadcrumbs} />
+        )}
       </div>
     </div>
   )

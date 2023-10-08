@@ -31,11 +31,9 @@ export const authUser = async () => axios.get(`${BaseUrl}/info`, { withCredentia
 
 export const getUserInfo = async () => fetcher.get('/user/info')
 
-export const getDiskData = async (locate_at: string | null) =>
-  fetcher.get(`/disk${locate_at ? `?locate_at=${locate_at}` : ''}`)
+export const getDiskData = async (locateAt: string | null) => fetcher.get(locateAt ? `/disk?f=${locateAt}` : '/disk')
 
 export const createFolder = async (data: { folder_name: string; locate_at: string | null }) =>
   fetcher.post('/folder', data)
 
-export const getBreadCrumb = async (folder_id: string | null) =>
-  fetcher.get(`/disk/breadcrumb${folder_id ? `?folder_id=${folder_id}` : ''}`)
+export const getBreadCrumb = async (f: string) => fetcher.get(`/disk/breadcrumb?id=${f}`)

@@ -33,7 +33,6 @@ export const folderState = atom({
 export const driveState = atom({
   key: 'driveState',
   default: {
-    isLoading: true,
     files: [],
     folders: [],
   },

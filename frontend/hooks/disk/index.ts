@@ -1,6 +1,6 @@
 import useDatetime, { DatetimeProps } from './useDatetime'
 import useDisk, { DiskProps } from './useDisk'
-import useGdrive, { GdriveSelectTarget } from './useBreadCrumb'
+import useGdrive from './useGdrive'
 import useImageDisplay, { ImageDisplayProps } from './useImageDisplay'
 import useOperator, { OperatorProps, Uploader } from './useOperator'
 import useIsMobile from './useIsMobile'
@@ -9,7 +9,7 @@ import { FormatProp, SelectionStringList, SelectionValue, FileType } from './typ
 
 export { useDatetime, useDisk, useGdrive, useImageDisplay, useOperator }
 export type { DatetimeProps, DiskProps, OperatorProps, Uploader, ImageDisplayProps }
-export type { FormatProp, SelectionStringList, SelectionValue, GdriveSelectTarget }
+export type { FormatProp, SelectionStringList, SelectionValue }
 export type { Hint, Action }
 export { FileType }
 export { useIsMobile }
