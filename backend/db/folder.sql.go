@@ -17,9 +17,9 @@ SELECT id, name, locate_at, full_path, depth, is_deleted, created_at, last_modif
 `
 
 type CheckFolderExistParams struct {
-	LocateAt uuid.UUID
-	Name     string
-	UserID   uuid.UUID
+	LocateAt uuid.UUID `json:"locateAt"`
+	Name     string    `json:"name"`
+	UserID   uuid.UUID `json:"userId"`
 }
 
 func (q *Queries) CheckFolderExist(ctx context.Context, arg CheckFolderExistParams) (Folder, error) {
@@ -44,10 +44,10 @@ INSERT INTO "folder" (name, locate_at, depth, user_id) VALUES ($1, $2, $3, $4) R
 `
 
 type CreateFolderParams struct {
-	Name     string
-	LocateAt uuid.UUID
-	Depth    int32
-	UserID   uuid.UUID
+	Name     string    `json:"name"`
+	LocateAt uuid.UUID `json:"locateAt"`
+	Depth    int32     `json:"depth"`
+	UserID   uuid.UUID `json:"userId"`
 }
 
 func (q *Queries) CreateFolder(ctx context.Context, arg CreateFolderParams) (Folder, error) {
@@ -77,8 +77,8 @@ DELETE FROM "folder" WHERE id = $1 and user_id = $2
 `
 
 type DeleteFolderParams struct {
-	ID     uuid.UUID
-	UserID uuid.UUID
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
 }
 
 func (q *Queries) DeleteFolder(ctx context.Context, arg DeleteFolderParams) error {
@@ -122,11 +122,11 @@ RETURNING
 `
 
 type MoveFolderParams struct {
-	LocateAt       uuid.UUID
-	Depth          int32
-	LastModifiedAt time.Time
-	ID             uuid.UUID
-	UserID         uuid.UUID
+	LocateAt       uuid.UUID `json:"locateAt"`
+	Depth          int32     `json:"depth"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
+	ID             uuid.UUID `json:"id"`
+	UserID         uuid.UUID `json:"userId"`
 }
 
 func (q *Queries) MoveFolder(ctx context.Context, arg MoveFolderParams) (Folder, error) {
@@ -152,14 +152,49 @@ func (q *Queries) MoveFolder(ctx context.Context, arg MoveFolderParams) (Folder,
 	return i, err
 }
 
+const selectFolders = `-- name: SelectFolders :many
+SELECT id, name, last_modified_at FROM "folder" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC
+`
+
+type SelectFoldersParams struct {
+	LocateAt uuid.UUID `json:"locateAt"`
+	UserID   uuid.UUID `json:"userId"`
+}
+
+type SelectFoldersRow struct {
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
+}
+
+func (q *Queries) SelectFolders(ctx context.Context, arg SelectFoldersParams) ([]SelectFoldersRow, error) {
+	rows, err := q.db.Query(ctx, selectFolders, arg.LocateAt, arg.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectFoldersRow
+	for rows.Next() {
+		var i SelectFoldersRow
+		if err := rows.Scan(&i.ID, &i.Name, &i.LastModifiedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateFolderName = `-- name: UpdateFolderName :one
 UPDATE "folder" SET name = $1, last_modified_at = $2 WHERE id = $3 RETURNING id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
 `
 
 type UpdateFolderNameParams struct {
-	Name           string
-	LastModifiedAt time.Time
-	ID             uuid.UUID
+	Name           string    `json:"name"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
+	ID             uuid.UUID `json:"id"`
 }
 
 func (q *Queries) UpdateFolderName(ctx context.Context, arg UpdateFolderNameParams) (Folder, error) {
@@ -184,8 +219,8 @@ UPDATE "folder" SET full_path = $1 WHERE id = $2 RETURNING id, name, locate_at, 
 `
 
 type UpdateFullPathParams struct {
-	FullPath []Path
-	ID       uuid.UUID
+	FullPath []Path    `json:"fullPath"`
+	ID       uuid.UUID `json:"id"`
 }
 
 func (q *Queries) UpdateFullPath(ctx context.Context, arg UpdateFullPathParams) error {

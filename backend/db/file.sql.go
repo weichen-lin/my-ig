@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -16,10 +17,10 @@ INSERT INTO "file" (name, url, user_id, locate_at) VALUES ($1, $2, $3, $4) RETUR
 `
 
 type CreateFileParams struct {
-	Name     string
-	Url      string
-	UserID   uuid.UUID
-	LocateAt uuid.UUID
+	Name     string    `json:"name"`
+	Url      string    `json:"url"`
+	UserID   uuid.UUID `json:"userId"`
+	LocateAt uuid.UUID `json:"locateAt"`
 }
 
 func (q *Queries) CreateFile(ctx context.Context, arg CreateFileParams) (File, error) {
@@ -47,8 +48,8 @@ SELECT id, name, url, created_at, last_modified_at, user_id, locate_at FROM "fil
 `
 
 type GetFileParams struct {
-	ID     uuid.UUID
-	UserID uuid.UUID
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
 }
 
 func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) {
@@ -64,4 +65,39 @@ func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) 
 		&i.LocateAt,
 	)
 	return i, err
+}
+
+const selectFiles = `-- name: SelectFiles :many
+SELECT id, name, last_modified_at FROM "file" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC
+`
+
+type SelectFilesParams struct {
+	LocateAt uuid.UUID `json:"locateAt"`
+	UserID   uuid.UUID `json:"userId"`
+}
+
+type SelectFilesRow struct {
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
+}
+
+func (q *Queries) SelectFiles(ctx context.Context, arg SelectFilesParams) ([]SelectFilesRow, error) {
+	rows, err := q.db.Query(ctx, selectFiles, arg.LocateAt, arg.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectFilesRow
+	for rows.Next() {
+		var i SelectFilesRow
+		if err := rows.Scan(&i.ID, &i.Name, &i.LastModifiedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

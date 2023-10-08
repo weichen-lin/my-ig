@@ -14,7 +14,8 @@ import (
 )
 
 const (
-	maxFileSize = 10 << 20 // 10MB
+	maxFileSize   = 10 << 20 // 10MB
+	userTokenName = "token"
 )
 
 type UserRegisterParams struct {
@@ -30,6 +31,29 @@ func ArrayContains(arr []string, target string) bool {
 		}
 	}
 	return false
+}
+
+func (s *Controller) ValiedateToken(ctx *gin.Context) {
+	cookie, err := ctx.Cookie(userTokenName)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	_, err = jwtMaker.VerifyToken(cookie)
+	if err != nil {
+		ctx.Header("Set-Cookie", "token="+""+"; Path=/; HttpOnly")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	ctx.String(http.StatusOK, cookie)
 }
 
 func (s *Controller) UserRegister(ctx *gin.Context) {
@@ -97,8 +121,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 	}
 
 	ctx.Header("Set-Cookie", "token="+token+"; Path=/; HttpOnly")
-	ctx.JSON(http.StatusOK, user.ID)
-	return
+	ctx.String(http.StatusOK, user.ID.String())
 }
 
 func (s *Controller) UserLogin(ctx *gin.Context) {
@@ -142,7 +165,6 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 
 	ctx.Header("Set-Cookie", "token="+token+"; Path=/; HttpOnly")
 	ctx.JSON(http.StatusOK, info.ID)
-	return
 }
 
 func (s *Controller) UploadAvatar(ctx *gin.Context) {
@@ -187,7 +209,6 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, signedUrl)
-	return
 }
 
 func (s *Controller) GetUserInfo(ctx *gin.Context) {
@@ -216,7 +237,6 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, user)
-	return
 }
 
 func (s *Controller) UserLogout(ctx *gin.Context) {
@@ -229,5 +249,4 @@ func (s *Controller) UserLogout(ctx *gin.Context) {
 	}
 	ctx.Header("Set-Cookie", "token="+""+"; Path=/; HttpOnly")
 	ctx.JSON(http.StatusOK, "logout success")
-	return
 }
