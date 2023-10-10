@@ -1,12 +1,13 @@
 import { atom } from 'recoil'
 
-type Action = 'success' | 'failed'
+export type Action = 'success' | 'failed' | 'progressing'
 
-interface Hint {
+export interface Hint {
   id: string
   message: string
   status: Action
   createAt: Date
+  isPromised: boolean
 }
 
 export const HintState = atom<Hint[]>({

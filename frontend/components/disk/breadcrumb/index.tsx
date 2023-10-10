@@ -72,18 +72,12 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
     }
   }
 
+  const breads = Array.isArray(data) && data.length > 0 ? data.slice().sort((a, b) => a.depth - b.depth) : []
+
   return isMobile ? (
     <div className='flex items-center'>
-      {data?.length > 0 && (
-        <>
-          <Icon
-            icon='ic:baseline-chevron-right'
-            className='w-8 h-8 mr-2 rotate-180'
-            onClick={() => handleMobileBack()}
-          />
-          <BreadCrumbMobile info={data} />
-        </>
-      )}
+      <Icon icon='ic:baseline-chevron-right' className='w-8 h-8 mr-2 rotate-180' onClick={() => handleMobileBack()} />
+      <BreadCrumbMobile info={breads} />
     </div>
   ) : (
     <>
@@ -98,7 +92,9 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
       >
         我的 Kushare
       </span>
-      {data?.length > 0 && data.map((e) => <BreadCrumb info={e} isLastOne={false} key={`bread_${e.id}`} />)}
+      {breads.map((e) => (
+        <BreadCrumb info={e} isLastOne={false} key={`bread_${e.id}`} />
+      ))}
     </>
   )
 }

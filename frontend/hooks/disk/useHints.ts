@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import { HintState } from 'store'
+import { Action, Hint } from 'store'
 
 function generate_uuid() {
   var d = Date.now()
@@ -14,44 +15,40 @@ function generate_uuid() {
   })
 }
 
-export interface Hint {
-  id: string
-  message: string
-  status: Action
-  createAt: Date
-}
-
-export type Action = 'success' | 'failed'
-
-const hintsTimeout = new Map<Hint['id'], ReturnType<typeof setTimeout>>()
+const hintsMap = new Map<Hint['id'], ReturnType<typeof setTimeout>>()
 
 export default function useHints() {
-  const [hints, setHints] = useRecoilState(HintState)
+  const setHints = useSetRecoilState(HintState)
 
   const clearHint = useCallback((hintId: string) => {
-    if (hintsTimeout.has(hintId)) {
+    if (hintsMap.has(hintId)) {
       setHints((prev) => prev.filter((e) => e.id !== hintId))
-      clearTimeout(hintsTimeout.get(hintId))
+      clearTimeout(hintsMap.get(hintId))
     }
   }, [])
 
-  const AddHints = (message: string, status: Action = 'success') => {
+  const AddHints = (message: string, status: Action, isPromise: boolean): string => {
     const uuid = generate_uuid()
 
     const timeOutId = setTimeout(() => {
-      clearHint(uuid)
+      if (!isPromise) {
+        clearHint(uuid)
+      }
     }, 4500)
 
-    hintsTimeout.set(uuid, timeOutId)
+    hintsMap.set(uuid, timeOutId)
 
     const newHint = {
       id: uuid,
       message,
       status,
+      isPromised: true,
       createAt: new Date(),
     }
 
     setHints((prev) => [...prev, newHint])
+
+    return uuid
   }
 
   return { AddHints }

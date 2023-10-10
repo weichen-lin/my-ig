@@ -7,11 +7,13 @@ import { PCButton, MobileButton } from './buttons'
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { AddFolder } from 'components/utils'
 import { useRecoilState } from 'recoil'
+import { useHints } from 'hooks/disk'
 
 export default function Operator() {
   const { isMobile } = useIsMobile()
   const [openDialog, setOpenDialog] = useState(false)
   const [method, setMethod] = useRecoilState(listMethodState)
+  const { AddHints } = useHints()
 
   const handleCloseDialog = useCallback(() => {
     setOpenDialog(false)
@@ -80,7 +82,7 @@ export default function Operator() {
     {
       name: 'ic:outline-filter-alt',
       message: '設定過濾',
-      onClick: () => console.log('press button'),
+      onClick: () => AddHints('設定過濾', 'progressing', true),
     },
     {
       name: method > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',

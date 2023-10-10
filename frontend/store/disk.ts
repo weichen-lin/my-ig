@@ -8,7 +8,7 @@ export enum ListMethod {
 export interface CommonProps {
   id: string
   name: string
-  last_modified_at: string
+  lastModifiedAt: string
 }
 
 export interface ListProps {
@@ -20,12 +20,12 @@ export const diskLoadingState = atom({
   default: true,
 })
 
-export const fileState = atom({
+export const fileState = atom<CommonProps[]>({
   key: 'fileState',
   default: [],
 })
 
-export const folderState = atom({
+export const folderState = atom<CommonProps[]>({
   key: 'folderState',
   default: [],
 })

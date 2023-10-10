@@ -4,19 +4,33 @@ import { BiError } from 'react-icons/bi'
 import { createFolder, useFetch } from 'api'
 import { useRouter } from 'next/router'
 import clsx from 'clsx'
+import { folderState } from 'store'
+import { useSetRecoilState } from 'recoil'
 
 interface AddFolderProps {
   close: () => void
 }
 
+interface CreateFolderProps {
+  name: string
+  locateAt: string | null
+}
+
+interface CreateFolderResponse {
+  id: string
+  name: string
+  last_modified_at: string
+}
+
 const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const { close } = prop
-
+  const setFolders = useSetRecoilState(folderState)
   const router = useRouter()
 
-  const { isLoading, error, run } = useFetch(createFolder, {
-    onSuccess: () => {
+  const { isLoading, error, run } = useFetch<CreateFolderProps, CreateFolderResponse>(createFolder, {
+    onSuccess: (res) => {
       close()
+      res && setFolders((prev) => [...prev, { id: res.id, name: res.name, last_modified_at: Date().toLocaleString() }])
     },
   })
 
@@ -58,14 +72,14 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
           onClick={() => {
             if (folderName) {
               const locate_at = (router.query.f as string) ?? null
-              run({ folder_name: folderName, locate_at: locate_at })
+              run({ name: folderName, locateAt: locate_at })
             }
           }}
         >
           {isLoading ? <AiOutlineLoading3Quarters className='animate-spin w-5 h-5 mx-1' /> : '建立'}
         </button>
       </div>
-      {error && <Error message={error} />}
+      {error && <Error message={error.error} />}
     </div>
   )
 })

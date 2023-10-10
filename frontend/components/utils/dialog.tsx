@@ -1,4 +1,4 @@
-import { useRef, DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from 'react'
+import { useRef, MouseEvent } from 'react'
 
 interface DialogProps {
   component: JSX.Element | null
@@ -8,8 +8,8 @@ interface DialogProps {
 const Dialog = ({ component, close }: DialogProps) => {
   const ref = useRef<HTMLDivElement>(null)
 
-  const handleClick = (e: any) => {
-    if (ref?.current && !ref.current?.contains(e.target)) {
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    if (e?.target instanceof HTMLElement && ref?.current && !ref.current?.contains(e.target)) {
       close()
     }
   }

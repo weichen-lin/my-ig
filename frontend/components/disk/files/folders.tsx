@@ -11,12 +11,12 @@ import { Icon } from '@iconify/react'
 interface CommonProps {
   id: string
   name: string
-  last_modified_at: string
+  lastModifiedAt: string
 }
 
 export function Folder(props: { info: CommonProps; method: ListMethod }) {
   const { info, method } = props
-  const { name, last_modified_at } = info
+  const { name, lastModifiedAt } = info
   const [isSelect, setIsSelect] = useState(false)
   const router = useRouter()
 
@@ -57,7 +57,9 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
         <Icon icon='ic:round-folder' color='#F8D775' className='mx-2 h-6 w-6' />
         <div className='flex-1 truncate px-2 pr-1'>{name}</div>
         {method === ListMethod.List && (
-          <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(last_modified_at)}</div>
+          <div className='hidden w-[200px] px-3 text-sm text-right text-gray-400 md:block'>
+            {handleTime(lastModifiedAt)}
+          </div>
         )}
       </div>
     </div>
@@ -80,5 +82,9 @@ export const FolderBackbone = () => {
 
 const handleTime = (e: string) => {
   const date = new Date(e) ?? new Date()
-  return `${date.getFullYear()}年 ${date.getMonth() + 1}月 ${date.getDate()}日`
+  return date.toLocaleDateString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 }

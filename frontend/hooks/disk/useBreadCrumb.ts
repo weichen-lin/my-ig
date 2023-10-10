@@ -11,14 +11,14 @@ export default function useBreadCrumb() {
 
   useEffect(() => {
     if (!router?.query?.f) {
-      setBreads((e) => ({ ...e, breadcrumbs: [], isLoading: false }))
+      setBreads([])
       return
     }
     run(router.query.f as string)
   }, [router?.query?.f])
 
   useEffect(() => {
-    setBreads((e) => ({ ...e, breadcrumbs: data, isLoading: false }))
+    setBreads(data)
   }, [data])
 
   return {

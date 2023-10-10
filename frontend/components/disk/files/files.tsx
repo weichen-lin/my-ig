@@ -4,12 +4,12 @@ import { Icon } from '@iconify/react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
 import { CommonProps, ListMethod } from 'store'
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+
 export const File = (props: { info: CommonProps; method: ListMethod }) => {
   const { info, method } = props
-  const { id, name, last_modified_at } = info
+  const { id, name, lastModifiedAt } = info
   const [isSelect, setIsSelect] = useState(false)
-
-  const date = new Date()
 
   const onClick = () => {
     setIsSelect((prev) => !prev)
@@ -34,12 +34,14 @@ export const File = (props: { info: CommonProps; method: ListMethod }) => {
       )}
       onClick={handleClick}
     >
-      <CustomImage src={`http://localhost:8080/file/${id}`} listMethod={method} />
+      <CustomImage id={id} listMethod={method} />
       <div className={clsx('truncate', `${isLattice ? 'my-2 h-8 w-[200px] px-2 text-center' : 'flex-1 px-2'}`)}>
         {name}
       </div>
       {!isLattice && (
-        <div className='hidden w-[200px] px-3 text-right text-gray-400 md:block'>{handleTime(last_modified_at)}</div>
+        <div className='hidden w-[200px] px-3 text-sm text-right text-gray-400 md:block'>
+          {handleTime(lastModifiedAt)}
+        </div>
       )}
     </div>
   )
@@ -47,10 +49,10 @@ export const File = (props: { info: CommonProps; method: ListMethod }) => {
 
 File.displayName = 'File'
 
-const CustomImage = (props: { src: string; listMethod: ListMethod }) => {
+const CustomImage = (props: { id: string; listMethod: ListMethod }) => {
   const [isLoaded, setIsLoaded] = useState(true)
   const [isError, setIsError] = useState(false)
-  const { src, listMethod } = props
+  const { id, listMethod } = props
 
   const handleError = useCallback(() => {
     setIsError(true)
@@ -78,9 +80,9 @@ const CustomImage = (props: { src: string; listMethod: ListMethod }) => {
         )}
       </div>
       <img
-        src={src}
+        src={`${baseUrl}/file/${id}`}
         loading='lazy'
-        className={clsx(`${isLoaded || isError ? 'invisible' : ''}`, 'm-auto')}
+        className={clsx(`${isLoaded || isError ? 'invisible' : ''}`, 'h-full m-auto p-1')}
         onError={handleError}
         onLoad={handleLoading}
       />
@@ -106,5 +108,9 @@ LatticeFileBackbone.displayName = 'LatticeFileBackbone'
 
 const handleTime = (e: string) => {
   const date = new Date(e) ?? new Date()
-  return `${date.getFullYear()}年 ${date.getMonth() + 1}月 ${date.getDate()}日`
+  return date.toLocaleDateString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 }

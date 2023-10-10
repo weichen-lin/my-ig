@@ -33,8 +33,8 @@ export const getUserInfo = async () => fetcher.get('/user/info')
 
 export const getDiskData = async (locateAt: string | null) => fetcher.get(locateAt ? `/disk?f=${locateAt}` : '/disk')
 
-export const createFolder = async (data: { folder_name: string; locate_at: string | null }) =>
-  fetcher.post('/folder', data)
+export const createFolder = async (data: { name: string; locateAt: string | null }) =>
+  fetcher.post('/folder/create', data)
 
 export const getBreadCrumb = async (locateAt: string | null) =>
   fetcher.get(locateAt ? `/disk/breadcrumb?id=${locateAt}` : '/disk/breadcrumb')
