@@ -8,7 +8,6 @@ import (
 )
 
 func (c *Controller) AuthMiddleware() gin.HandlerFunc {
-
 	return func(ctx *gin.Context) {
 		header := ctx.GetHeader("Authorization")
 
@@ -26,6 +25,35 @@ func (c *Controller) AuthMiddleware() gin.HandlerFunc {
 		}
 
 		payload, err := jwtMaker.VerifyToken(header)
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, "Invalid Authorization")
+			ctx.Abort()
+			return
+		}
+
+		ctx.Set("userId", payload.UserId)
+
+		ctx.Next()
+	}
+}
+
+func (c *Controller) AuthMiddlewareWithCookie() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		cookie, err := ctx.Cookie("token")
+		if err != nil || cookie == ""{
+			ctx.String(http.StatusUnauthorized, "Invalid Authorization")
+			ctx.Abort()
+			return
+		}
+
+		jwtMaker, err := util.NewJWTMaker(c.SecretKey)
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, "Invalid Authorization")
+			ctx.Abort()
+			return
+		}
+
+		payload, err := jwtMaker.VerifyToken(cookie)
 		if err != nil {
 			ctx.String(http.StatusInternalServerError, "Invalid Authorization")
 			ctx.Abort()

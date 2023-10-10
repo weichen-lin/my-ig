@@ -102,7 +102,11 @@ func (s Controller) GetFile(ctx *gin.Context) {
 	}
 
 	conn, err := s.Pool.Acquire(ctx)
-
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
 	q := db.New(conn)
 	defer conn.Release()
 

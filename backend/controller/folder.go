@@ -98,8 +98,6 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 		ctx.JSON(http.StatusConflict, errorResponse(ErrFolderAlreadyExist))
 		return
 	}
-
-	return
 }
 
 type UpdateFolderReq struct {
