@@ -7,10 +7,10 @@ export interface Hint {
   message: string
   status: Action
   createAt: Date
-  isPromised: boolean
+  isPromise: boolean
 }
 
 export const HintState = atom<Hint[]>({
   key: 'HintState',
-  default: [],
+  default: []
 })

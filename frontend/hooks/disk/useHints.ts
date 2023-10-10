@@ -53,7 +53,7 @@ export default function useHints() {
       id: uuid,
       message,
       status,
-      isPromised: true,
+      isPromise: isPromise,
       createAt: new Date()
     }
 

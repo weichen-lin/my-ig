@@ -42,29 +42,30 @@ interface HintProps {
 export const Hint = (props: HintProps) => {
   const { message, status, isPromise } = props
   const [hintState, setHintState] = useState(true)
-  const [promise, setPromise] = useState<boolean>(isPromise ?? false)
 
-  let animateId: NodeJS.Timeout
+  const animateId = setTimeout(() => {
+    setHintState(false)
+  }, 4000)
+
+  const [id, setId] = useState<ReturnType<typeof setTimeout>>(animateId)
+  const [mouseIn, setMouseIn] = useState(false)
+  const [now, setNow] = useState(performance.now())
 
   useEffect(() => {
-    if (!promise) {
-      animateId = setTimeout(() => {
-        setHintState(false)
-      }, 4000)
+    if (mouseIn) {
+      clearTimeout(id)
     }
 
     return () => {
-      if (!promise) {
-        clearTimeout(animateId)
-      }
+      clearTimeout(id)
     }
-  }, [])
+  }, [mouseIn])
 
   return (
     <li
       className={clsx(
         'w-[250px] shadow-xl h-12 flex gap-x-2 p-4 items-center',
-        'border-2 rounded-lg order-last bg-white',
+        'border-2 rounded-lg order-last bg-white hover:cursor-pointer',
         'transition-all duration-150 ease-in-out',
         statusIconMap[status].border
       )}
@@ -72,6 +73,12 @@ export const Hint = (props: HintProps) => {
         animation: hintState
           ? 'enterAnimation 0.5s forwards ease-in-out'
           : 'leaveAnimation 0.5s forwards ease-in-out'
+      }}
+      onMouseEnter={() => {
+        setMouseIn((prev) => !prev)
+      }}
+      onMouseLeave={() => {
+        setMouseIn((prev) => !prev)
       }}
     >
       <Icon
