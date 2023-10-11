@@ -20,7 +20,7 @@ const FolderBackbones = (props: { listMethod: ListMethod }) => {
           listMethod === ListMethod.Lattice
             ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] my-2'
             : 'w-full flex-col'
-        }`
+        }`,
       )}
     >
       {listMethod === ListMethod.Lattice ? <FolderBackbone /> : <ListBackBone />}
@@ -40,7 +40,7 @@ const FileBackbone = (props: { listMethod: ListMethod }) => {
           listMethod === ListMethod.Lattice
             ? 'w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%] mb-4'
             : 'w-full flex-col'
-        }`
+        }`,
       )}
     >
       {listMethod === ListMethod.Lattice ? <LatticeFileBackbone /> : <ListBackBone />}
@@ -56,7 +56,7 @@ export const KushareDriveBackbone = () => {
     <div
       className={clsx(
         'w-[85%] ml-[5%] flex items-center justify-start select-none',
-        `${listMethod === ListMethod.Lattice ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-2 mt-2' : 'flex-col mt-4'}`
+        `${listMethod === ListMethod.Lattice ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-2 mt-2' : 'flex-col mt-4'}`,
       )}
       style={{
         animation: isFullScreen ? 'loadingHomepage 0.5s forwards ease-in-out' : '',
@@ -64,13 +64,13 @@ export const KushareDriveBackbone = () => {
     >
       {listMethod === ListMethod.Lattice && <p className='w-[90%] xs:w-full text-gray-400'>資料夾</p>}
       <div className='flex flex-col xs:flex-row xs:flex-wrap w-full gap-x-4 mx-auto items-center'>
-        {Array.from(Array(BACKBONE_NUMBER).keys()).map((e) => (
+        {Array.from(Array(BACKBONE_NUMBER).keys()).map(e => (
           <FolderBackbones key={`folder-bone-${e}`} listMethod={listMethod} />
         ))}
       </div>
       {listMethod === ListMethod.Lattice && <p className='w-[90%] xs:w-full text-gray-400'>檔案</p>}
       <div className='flex flex-col xs:flex-row xs:flex-wrap w-full gap-x-4 mx-auto items-center'>
-        {Array.from(Array(BACKBONE_NUMBER).keys()).map((e) => (
+        {Array.from(Array(BACKBONE_NUMBER).keys()).map(e => (
           <FileBackbone key={`folder-bone-${e}`} listMethod={listMethod} />
         ))}
       </div>

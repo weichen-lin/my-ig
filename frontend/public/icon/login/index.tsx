@@ -5,12 +5,7 @@ export interface IconProps {
 }
 
 export const ErrorIcon = (props: IconProps) => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    viewBox='0 0 20 20'
-    fill='currentColor'
-    {...props}
-  >
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor' {...props}>
     <path
       fillRule='evenodd'
       d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
@@ -36,34 +31,19 @@ export const SuccessIcon = (props: IconProps) => (
 )
 
 export const TickIcon = (props: IconProps) => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    xmlSpace='preserve'
-    viewBox='0 0 512 512'
-    {...props}
-  >
+  <svg xmlns='http://www.w3.org/2000/svg' xmlSpace='preserve' viewBox='0 0 512 512' {...props}>
     <path d='M170.1 431.8c-2.6 0-5-1-6.8-2.8L2.8 268.5c-3.8-3.8-3.8-9.9 0-13.6 3.8-3.8 9.9-3.8 13.6 0l153.7 153.7L495.6 83c3.8-3.8 9.9-3.8 13.6 0 3.8 3.8 3.8 9.9 0 13.6L176.9 429c-1.8 1.8-4.3 2.8-6.8 2.8z' />
   </svg>
 )
 
 export const CancelIcon = (props: IconProps) => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    data-name='Capa 1'
-    viewBox='0 0 20 19.84'
-    {...props}
-  >
+  <svg xmlns='http://www.w3.org/2000/svg' data-name='Capa 1' viewBox='0 0 20 19.84' {...props}>
     <path d='m10.17 10 3.89-3.89a.37.37 0 1 0-.53-.53L9.64 9.43 5.75 5.54a.37.37 0 1 0-.53.53L9.11 10l-3.89 3.85a.37.37 0 0 0 0 .53.34.34 0 0 0 .26.11.36.36 0 0 0 .27-.11l3.89-3.89 3.89 3.89a.34.34 0 0 0 .26.11.35.35 0 0 0 .27-.11.37.37 0 0 0 0-.53Z' />
   </svg>
 )
 
 export const FacebookIcon = (props: IconProps) => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    data-name='1-facebook'
-    viewBox='0 0 64 64'
-    {...props}
-  >
+  <svg xmlns='http://www.w3.org/2000/svg' data-name='1-facebook' viewBox='0 0 64 64' {...props}>
     <title />
     <rect
       width={64}
@@ -84,12 +64,7 @@ export const FacebookIcon = (props: IconProps) => (
 )
 
 export const GoogleIcon = (props: IconProps) => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    xmlSpace='preserve'
-    viewBox='0 0 24 24'
-    {...props}
-  >
+  <svg xmlns='http://www.w3.org/2000/svg' xmlSpace='preserve' viewBox='0 0 24 24' {...props}>
     <path
       fill='#F44336'
       d='M12 5c1.617 0 3.101.554 4.286 1.474l3.637-3.47A11.94 11.94 0 0 0 12 0C7.392 0 3.397 2.6 1.386 6.41L5.43 9.603A6.996 6.996 0 0 1 12 5z'
@@ -110,23 +85,9 @@ export const GoogleIcon = (props: IconProps) => (
       d='M12 23.75a12.416 12.416 0 0 1-8.952-3.779C5.245 22.438 8.436 24 12 24a11.94 11.94 0 0 0 8.888-3.96A12.406 12.406 0 0 1 12 23.75zM12 14.25v.25h6.486l.101-.25z'
       opacity={0.1}
     />
-    <path
-      fill='#E6E6E6'
-      d='M23.994 12.147c.001-.05.006-.098.006-.147l-.002-.041c0 .063-.004.125-.004.188z'
-    />
-    <path
-      fill='#FFF'
-      d='M12 9.5v.25h11.786a12.487 12.487 0 0 0-.05-.25H12z'
-      opacity={0.2}
-    />
-    <linearGradient
-      id='a'
-      x1={0}
-      x2={24}
-      y1={12}
-      y2={12}
-      gradientUnits='userSpaceOnUse'
-    >
+    <path fill='#E6E6E6' d='M23.994 12.147c.001-.05.006-.098.006-.147l-.002-.041c0 .063-.004.125-.004.188z' />
+    <path fill='#FFF' d='M12 9.5v.25h11.786a12.487 12.487 0 0 0-.05-.25H12z' opacity={0.2} />
+    <linearGradient id='a' x1={0} x2={24} y1={12} y2={12} gradientUnits='userSpaceOnUse'>
       <stop
         offset={0}
         style={{
@@ -168,22 +129,14 @@ export const MailIcon = (props: IconProps) => (
   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' {...props}>
     <defs>
       <style>
-        {
-          '.cls-1{fill:#f5f6f7}.cls-2{fill:#e95a6b}.cls-5{opacity:.15}.cls-6{fill:#3f456b}.cls-7{opacity:.1}'
-        }
+        {'.cls-1{fill:#f5f6f7}.cls-2{fill:#e95a6b}.cls-5{opacity:.15}.cls-6{fill:#3f456b}.cls-7{opacity:.1}'}
       </style>
     </defs>
     <title />
     <g id='Colors'>
       <g id='_\u7F16\u7EC4_' data-name='&lt;\u7F16\u7EC4&gt;'>
-        <path
-          d='M433 157v275H81V157l.17-.23L256.01 283 432.4 156.17l.6.83z'
-          className='cls-1'
-        />
-        <path
-          d='M440.28 63v1.53L256.04 197 72.36 64.39V63h367.92z'
-          className='cls-1'
-        />
+        <path d='M433 157v275H81V157l.17-.23L256.01 283 432.4 156.17l.6.83z' className='cls-1' />
+        <path d='M440.28 63v1.53L256.04 197 72.36 64.39V63h367.92z' className='cls-1' />
         <path
           d='M496 113v269a50.15 50.15 0 0 1-50 50h-13V157l-.6-.83L493.84 112h2.14c.02.31.02.66.02 1Z'
           className='cls-2'
@@ -212,22 +165,13 @@ export const MailIcon = (props: IconProps) => (
         />
       </g>
       <g className='cls-5'>
-        <path
-          d='M20.91 91.46 256 260 490.67 93S501 114 496 138L256 309 16 138s-2-34 4.91-46.54Z'
-          className='cls-6'
-        />
+        <path d='M20.91 91.46 256 260 490.67 93S501 114 496 138L256 309 16 138s-2-34 4.91-46.54Z' className='cls-6' />
       </g>
       <g className='cls-7'>
-        <path
-          d='m16 112 293.76 321.09H446S496 428 496 384V113L256 283 17 110Z'
-          className='cls-6'
-        />
+        <path d='m16 112 293.76 321.09H446S496 428 496 384V113L256 283 17 110Z' className='cls-6' />
       </g>
       <g className='cls-7'>
-        <path
-          d='M255 284 47.33 429.67S16 418 16 382V110l236.5 171.5Z'
-          className='cls-6'
-        />
+        <path d='M255 284 47.33 429.67S16 418 16 382V110l236.5 171.5Z' className='cls-6' />
       </g>
     </g>
     <g id='Lines'>

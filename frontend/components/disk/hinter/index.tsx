@@ -12,13 +12,8 @@ export default function Hinter() {
           className='w-full h-full gap-2 flex flex-col justify-end px-6 py-4'
           style={{ perspective: '300px', transformStyle: 'preserve-3d' }}
         >
-          {hints.map((e) => (
-            <Hint
-              message={`${e.message}`}
-              status={e.status}
-              key={e.id}
-              isPromise={e.isPromise}
-            />
+          {hints.map(e => (
+            <Hint message={`${e.message}`} status={e.status} key={e.id} isPromise={e.isPromise} />
           ))}
         </ul>
       </div>

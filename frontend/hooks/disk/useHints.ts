@@ -5,10 +5,7 @@ import { Action, Hint } from 'store'
 
 function generate_uuid() {
   var d = Date.now()
-  if (
-    typeof performance !== 'undefined' &&
-    typeof performance.now === 'function'
-  ) {
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
     d += performance.now() //use high-precision timer if available
   }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -25,7 +22,7 @@ export default function useHints() {
 
   const clearHint = useCallback((hintId: string) => {
     if (hintsMap.has(hintId)) {
-      setHints((prev) => prev.filter((e) => e.id !== hintId))
+      setHints(prev => prev.filter(e => e.id !== hintId))
       const value = hintsMap.get(hintId)
       if (value) {
         clearTimeout(value)
@@ -33,11 +30,7 @@ export default function useHints() {
     }
   }, [])
 
-  const AddHints = (
-    message: string,
-    status: Action,
-    isPromise: boolean
-  ): string => {
+  const AddHints = (message: string, status: Action, isPromise: boolean): string => {
     const uuid = generate_uuid()
 
     hintsMap.set(
@@ -46,7 +39,7 @@ export default function useHints() {
         ? null
         : setTimeout(() => {
             clearHint(uuid)
-          }, 4500)
+          }, 4500),
     )
 
     const newHint = {
@@ -54,10 +47,10 @@ export default function useHints() {
       message,
       status,
       isPromise: isPromise,
-      createAt: new Date()
+      createAt: new Date(),
     }
 
-    setHints((prev) => [...prev, newHint])
+    setHints(prev => [...prev, newHint])
 
     return uuid
   }

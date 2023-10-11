@@ -6,9 +6,7 @@ export default function Search() {
     <div className='flex w-full items-center'>
       <div className='relative flex-1'>
         <div className={clsx('absolute', 'w-8 h-8 xs:w-12 xs:h-12 top-3')}>
-          <CiSearch
-            className={clsx('w-6 h-6 my-2 mx-2 xs:w-6 xs:h-6 xs:m-3')}
-          />
+          <CiSearch className={clsx('w-6 h-6 my-2 mx-2 xs:w-6 xs:h-6 xs:m-3')} />
         </div>
         <input
           className={clsx(
@@ -17,7 +15,7 @@ export default function Search() {
             'lg:w-2/3 w-full h-10 xs:h-12',
             'rounded-xl bg-transparent border-2 outline-none',
             'text-gray-600 text-lg',
-            'peer'
+            'peer',
           )}
           required
         ></input>
@@ -30,7 +28,7 @@ export default function Search() {
             'transition-opacity duration-150 ease-in',
             'py-2 xs:py-[10px] rounded-xl',
             'peer-focus:opacity-0',
-            'peer-valid:opacity-0'
+            'peer-valid:opacity-0',
           )}
         >
           在 KuShare中搜尋...

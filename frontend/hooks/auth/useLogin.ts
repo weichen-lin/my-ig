@@ -19,14 +19,14 @@ export default function useLogin() {
   })
 
   const handleAuthInfo = (key: keyof LoginBody, value: string) => {
-    setLoginInfo((prev) => ({ ...prev, [key]: value }))
+    setLoginInfo(prev => ({ ...prev, [key]: value }))
   }
 
   const goRegister = () => {
     Router.push('register')
   }
 
-  const btnDisabled = Object.values(loginInfo).some((e) => e === '') || isLoading
+  const btnDisabled = Object.values(loginInfo).some(e => e === '') || isLoading
 
   return {
     isRequest: isLoading,

@@ -21,7 +21,7 @@ export default function TextArea(props: TextAreaProps) {
           className='w-full p-2 border-2 border-gray-200 mt-4 overflow-y-auto h-[90%]'
           value={text}
           onChange={handleChange}
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Enter' && e.shiftKey) {
               onEdit(text)
             }
@@ -31,9 +31,7 @@ export default function TextArea(props: TextAreaProps) {
           }}
         />
       ) : (
-        <div className='p-2 mt-4 rounded-lg whitespace-pre-line overflow-y-auto h-[90%]'>
-          {text}
-        </div>
+        <div className='p-2 mt-4 rounded-lg whitespace-pre-line overflow-y-auto h-[90%]'>{text}</div>
       )}
     </>
   )

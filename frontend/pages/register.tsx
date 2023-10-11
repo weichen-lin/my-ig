@@ -38,7 +38,7 @@ export default function RegisterPage(props: { token: string }) {
             type='text'
             value={registerInfo.email}
             validate={validateEmail}
-            onChange={(e) => {
+            onChange={e => {
               handleRegisterInfo('email', e.target.value)
             }}
             Error={EmailChecker}
@@ -48,7 +48,7 @@ export default function RegisterPage(props: { token: string }) {
             type='password'
             value={registerInfo.password}
             validate={validatePwd}
-            onChange={(e) => {
+            onChange={e => {
               handleRegisterInfo('password', e.target.value)
             }}
             Error={PasswordChecker}

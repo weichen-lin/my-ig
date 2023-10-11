@@ -84,7 +84,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
       <span
         className={clsx(
           'max-w-[160px] px-3 rounded-lg truncate select-none font-bold my-2 py-1',
-          `${!atRoot && 'hover:cursor-pointer hover:bg-slate-200'}`
+          `${!atRoot && 'hover:cursor-pointer hover:bg-slate-200'}`,
         )}
         onClick={async () => {
           await router.push('/home')
@@ -92,7 +92,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
       >
         我的 Kushare
       </span>
-      {breads.map((e) => (
+      {breads.map(e => (
         <BreadCrumb info={e} isLastOne={false} key={`bread_${e.id}`} />
       ))}
     </>

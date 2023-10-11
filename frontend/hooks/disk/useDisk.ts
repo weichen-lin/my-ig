@@ -30,11 +30,11 @@ export default function useDisk() {
   const handleBreadChangeFolder = (e: CurrentFolder) => {
     const index = diskStatus.current_folder.indexOf(e)
     const new_current_folder = diskStatus.current_folder.slice(0, index + 1)
-    setDiskStatus((prev) => ({ ...prev, current_folder: new_current_folder }))
+    setDiskStatus(prev => ({ ...prev, current_folder: new_current_folder }))
   }
 
   const handleCurrentFolder = (e: CurrentFolder) => {
-    setDiskStatus((prev) => ({
+    setDiskStatus(prev => ({
       ...prev,
       current_folder: [...prev.current_folder, e],
     }))
@@ -49,19 +49,19 @@ export default function useDisk() {
     setIsFetching(true)
 
     fetchData()
-      .then((res) => {
+      .then(res => {
         if (res.status === 200) {
           const data = res.data
-          setDiskData((prev) => ({
+          setDiskData(prev => ({
             ...prev,
             folders: data.folders,
             files: data.files,
           }))
         }
       })
-      .catch((e) => console.log(e))
+      .catch(e => console.log(e))
 
-    setDiskStatus((prev) => ({ ...prev, shouldRefresh: false }))
+    setDiskStatus(prev => ({ ...prev, shouldRefresh: false }))
     setIsFetching(false)
   }, [diskStatus.current_folder, diskStatus.shouldRefresh])
 

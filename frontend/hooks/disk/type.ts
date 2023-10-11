@@ -19,10 +19,10 @@ export interface SelectionValue {
 
 export enum FileType {
   Folder,
-  File
+  File,
 }
 
 export enum ListMethod {
   Lattice,
-  List
+  List,
 }

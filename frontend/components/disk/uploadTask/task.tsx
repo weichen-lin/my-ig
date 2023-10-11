@@ -4,7 +4,7 @@ import { LoadingIcon, ErrorIcon } from 'public/icon/login'
 export enum FileUploadStatus {
   LOADING,
   FAILED,
-  SUCCESS
+  SUCCESS,
 }
 
 export type FileStatus = 0 | 1 | 2
@@ -12,7 +12,7 @@ export type FileStatus = 0 | 1 | 2
 const FileStatusICon: { [key: number]: JSX.Element } = {
   0: <LoadingIcon className='w-5 h-5 m-[14px] animate-spin' />,
   1: <ErrorIcon className='w-6 h-6 m-3' fill='#9f1d35' />,
-  2: <SuccessIcon className='w-5 h-5 m-[14px]' />
+  2: <SuccessIcon className='w-5 h-5 m-[14px]' />,
 }
 
 interface TaskProps {

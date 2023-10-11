@@ -13,7 +13,7 @@ export default function useFetch<T, V>(
     onSuccess?: (e: any) => void
     onError?: (e: any) => void
     needInitialRun?: boolean
-  }
+  },
 ) {
   const [data, setData] = useState<V | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -46,7 +46,7 @@ export default function useFetch<T, V>(
 
   const refresh = useCallback(() => {
     setNeedRefresh(true)
-    setRefreshControl((prev) => !prev)
+    setRefreshControl(prev => !prev)
   }, [])
 
   useEffect(() => {

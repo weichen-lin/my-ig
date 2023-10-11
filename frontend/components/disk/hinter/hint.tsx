@@ -19,18 +19,18 @@ const statusIconMap: Record<Action, IconType> = {
   success: {
     name: 'ic:baseline-check-circle',
     fill: '#4ADE80',
-    border: 'border-green-400'
+    border: 'border-green-400',
   },
   failed: {
     name: 'ic:baseline-error-outline',
     fill: '#F87171',
-    border: 'border-red-400'
+    border: 'border-red-400',
   },
   progressing: {
     name: 'eos-icons:loading',
     fill: '#9CA3AF',
-    border: 'border-gray-300'
-  }
+    border: 'border-gray-300',
+  },
 }
 
 interface HintProps {
@@ -67,25 +67,19 @@ export const Hint = (props: HintProps) => {
         'w-[250px] shadow-xl h-12 flex gap-x-2 p-4 items-center',
         'border-2 rounded-lg order-last bg-white hover:cursor-pointer',
         'transition-all duration-150 ease-in-out',
-        statusIconMap[status].border
+        statusIconMap[status].border,
       )}
       style={{
-        animation: hintState
-          ? 'enterAnimation 0.5s forwards ease-in-out'
-          : 'leaveAnimation 0.5s forwards ease-in-out'
+        animation: hintState ? 'enterAnimation 0.5s forwards ease-in-out' : 'leaveAnimation 0.5s forwards ease-in-out',
       }}
       onMouseEnter={() => {
-        setMouseIn((prev) => !prev)
+        setMouseIn(prev => !prev)
       }}
       onMouseLeave={() => {
-        setMouseIn((prev) => !prev)
+        setMouseIn(prev => !prev)
       }}
     >
-      <Icon
-        icon={statusIconMap[status].name}
-        color={statusIconMap[status].fill}
-        className='w-5 h-5'
-      />
+      <Icon icon={statusIconMap[status].name} color={statusIconMap[status].fill} className='w-5 h-5' />
       <span className='font-bold'>{message}</span>
     </li>
   )

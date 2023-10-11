@@ -14,31 +14,28 @@ export default function useDatetime() {
   const handleChange = async (dates: [Date | null, Date | null]) => {
     const [start, end] = dates
 
-    setDiskStatus((prev) => ({ ...prev, startDate: start || new Date() }))
-    if (
-      diskStatus.endDate &&
-      diskStatus.startDate.getTime() <= diskStatus.endDate?.getTime()
-    ) {
-      setDiskStatus((prev) => ({ ...prev, endDate: null }))
+    setDiskStatus(prev => ({ ...prev, startDate: start || new Date() }))
+    if (diskStatus.endDate && diskStatus.startDate.getTime() <= diskStatus.endDate?.getTime()) {
+      setDiskStatus(prev => ({ ...prev, endDate: null }))
     }
     if (end) {
-      setDiskStatus((prev) => ({ ...prev, endDate: end }))
+      setDiskStatus(prev => ({ ...prev, endDate: end }))
       setIsOpen(false)
       // getFolders(start || new Date(), end)
     }
   }
 
   const handleOpen = () => {
-    setIsOpen((prev) => !prev)
+    setIsOpen(prev => !prev)
   }
 
   useClickOutside(ref, () => {
     setIsOpen(false)
 
     if (!diskStatus.endDate) {
-      setDiskStatus((prev) => ({
+      setDiskStatus(prev => ({
         ...prev,
-        startDate: diskStatus.startDate || new Date()
+        startDate: diskStatus.startDate || new Date(),
       }))
     }
   })
@@ -48,6 +45,6 @@ export default function useDatetime() {
     isOpen,
     handleOpen,
     ref,
-    handleChange
+    handleChange,
   }
 }

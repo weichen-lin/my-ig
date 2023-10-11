@@ -32,7 +32,7 @@ export const KushareAuthProvider = (props: { children: JSX.Element }) => {
   const [user, setUser] = useState<User | null>(null)
 
   const handleUser = (key: keyof User, data: string) => {
-    setUser((prev) => {
+    setUser(prev => {
       if (prev) {
         return {
           ...prev,

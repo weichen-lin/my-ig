@@ -33,11 +33,11 @@ export default function useOperator() {
   const toogleCreateFolder = () => {
     setFolderName('')
     setErrorMsg('')
-    setCreateFolderOpen((prev) => !prev)
+    setCreateFolderOpen(prev => !prev)
   }
 
   const toogleOperatorOpen = () => {
-    setOperatorOpen((prev) => !prev)
+    setOperatorOpen(prev => !prev)
   }
 
   const createFolder = (folder_name: string) => {
@@ -48,16 +48,16 @@ export default function useOperator() {
     }
 
     fetcher
-      .post("", {
+      .post('', {
         folder_name,
         current_folder: current_folder.folder_uuid,
       })
-      .then((res) => {
+      .then(res => {
         if (res.status === 200) {
           setErrorMsg('')
           setFolderName('')
           setCreateFolderOpen(false)
-          setDiskData((prev) => ({
+          setDiskData(prev => ({
             ...prev,
             folders: [
               ...prev.folders,
@@ -70,7 +70,7 @@ export default function useOperator() {
           }))
         }
       })
-      .catch((res) => {
+      .catch(res => {
         const errorStatus = res?.response?.data?.status as FolderStatus
         if (errorStatus) {
           setErrorMsg(FolderResponse[errorStatus])
@@ -87,20 +87,16 @@ export default function useOperator() {
   const handleFileUpload = async () => {
     try {
       const FileHandlers = await window?.showOpenFilePicker({ multiple: true })
-      setUploader((prev) => ({
+      setUploader(prev => ({
         ...prev,
         isOpen: true,
       }))
       await Promise.all(
         FileHandlers.map(async (filehandle, index) => {
           const file = await filehandle.getFile()
-          setUploader((prev) => ({
+          setUploader(prev => ({
             ...prev,
-            uploadfiles: new Map(
-              Array.from(
-                prev.uploadfiles.set(file.name, FileUploadStatus.LOADING)
-              )
-            ),
+            uploadfiles: new Map(Array.from(prev.uploadfiles.set(file.name, FileUploadStatus.LOADING))),
           }))
           const imgReader = new FileReader()
           imgReader.readAsDataURL(file)
@@ -110,46 +106,31 @@ export default function useOperator() {
             img.onload = () => {
               const formData = new FormData()
               formData.append('myfile', file, file.name)
-              formData.append(
-                'current_folder',
-                diskStatus_copy.current_folder.pop() ?? ''
-              )
+              formData.append('current_folder', diskStatus_copy.current_folder.pop() ?? '')
               fetcher
-                .post("", formData, {
+                .post('', formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data',
                   },
                 })
-                .then((res) => {
-                  
-                  setUploader((prev) => ({
+                .then(res => {
+                  setUploader(prev => ({
                     ...prev,
-                    uploadfiles: new Map(
-                      Array.from(
-                        prev.uploadfiles.set(
-                          file.name,
-                          FileUploadStatus.SUCCESS
-                        )
-                      )
-                    ),
+                    uploadfiles: new Map(Array.from(prev.uploadfiles.set(file.name, FileUploadStatus.SUCCESS))),
                   }))
                 })
                 .catch(() =>
-                  setUploader((prev) => ({
+                  setUploader(prev => ({
                     ...prev,
-                    uploadfiles: new Map(
-                      Array.from(
-                        prev.uploadfiles.set(file.name, FileUploadStatus.FAILED)
-                      )
-                    ),
-                  }))
+                    uploadfiles: new Map(Array.from(prev.uploadfiles.set(file.name, FileUploadStatus.FAILED))),
+                  })),
                 )
             }
             img.onerror = () => {
               console.log('this is not an image')
             }
           }
-        })
+        }),
       )
       // const test = await window?.showDirectoryPicker({ recursive: true })
       // for await (const entry of test.values()) {
@@ -162,7 +143,7 @@ export default function useOperator() {
   }
 
   const handleUploaderClose = () => {
-    setUploader((prev) => ({ ...prev, isOpen: false }))
+    setUploader(prev => ({ ...prev, isOpen: false }))
   }
 
   return {

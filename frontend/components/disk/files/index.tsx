@@ -27,24 +27,20 @@ export default function KushareDrive() {
     <div
       className={clsx(
         'relative mx-auto mb-2 flex h-full w-[92%] select-none flex-col items-start overflow-y-auto',
-        `${listMethod === ListMethod.Lattice ? 'mt-3 gap-y-2 xs:gap-x-6 md:gap-y-6' : 'w-full'}`
+        `${listMethod === ListMethod.Lattice ? 'mt-3 gap-y-2 xs:gap-x-6 md:gap-y-6' : 'w-full'}`,
       )}
     >
       {listMethod === ListMethod.Lattice && folders && folders.length > 0 && (
         <p className='mt-2 text-gray-400 xss:w-full xss:pl-[5%] xs:w-[20%] xs:pl-[1%]'>資料夾</p>
       )}
       <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
-        {folders?.map((e: CommonProps) => (
-          <Folder info={e} method={listMethod} key={`folder_index_${e.id}`} />
-        ))}
+        {folders?.map((e: CommonProps) => <Folder info={e} method={listMethod} key={`folder_index_${e.id}`} />)}
       </div>
       {listMethod === ListMethod.Lattice && files && files.length > 0 && (
         <p className='mt-2 pl-[1%] text-gray-400'>檔案</p>
       )}
       <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
-        {files?.map((e: CommonProps) => (
-          <File method={listMethod} info={e} key={`file_${e.id}`} />
-        ))}
+        {files?.map((e: CommonProps) => <File method={listMethod} info={e} key={`file_${e.id}`} />)}
       </div>
     </div>
   ) : (

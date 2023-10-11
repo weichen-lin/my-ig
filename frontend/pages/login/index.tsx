@@ -34,7 +34,7 @@ export default function LoginPage(props: { token: string }) {
             label='email'
             type='text'
             value={loginInfo.email}
-            onChange={(e) => {
+            onChange={e => {
               handleAuthInfo('email', e.target.value)
             }}
           />
@@ -42,7 +42,7 @@ export default function LoginPage(props: { token: string }) {
             label='password'
             type='password'
             value={loginInfo.password}
-            onChange={(e) => {
+            onChange={e => {
               handleAuthInfo('password', e.target.value)
             }}
           />

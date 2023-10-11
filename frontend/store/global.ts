@@ -12,5 +12,5 @@ export interface Hint {
 
 export const HintState = atom<Hint[]>({
   key: 'HintState',
-  default: []
+  default: [],
 })

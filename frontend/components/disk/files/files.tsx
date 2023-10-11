@@ -12,7 +12,7 @@ export const File = (props: { info: CommonProps; method: ListMethod }) => {
   const [isSelect, setIsSelect] = useState(false)
 
   const onClick = () => {
-    setIsSelect((prev) => !prev)
+    setIsSelect(prev => !prev)
   }
 
   const onDoubleClick = () => {
@@ -30,7 +30,7 @@ export const File = (props: { info: CommonProps; method: ListMethod }) => {
         `${isSelect ? 'border-[1px] border-blue-400 bg-blue-500/50' : 'hover:bg-slate-200'}`,
         `${false ? 'opacity-50' : 'opacity-100'}`,
         `${isLattice ? 'h-[200px] flex-col rounded-lg border-[1px] border-b-2 bg-[#f2f6fc]' : 'h-12 border-b-[1px]'}`,
-        `${isLattice ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]' : 'mb-[1px] w-full'}`
+        `${isLattice ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]' : 'mb-[1px] w-full'}`,
       )}
       onClick={handleClick}
     >
@@ -67,7 +67,7 @@ const CustomImage = (props: { id: string; listMethod: ListMethod }) => {
     <div
       className={clsx(
         'relative h-full w-full overflow-hidden border-b-[1px] border-gray-300 bg-white',
-        `${listMethod === ListMethod.Lattice ? 'h-full rounded-t-lg' : 'mx-2 h-6 w-6'}`
+        `${listMethod === ListMethod.Lattice ? 'h-full rounded-t-lg' : 'mx-2 h-6 w-6'}`,
       )}
     >
       <div className='absolute flex h-full w-full items-center justify-center'>
@@ -95,7 +95,7 @@ export const LatticeFileBackbone = () => {
     <div
       className={clsx(
         'flex h-[200px] w-full flex-col items-center justify-between rounded-lg',
-        'animate-pulse cursor-wait border-2 border-slate-100'
+        'animate-pulse cursor-wait border-2 border-slate-100',
       )}
     >
       <div className='h-full w-full bg-slate-100'></div>

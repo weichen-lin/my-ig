@@ -28,7 +28,7 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
 
   const onClick = () => {
     console.log('single click')
-    setIsSelect((prev) => !prev)
+    setIsSelect(prev => !prev)
   }
 
   const { handleClick } = useSingleAndDoubleClick(onClick, onDoubleClick)
@@ -41,7 +41,7 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
           method === ListMethod.Lattice
             ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]'
             : 'w-full flex-col'
-        }`
+        }`,
       )}
       onClick={handleClick}
     >
@@ -51,7 +51,7 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
           `${isSelect ? 'border-[1px] border-blue-400 bg-blue-200/70' : 'hover:bg-slate-200'}`,
           'transition-all duration-300 ease-in-out',
           `${method === ListMethod.Lattice ? 'border-2' : 'rounded-none border-b-2'}`,
-          `${false ? 'opacity-50' : 'opacity-100'}`
+          `${false ? 'opacity-50' : 'opacity-100'}`,
         )}
       >
         <Icon icon='ic:round-folder' color='#F8D775' className='mx-2 h-6 w-6' />
@@ -71,7 +71,7 @@ export const FolderBackbone = () => {
     <div
       className={clsx(
         'flex h-12 w-full cursor-wait items-center justify-start rounded-lg',
-        'animate-pulse border-2 border-slate-100'
+        'animate-pulse border-2 border-slate-100',
       )}
     >
       <div className='mx-2 h-6 w-6 rounded-md bg-slate-100'></div>

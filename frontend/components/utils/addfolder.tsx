@@ -28,9 +28,9 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const router = useRouter()
 
   const { isLoading, error, run } = useFetch<CreateFolderProps, CreateFolderResponse>(createFolder, {
-    onSuccess: (res) => {
+    onSuccess: res => {
       close()
-      res && setFolders((prev) => [...prev, { id: res.id, name: res.name, last_modified_at: Date().toLocaleString() }])
+      res && setFolders(prev => [...prev, { id: res.id, name: res.name, last_modified_at: Date().toLocaleString() }])
     },
   })
 
@@ -55,7 +55,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
       <input
         className={clsx(
           'p-2 border-2 focus:border-blue-300 outline-none',
-          'rounded-md text-black text-base select-all'
+          'rounded-md text-black text-base select-all',
         )}
         ref={ref}
         disabled={isLoading}

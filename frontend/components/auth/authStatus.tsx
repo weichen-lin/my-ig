@@ -25,7 +25,7 @@ export default function AuthStatus(props: InputSuccessProps) {
         'h-8 text-xl relative mb-8 flex items-center',
         'md:mx-auto rounded-lg',
         'w-full max-w-[350px] xs:h-12',
-        `${status === 'success' ? 'bg-green-100' : 'bg-red-100'}`
+        `${status === 'success' ? 'bg-green-100' : 'bg-red-100'}`,
       )}
     >
       {statusObj[status]}

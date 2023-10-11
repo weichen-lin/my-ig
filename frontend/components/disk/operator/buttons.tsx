@@ -26,7 +26,7 @@ export const PCButton = (props: ButtonProps) => {
     <button
       className={clsx(
         'h-10 border-2 border-slate-100 hover:bg-slate-100 shadow-lg px-4 rounded-lg flex items-center justify-between gap-x-2',
-        'transition-colors duration-300'
+        'transition-colors duration-300',
       )}
       onClick={onClick}
     >

@@ -24,26 +24,26 @@ export default function useImageDisplay() {
   }
 
   const handleIsAddTag = () => {
-    setIsAddTag((prev) => !prev)
+    setIsAddTag(prev => !prev)
   }
 
   const handleAddTag = () => {
-    const id = ""
-    setIsAddTag((prev) => !prev)
+    const id = ''
+    setIsAddTag(prev => !prev)
 
     fetcher
-      .patch("", { id, tag })
-      .then((res) => {
+      .patch('', { id, tag })
+      .then(res => {
         if (res.status === 200) {
           const tags = diskData.files[currentIndex]?.tags ?? []
 
-          setDiskData((prev) => ({
+          setDiskData(prev => ({
             ...prev,
             files: [
               ...prev.files.slice(0, currentIndex),
               { ...prev.files[currentIndex], tags: [...tags, tag] },
-              ...prev.files.slice(currentIndex + 1)
-            ]
+              ...prev.files.slice(currentIndex + 1),
+            ],
           }))
         }
       })
@@ -56,39 +56,37 @@ export default function useImageDisplay() {
   }
 
   const handleEdit = () => {
-    const id = ""
-    setIsEdit((prev) => !prev)
+    const id = ''
+    setIsEdit(prev => !prev)
 
     if (!isEdit) return
-    fetcher
-      .patch("", { id, description: text })
-      .then((res) => {
-        if (res.status === 200) {
-          setDiskData((prev) => ({
-            ...prev,
-            files: [
-              ...prev.files.slice(0, currentIndex),
-              { ...prev.files[currentIndex], description: text },
-              ...prev.files.slice(currentIndex + 1)
-            ]
-          }))
-        }
-      })
+    fetcher.patch('', { id, description: text }).then(res => {
+      if (res.status === 200) {
+        setDiskData(prev => ({
+          ...prev,
+          files: [
+            ...prev.files.slice(0, currentIndex),
+            { ...prev.files[currentIndex], description: text },
+            ...prev.files.slice(currentIndex + 1),
+          ],
+        }))
+      }
+    })
   }
 
   const handleEscape = () => {
     setIsOpen(false)
     setIsEdit(false)
-    setDiskStatus((prev) => ({ ...prev, canSelect: true }))
+    setDiskStatus(prev => ({ ...prev, canSelect: true }))
   }
 
   const handleImageDisplay = (id: string) => {
-    const index = diskData.files.map((e) => "").indexOf(id)
+    const index = diskData.files.map(e => '').indexOf(id)
     if (index < 0) return
     setCurrentIndex(index)
     setIsOpen(true)
     setText(diskData.files[index].description ?? '')
-    setDiskStatus((prev) => ({ ...prev, canSelect: false }))
+    setDiskStatus(prev => ({ ...prev, canSelect: false }))
   }
 
   const handleInfo = (index: number) => {
@@ -106,14 +104,14 @@ export default function useImageDisplay() {
       isEdit,
       onEdit,
       handleEdit,
-      text
+      text,
     },
     tagProps: {
       tag,
       isAddTag,
       handleIsAddTag,
       handleAddTag,
-      onEditTag
-    }
+      onEditTag,
+    },
   }
 }

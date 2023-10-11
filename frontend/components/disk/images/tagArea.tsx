@@ -15,7 +15,7 @@ export default function TagArea(props: Pick<ImageDisplayProps, 'tagProps'>) {
           className='w-[230px] py-1 px-2 border-b-2 rounded-lg mt-1 border-gray-200 bg-white/40 h-full focus:outline-none mr-2'
           value={tag}
           onChange={handleChange}
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Enter') {
               handleAddTag()
             }

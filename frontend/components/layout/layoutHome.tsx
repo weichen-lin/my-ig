@@ -34,7 +34,7 @@ export default function LayoutHome(props: { children: JSX.Element }) {
           <div className='flex w-[90%] mx-auto h-[10%] items-center'>
             <RxHamburgerMenu
               className='w-7 h-7 mt-[6px] mr-2 p-1 hover:bg-slate-300 xl:hidden md:w-9 md:h-9'
-              onClick={() => setOpenMenu((prev) => !prev)}
+              onClick={() => setOpenMenu(prev => !prev)}
             />
             <Search />
           </div>

@@ -32,7 +32,7 @@ export const MenuItem = (props: MenuItemProps) => {
     <div
       className={clsx(
         'w-[97.5%] py-2 flex justify-start items-center',
-        `${current ? 'w-[100%] border-r-4 border-blue-500 pl-[1.25%]' : 'hover:bg-slate-200 hover:cursor-pointer'}`
+        `${current ? 'w-[100%] border-r-4 border-blue-500 pl-[1.25%]' : 'hover:bg-slate-200 hover:cursor-pointer'}`,
       )}
       onClick={handleRoute}
     >
@@ -101,17 +101,17 @@ export const Menu = () => {
                     'Content-Type': 'multipart/form-data',
                   },
                 })
-                .then((res) => {
+                .then(res => {
                   handleUser('avatar_url', res.data)
                   AddHints('上傳成功', 'success')
                 })
-                .catch((err) => console.log(err))
+                .catch(err => console.log(err))
             }
-            img.onerror = (e) => {
+            img.onerror = e => {
               AddHints('上傳成功', 'success')
             }
           }
-        })
+        }),
       )
     } catch (e) {
       console.log('cancel select')
@@ -161,7 +161,7 @@ export const Menu = () => {
         <div className='relative w-[100px] h-16 mx-auto'>
           <div
             className='w-full absolute top-0 left-0 active:top-1 rounded-md border border-gray-100 bg-blue-100 p-1 px-4 shadow-md'
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault()
               handleFileUpload(false)
             }}
@@ -180,7 +180,7 @@ export const Menu = () => {
     <>
       {!isAuth ? <Avatar /> : <MenuBackbone />}
       <div className='border-t-[1px] border-gray-300/40 w-full'></div>
-      {Menus.map((menu) => (
+      {Menus.map(menu => (
         <MenuItem
           IconName={menu.IconName}
           name={menu.name}

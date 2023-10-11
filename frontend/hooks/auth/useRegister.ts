@@ -31,7 +31,7 @@ export default function useRegister() {
   })
 
   const handleRegisterInfo = (key: keyof RegisterBody, value: string) => {
-    setRegisterInfo((prev) => ({ ...prev, [key]: value }))
+    setRegisterInfo(prev => ({ ...prev, [key]: value }))
   }
 
   const goLogin = () => Router.push('login')
@@ -42,7 +42,7 @@ export default function useRegister() {
 
   const validatePwd = useCallback((value: string) => {
     const results = PwdValidate(value)
-    return results.every((e) => e)
+    return results.every(e => e)
   }, [])
 
   const checkRegisterInfo = (req: RegisterBody) => {
