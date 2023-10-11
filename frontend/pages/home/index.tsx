@@ -1,4 +1,4 @@
-import { Sort, KushareDrive, Operator, BreadCrumbs, Hinter } from 'components/disk'
+import { KushareDrive, Operator, BreadCrumbs, HintContainer } from 'components/disk'
 import { LayoutHome } from 'components/layout'
 import { RecoilRoot, RecoilEnv } from 'recoil'
 import { GetServerSideProps } from 'next'
@@ -17,7 +17,7 @@ export default function Drive() {
             <BreadCrumbs />
           </div>
           <KushareDrive />
-          <Hinter />
+          <HintContainer />
         </div>
       </LayoutHome>
     </RecoilRoot>

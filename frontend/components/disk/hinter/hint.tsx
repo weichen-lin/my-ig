@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { Icon } from '@iconify/react'
+import { Hint } from 'store'
 
 export interface CheckmarkTheme {
   primary?: string
@@ -39,7 +40,9 @@ interface HintProps {
   isPromise?: boolean
 }
 
-export const Hint = (props: HintProps) => {
+const hintsMap = new Map<Hint['id'], ReturnType<typeof setTimeout> | null>()
+
+export const Hinter = (props: HintProps) => {
   const { message, status, isPromise } = props
   const [hintState, setHintState] = useState(true)
 
