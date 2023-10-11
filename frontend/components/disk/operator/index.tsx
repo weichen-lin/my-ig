@@ -82,12 +82,12 @@ export default function Operator() {
     {
       name: 'ic:outline-filter-alt',
       message: '設定過濾',
-      onClick: () => AddHints('設定過濾', 'progressing', true),
+      onClick: () => AddHints('不會過期', 'progressing', true),
     },
     {
       name: 'ic:outline-filter-alt',
       message: '設定過濾-2',
-      onClick: () => AddHints('設定過濾', 'success', false),
+      onClick: () => AddHints('會過期', 'success', false),
     },
     {
       name: method > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',

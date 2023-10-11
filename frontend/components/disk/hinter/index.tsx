@@ -13,7 +13,14 @@ export default function HintContainer() {
           style={{ perspective: '300px', transformStyle: 'preserve-3d' }}
         >
           {hints.map(e => (
-            <Hinter message={`${e.message}`} status={e.status} key={e.id} isPromise={e.isPromise} />
+            <Hinter
+              message={`${e.message}`}
+              status={e.status}
+              key={e.id}
+              isPromise={e.isPromise}
+              id={e.id}
+              createAt={e.createAt}
+            />
           ))}
         </ul>
       </div>
