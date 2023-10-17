@@ -15,32 +15,31 @@ function generate_uuid() {
   })
 }
 
-const hintsMap = new Map<Hint['id'], ReturnType<typeof setTimeout> | null>()
+export const HintsMap = new Map<Hint['id'], ReturnType<typeof setTimeout> | null>()
 
 export default function useHints() {
   const setHints = useSetRecoilState(HintState)
 
   const clearHint = useCallback((hintId: string) => {
-    if (hintsMap.has(hintId)) {
-      setHints(prev => prev.filter(e => e.id !== hintId))
-      const value = hintsMap.get(hintId)
+    if (HintsMap.has(hintId)) {
+      const value = HintsMap.get(hintId)
       if (value) {
         clearTimeout(value)
+        setHints(prev => prev.filter(e => e.id !== hintId))
       }
+    } else {
     }
   }, [])
 
   const AddHints = (message: string, status: Action, isPromise: boolean): string => {
     const uuid = generate_uuid()
 
-    hintsMap.set(
-      uuid,
-      isPromise
-        ? null
-        : setTimeout(() => {
-            clearHint(uuid)
-          }, 4500),
-    )
+    const xx = setTimeout(() => {
+      clearHint(uuid)
+    }, 4500)
+    console.log({ xx })
+
+    HintsMap.set(uuid, isPromise ? null : xx)
 
     const newHint = {
       id: uuid,

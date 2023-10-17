@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import clsx from 'clsx'
 import { Icon } from '@iconify/react'
-import { Hint } from 'store'
-
+import { HintsMap } from 'hooks/disk'
 export interface CheckmarkTheme {
   primary?: string
   secondary?: string
@@ -35,32 +34,36 @@ const statusIconMap: Record<Action, IconType> = {
 }
 
 interface HintProps {
+  id: string
   message: string
   status: Action
   isPromise?: boolean
+  createAt: Date
 }
 
-const hintsMap = new Map<Hint['id'], ReturnType<typeof setTimeout> | null>()
-
 export const Hinter = (props: HintProps) => {
-  const { message, status, isPromise } = props
+  const { id, message, status, isPromise, createAt } = props
   const [hintState, setHintState] = useState(true)
 
-  const animateId = setTimeout(() => {
-    setHintState(false)
-  }, 4000)
-
-  const [id, setId] = useState<ReturnType<typeof setTimeout>>(animateId)
   const [mouseIn, setMouseIn] = useState(false)
   const [now, setNow] = useState(performance.now())
 
   useEffect(() => {
-    if (mouseIn) {
-      clearTimeout(id)
-    }
+    HintsMap.set(
+      id,
+      isPromise
+        ? null
+        : setTimeout(() => {
+            setHintState(false)
+          }, 4000),
+    )
+  }, [])
 
-    return () => {
-      clearTimeout(id)
+  useEffect(() => {
+    const timeoutId = HintsMap.get(id)
+    if (timeoutId) {
+      HintsMap.set(id, null)
+      clearTimeout(timeoutId)
     }
   }, [mouseIn])
 

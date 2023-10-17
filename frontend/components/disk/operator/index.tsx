@@ -82,12 +82,12 @@ export default function Operator() {
     {
       name: 'ic:outline-filter-alt',
       message: '設定過濾',
-      onClick: () => AddHints('設定過濾', 'progressing', true),
+      onClick: () => AddHints('不會過期', 'progressing', true),
     },
     {
       name: 'ic:outline-filter-alt',
       message: '設定過濾-2',
-      onClick: () => AddHints('設定過濾', 'success', false),
+      onClick: () => AddHints('會過期', 'success', false),
     },
     {
       name: method > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',
@@ -97,7 +97,9 @@ export default function Operator() {
   ]
 
   return (
-    <div className={clsx('flex ml-3 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
+    <div
+      className={clsx('flex ml-3 gap-x-4 mt-2', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}
+    >
       {Buttons.map((e, index) =>
         isMobile ? (
           <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />

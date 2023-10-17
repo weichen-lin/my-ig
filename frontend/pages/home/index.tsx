@@ -3,6 +3,8 @@ import { LayoutHome } from 'components/layout'
 import { RecoilRoot, RecoilEnv } from 'recoil'
 import { GetServerSideProps } from 'next'
 import { CookieParser } from 'hooks/utils'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 const cookieName = process.env.USER_AUTH_COOKIE_NAME ?? ''
@@ -17,7 +19,7 @@ export default function Drive() {
             <BreadCrumbs />
           </div>
           <KushareDrive />
-          <HintContainer />
+          <ToastContainer />
         </div>
       </LayoutHome>
     </RecoilRoot>
