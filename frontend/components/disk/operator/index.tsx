@@ -97,7 +97,9 @@ export default function Operator() {
   ]
 
   return (
-    <div className={clsx('flex ml-3 gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}>
+    <div
+      className={clsx('flex ml-3 gap-x-4 mt-2', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4'}`)}
+    >
       {Buttons.map((e, index) =>
         isMobile ? (
           <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />
