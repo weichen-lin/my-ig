@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react'
-import axios from 'axios'
 import Router from 'next/router'
 import { PwdValidate } from './utils'
-import { register, useFetch } from 'api'
+import { userRegister, useFetch } from 'api'
 
 export type RegisterKeys = 'email' | 'password'
 
@@ -21,7 +20,7 @@ export default function useRegister() {
   })
   const [successMsg, setSuccessMsg] = useState<null | string>(null)
 
-  const { isLoading, error, run } = useFetch(register, {
+  const { isLoading, error, run } = useFetch(userRegister, {
     onSuccess: () => {
       setSuccessMsg('註冊成功')
       setTimeout(() => {

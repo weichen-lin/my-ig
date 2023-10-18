@@ -7,13 +7,13 @@ import { PCButton, MobileButton } from './buttons'
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { AddFolder } from 'components/utils'
 import { useRecoilState } from 'recoil'
-import { useHints } from 'hooks/disk'
+import { useFileUpload } from 'hooks/disk'
 
 export default function Operator() {
   const { isMobile } = useIsMobile()
   const [openDialog, setOpenDialog] = useState(false)
   const [method, setMethod] = useRecoilState(listMethodState)
-  const { AddHints } = useHints()
+  const { handleFileUpload } = useFileUpload()
 
   const handleCloseDialog = useCallback(() => {
     setOpenDialog(false)
@@ -24,44 +24,6 @@ export default function Operator() {
   }, [])
 
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const handleFileUpload = async (multiple: boolean) => {
-    try {
-      const FileHandlers = await window?.showOpenFilePicker({
-        multiple: multiple,
-      })
-
-      await Promise.all(
-        FileHandlers.map(async (filehandle, index) => {
-          const file = await filehandle.getFile()
-
-          const imgReader = new FileReader()
-          imgReader.readAsDataURL(file)
-          imgReader.onloadend = () => {
-            const img = new Image()
-            img.src = imgReader.result as string
-            img.onload = () => {
-              const formData = new FormData()
-              formData.append('myfile', file, file.name)
-              fetcher
-                .post('http://localhost:8080/upload', formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
-                })
-                .then(res => {})
-                .catch(err => console.log(err))
-            }
-            img.onerror = e => {
-              // handleHints('success', '上傳格式錯誤')
-            }
-          }
-        }),
-      )
-    } catch (e) {
-      console.log('cancel select')
-    }
-  }
 
   useEffect(() => {
     inputRef.current?.select()
@@ -82,12 +44,7 @@ export default function Operator() {
     {
       name: 'ic:outline-filter-alt',
       message: '設定過濾',
-      onClick: () => AddHints('不會過期', 'progressing', true),
-    },
-    {
-      name: 'ic:outline-filter-alt',
-      message: '設定過濾-2',
-      onClick: () => AddHints('會過期', 'success', false),
+      onClick: () => console.log('filter'),
     },
     {
       name: method > ListMethod.Lattice ? 'mi:list' : 'humbleicons:dashboard',

@@ -36,4 +36,9 @@ fetcher.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   return config
 })
 
+// fetcher.interceptors.response.use(
+//   res => res.data,
+//   err => Promise.reject(err),
+// )
+
 export default fetcher
