@@ -1,36 +1,51 @@
 import { toast } from 'react-toastify'
 import { uploadFile } from 'api'
 
+enum FileUploadStatus {
+  SUCCESS,
+  FAILED,
+}
+
 export default function useFileUpload() {
+  const filehandle = (handler: FileSystemFileHandle) => {
+    return new Promise<number>(async (resolve, reject) => {
+      const file = await handler.getFile()
+
+      const imgReader = new FileReader()
+      imgReader.readAsDataURL(file)
+      imgReader.onloadend = () => {
+        const img = new Image()
+        img.src = imgReader.result as string
+        img.onload = () => {
+          //   const formData = new FormData()
+          //   formData.append('myfile', file, file.name)
+          //   uploadFile(formData)
+          resolve(FileUploadStatus.SUCCESS)
+        }
+        img.onerror = () => {
+          reject(FileUploadStatus.FAILED)
+        }
+      }
+    })
+  }
+
   const handleFileUpload = async (multiple: boolean) => {
     try {
       const FileHandlers = await window?.showOpenFilePicker({
         multiple: multiple,
       })
 
-      await Promise.all(
-        FileHandlers.map(async (filehandle, index) => {
-          const file = await filehandle.getFile()
-
-          const imgReader = new FileReader()
-          imgReader.readAsDataURL(file)
-          imgReader.onloadend = () => {
-            toast.loading('上傳中...', { position: 'bottom-right' })
-            const img = new Image()
-            img.src = imgReader.result as string
-            img.onload = () => {
-              //   const formData = new FormData()
-              //   formData.append('myfile', file, file.name)
-              //   uploadFile(formData)
-            }
-            img.onerror = e => {
-              toast.error('上傳格式錯誤')
-            }
-          }
-        }),
-      )
-    } catch (e) {
-      console.log('cancel select')
+      const toastId = toast.loading(`正在上傳 ${FileHandlers.length} 份檔案`, { position: 'bottom-left' })
+      const results = await Promise.all(FileHandlers.map(e => filehandle(e).catch(err => err)))
+      const successFile = results.filter(e => e === FileUploadStatus.SUCCESS)
+      toast.update(toastId, {
+        render: successFile.length > 0 ? `成功上傳 ${successFile.length}份檔案` : `上傳所有檔案失敗`,
+        type: successFile.length > 0 ? 'success' : 'error',
+        isLoading: false,
+        autoClose: 2000,
+      })
+    } catch {
+      console.log('Cancel select!')
     }
   }
 
