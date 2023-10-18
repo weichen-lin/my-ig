@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import Router from 'next/router'
-import { userLogin, LoginBody, useFetch } from 'api'
+import { userLogin, AuthBody, useFetch } from 'api'
 
 export default function useLogin() {
-  const [loginInfo, setLoginInfo] = useState<LoginBody>({
+  const [loginInfo, setLoginInfo] = useState<AuthBody>({
     email: '',
     password: '',
   })
@@ -18,7 +18,7 @@ export default function useLogin() {
     },
   })
 
-  const handleAuthInfo = (key: keyof LoginBody, value: string) => {
+  const handleAuthInfo = (key: keyof AuthBody, value: string) => {
     setLoginInfo(prev => ({ ...prev, [key]: value }))
   }
 

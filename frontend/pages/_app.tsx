@@ -4,7 +4,8 @@ import Head from 'next/head'
 import type { AppProps } from 'next/app'
 import { NextPage } from 'next'
 
-import { RecoilRoot } from 'recoil'
+import { RecoilRoot, RecoilEnv } from 'recoil'
+RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: JSX.Element) => JSX.Element

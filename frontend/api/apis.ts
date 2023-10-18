@@ -3,26 +3,19 @@ import axios from 'axios'
 
 const BaseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
-export type RegisterKeys = 'email' | 'password'
+export type AuthKeys = 'email' | 'password'
 
-export interface RegisterBody extends Record<RegisterKeys, string> {
+export interface AuthBody extends Record<AuthKeys, string> {
   email: string
   password: string
 }
 
-export type LoginKeys = 'email' | 'password'
-
-export interface LoginBody extends Record<LoginKeys, string> {
-  email: string
-  password: string
-}
-
-export const register = async (data: RegisterBody) =>
+export const userRegister = async (data: AuthBody) =>
   axios.post(`${BaseUrl}/user/register`, data, {
     withCredentials: true,
   })
 
-export const userLogin = async (data: LoginBody) =>
+export const userLogin = async (data: AuthBody) =>
   axios.post(`${BaseUrl}/user/login`, data, {
     withCredentials: true,
   })
@@ -38,3 +31,6 @@ export const createFolder = async (data: { name: string; locateAt: string | null
 
 export const getBreadCrumb = async (locateAt: string | null) =>
   fetcher.get(locateAt ? `/disk/breadcrumb?id=${locateAt}` : '/disk/breadcrumb')
+
+export const uploadFile = async (data: FormData) =>
+  fetcher.post<{ id: string }>('/upload', data, { headers: { 'Content-Type': 'multipart/form-data' } })
