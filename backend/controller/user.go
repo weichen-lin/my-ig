@@ -20,7 +20,6 @@ const (
 
 type UserRegisterParams struct {
 	Email    string `json:"email" binding:"required"`
-	Name     string `json:"name" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -85,9 +84,8 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 	q := db.New(tx)
 	defer tx.Commit(ctx)
 
-	arg := db.CreateUserParams{
+	arg := db.CreateUserWithoutNameParams{
 		Email:    params.Email,
-		Name:     params.Name,
 		Password: hashedPassword,
 	}
 
@@ -97,7 +95,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	user, err := q.CreateUser(ctx, arg)
+	user, err := q.CreateUserWithoutName(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

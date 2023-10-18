@@ -40,7 +40,7 @@ func (c *Controller) AuthMiddleware() gin.HandlerFunc {
 func (c *Controller) AuthMiddlewareWithCookie() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		cookie, err := ctx.Cookie("token")
-		if err != nil || cookie == ""{
+		if err != nil || cookie == "" {
 			ctx.String(http.StatusUnauthorized, "Invalid Authorization")
 			ctx.Abort()
 			return

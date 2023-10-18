@@ -30,10 +30,12 @@ func CreateUserForTest(ctx context.Context) (UserWithRealPwd, error) {
 		return user, err
 	}
 
+	fakeName := faker.Username()
+
 	arg := CreateUserParams{
 		Email:    faker.Email(),
 		Password: hashedPwd,
-		Name:     faker.Username(),
+		Name:     &fakeName,
 	}
 
 	userFromDB, err := q.CreateUser(context.Background(), arg)
@@ -68,10 +70,12 @@ func Test_Createuser(t *testing.T) {
 	hashedPwd, err := util.HashPassword(fakePwd)
 	require.NoError(t, err)
 
+	fakeName := faker.Username()
+
 	arg := CreateUserParams{
 		Email:    faker.Email(),
 		Password: hashedPwd,
-		Name:     faker.Username(),
+		Name:     &fakeName,
 	}
 
 	user, err := q.CreateUser(context.Background(), arg)
@@ -89,7 +93,6 @@ func Test_Createuser(t *testing.T) {
 	require.NoError(t, err)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_GetUser(t *testing.T) {
@@ -116,7 +119,6 @@ func Test_GetUser(t *testing.T) {
 	require.Equal(t, ID, userWithPWD.ID)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_GetUserByEmail(t *testing.T) {
@@ -144,7 +146,6 @@ func Test_GetUserByEmail(t *testing.T) {
 	require.NoError(t, checkErr)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_UpdateUserAvatar(t *testing.T) {
@@ -202,5 +203,28 @@ func Test_GetUserById(t *testing.T) {
 	require.Equal(t, userWithPWD.AvatarUrl, user.AvatarUrl)
 
 	tx.Commit(context.Background())
+}
 
+func Test_CreateUserWithoutName(t *testing.T) {
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	pwdBeforeBcrypt := faker.Password()[:10]
+	hashedPwd, err := util.HashPassword(pwdBeforeBcrypt)
+	require.NoError(t, err)
+
+	arg := CreateUserWithoutNameParams{
+		Email:    faker.Email(),
+		Password: hashedPwd,
+	}
+
+	user, err := q.CreateUserWithoutName(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+	require.Equal(t, arg.Email, user.Email)
+	require.Nil(t, user.Name)
+
+	tx.Commit(context.Background())
 }

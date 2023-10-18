@@ -36,7 +36,7 @@ type User struct {
 	ID             uuid.UUID `json:"id"`
 	Email          string    `json:"email"`
 	Password       string    `json:"password"`
-	Name           string    `json:"name"`
+	Name           *string   `json:"name"`
 	AvatarUrl      *string   `json:"avatarUrl"`
 	CreatedAt      time.Time `json:"createdAt"`
 	LastModifiedAt time.Time `json:"lastModifiedAt"`

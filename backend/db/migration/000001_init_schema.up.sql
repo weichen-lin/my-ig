@@ -4,7 +4,7 @@ CREATE TABLE "user" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "email" varchar(100) NOT NULL,
   "password" varchar(100) NOT NULL,
-  "name" varchar(100) NOT NULL,
+  "name" varchar(100),
   "avatar_url" text,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "last_modified_at" timestamptz NOT NULL DEFAULT (now())

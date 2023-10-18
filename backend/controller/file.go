@@ -106,7 +106,7 @@ func (s Controller) GetFile(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	q := db.New(conn)
 	defer conn.Release()
 

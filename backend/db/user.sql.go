@@ -16,13 +16,37 @@ INSERT INTO "user" (email, password, name) VALUES ($1, $2, $3) RETURNING id, ema
 `
 
 type CreateUserParams struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
+	Email    string  `json:"email"`
+	Password string  `json:"password"`
+	Name     *string `json:"name"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Password, arg.Name)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.Name,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.LastModifiedAt,
+	)
+	return i, err
+}
+
+const createUserWithoutName = `-- name: CreateUserWithoutName :one
+INSERT INTO "user" (email, password) VALUES ($1, $2) RETURNING id, email, password, name, avatar_url, created_at, last_modified_at
+`
+
+type CreateUserWithoutNameParams struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (q *Queries) CreateUserWithoutName(ctx context.Context, arg CreateUserWithoutNameParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUserWithoutName, arg.Email, arg.Password)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -76,7 +100,7 @@ SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1
 type GetUserByIdRow struct {
 	ID        uuid.UUID `json:"id"`
 	Email     string    `json:"email"`
-	Name      string    `json:"name"`
+	Name      *string   `json:"name"`
 	AvatarUrl *string   `json:"avatarUrl"`
 }
 
