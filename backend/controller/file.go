@@ -33,7 +33,6 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
-
 	locateAt, err := util.ParseUUID(params.LocateAt)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(ErrLocateAtFailed))

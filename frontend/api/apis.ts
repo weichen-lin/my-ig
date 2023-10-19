@@ -33,4 +33,4 @@ export const getBreadCrumb = async (locateAt: string | null) =>
   fetcher.get(locateAt ? `/disk/breadcrumb?id=${locateAt}` : '/disk/breadcrumb')
 
 export const uploadFile = async (data: FormData) =>
-  fetcher.post<{ id: string }>('/upload', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+  fetcher.post<{ id: string }>('/file/create', data, { headers: { 'Content-Type': 'multipart/form-data' } })

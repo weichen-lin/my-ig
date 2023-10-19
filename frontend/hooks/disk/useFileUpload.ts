@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify'
 import { uploadFile } from 'api'
+import { useRouter } from 'next/router'
 
 enum FileUploadStatus {
   SUCCESS,
@@ -7,6 +8,8 @@ enum FileUploadStatus {
 }
 
 export default function useFileUpload() {
+  const router = useRouter()
+
   const filehandle = (handler: FileSystemFileHandle) => {
     return new Promise<number>(async (resolve, reject) => {
       const file = await handler.getFile()
@@ -17,9 +20,11 @@ export default function useFileUpload() {
         const img = new Image()
         img.src = imgReader.result as string
         img.onload = () => {
-          //   const formData = new FormData()
-          //   formData.append('myfile', file, file.name)
-          //   uploadFile(formData)
+          const formData = new FormData()
+          formData.append('file', file, file.name)
+          formData.append('name', file.name)
+          formData.append('locateAt', (router.query.f as string) ?? '')
+          uploadFile(formData)
           resolve(FileUploadStatus.SUCCESS)
         }
         img.onerror = () => {
