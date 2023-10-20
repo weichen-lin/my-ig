@@ -1,6 +1,8 @@
 import { toast } from 'react-toastify'
 import { uploadFile } from 'api'
 import { useRouter } from 'next/router'
+import { useSetRecoilState } from 'recoil'
+import { fileState } from 'store'
 
 enum FileUploadStatus {
   SUCCESS,
@@ -9,6 +11,7 @@ enum FileUploadStatus {
 
 export default function useFileUpload() {
   const router = useRouter()
+  const setFiles = useSetRecoilState(fileState)
 
   const filehandle = (handler: FileSystemFileHandle) => {
     return new Promise<number>(async (resolve, reject) => {
@@ -19,13 +22,19 @@ export default function useFileUpload() {
       imgReader.onloadend = () => {
         const img = new Image()
         img.src = imgReader.result as string
-        img.onload = () => {
+        img.onload = async () => {
           const formData = new FormData()
+          const now = new Date()
           formData.append('file', file, file.name)
           formData.append('name', file.name)
           formData.append('locateAt', (router.query.f as string) ?? '')
-          uploadFile(formData)
-          resolve(FileUploadStatus.SUCCESS)
+          try {
+            const res = await uploadFile(formData)
+            setFiles(e => [...e, { id: res.data.id, name: file.name, lastModifiedAt: now.toISOString() }])
+            resolve(FileUploadStatus.SUCCESS)
+          } catch {
+            reject(FileUploadStatus.FAILED)
+          }
         }
         img.onerror = () => {
           reject(FileUploadStatus.FAILED)
