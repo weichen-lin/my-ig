@@ -34,7 +34,7 @@ export default function useAuth(props: AuthProps) {
         }
       } catch {
         localStorage.clear()
-        needRouting && Router.push('/login')
+        needRouting ? Router.push('/login') : setCheckAuth(true)
       }
     }
     authUser()
