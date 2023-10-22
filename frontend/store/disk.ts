@@ -56,5 +56,8 @@ export const listMethodState = atom({
 
 export const OpenImageState = atom({
   key: 'OpenImageState',
-  default: true,
+  default: {
+    isOpen: false,
+    index: 0,
+  },
 })

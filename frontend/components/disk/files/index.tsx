@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil'
 import { listMethodState, ListMethod, CommonProps, fileState, folderState, OpenImageState } from 'store'
 import { useGdrive } from 'hooks/disk'
 import { ImagePlayground } from 'components/disk/'
+import { useState } from 'react'
 
 const EmptyContent = () => {
   return (
@@ -20,17 +21,15 @@ export default function KushareDrive() {
   const listMethod = useRecoilValue(listMethodState)
   const files = useRecoilValue(fileState)
   const folders = useRecoilValue(folderState)
-  const IsOpen = useRecoilValue(OpenImageState)
+  const { isOpen } = useRecoilValue(OpenImageState)
   const { isLoading } = useGdrive()
 
   if (isLoading) return <KushareDriveBackbone />
 
-  console.log({ IsOpen })
-
   return files?.length > 0 || folders?.length > 0 ? (
     <div
       className={clsx(
-        'relative mx-auto mb-2 flex h-full w-[92%] select-none flex-col items-start overflow-y-auto',
+        'mx-auto mb-2 flex h-full w-[92%] select-none flex-col items-start overflow-y-auto',
         `${listMethod === ListMethod.Lattice ? 'mt-3 gap-y-2 xs:gap-x-6 md:gap-y-6' : 'w-full'}`,
       )}
     >
@@ -46,11 +45,11 @@ export default function KushareDrive() {
         <p className='mt-2 pl-[1%] text-gray-400'>檔案</p>
       )}
       <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
-        {files?.map((e: CommonProps) => (
-          <File method={listMethod} info={e} key={`file_${e.id}`} />
+        {files?.map((e: CommonProps, index) => (
+          <File method={listMethod} info={e} key={`file_${e.id}`} index={index} />
         ))}
       </div>
-      {IsOpen && <ImagePlayground />}
+      {isOpen && <ImagePlayground />}
     </div>
   ) : (
     <EmptyContent />

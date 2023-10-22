@@ -3,20 +3,23 @@ import { useState, useCallback, memo } from 'react'
 import { Icon } from '@iconify/react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
 import { CommonProps, ListMethod } from 'store'
+import { useSetRecoilState } from 'recoil'
+import { OpenImageState } from 'store'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
-export const File = (props: { info: CommonProps; method: ListMethod }) => {
-  const { info, method } = props
+export const File = (props: { info: CommonProps; method: ListMethod; index: number }) => {
+  const { info, method, index } = props
   const { id, name, lastModifiedAt } = info
   const [isSelect, setIsSelect] = useState(false)
+  const setOpenImage = useSetRecoilState(OpenImageState)
 
   const onClick = () => {
     setIsSelect(prev => !prev)
   }
 
   const onDoubleClick = () => {
-    console.log('double click')
+    setOpenImage(prev => ({ ...prev, isOpen: true, index }))
   }
 
   const { handleClick } = useSingleAndDoubleClick(onClick, onDoubleClick)

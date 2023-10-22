@@ -2,31 +2,10 @@ import Description from './description'
 import { ImageArrow } from 'public/icon/disk'
 import { useState, useRef, useEffect } from 'react'
 import clsx from 'clsx'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useRecoilState } from 'recoil'
 import { fileState, OpenImageState } from 'store'
 
-const _files = [
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-  { id: 'asdasd', name: 'testName', lastModifiedAt: '2021-10-10T00:00:00.000Z' },
-]
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 declare module 'react' {
   interface CSSProperties {
@@ -35,22 +14,49 @@ declare module 'react' {
 }
 
 export default function ImagePlayground() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [openState, setOpenState] = useRecoilState(OpenImageState)
+  const [currentIndex, setCurrentIndex] = useState(openState.index)
   const files = useRecoilValue(fileState)
   const ref = useRef<HTMLDivElement>(null)
-  const setIsOpen = useSetRecoilState(OpenImageState)
 
   const handleInfo = (add: boolean) => {
-    setCurrentIndex((prev: number) => (add ? prev + 1 : prev - 1) % _files.length)
+    setCurrentIndex((prev: number) => {
+      if (prev === 0 && !add) return files.length - 1
+      else if (prev === files.length - 1 && add) return 0
+      else return add ? prev + 1 : prev - 1
+    })
+  }
+
+  const keyEvents = (e: KeyboardEvent) => {
+    switch (e.key) {
+      case 'ArrowLeft':
+        handleInfo(false)
+        break
+      case 'ArrowRight':
+        handleInfo(true)
+        break
+      case 'ArrowUp':
+        handleInfo(false)
+        break
+      case 'ArrowDown':
+        handleInfo(true)
+        break
+      case 'Escape':
+        setOpenState(prev => ({ ...prev, isOpen: false }))
+        break
+      default:
+        break
+    }
   }
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-          setIsOpen(prev => !prev)
-        }
-      })
+      ref.current.focus()
+      ref.current.addEventListener('keydown', keyEvents)
+    }
+
+    return () => {
+      ref.current?.removeEventListener('keydown', keyEvents)
     }
   }, [])
 
@@ -73,11 +79,7 @@ export default function ImagePlayground() {
     >
       <div className='flex h-full lg:h-[70%] flex-col lg:flex-row w-full lg:w-[70%] mx-auto lg:mt-[1.25%]'>
         <div className='bg-white w-full h-full flex items-center justify-center overflow-clip lg:rounded-l-lg'>
-          <img
-            src={
-              'https://media.istockphoto.com/id/481229372/zh/%E7%85%A7%E7%89%87/spiral-galaxy-illustration-of-milky-way.jpg?s=2048x2048&w=is&k=20&c=Sf4TzRnYFDxvhgr3Xqu5tOTs4lTBjk9RU7t8nW4lQPE='
-            }
-          ></img>
+          <img src={`${baseUrl}/file/${files[currentIndex].id}`}></img>
         </div>
         <Description
           // info={data[currentIndex] ?? { description: '', tags: [] }}
@@ -89,11 +91,11 @@ export default function ImagePlayground() {
       </div>
       <div className='hidden lg:h-1/5 lg:block w-full'>
         <div className='h-full imageCarouselContainer'>
-          {_files.map((e, index) => (
+          {files.map((e, index) => (
             <div
               className={clsx(
                 'imageCarousel w-[15%] h-4/5 text-white absolute left-[42.5%]',
-                'transition-all duration-200 ease-linear border-2 border-gray-300',
+                'transition-all duration-200 ease-linear',
                 `flex items-center overflow-hidden bg-slate-100`,
               )}
               style={{
@@ -105,29 +107,21 @@ export default function ImagePlayground() {
               }}
               key={`index_${index}`}
             >
-              <img
-                className='w-full'
-                src={
-                  'https://png.pngtree.com/png-vector/20221222/ourmid/pngtree-super-cute-cartoon-vector-bear-png-image_6504049.png'
-                }
-                draggable={false}
-              ></img>
+              <img src={`${baseUrl}/file/${e.id}`} draggable={false} className='h-full mx-auto'></img>
             </div>
           ))}
-          {currentIndex < _files.length - 1 ? (
+          {currentIndex < files.length - 1 && (
             <div
               className={`absolute w-16 h-16 top-6 right-[18%] rotate-90 rounded-full hover:bg-slate-100/20 hover:cursor-pointer
-            transition-all opacity-100 duration-300 ease-out ${currentIndex > _files.length - 1 ? 'none' : ''}`}
+            transition-all opacity-100 duration-300 ease-out ${currentIndex > files.length - 1 ? 'none' : ''}`}
               onClick={() => {
                 handleInfo(true)
               }}
             >
               <ImageArrow />
             </div>
-          ) : (
-            <></>
           )}
-          {currentIndex > 0 ? (
+          {currentIndex > 0 && (
             <div
               className={`absolute w-16 h-16 top-6 left-[18%] -rotate-90 rounded-full hover:bg-slate-100/20 hover:cursor-pointer
             transition-all opacity-100 duration-300 ease-out`}
@@ -137,8 +131,6 @@ export default function ImagePlayground() {
             >
               <ImageArrow />
             </div>
-          ) : (
-            <></>
           )}
         </div>
       </div>
