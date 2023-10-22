@@ -3,8 +3,9 @@ import { File } from 'components/disk/files/files'
 import { Folder } from 'components/disk/files/folders'
 import { KushareDriveBackbone } from './gdrivebone'
 import { useRecoilValue } from 'recoil'
-import { listMethodState, ListMethod, CommonProps, fileState, folderState } from 'store'
+import { listMethodState, ListMethod, CommonProps, fileState, folderState, OpenImageState } from 'store'
 import { useGdrive } from 'hooks/disk'
+import { ImagePlayground } from 'components/disk/'
 
 const EmptyContent = () => {
   return (
@@ -19,9 +20,12 @@ export default function KushareDrive() {
   const listMethod = useRecoilValue(listMethodState)
   const files = useRecoilValue(fileState)
   const folders = useRecoilValue(folderState)
+  const IsOpen = useRecoilValue(OpenImageState)
   const { isLoading } = useGdrive()
 
   if (isLoading) return <KushareDriveBackbone />
+
+  console.log({ IsOpen })
 
   return files?.length > 0 || folders?.length > 0 ? (
     <div
@@ -46,6 +50,7 @@ export default function KushareDrive() {
           <File method={listMethod} info={e} key={`file_${e.id}`} />
         ))}
       </div>
+      {IsOpen && <ImagePlayground />}
     </div>
   ) : (
     <EmptyContent />

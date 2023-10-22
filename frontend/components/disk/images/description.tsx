@@ -42,8 +42,8 @@ const Label = ({ label, color }: { label: string; color: number }) => {
   )
 }
 
-interface DescriptionProps extends Pick<ImageDisplayProps, 'tagProps'> {
-  info: FileData
+interface DescriptionProps {
+  // info: FileData
   isEdit: boolean
   handleEdit: () => void
   onEdit: (e: string) => void
@@ -51,18 +51,18 @@ interface DescriptionProps extends Pick<ImageDisplayProps, 'tagProps'> {
 }
 
 export default function Description(props: DescriptionProps) {
-  const { tags } = props.info
-  const { isEdit, handleEdit, onEdit, text, tagProps } = props
+  // const { tags } = props.info
+  const { isEdit, handleEdit, onEdit, text } = props
   return (
-    <div className={clsx('bg-gray-100 w-full h-full p-3 overflow-y-auto flex-col')}>
-      <ul className='flex p-3 flex-wrap gap-x-1 gap-y-2'>
+    <div className={clsx('bg-gray-100 w-full h-full p-3 overflow-y-auto flex-col lg:rounded-r-lg')}>
+      {/* <ul className='flex p-3 flex-wrap gap-x-1 gap-y-2'>
         {Array.from(tags || []).map((e, index) => (
           <Label label={e} color={index % 7} key={`label_${index}`} />
         ))}
-      </ul>
+      </ul> */}
       <div className='flex w-full items-center'>
-        <TagArea tagProps={tagProps} />
-        <button
+        {/* <TagArea tagProps={tagProps} /> */}
+        {/* <button
           className={clsx(
             'relative w-28 mt-1 h-8 flex rounded-lg border-2 border-gray-200 hover:bg-slate-300 active:top-[2px]',
             `${tags?.length >= 5 ? 'hidden' : ''}`,
@@ -71,7 +71,7 @@ export default function Description(props: DescriptionProps) {
         >
           <AddLabel className='w-6 h-6 my-[2px]' />
           <span className='mt-[2px] pr-2 pl-1'>增加標籤</span>
-        </button>
+        </button> */}
       </div>
       <div className='flex-1 overflow-y-auto'>
         <TextArea isEdit={isEdit} handleEdit={handleEdit} text={text} onEdit={onEdit} />

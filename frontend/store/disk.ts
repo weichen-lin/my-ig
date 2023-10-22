@@ -53,3 +53,8 @@ export const listMethodState = atom({
   key: 'listMethodState',
   default: ListMethod.Lattice,
 })
+
+export const OpenImageState = atom({
+  key: 'OpenImageState',
+  default: true,
+})

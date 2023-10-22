@@ -1,9 +1,10 @@
-import { KushareDrive, Operator, BreadCrumbs, HintContainer } from 'components/disk'
+import { KushareDrive, Operator, BreadCrumbs } from 'components/disk'
 import { LayoutHome } from 'components/layout'
 import { RecoilRoot, RecoilEnv } from 'recoil'
 import { GetServerSideProps } from 'next'
 import { CookieParser } from 'hooks/utils'
 import { ToastContainer } from 'react-toastify'
+import { ImagePlayground } from 'components/disk/'
 import 'react-toastify/dist/ReactToastify.css'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false

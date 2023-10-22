@@ -1,5 +1,5 @@
 import Search from 'components/disk/search'
-import { HintContainer, FullScreenMenu, MobileMenu } from 'components/disk'
+import { FullScreenMenu, MobileMenu } from 'components/disk'
 import { useIsMobile } from 'hooks/disk'
 import { RxHamburgerMenu } from 'react-icons/rx'
 import { useCallback, useState } from 'react'
@@ -39,7 +39,6 @@ export default function LayoutHome(props: { children: JSX.Element }) {
             <Search />
           </div>
           <MobileMenu isOpen={openMenu} close={closeMenu} />
-          <HintContainer />
           {children}
         </div>
       )}
