@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lexical/react": "^0.12.2",
     "@weichen-lin/gdrive-select-and-drag": "^1.0.5",
     "axios": "^1.2.6",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.6",
+    "lexical": "^0.12.2",
     "next": "13.0.6",
     "react": "18.2.0",
     "react-datepicker": "^4.8.0",
