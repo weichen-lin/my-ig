@@ -34,7 +34,7 @@ export const PasswordChecker = (props?: { value: string }) => {
   return (
     <ul
       className={clsx(
-        'p-2 rounded-md text-sm mb-12 md:w-2/3 md:mx-auto mt-4',
+        'p-2 rounded-md text-sm 2xl:mb-12 md:w-2/3 md:mx-auto mt-4',
         `${results.every(e => e) ? 'bg-green-300/60' : 'bg-orange-200'}`,
       )}
     >
