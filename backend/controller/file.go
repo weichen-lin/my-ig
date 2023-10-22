@@ -128,5 +128,6 @@ func (s Controller) GetFile(ctx *gin.Context) {
 	}
 
 	mimetype := mimetype.Detect(buffer)
+	ctx.Header("Cache-Control", "max-age=31536000")
 	ctx.Data(http.StatusOK, mimetype.String(), buffer)
 }
