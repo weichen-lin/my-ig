@@ -1,4 +1,4 @@
-import Description from './description'
+import Description from 'components/disk/editor'
 import { ImageArrow } from 'public/icon/disk'
 import { useState, useRef, useEffect } from 'react'
 import clsx from 'clsx'
@@ -77,17 +77,13 @@ export default function ImagePlayground() {
       }}
       ref={ref}
     >
-      <div className='flex h-full lg:h-[70%] flex-col lg:flex-row w-full lg:w-[70%] mx-auto lg:mt-[1.25%]'>
-        <div className='bg-white w-full h-full flex items-center justify-center overflow-clip lg:rounded-l-lg'>
+      <div className='flex h-full lg:h-[70%] flex-col lg:flex-row w-full lg:w-[70%] mx-auto lg:mt-[1.25%] bg-white'>
+        <div className='w-1/2 h-full flex items-center justify-center overflow-clip lg:rounded-l-lg'>
           <img src={`${baseUrl}/file/${files[currentIndex].id}`}></img>
         </div>
-        <Description
-          // info={data[currentIndex] ?? { description: '', tags: [] }}
-          isEdit={true}
-          handleEdit={() => console.log('edit')}
-          onEdit={(e: string) => console.log('edit')}
-          text={'asdasd'}
-        />
+        <div className='w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative'>
+          <Description />
+        </div>
       </div>
       <div className='hidden lg:h-1/5 lg:block w-full'>
         <div className='h-full imageCarouselContainer'>
