@@ -29,13 +29,13 @@ export default function DropDownList(props: DropDownListProps & { options: Optio
       className={clsx(
         'relative flex items-center h-8',
         'disabled:cursor-not-allowed disabled:opacity-30 gap-x-1',
-        'cursor-pointer hover:bg-slate-300/40 rounded-md px-2',
+        'cursor-pointer hover:bg-slate-300/40 rounded-md px-1',
       )}
       ref={ref}
       onClick={() => setOpen(prev => !prev)}
     >
       {icon && <Icon className='w-5 h-5 mx-1' color='#929292' icon={icon} />}
-      {title && <span className='text-sm'>{title}</span>}
+      {title && <span className={clsx('text-sm', !icon && 'ml-1')}>{title}</span>}
       <Icon
         className={clsx('w-5 h-5 mx-1', 'transition-transform duration-200 ease-out', open && 'rotate-180')}
         color='#929292'
@@ -52,7 +52,7 @@ export default function DropDownList(props: DropDownListProps & { options: Optio
           }}
         >
           {options?.map((item, index) => (
-            <DropDownElement key={index} {...item} onSelect={onSelect} />
+            <DropDownElement key={index} {...item} onSelect={onSelect} active={item.title === title} />
           ))}
         </div>
       )}
@@ -67,8 +67,9 @@ const DropDownElement = (props: DropDownListProps & { active?: boolean }) => {
     <div
       className={clsx(
         'hover:bg-gray-100 flex items-center',
-        'h-8 px-2 cursor-pointer z-20 min-w-[160px] gap-x-1',
+        'h-8 px-2 cursor-pointer z-20 gap-x-1',
         active && 'bg-[#f5f8fd]',
+        icon ? 'min-w-[160px]' : 'pr-8',
       )}
       onClick={() => onSelect && onSelect(title)}
     >
