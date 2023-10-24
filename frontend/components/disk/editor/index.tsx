@@ -8,13 +8,14 @@ import { useEffect } from 'react'
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { History } from './plugins/history'
+
+import Editor from './editor'
 
 export default function Description() {
   const CustomContent = () => {
     return (
       <div className='flex flex-col h-full bg-white rounded-xl p-1'>
-        <div className='w-full border-b-[1px] flex h-12 rounded-t-xl '>TEST</div>
+        <Editor />
         <ContentEditable className='z-10 w-full h-full focus:outline-none py-4 px-2 overflow-auto ' />
       </div>
     )
@@ -39,9 +40,6 @@ export default function Description() {
         ErrorBoundary={LexicalErrorBoundary}
       />
       <HistoryPlugin />
-      <div style={{ margin: '20px 0px' }}>
-        <History />
-      </div>
     </LexicalComposer>
   )
 }
