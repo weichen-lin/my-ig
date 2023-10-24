@@ -1,9 +1,10 @@
+import { type } from 'os'
 import { RefObject, useEffect } from 'react'
 
 const useClickOutside = <T extends HTMLElement>(ref: RefObject<T>, handler: () => void) => {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
-      if (!ref.current || ref.current.contains(event.target as Node)) {
+      if (!ref.current || typeof ref.current.contains !== 'function' || ref.current.contains(event.target as Node)) {
         return
       }
       handler()

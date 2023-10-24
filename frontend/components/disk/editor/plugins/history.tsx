@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react'
 
 import { useEffect, useState } from 'react'
 
-export const History = () => {
+const History = () => {
   const [editor] = useLexicalComposerContext()
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
@@ -35,19 +35,21 @@ export const History = () => {
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND, undefined)
         }}
-        className='disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer hover:bg-slate-300/40 rounded-xl'
+        className='disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer hover:bg-slate-300/40 rounded-md'
       >
-        <Icon className='w-8 h-8 my-1' color='#929292' icon='ei:undo' />
+        <Icon className='w-8 h-8' color='#929292' icon='ei:undo' />
       </button>
       <button
         disabled={!canRedo}
         onClick={() => {
           editor.dispatchCommand(REDO_COMMAND, undefined)
         }}
-        className='disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer hover:bg-slate-300/40 rounded-xl'
+        className='disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer hover:bg-slate-300/40 rounded-md'
       >
-        <Icon className='w-8 h-8 my-1' color='#929292' icon='ei:redo' />
+        <Icon className='w-8 h-8' color='#929292' icon='ei:redo' />
       </button>
     </div>
   )
 }
+
+export default History
