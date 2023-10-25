@@ -1,9 +1,10 @@
 import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer'
-import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin'
+import { ListPlugin } from '@lexical/react/LexicalListPlugin'
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin'
+
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary'
-import { $getRoot, $getSelection, EditorState } from 'lexical'
 import { useEffect, useState } from 'react'
 
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
@@ -27,8 +28,8 @@ export default function Description() {
   }
 
   const lexicalConfig: InitialConfigType = {
-    namespace: 'My Rich Text Editor',
-    nodes: Nodes,
+    namespace: 'Editor',
+    nodes: [...Nodes],
     onError: e => {
       console.log('ERROR:', e)
     },
@@ -42,6 +43,8 @@ export default function Description() {
         placeholder={CustomPlaceholder}
         ErrorBoundary={LexicalErrorBoundary}
       />
+      <ListPlugin />
+      <CheckListPlugin />
       <HistoryPlugin />
     </LexicalComposer>
   )

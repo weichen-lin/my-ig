@@ -5,11 +5,11 @@ import { Icon } from '@iconify/react'
 
 interface Option {
   icon?: string
-  title: string
+  title?: string
 }
 
 interface DropDownListProps extends Option {
-  onSelect: (option: string) => void
+  onSelect: (option: string | undefined) => void
 }
 
 export default function DropDownList(props: DropDownListProps & { options: Option[] }) {

@@ -18,7 +18,7 @@ const FontSizeOptions = [
 export default function FontSize() {
   const [currentOption, setCurrentOption] = useState(FontSizeOptions[0])
 
-  const handleSelect = (option: string) => {
+  const handleSelect = (option: string | undefined) => {
     const index = FontSizeOptions.findIndex(item => item.title === option)
     setCurrentOption(FontSizeOptions[index])
   }
