@@ -10,7 +10,7 @@
 @import './editor.css';
 
 * {
-  font-family: 'PT Sans', sans-serif;
+  font-family: 'Noto Sans TC', sans-serif;
 }
 
 .selection-area {

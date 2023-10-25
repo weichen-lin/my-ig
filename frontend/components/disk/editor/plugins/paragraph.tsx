@@ -4,6 +4,14 @@ import { $getSelection, DEPRECATED_$isGridSelection, $isRangeSelection, $createP
 import { $setBlocksType } from '@lexical/selection'
 import { $createHeadingNode, HeadingTagType } from '@lexical/rich-text'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
+import {
+  $isListNode,
+  INSERT_CHECK_LIST_COMMAND,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+  ListNode,
+  REMOVE_LIST_COMMAND,
+} from '@lexical/list'
 
 enum ParagraphType {
   NORMAL = 'normal',
@@ -31,7 +39,7 @@ const ParagraphOptions = [
 
 export default function Paragraph() {
   const [editor] = useLexicalComposerContext()
-
+  const [blockType, setBlockType] = useState<ParagraphType>(ParagraphType.NORMAL)
   const [currentOption, setCurrentOption] = useState(ParagraphOptions[0])
 
   const formatParagraph = () => {
@@ -52,11 +60,18 @@ export default function Paragraph() {
     })
   }
 
+  const formatBulletList = () => {
+    if (blockType !== 'bullet') {
+      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)
+    } else {
+      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined)
+    }
+  }
+
   const handleSelect = (option: string) => {
     const index = ParagraphOptions.findIndex(item => item.title === option)
     setCurrentOption(ParagraphOptions[index])
     const formatType = ParagraphOptions[index].value
-    // console.log({ formatType })
     switch (formatType) {
       case ParagraphType.NORMAL:
         formatParagraph()

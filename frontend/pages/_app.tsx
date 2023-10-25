@@ -23,7 +23,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       <Head>
         <title>Kushare</title>
         <link rel='icon' type='image/x-icon' href='static/favicon.png' />
-        <link href='https://fonts.googleapis.com/css2?family=PT+Sans&display=optional' rel='stylesheet' />
       </Head>
       {getLayout(
         <RecoilRoot>

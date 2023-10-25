@@ -12,30 +12,7 @@ import Nodes from './node'
 import MyTheme from './theme'
 import Editor from './editor'
 
-interface OnChangePluginProps {
-  onChange: (editSatate: EditorState) => void
-}
-
-function OnChangePlugin({ onChange }: OnChangePluginProps) {
-  const [editor] = useLexicalComposerContext()
-  useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      onChange(editorState)
-    })
-  }, [editor, onChange])
-  return null
-}
-
 export default function Description() {
-  const [editorState, setEditorState] = useState('')
-
-  function onChange(editorState: EditorState) {
-    // Call toJSON on the EditorState object, which produces a serialization safe string
-    const editorStateJSON = editorState.toJSON()
-    // However, we still have a JavaScript object, so we need to convert it to an actual string with JSON.stringify
-    setEditorState(JSON.stringify(editorStateJSON))
-  }
-
   const CustomContent = () => {
     return (
       <div className='flex flex-col h-full bg-white rounded-xl p-1'>
@@ -66,7 +43,6 @@ export default function Description() {
         ErrorBoundary={LexicalErrorBoundary}
       />
       <HistoryPlugin />
-      <OnChangePlugin onChange={onChange} />
     </LexicalComposer>
   )
 }
