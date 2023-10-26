@@ -6,7 +6,7 @@ import {
   getLanguageFriendlyName,
 } from '@lexical/code'
 
-import { History, Paragraph, ParagraphTypes, FontSize } from './plugins'
+import { History, Paragraph, ParagraphTypes, FontSize, FormatButton, LockButton } from './plugins'
 import { useState, useCallback, useEffect } from 'react'
 import {
   $getSelection,
@@ -16,9 +16,11 @@ import {
   $isRootOrShadowRoot,
   SELECTION_CHANGE_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
+  FORMAT_TEXT_COMMAND,
   NodeKey,
   ElementFormatType,
   $isElementNode,
+  TextFormatType,
 } from 'lexical'
 import { $setBlocksType, $patchStyleText, $getSelectionStyleValueForProperty } from '@lexical/selection'
 import { $createHeadingNode, HeadingTagType, $createQuoteNode, $isHeadingNode, $isQuoteNode } from '@lexical/rich-text'
@@ -43,7 +45,7 @@ import {
 
 import { $isTableNode } from '@lexical/table'
 
-import { getSelectedNode } from './util'
+import { getSelectedNode, sanitizeUrl } from './util'
 
 export default function Editor() {
   const [editor] = useLexicalComposerContext()
@@ -54,10 +56,27 @@ export default function Editor() {
   const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(null)
   const [elementFormat, setElementFormat] = useState<ElementFormatType>('left')
   const [isBold, setIsBold] = useState<boolean>(false)
+  const [isItalic, setIsItalic] = useState<boolean>(false)
+  const [isUnderline, setIsUnderline] = useState<boolean>(false)
+  const [isStrikethrough, setIsStrikethrough] = useState<boolean>(false)
+  const [isCodeBlock, setIsCodeBlock] = useState<boolean>(false)
+  const [isLink, setIsLink] = useState<boolean>(false)
 
   const handleFontSize = (option: string) => {
     setFontSize(option)
   }
+
+  const handleTextFormat = (option: TextFormatType) => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, option)
+  }
+
+  const insertLink = useCallback(() => {
+    if (!isLink) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'))
+    } else {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
+    }
+  }, [editor, isLink])
 
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection()
@@ -80,13 +99,13 @@ export default function Editor() {
       const elementDOM = activeEditor.getElementByKey(elementKey)
       // console.log(elementDOM)
       // Update text format
-      // setIsBold(selection.hasFormat('bold'))
-      // setIsItalic(selection.hasFormat('italic'))
-      // setIsUnderline(selection.hasFormat('underline'))
+      setIsBold(selection.hasFormat('bold'))
+      setIsItalic(selection.hasFormat('italic'))
+      setIsUnderline(selection.hasFormat('underline'))
       // setIsStrikethrough(selection.hasFormat('strikethrough'))
       // setIsSubscript(selection.hasFormat('subscript'))
       // setIsSuperscript(selection.hasFormat('superscript'))
-      // setIsCode(selection.hasFormat('code'))
+      setIsCodeBlock(selection.hasFormat('code'))
       // setIsRTL($isParentElementRTL(selection))
 
       // Update links
@@ -143,8 +162,58 @@ export default function Editor() {
   return (
     <div className='w-full border-b-[1px] flex h-12 rounded-t-xl items-center'>
       <History />
+      <Divider />
       <Paragraph type={blockType} />
+      <Divider />
       <FontSize size={fontSize} onChange={handleFontSize} />
+      <Divider />
+      <div className='flex flex-1 gap-x-2'>
+        <FormatButton
+          icon='healthicons:b'
+          onClick={() => {
+            handleTextFormat('bold')
+            setIsBold(prev => !prev)
+          }}
+          isactive={isBold}
+        />
+        <FormatButton
+          icon='majesticons:italic-line'
+          onClick={() => {
+            handleTextFormat('italic')
+            setIsItalic(prev => !prev)
+          }}
+          isactive={isItalic}
+        />
+        <FormatButton
+          icon='iconoir:underline'
+          onClick={() => {
+            handleTextFormat('underline')
+            setIsUnderline(prev => !prev)
+          }}
+          isactive={isUnderline}
+        />
+        <FormatButton
+          icon='material-symbols:code'
+          onClick={() => {
+            handleTextFormat('code')
+            setIsCodeBlock(prev => !prev)
+          }}
+          isactive={isCodeBlock}
+        />
+        <FormatButton
+          icon='material-symbols:link'
+          onClick={() => {
+            insertLink()
+            setIsLink(true)
+          }}
+          isactive={isLink}
+        />
+        <LockButton isLock={true} onClick={() => {}} />
+      </div>
     </div>
   )
+}
+
+const Divider = () => {
+  return <div className='w-[1px] h-6 bg-gray-200 mx-2'></div>
 }

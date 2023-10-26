@@ -3,6 +3,7 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin'
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin'
 
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary'
 import { useEffect, useState } from 'react'
@@ -12,7 +13,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import Nodes from './node'
 import MyTheme from './theme'
 import Editor from './editor'
-
+import { validateUrl } from './util'
 export default function Description() {
   const CustomContent = () => {
     return (
@@ -46,6 +47,7 @@ export default function Description() {
       <ListPlugin />
       <CheckListPlugin />
       <HistoryPlugin />
+      <LinkPlugin validateUrl={validateUrl} />
     </LexicalComposer>
   )
 }
