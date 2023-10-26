@@ -20,7 +20,7 @@ import {
   ElementFormatType,
   $isElementNode,
 } from 'lexical'
-import { $setBlocksType } from '@lexical/selection'
+import { $setBlocksType, $patchStyleText, $getSelectionStyleValueForProperty } from '@lexical/selection'
 import { $createHeadingNode, HeadingTagType, $createQuoteNode, $isHeadingNode, $isQuoteNode } from '@lexical/rich-text'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 import {
@@ -50,9 +50,14 @@ export default function Editor() {
   const [activeEditor, setActiveEditor] = useState(editor)
 
   const [blockType, setBlockType] = useState<string>('paragraph')
+  const [fontSize, setFontSize] = useState<string>('15px')
   const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(null)
-  const [codeLanguage, setCodeLanguage] = useState<string>('')
   const [elementFormat, setElementFormat] = useState<ElementFormatType>('left')
+  const [isBold, setIsBold] = useState<boolean>(false)
+
+  const handleFontSize = (option: string) => {
+    setFontSize(option)
+  }
 
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection()
@@ -71,9 +76,9 @@ export default function Editor() {
       }
 
       const elementKey = element.getKey()
-      console.log(elementKey)
+      // console.log(elementKey)
       const elementDOM = activeEditor.getElementByKey(elementKey)
-      console.log(elementDOM)
+      // console.log(elementDOM)
       // Update text format
       // setIsBold(selection.hasFormat('bold'))
       // setIsItalic(selection.hasFormat('italic'))
@@ -108,19 +113,14 @@ export default function Editor() {
           setBlockType(type)
         } else {
           const type = $isHeadingNode(element) ? element.getTag() : element.getType()
-          console.log({ type, isIn: type in ParagraphTypes })
           if (ParagraphTypes.includes(type)) {
             setBlockType(type)
           }
-          if ($isCodeNode(element)) {
-            const language = element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP
-            setCodeLanguage(language ? CODE_LANGUAGE_MAP[language] || language : '')
-            return
-          }
         }
       }
+
       // Handle buttons
-      // setFontSize($getSelectionStyleValueForProperty(selection, 'font-size', '15px'))
+      setFontSize($getSelectionStyleValueForProperty(selection, 'font-size', '15px'))
       // setFontColor($getSelectionStyleValueForProperty(selection, 'color', '#000'))
       // setBgColor($getSelectionStyleValueForProperty(selection, 'background-color', '#fff'))
       // setFontFamily($getSelectionStyleValueForProperty(selection, 'font-family', 'Arial'))
@@ -144,7 +144,7 @@ export default function Editor() {
     <div className='w-full border-b-[1px] flex h-12 rounded-t-xl items-center'>
       <History />
       <Paragraph type={blockType} />
-      <FontSize />
+      <FontSize size={fontSize} onChange={handleFontSize} />
     </div>
   )
 }

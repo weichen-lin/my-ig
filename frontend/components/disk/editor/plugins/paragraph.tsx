@@ -47,21 +47,19 @@ export enum ParagraphType {
   NUMBERED_LIST = 'number',
   CHECK_LIST = 'check',
   QUOTE = 'quote',
-  CODE_BLOCK = 'code',
 }
 
-export const ParagraphTypes = ['paragraph', 'h1', 'h2', 'h3', 'bullet', 'number', 'check', 'quote', 'code']
+export const ParagraphTypes = ['paragraph', 'h1', 'h2', 'h3', 'bullet', 'number', 'check', 'quote']
 
 const ParagraphOptions = [
-  { icon: 'subway:paragraph', title: 'Normal', value: ParagraphType.Paragraph },
-  { icon: 'material-symbols:format-h1-rounded', title: 'Heading 1', value: ParagraphType.H1 },
-  { icon: 'material-symbols:format-h2-rounded', title: 'Heading 2', value: ParagraphType.H2 },
-  { icon: 'material-symbols:format-h3-rounded', title: 'Heading 3', value: ParagraphType.H3 },
-  { icon: 'material-symbols:list', title: 'Bullet List', value: ParagraphType.BULLET_LIST },
-  { icon: 'material-symbols:format-list-numbered', title: 'Numbered List', value: ParagraphType.NUMBERED_LIST },
-  { icon: 'material-symbols:check-box-outline-rounded', title: 'Check List', value: ParagraphType.CHECK_LIST },
-  { icon: 'ri:chat-quote-line', title: 'Quote', value: ParagraphType.QUOTE },
-  { icon: 'ph:code-block', title: 'Code Block', value: ParagraphType.CODE_BLOCK },
+  { icon: 'subway:paragraph', name: 'Normal', value: ParagraphType.Paragraph },
+  { icon: 'material-symbols:format-h1-rounded', name: 'Heading 1', value: ParagraphType.H1 },
+  { icon: 'material-symbols:format-h2-rounded', name: 'Heading 2', value: ParagraphType.H2 },
+  { icon: 'material-symbols:format-h3-rounded', name: 'Heading 3', value: ParagraphType.H3 },
+  { icon: 'material-symbols:list', name: 'Bullet List', value: ParagraphType.BULLET_LIST },
+  { icon: 'material-symbols:format-list-numbered', name: 'Numbered List', value: ParagraphType.NUMBERED_LIST },
+  { icon: 'material-symbols:check-box-outline-rounded', name: 'Check List', value: ParagraphType.CHECK_LIST },
+  { icon: 'ri:chat-quote-line', name: 'Quote', value: ParagraphType.QUOTE },
 ]
 
 interface ParagraphProps {
@@ -126,28 +124,8 @@ export default function Paragraph(props: ParagraphProps) {
     }
   }
 
-  const formatCode = () => {
-    if (type !== 'code') {
-      editor.update(() => {
-        let selection = $getSelection()
-
-        if ($isRangeSelection(selection) || DEPRECATED_$isGridSelection(selection)) {
-          if (selection.isCollapsed()) {
-            $setBlocksType(selection, () => $createCodeNode())
-          } else {
-            const textContent = selection.getTextContent()
-            const codeNode = $createCodeNode()
-            selection.insertNodes([codeNode])
-            selection = $getSelection()
-            if ($isRangeSelection(selection)) selection.insertRawText(textContent)
-          }
-        }
-      })
-    }
-  }
-
   const handleSelect = (option: string | undefined) => {
-    const index = ParagraphOptions.findIndex(item => item.title === option)
+    const index = ParagraphOptions.findIndex(item => item.name === option)
     const formatType = ParagraphOptions[index].value
     switch (formatType) {
       case ParagraphType.Paragraph:
@@ -170,16 +148,13 @@ export default function Paragraph(props: ParagraphProps) {
       case ParagraphType.QUOTE:
         formatQuote()
         break
-      case ParagraphType.CODE_BLOCK:
-        formatCode()
-        break
       default:
         formatParagraph()
         break
     }
   }
 
-  const current = ParagraphOptions.find(item => item.value === type)
+  const current = ParagraphOptions.find(item => item.value === type) as { icon: string; name: string; value: string }
 
-  return <DropDownList icon={current?.icon} title={current?.title} onSelect={handleSelect} options={ParagraphOptions} />
+  return <DropDownList icon={current?.icon} name={current.name} onSelect={handleSelect} options={ParagraphOptions} />
 }

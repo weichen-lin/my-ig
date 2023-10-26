@@ -1,27 +1,61 @@
 import DropDownList from './dropdown'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
+
+import {
+  $getSelectionStyleValueForProperty,
+  $isParentElementRTL,
+  $patchStyleText,
+  $setBlocksType,
+} from '@lexical/selection'
+
+import {
+  $getSelection,
+  DEPRECATED_$isGridSelection,
+  $isRangeSelection,
+  $createParagraphNode,
+  $isRootOrShadowRoot,
+  SELECTION_CHANGE_COMMAND,
+  COMMAND_PRIORITY_CRITICAL,
+} from 'lexical'
+
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 
 const FontSizeOptions = [
-  { title: '10px' },
-  { title: '11px' },
-  { title: '12px' },
-  { title: '13px' },
-  { title: '14px' },
-  { title: '15px' },
-  { title: '16px' },
-  { title: '17px' },
-  { title: '18px' },
-  { title: '19px' },
-  { title: '20px' },
+  { name: '10px' },
+  { name: '11px' },
+  { name: '12px' },
+  { name: '13px' },
+  { name: '14px' },
+  { name: '15px' },
+  { name: '16px' },
+  { name: '17px' },
+  { name: '18px' },
+  { name: '19px' },
+  { name: '20px' },
 ]
 
-export default function FontSize() {
-  const [currentOption, setCurrentOption] = useState(FontSizeOptions[0])
+interface FontSizeProps {
+  size: string
+  onChange: (size: string) => void
+}
 
-  const handleSelect = (option: string | undefined) => {
-    const index = FontSizeOptions.findIndex(item => item.title === option)
-    setCurrentOption(FontSizeOptions[index])
+export default function FontSize(props: FontSizeProps) {
+  const { size, onChange } = props
+  const [editor] = useLexicalComposerContext()
+
+  const handleSelect = (option: string) => {
+    onChange(option)
+    editor.update(() => {
+      const selection = $getSelection()
+      if ($isRangeSelection(selection)) {
+        $patchStyleText(selection, {
+          'font-size': option,
+        })
+      }
+    })
   }
 
-  return <DropDownList title={currentOption.title} onSelect={handleSelect} options={FontSizeOptions} />
+  const current = FontSizeOptions.find(item => item.name === size) as { name: string }
+
+  return <DropDownList name={current.name} onSelect={handleSelect} options={FontSizeOptions} />
 }
