@@ -47,7 +47,7 @@ export default function Description() {
       <ListPlugin />
       <CheckListPlugin />
       <HistoryPlugin />
-      <LinkPlugin validateUrl={validateUrl} />
+      <LinkPlugin />
     </LexicalComposer>
   )
 }

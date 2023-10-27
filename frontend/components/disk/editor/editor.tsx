@@ -6,7 +6,15 @@ import {
   getLanguageFriendlyName,
 } from '@lexical/code'
 
-import { History, Paragraph, ParagraphTypes, FontSize, FormatButton, LockButton } from './plugins'
+import {
+  History,
+  Paragraph,
+  ParagraphTypes,
+  FontSize,
+  FormatButton,
+  LockButton,
+  FloatingLinkEditorPlugin,
+} from './plugins'
 import { useState, useCallback, useEffect } from 'react'
 import {
   $getSelection,
@@ -35,6 +43,7 @@ import {
   ListType,
 } from '@lexical/list'
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
+import AnchorElement from './plugins/floatlink/anchorElement'
 
 import {
   $findMatchingParent,
@@ -71,11 +80,12 @@ export default function Editor() {
   }
 
   const insertLink = useCallback(() => {
-    if (!isLink) {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'))
-    } else {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
-    }
+    editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
+    // if (!isLink) {
+    //   editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'))
+    // } else {
+    //   editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
+    // }
   }, [editor, isLink])
 
   const $updateToolbar = useCallback(() => {
@@ -210,6 +220,8 @@ export default function Editor() {
         />
         <LockButton isLock={true} onClick={() => {}} />
       </div>
+      {/* <AnchorElement /> */}
+      <FloatingLinkEditorPlugin />
     </div>
   )
 }
