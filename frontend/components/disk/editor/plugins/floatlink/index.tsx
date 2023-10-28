@@ -16,9 +16,6 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from 'lexical'
 import { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
-import * as React from 'react'
-import { createPortal } from 'react-dom'
-
 import { getSelectedNode } from './util'
 import { setFloatingElemPositionForLinkEditor } from './util'
 
@@ -259,16 +256,17 @@ function FloatingLinkEditor({
   )
 }
 
+interface FloatingLinkEditorPluginProps {
+  isLinkEditor: boolean
+  handleIsLinkEditor: (isLink: boolean) => void
+}
+
 export default function FloatingLinkEditorPlugin({
-  isLinkEditMode,
-  setIsLinkEditMode,
-}: {
-  isLinkEditMode: boolean
-  setIsLinkEditMode: Dispatch<boolean>
-}): JSX.Element | null {
+  isLinkEditor,
+  handleIsLinkEditor,
+}: FloatingLinkEditorPluginProps): JSX.Element | null {
   const [editor] = useLexicalComposerContext()
-  const [activeEditor, setActiveEditor] = useState(editor)
-  const [isLink, setIsLink] = useState(false)
+
   useEffect(() => {
     function updateToolbar() {
       const selection = $getSelection()
@@ -277,11 +275,7 @@ export default function FloatingLinkEditorPlugin({
         const linkParent = $findMatchingParent(node, $isLinkNode)
         const autoLinkParent = $findMatchingParent(node, $isAutoLinkNode)
         // We don't want this menu to open for auto links.
-        if (linkParent !== null && autoLinkParent === null) {
-          setIsLink(true)
-        } else {
-          setIsLink(false)
-        }
+        handleIsLinkEditor(linkParent !== null && autoLinkParent === null)
       }
     }
     return mergeRegister(
@@ -292,9 +286,8 @@ export default function FloatingLinkEditorPlugin({
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
-        (_payload, newEditor) => {
+        _payload => {
           updateToolbar()
-          setActiveEditor(newEditor)
           return false
         },
         COMMAND_PRIORITY_CRITICAL,
@@ -318,5 +311,5 @@ export default function FloatingLinkEditorPlugin({
     )
   }, [editor])
 
-  return isLinkEditMode ? <AnchorElement /> : null
+  return isLinkEditor ? <AnchorElement /> : null
 }

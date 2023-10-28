@@ -18,7 +18,7 @@ export function sanitizeUrl(url: string): string {
       return 'about:blank'
     }
   } catch {
-    return url
+    return 'https://'
   }
   return url
 }

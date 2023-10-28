@@ -41,16 +41,10 @@ function FloatingLinkEditor({
   editor,
   isLink,
   setIsLink,
-  anchorElem,
-  isLinkEditMode,
-  setIsLinkEditMode,
 }: {
   editor: LexicalEditor
   isLink: boolean
   setIsLink: Dispatch<boolean>
-  anchorElem: HTMLElement
-  isLinkEditMode: boolean
-  setIsLinkEditMode: Dispatch<boolean>
 }): JSX.Element {
   const editorRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -91,24 +85,21 @@ function FloatingLinkEditor({
       const domRect: DOMRect | undefined = nativeSelection.focusNode?.parentElement?.getBoundingClientRect()
       if (domRect) {
         domRect.y += 40
-        setFloatingElemPositionForLinkEditor(domRect, editorElem, anchorElem)
+        // setFloatingElemPositionForLinkEditor(domRect, editorElem, anchorElem)
       }
       setLastSelection(selection)
     } else if (!activeElement || activeElement.className !== 'link-input') {
       if (rootElement !== null) {
-        setFloatingElemPositionForLinkEditor(null, editorElem, anchorElem)
+        // setFloatingElemPositionForLinkEditor(null, editorElem, anchorElem)
       }
       setLastSelection(null)
-      setIsLinkEditMode(false)
       setLinkUrl('')
     }
 
     return true
-  }, [anchorElem, editor, setIsLinkEditMode])
+  }, [editor])
 
   useEffect(() => {
-    const scrollerElem = anchorElem.parentElement
-
     const update = () => {
       editor.getEditorState().read(() => {
         updateLinkEditor()
@@ -117,18 +108,18 @@ function FloatingLinkEditor({
 
     window.addEventListener('resize', update)
 
-    if (scrollerElem) {
-      scrollerElem.addEventListener('scroll', update)
-    }
+    // if (scrollerElem) {
+    //   scrollerElem.addEventListener('scroll', update)
+    // }
 
     return () => {
       window.removeEventListener('resize', update)
 
-      if (scrollerElem) {
-        scrollerElem.removeEventListener('scroll', update)
-      }
+      // if (scrollerElem) {
+      //   scrollerElem.removeEventListener('scroll', update)
+      // }
     }
-  }, [anchorElem.parentElement, editor, updateLinkEditor])
+  }, [editor, updateLinkEditor])
 
   useEffect(() => {
     return mergeRegister(
@@ -167,34 +158,23 @@ function FloatingLinkEditor({
   }, [editor, updateLinkEditor])
 
   useEffect(() => {
-    if (isLinkEditMode && inputRef.current) {
+    if (inputRef.current) {
       inputRef.current.focus()
     }
-  }, [isLinkEditMode, isLink])
+  }, [isLink])
 
   const monitorInputInteraction = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault()
-      handleLinkSubmission()
+      // handleLinkSubmission()
     } else if (event.key === 'Escape') {
       event.preventDefault()
-      setIsLinkEditMode(false)
-    }
-  }
-
-  const handleLinkSubmission = () => {
-    if (lastSelection !== null) {
-      if (linkUrl !== '') {
-        editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl(editedLinkUrl))
-      }
-      setEditedLinkUrl('https://')
-      setIsLinkEditMode(false)
     }
   }
 
   return (
     <div ref={editorRef} className='link-editor'>
-      {!isLink ? null : isLinkEditMode ? (
+      {!isLink ? null : true ? (
         <>
           <input
             ref={inputRef}
@@ -214,7 +194,7 @@ function FloatingLinkEditor({
               tabIndex={0}
               onMouseDown={event => event.preventDefault()}
               onClick={() => {
-                setIsLinkEditMode(false)
+                // setIsLinkEditMode(false)
               }}
             />
 
@@ -223,7 +203,7 @@ function FloatingLinkEditor({
               role='button'
               tabIndex={0}
               onMouseDown={event => event.preventDefault()}
-              onClick={handleLinkSubmission}
+              // onClick={handleLinkSubmission}
             />
           </div>
         </>
@@ -239,7 +219,6 @@ function FloatingLinkEditor({
             onMouseDown={event => event.preventDefault()}
             onClick={() => {
               setEditedLinkUrl(linkUrl)
-              setIsLinkEditMode(true)
             }}
           />
           <div
@@ -257,15 +236,7 @@ function FloatingLinkEditor({
   )
 }
 
-export default function FloatingLinkEditorPlugin({
-  anchorElem = document.body,
-  isLinkEditMode,
-  setIsLinkEditMode,
-}: {
-  anchorElem?: HTMLElement
-  isLinkEditMode: boolean
-  setIsLinkEditMode: Dispatch<boolean>
-}): JSX.Element | null {
+export default function FloatingLinkEditorPlugin(): JSX.Element | null {
   const [editor] = useLexicalComposerContext()
   const [activeEditor, setActiveEditor] = useState(editor)
   const [isLink, setIsLink] = useState(false)
@@ -318,15 +289,5 @@ export default function FloatingLinkEditorPlugin({
     )
   }, [editor])
 
-  return createPortal(
-    <FloatingLinkEditor
-      editor={activeEditor}
-      isLink={isLink}
-      anchorElem={anchorElem}
-      setIsLink={setIsLink}
-      isLinkEditMode={isLinkEditMode}
-      setIsLinkEditMode={setIsLinkEditMode}
-    />,
-    anchorElem,
-  )
+  return createPortal(<FloatingLinkEditor editor={activeEditor} isLink={isLink} setIsLink={setIsLink} />, document.body)
 }

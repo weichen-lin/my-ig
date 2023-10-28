@@ -71,6 +71,10 @@ export default function Editor() {
   const [isCodeBlock, setIsCodeBlock] = useState<boolean>(false)
   const [isLink, setIsLink] = useState<boolean>(false)
 
+  const handleIsLink = (isLink: boolean) => {
+    setIsLink(isLink)
+  }
+
   const handleFontSize = (option: string) => {
     setFontSize(option)
   }
@@ -80,12 +84,11 @@ export default function Editor() {
   }
 
   const insertLink = useCallback(() => {
-    editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
-    // if (!isLink) {
-    //   editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'))
-    // } else {
-    //   editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
-    // }
+    if (!isLink) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'))
+    } else {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
+    }
   }, [editor, isLink])
 
   const $updateToolbar = useCallback(() => {
@@ -121,11 +124,7 @@ export default function Editor() {
       // Update links
       const node = getSelectedNode(selection)
       const parent = node.getParent()
-      if ($isLinkNode(parent) || $isLinkNode(node)) {
-        // console.log('is link')
-      } else {
-        // console.log('is not link')
-      }
+      setIsLink($isLinkNode(parent) || $isLinkNode(node))
 
       const tableNode = $findMatchingParent(node, $isTableNode)
       if ($isTableNode(tableNode)) {
@@ -220,8 +219,7 @@ export default function Editor() {
         />
         <LockButton isLock={true} onClick={() => {}} />
       </div>
-      {/* <AnchorElement /> */}
-      <FloatingLinkEditorPlugin />
+      <FloatingLinkEditorPlugin isLinkEditor={isLink} handleIsLinkEditor={handleIsLink} />
     </div>
   )
 }
