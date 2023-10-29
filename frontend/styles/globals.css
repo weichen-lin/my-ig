@@ -7,6 +7,11 @@
 @import './loading.css';
 @import './btn_loading.css';
 @import './hint.css';
+@import './editor.css';
+
+* {
+  font-family: 'Noto Sans TC', sans-serif;
+}
 
 .selection-area {
   border: 1px solid rgba(20, 20, 20, 0.06);
@@ -92,6 +97,15 @@
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes dropdownmenu {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
   }
 }
 

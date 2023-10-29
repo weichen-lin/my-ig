@@ -1,47 +1,70 @@
 import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer'
+import { ListPlugin } from '@lexical/react/LexicalListPlugin'
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin'
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin'
+
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary'
-import { $getRoot, $getSelection } from 'lexical'
-import { useEffect } from 'react'
 
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { History } from './plugins/history'
+import Nodes from './node'
+import MyTheme from './theme'
+import Editor from './editor'
 
-export default function Description() {
+import { useIsMobile } from 'hooks/disk'
+
+interface DescriptionProps {
+  content?: string
+}
+
+export default function Description(props: DescriptionProps) {
+  const { content } = props
+  const { isMobile } = useIsMobile()
+
   const CustomContent = () => {
     return (
       <div className='flex flex-col h-full bg-white rounded-xl p-1'>
-        <div className='w-full border-b-[1px] flex h-12 rounded-t-xl '>TEST</div>
-        <ContentEditable className='z-10 w-full h-full focus:outline-none py-4 px-2 overflow-auto ' />
+        {!isMobile && <Editor />}
+        <ContentEditable className='z-10 w-full h-full focus:outline-none py-4 px-2 overflow-auto overflow-y-auto' />
       </div>
     )
   }
 
   const CustomPlaceholder = () => {
-    return <div className='absolute top-20 left-[30px] text-gray-300'>Enter some text...</div>
+    return isMobile ? <></> : <div className='absolute top-20 left-[30px] text-gray-300'>Enter some text...</div>
   }
 
   const lexicalConfig: InitialConfigType = {
-    namespace: 'My Rich Text Editor',
+    namespace: 'Editor',
+    nodes: [...Nodes],
     onError: e => {
       console.log('ERROR:', e)
     },
+    theme: MyTheme,
+    editorState: content,
   }
 
   return (
     <LexicalComposer initialConfig={lexicalConfig}>
-      <PlainTextPlugin
-        contentEditable={<CustomContent />}
-        placeholder={CustomPlaceholder}
-        ErrorBoundary={LexicalErrorBoundary}
-      />
+      {isMobile ? (
+        <PlainTextPlugin
+          contentEditable={<CustomContent />}
+          placeholder={CustomPlaceholder}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      ) : (
+        <RichTextPlugin
+          contentEditable={<CustomContent />}
+          placeholder={CustomPlaceholder}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      )}
+      <ListPlugin />
+      <CheckListPlugin />
       <HistoryPlugin />
-      <div style={{ margin: '20px 0px' }}>
-        <History />
-      </div>
+      <LinkPlugin />
     </LexicalComposer>
   )
 }
