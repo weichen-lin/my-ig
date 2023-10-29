@@ -16,7 +16,7 @@ import Editor from './editor'
 import { useIsMobile } from 'hooks/disk'
 
 interface DescriptionProps {
-  content?: string
+  content: string | null
 }
 
 export default function Description(props: DescriptionProps) {

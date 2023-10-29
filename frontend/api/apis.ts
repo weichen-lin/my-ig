@@ -34,3 +34,7 @@ export const getBreadCrumb = async (locateAt: string | null) =>
 
 export const uploadFile = async (data: FormData) =>
   fetcher.post<{ id: string }>('/file/create', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+
+export const getFileDescription = async (id: string) => fetcher.get<{ description: string }>(`/file/description/${id}`)
+export const updateFileDescription = async (data: { description: string; id: string }) =>
+  fetcher.patch<{ description: string }>(`/file/description`, data)

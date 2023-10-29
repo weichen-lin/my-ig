@@ -1,11 +1,13 @@
 import Description from 'components/disk/editor'
-import { ImageArrow } from 'public/icon/disk'
 import { useState, useRef, useEffect } from 'react'
 import clsx from 'clsx'
 import { useRecoilValue, useRecoilState } from 'recoil'
 import { fileState, OpenImageState } from 'store'
 import { Loading } from 'components/utils'
 import { Icon } from '@iconify/react'
+
+import { useFetch, getFileDescription } from 'api'
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 declare module 'react' {
@@ -20,6 +22,14 @@ export default function ImagePlayground() {
   const [openState, setOpenState] = useRecoilState(OpenImageState)
   const [currentIndex, setCurrentIndex] = useState(openState.index)
   const [loadDescription, setLoadDescription] = useState(false)
+
+  const { data, run, isLoading } = useFetch<string, { description: string }>(getFileDescription, {
+    onSuccess: data => {
+      setEditState(data.description)
+    },
+  })
+
+  const [editState, setEditState] = useState<string | null>(data?.description ?? null)
 
   const files = useRecoilValue(fileState)
   const ref = useRef<HTMLDivElement>(null)
@@ -60,11 +70,14 @@ export default function ImagePlayground() {
       ref.current.focus()
       ref.current.addEventListener('keydown', keyEvents)
     }
-
     return () => {
       ref.current?.removeEventListener('keydown', keyEvents)
     }
   }, [])
+
+  useEffect(() => {
+    run(files[currentIndex].id)
+  }, [currentIndex])
 
   return (
     <div
@@ -89,6 +102,9 @@ export default function ImagePlayground() {
         </div>
         <div className='w-full lg:w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative overflow-y-auto'>
           {loadDescription ? <Loading /> : <Description content={text} />}
+          <div className='w-full lg:w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative overflow-y-auto'>
+            {isLoading ? <Loading /> : <Description content={editState} />}
+          </div>
         </div>
       </div>
       <div className='hidden lg:h-1/5 lg:block w-full'>
@@ -139,7 +155,7 @@ export default function ImagePlayground() {
               onClick={() => {
                 handleInfo(false)
               }}
-              disabled={loadDescription}
+              disabled={isLoading}
             >
               <Icon icon='ep:arrow-up' className='w-12 h-12 mx-2 mb-2'></Icon>
             </button>
