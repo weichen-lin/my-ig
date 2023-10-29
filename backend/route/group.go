@@ -54,7 +54,9 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 
 	file := r.Group("/file")
 	file.GET("/:id", ctl.AuthMiddlewareWithCookie(), ctl.GetFile)
+	file.GET("/description/:id", ctl.AuthMiddlewareWithCookie(), ctl.GetFileDescription)
 	file.POST("/create", ctl.AuthMiddleware(), ctl.CreateFile)
+	file.PATCH("/update", ctl.AuthMiddleware(), ctl.UpdateFileDescription)
 
 	r.GET("/disk", ctl.AuthMiddleware(), ctl.GetDisk)
 	disk := r.Group("/disk")

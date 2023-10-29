@@ -131,3 +131,103 @@ func (s Controller) GetFile(ctx *gin.Context) {
 	ctx.Header("Cache-Control", "max-age=31536000")
 	ctx.Data(http.StatusOK, mimetype.String(), buffer)
 }
+
+type GetFileDescriptionReq struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+func (s Controller) GetFileDescription(ctx *gin.Context) {
+	var params GetFileDescriptionReq
+
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	fileId, err := uuid.Parse(params.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(conn)
+	defer conn.Release()
+
+	arg := db.GetFileParams{
+		ID:     fileId,
+		UserID: userId,
+	}
+
+	file, err := q.GetFile(ctx, arg)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"description": file.Description})
+}
+
+type UpdateFileReq struct {
+	ID 		string `json:"id" binding:"required"`
+	Description string `json:"description"`
+}
+
+func (s Controller) UpdateFileDescription(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	var params UpdateFileReq
+
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	fileId, err := uuid.Parse(params.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+	defer tx.Commit(ctx)
+
+	err = q.UpdateFileDescription(ctx, db.UpdateFileDescriptionParams{
+		ID:          fileId,
+		UserID:      userId,
+		Description: &params.Description,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"id": fileId})
+}
