@@ -105,3 +105,74 @@ func Test_Getfiles(t *testing.T) {
 
 	tx.Commit(context.Background())
 }
+
+func Test_GetFileDescription(t *testing.T){
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	arg_1 := CreateFileParams{
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	file, err := q.CreateFile(context.Background(), arg_1)
+	require.NoError(t, err)
+	require.NotEmpty(t, file)
+	require.Empty(t, file.Description)
+
+	tx.Commit(context.Background())
+}
+
+func Test_UpdateDescription(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	arg := CreateFileParams{
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	file, err := q.CreateFile(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, file)
+	require.Empty(t, file.Description)
+
+	fakeName := faker.Name()
+	err = q.UpdateFileDescription(context.Background(), UpdateFileDescriptionParams{
+		ID:          file.ID,
+		UserID: 	user.ID,
+		Description: &fakeName,
+	})
+	require.NoError(t, err)
+	tx.Commit(context.Background())
+
+	conn, err := pool.Acquire(context.Background())
+	require.NoError(t, err)
+
+	q = New(conn)
+	defer conn.Release()
+	description, err := q.SelectFileDescription(context.Background(), SelectFileDescriptionParams{
+		ID: file.ID,
+		UserID: user.ID,
+	})
+
+	require.NoError(t, err)
+	require.NotEmpty(t, description)
+	require.Equal(t, fakeName, *description)
+}

@@ -18,6 +18,7 @@ type File struct {
 	LastModifiedAt time.Time `json:"lastModifiedAt"`
 	UserID         uuid.UUID `json:"userId"`
 	LocateAt       uuid.UUID `json:"locateAt"`
+	Description    *string   `json:"description"`
 }
 
 type Folder struct {

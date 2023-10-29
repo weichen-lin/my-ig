@@ -13,7 +13,7 @@ import (
 )
 
 const createFile = `-- name: CreateFile :one
-INSERT INTO "file" (name, url, user_id, locate_at) VALUES ($1, $2, $3, $4) RETURNING id, name, url, created_at, last_modified_at, user_id, locate_at
+INSERT INTO "file" (name, url, user_id, locate_at) VALUES ($1, $2, $3, $4) RETURNING id, name, url, created_at, last_modified_at, user_id, locate_at, description
 `
 
 type CreateFileParams struct {
@@ -39,12 +39,13 @@ func (q *Queries) CreateFile(ctx context.Context, arg CreateFileParams) (File, e
 		&i.LastModifiedAt,
 		&i.UserID,
 		&i.LocateAt,
+		&i.Description,
 	)
 	return i, err
 }
 
 const getFile = `-- name: GetFile :one
-SELECT id, name, url, created_at, last_modified_at, user_id, locate_at FROM "file" WHERE id = $1 and user_id = $2
+SELECT id, name, url, created_at, last_modified_at, user_id, locate_at, description FROM "file" WHERE id = $1 and user_id = $2
 `
 
 type GetFileParams struct {
@@ -63,8 +64,25 @@ func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) 
 		&i.LastModifiedAt,
 		&i.UserID,
 		&i.LocateAt,
+		&i.Description,
 	)
 	return i, err
+}
+
+const selectFileDescription = `-- name: SelectFileDescription :one
+SELECT description FROM "file" WHERE id = $1 AND user_id = $2
+`
+
+type SelectFileDescriptionParams struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+}
+
+func (q *Queries) SelectFileDescription(ctx context.Context, arg SelectFileDescriptionParams) (*string, error) {
+	row := q.db.QueryRow(ctx, selectFileDescription, arg.ID, arg.UserID)
+	var description *string
+	err := row.Scan(&description)
+	return description, err
 }
 
 const selectFiles = `-- name: SelectFiles :many
@@ -100,4 +118,19 @@ func (q *Queries) SelectFiles(ctx context.Context, arg SelectFilesParams) ([]Sel
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateFileDescription = `-- name: UpdateFileDescription :exec
+UPDATE "file" SET description = $1 WHERE id = $2 AND user_id = $3
+`
+
+type UpdateFileDescriptionParams struct {
+	Description *string   `json:"description"`
+	ID          uuid.UUID `json:"id"`
+	UserID      uuid.UUID `json:"userId"`
+}
+
+func (q *Queries) UpdateFileDescription(ctx context.Context, arg UpdateFileDescriptionParams) error {
+	_, err := q.db.Exec(ctx, updateFileDescription, arg.Description, arg.ID, arg.UserID)
+	return err
 }
