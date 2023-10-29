@@ -1,12 +1,4 @@
 import {
-  $createCodeNode,
-  $isCodeNode,
-  CODE_LANGUAGE_FRIENDLY_NAME_MAP,
-  CODE_LANGUAGE_MAP,
-  getLanguageFriendlyName,
-} from '@lexical/code'
-
-import {
   History,
   Paragraph,
   ParagraphTypes,
@@ -18,41 +10,20 @@ import {
 import { useState, useCallback, useEffect } from 'react'
 import {
   $getSelection,
-  DEPRECATED_$isGridSelection,
   $isRangeSelection,
-  $createParagraphNode,
   $isRootOrShadowRoot,
   SELECTION_CHANGE_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   FORMAT_TEXT_COMMAND,
-  NodeKey,
-  ElementFormatType,
-  $isElementNode,
   TextFormatType,
 } from 'lexical'
-import { $setBlocksType, $patchStyleText, $getSelectionStyleValueForProperty } from '@lexical/selection'
-import { $createHeadingNode, HeadingTagType, $createQuoteNode, $isHeadingNode, $isQuoteNode } from '@lexical/rich-text'
+import { $getSelectionStyleValueForProperty } from '@lexical/selection'
+import { $isHeadingNode } from '@lexical/rich-text'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import {
-  $isListNode,
-  INSERT_CHECK_LIST_COMMAND,
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND,
-  ListNode,
-  REMOVE_LIST_COMMAND,
-  ListType,
-} from '@lexical/list'
+import { $isListNode, ListNode } from '@lexical/list'
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
-import AnchorElement from './plugins/floatlink/anchorElement'
 
-import {
-  $findMatchingParent,
-  $getNearestBlockElementAncestorOrThrow,
-  $getNearestNodeOfType,
-  mergeRegister,
-} from '@lexical/utils'
-
-import { $isTableNode } from '@lexical/table'
+import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexical/utils'
 
 import { getSelectedNode, sanitizeUrl } from './util'
 
@@ -62,14 +33,12 @@ export default function Editor() {
 
   const [blockType, setBlockType] = useState<string>('paragraph')
   const [fontSize, setFontSize] = useState<string>('15px')
-  const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(null)
-  const [elementFormat, setElementFormat] = useState<ElementFormatType>('left')
   const [isBold, setIsBold] = useState<boolean>(false)
   const [isItalic, setIsItalic] = useState<boolean>(false)
   const [isUnderline, setIsUnderline] = useState<boolean>(false)
-  const [isStrikethrough, setIsStrikethrough] = useState<boolean>(false)
   const [isCodeBlock, setIsCodeBlock] = useState<boolean>(false)
   const [isLink, setIsLink] = useState<boolean>(false)
+  const [isLock, setIsLock] = useState<boolean>(!editor.isEditable())
 
   const handleIsLink = (isLink: boolean) => {
     setIsLink(isLink)
@@ -92,6 +61,9 @@ export default function Editor() {
   }, [editor, isLink])
 
   const $updateToolbar = useCallback(() => {
+    const editorState = editor.getEditorState()
+    const json = editorState.toJSON()
+    console.log(JSON.stringify(json))
     const selection = $getSelection()
     if ($isRangeSelection(selection)) {
       const anchorNode = selection.anchor.getNode()
@@ -108,33 +80,20 @@ export default function Editor() {
       }
 
       const elementKey = element.getKey()
-      // console.log(elementKey)
       const elementDOM = activeEditor.getElementByKey(elementKey)
-      // console.log(elementDOM)
+
       // Update text format
       setIsBold(selection.hasFormat('bold'))
       setIsItalic(selection.hasFormat('italic'))
       setIsUnderline(selection.hasFormat('underline'))
-      // setIsStrikethrough(selection.hasFormat('strikethrough'))
-      // setIsSubscript(selection.hasFormat('subscript'))
-      // setIsSuperscript(selection.hasFormat('superscript'))
       setIsCodeBlock(selection.hasFormat('code'))
-      // setIsRTL($isParentElementRTL(selection))
 
       // Update links
       const node = getSelectedNode(selection)
       const parent = node.getParent()
       setIsLink($isLinkNode(parent) || $isLinkNode(node))
 
-      const tableNode = $findMatchingParent(node, $isTableNode)
-      if ($isTableNode(tableNode)) {
-        // console.log('table')
-      } else {
-        // console.log('not ta。ble')
-      }
-
       if (elementDOM !== null) {
-        setSelectedElementKey(elementKey)
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode)
           const type = parentList ? parentList.getListType() : element.getListType()
@@ -149,22 +108,23 @@ export default function Editor() {
 
       // Handle buttons
       setFontSize($getSelectionStyleValueForProperty(selection, 'font-size', '15px'))
-      // setFontColor($getSelectionStyleValueForProperty(selection, 'color', '#000'))
-      // setBgColor($getSelectionStyleValueForProperty(selection, 'background-color', '#fff'))
-      // setFontFamily($getSelectionStyleValueForProperty(selection, 'font-family', 'Arial'))
-      setElementFormat(($isElementNode(node) ? node.getFormatType() : parent?.getFormatType()) || 'left')
     }
   }, [activeEditor])
 
   useEffect(() => {
-    return editor.registerCommand(
-      SELECTION_CHANGE_COMMAND,
-      (_payload, newEditor) => {
-        $updateToolbar()
-        setActiveEditor(newEditor)
-        return false
-      },
-      COMMAND_PRIORITY_CRITICAL,
+    return mergeRegister(
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        (_payload, newEditor) => {
+          $updateToolbar()
+          setActiveEditor(newEditor)
+          return false
+        },
+        COMMAND_PRIORITY_CRITICAL,
+      ),
+      editor.registerEditableListener(editable => {
+        setIsLock(!editable)
+      }),
     )
   }, [editor, $updateToolbar])
 
@@ -176,48 +136,54 @@ export default function Editor() {
       <Divider />
       <FontSize size={fontSize} onChange={handleFontSize} />
       <Divider />
-      <div className='flex flex-1 gap-x-2'>
-        <FormatButton
-          icon='healthicons:b'
+      <div className='flex flex-1 justify-between'>
+        <div className='flex items-center gap-x-1'>
+          <FormatButton
+            icon='healthicons:b'
+            onClick={() => {
+              handleTextFormat('bold')
+              setIsBold(prev => !prev)
+            }}
+            isactive={isBold}
+          />
+          <FormatButton
+            icon='ri:italic'
+            onClick={() => {
+              handleTextFormat('italic')
+              setIsItalic(prev => !prev)
+            }}
+            isactive={isItalic}
+          />
+          <FormatButton
+            icon='iconoir:underline'
+            onClick={() => {
+              handleTextFormat('underline')
+              setIsUnderline(prev => !prev)
+            }}
+            isactive={isUnderline}
+          />
+          <FormatButton
+            icon='material-symbols:code'
+            onClick={() => {
+              handleTextFormat('code')
+              setIsCodeBlock(prev => !prev)
+            }}
+            isactive={isCodeBlock}
+          />
+          <FormatButton
+            icon='material-symbols:link'
+            onClick={() => {
+              insertLink()
+            }}
+            isactive={isLink}
+          />
+        </div>
+        <LockButton
+          isLock={isLock}
           onClick={() => {
-            handleTextFormat('bold')
-            setIsBold(prev => !prev)
+            editor.setEditable(!editor.isEditable())
           }}
-          isactive={isBold}
         />
-        <FormatButton
-          icon='majesticons:italic-line'
-          onClick={() => {
-            handleTextFormat('italic')
-            setIsItalic(prev => !prev)
-          }}
-          isactive={isItalic}
-        />
-        <FormatButton
-          icon='iconoir:underline'
-          onClick={() => {
-            handleTextFormat('underline')
-            setIsUnderline(prev => !prev)
-          }}
-          isactive={isUnderline}
-        />
-        <FormatButton
-          icon='material-symbols:code'
-          onClick={() => {
-            handleTextFormat('code')
-            setIsCodeBlock(prev => !prev)
-          }}
-          isactive={isCodeBlock}
-        />
-        <FormatButton
-          icon='material-symbols:link'
-          onClick={() => {
-            insertLink()
-            setIsLink(true)
-          }}
-          isactive={isLink}
-        />
-        <LockButton isLock={true} onClick={() => {}} />
       </div>
       <FloatingLinkEditorPlugin isLinkEditor={isLink} handleIsLinkEditor={handleIsLink} />
     </div>
@@ -225,5 +191,5 @@ export default function Editor() {
 }
 
 const Divider = () => {
-  return <div className='w-[1px] h-6 bg-gray-200 mx-2'></div>
+  return <div className='w-[1px] h-6 bg-gray-200 mx-1'></div>
 }

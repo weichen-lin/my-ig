@@ -6,7 +6,6 @@ import { useRecoilValue } from 'recoil'
 import { listMethodState, ListMethod, CommonProps, fileState, folderState, OpenImageState } from 'store'
 import { useGdrive } from 'hooks/disk'
 import { ImagePlayground } from 'components/disk/'
-import { useState } from 'react'
 
 const EmptyContent = () => {
   return (

@@ -24,14 +24,6 @@ export function getSelectedNode(selection: RangeSelection): TextNode | ElementNo
   }
 }
 
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 const SUPPORTED_URL_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'sms:', 'tel:'])
 
 export function sanitizeUrl(url: string): string {

@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import clsx from 'clsx'
 import { useRecoilValue, useRecoilState } from 'recoil'
 import { fileState, OpenImageState } from 'store'
-
+import { Loading } from 'components/utils'
+import { Icon } from '@iconify/react'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 declare module 'react' {
@@ -13,13 +14,18 @@ declare module 'react' {
   }
 }
 
+const text = `{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"asdaasdasdasda","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"aasdasdasd","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"heading","version":1,"tag":"h3"},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"asdasdasdasd","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"quote","version":1},{"children":[{"detail":0,"format":1,"mode":"normal","style":"","text":"sdasdsadasdasdsadadasdsad","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[{"detail":0,"format":3,"mode":"normal","style":"","text":"asdasdasdasdsad","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[{"detail":0,"format":2,"mode":"normal","style":"","text":"asdasdasdasd","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[{"detail":0,"format":10,"mode":"normal","style":"","text":"asdasdasdasd","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[{"detail":0,"format":16,"mode":"normal","style":"","text":"asdasdasdasdasd","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"asdasdasdasdadad","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"link","version":1,"rel":"noreferrer","target":null,"title":null,"url":"https://google.com"},{"detail":0,"format":0,"mode":"normal","style":"","text":" asd","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"asdasdsad","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},{"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}`
+
 export default function ImagePlayground() {
   const [openState, setOpenState] = useRecoilState(OpenImageState)
   const [currentIndex, setCurrentIndex] = useState(openState.index)
+  const [loadDescription, setLoadDescription] = useState(false)
+
   const files = useRecoilValue(fileState)
   const ref = useRef<HTMLDivElement>(null)
 
   const handleInfo = (add: boolean) => {
+    if (loadDescription) return
     setCurrentIndex((prev: number) => {
       if (prev === 0 && !add) return files.length - 1
       else if (prev === files.length - 1 && add) return 0
@@ -77,12 +83,12 @@ export default function ImagePlayground() {
       }}
       ref={ref}
     >
-      <div className='flex h-full lg:h-[70%] flex-col lg:flex-row w-full lg:w-[70%] mx-auto lg:mt-[1.25%] bg-white'>
-        <div className='w-1/2 h-full flex items-center justify-center overflow-clip lg:rounded-l-lg'>
-          <img src={`${baseUrl}/file/${files[currentIndex].id}`}></img>
+      <div className='flex h-full lg:h-[70%] flex-col lg:flex-row w-full lg:w-[90%] xl:w-[85%] 2xl:w-[70%] mx-auto lg:mt-[1.25%] bg-white'>
+        <div className='flex lg:w-1/2 items-center justify-center overflow-clip lg:rounded-l-lg w-full h-full'>
+          <img className='m-auto h-5/6 lg:h-auto' src={`${baseUrl}/file/${files[currentIndex].id}`}></img>
         </div>
-        <div className='w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative'>
-          <Description />
+        <div className='w-full lg:w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative overflow-y-auto'>
+          {loadDescription ? <Loading /> : <Description content={text} />}
         </div>
       </div>
       <div className='hidden lg:h-1/5 lg:block w-full'>
@@ -107,26 +113,36 @@ export default function ImagePlayground() {
             </div>
           ))}
           {currentIndex < files.length - 1 && (
-            <div
-              className={`absolute w-16 h-16 top-6 right-[18%] rotate-90 rounded-full hover:bg-slate-100/20 hover:cursor-pointer
-            transition-all opacity-100 duration-300 ease-out ${currentIndex > files.length - 1 ? 'none' : ''}`}
+            <button
+              className={clsx(
+                'absolute w-16 h-16 top-6 right-[18%]',
+                `rotate-90 rounded-full hover:bg-slate-100/20 hover:cursor-pointer`,
+                'transition-all opacity-100 duration-300 ease-out',
+                'disabled:cursor-not-allowed disabled:opacity-50',
+              )}
               onClick={() => {
                 handleInfo(true)
               }}
+              disabled={loadDescription}
             >
-              <ImageArrow />
-            </div>
+              <Icon icon='ep:arrow-up' className='w-12 h-12 mx-2 mb-2'></Icon>
+            </button>
           )}
           {currentIndex > 0 && (
-            <div
-              className={`absolute w-16 h-16 top-6 left-[18%] -rotate-90 rounded-full hover:bg-slate-100/20 hover:cursor-pointer
-            transition-all opacity-100 duration-300 ease-out`}
+            <button
+              className={clsx(
+                'absolute w-16 h-16 top-6 left-[18%]',
+                `-rotate-90 rounded-full hover:bg-slate-100/20 hover:cursor-pointer`,
+                'transition-all opacity-100 duration-300 ease-out',
+                'disabled:cursor-not-allowed disabled:opacity-50',
+              )}
               onClick={() => {
                 handleInfo(false)
               }}
+              disabled={loadDescription}
             >
-              <ImageArrow />
-            </div>
+              <Icon icon='ep:arrow-up' className='w-12 h-12 mx-2 mb-2'></Icon>
+            </button>
           )}
         </div>
       </div>

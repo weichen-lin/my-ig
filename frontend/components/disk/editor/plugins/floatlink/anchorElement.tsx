@@ -8,7 +8,8 @@ import { getSelectedNode } from './util'
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
 import clsx from 'clsx'
 
-export default function AnchorElement() {
+export default function AnchorElement(props: { position: { top: number; left: number } | null }) {
+  const { position } = props
   const [editor] = useLexicalComposerContext()
   const [linkUrl, setLinkUrl] = useState('https://')
 
@@ -27,16 +28,14 @@ export default function AnchorElement() {
     setLinkUrl(e?.target?.value || '')
   }
 
-  const domRect = window.getSelection()?.focusNode?.parentElement?.getBoundingClientRect()
-
-  return domRect
+  return position
     ? createPortal(
         <div
           className={clsx(
             'bg-white z-[999] drop-shadow-lg p-2 px-4 gap-x-2 rounded-md w-[375px]',
             'fixed flex items-center',
           )}
-          style={{ top: domRect.top + window.scrollY + 20, left: domRect.left - 10 }}
+          style={{ top: position.top + window.scrollY + 20, left: position.left - 10 }}
         >
           {isEditing ? (
             <>

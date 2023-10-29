@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react'
 import clsx from 'clsx'
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 
 interface ButtonProps {
   onClick: () => void
@@ -16,7 +17,8 @@ interface LockButtonProps extends ButtonProps {
 }
 
 export function FormatButton(props: FormatButtonProps) {
-  const { icon, onClick, disabled, isactive } = props
+  const { icon, onClick, isactive } = props
+  const [editor] = useLexicalComposerContext()
 
   return (
     <button
@@ -28,6 +30,7 @@ export function FormatButton(props: FormatButtonProps) {
         'cursor-pointer hover:bg-slate-300/40 rounded-md',
         isactive && 'bg-[#f5f8fd]',
       )}
+      disabled={!editor.isEditable()}
     >
       <Icon className='w-6 h-6 m-1' color='#929292' icon={icon} />
     </button>
@@ -39,9 +42,9 @@ export function LockButton(props: LockButtonProps) {
   return (
     <button
       onClick={() => {
-        // editor.dispatchCommand(UNDO_COMMAND, undefined)
+        onClick()
       }}
-      className='disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer hover:bg-slate-300/40 rounded-md'
+      className='disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer hover:bg-slate-300/40 rounded-md mr-2'
     >
       <Icon className='w-5 h-5 m-[6px]' color='#929292' icon={isLock ? 'ion:lock-closed' : 'heroicons:lock-open'} />
     </button>

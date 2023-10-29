@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useClickOutside } from 'hooks/utils'
 import clsx from 'clsx'
 import { Icon } from '@iconify/react'
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 
 interface Option {
   icon?: string
@@ -15,7 +16,9 @@ interface DropDownListProps extends Option {
 export default function DropDownList(props: DropDownListProps & { options: Option[] }) {
   const { icon, name, options, onSelect } = props
 
-  const ref = useRef<HTMLDivElement>(null)
+  const [editor] = useLexicalComposerContext()
+
+  const ref = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
 
   const handelClose = () => {
@@ -25,7 +28,7 @@ export default function DropDownList(props: DropDownListProps & { options: Optio
   useClickOutside(ref, handelClose)
 
   return (
-    <div
+    <button
       className={clsx(
         'relative flex items-center h-8',
         'disabled:cursor-not-allowed disabled:opacity-30 gap-x-1',
@@ -33,6 +36,7 @@ export default function DropDownList(props: DropDownListProps & { options: Optio
       )}
       ref={ref}
       onClick={() => setOpen(prev => !prev)}
+      disabled={!editor.isEditable()}
     >
       {icon && <Icon className='w-5 h-5 mx-1' color='#929292' icon={icon} />}
       {name && <span className={clsx('text-sm', !icon && 'ml-1')}>{name}</span>}
@@ -56,7 +60,7 @@ export default function DropDownList(props: DropDownListProps & { options: Optio
           ))}
         </div>
       )}
-    </div>
+    </button>
   )
 }
 
