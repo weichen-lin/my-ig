@@ -106,7 +106,7 @@ func Test_Getfiles(t *testing.T) {
 	tx.Commit(context.Background())
 }
 
-func Test_GetFileDescription(t *testing.T){
+func Test_GetFileDescription(t *testing.T) {
 	user, err := CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
@@ -156,7 +156,7 @@ func Test_UpdateDescription(t *testing.T) {
 	fakeName := faker.Name()
 	err = q.UpdateFileDescription(context.Background(), UpdateFileDescriptionParams{
 		ID:          file.ID,
-		UserID: 	user.ID,
+		UserID:      user.ID,
 		Description: &fakeName,
 	})
 	require.NoError(t, err)
@@ -168,7 +168,7 @@ func Test_UpdateDescription(t *testing.T) {
 	q = New(conn)
 	defer conn.Release()
 	description, err := q.SelectFileDescription(context.Background(), SelectFileDescriptionParams{
-		ID: file.ID,
+		ID:     file.ID,
 		UserID: user.ID,
 	})
 

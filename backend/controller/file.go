@@ -183,7 +183,7 @@ func (s Controller) GetFileDescription(ctx *gin.Context) {
 }
 
 type UpdateFileReq struct {
-	ID 		string `json:"id" binding:"required"`
+	ID          string `json:"id" binding:"required"`
 	Description string `json:"description"`
 }
 
@@ -217,6 +217,8 @@ func (s Controller) UpdateFileDescription(ctx *gin.Context) {
 
 	q := db.New(tx)
 	defer tx.Commit(ctx)
+
+	fmt.Println(params, userId)
 
 	err = q.UpdateFileDescription(ctx, db.UpdateFileDescriptionParams{
 		ID:          fileId,
