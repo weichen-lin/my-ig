@@ -2,10 +2,10 @@ import { useRef, useCallback } from 'react'
 
 const DELAY = 200
 
-const debounce = (callback: (...arg: any) => any, delay: number) => {
+export const debounce = (callback: (...arg: any) => any, delay: number) => {
   let debounceTimer: ReturnType<typeof setTimeout>
   return (...arg: any) => {
-    clearTimeout(debounceTimer)
+    if (debounceTimer) clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => callback(...arg), delay)
   }
 }

@@ -37,4 +37,4 @@ export const uploadFile = async (data: FormData) =>
 
 export const getFileDescription = async (id: string) => fetcher.get<{ description: string }>(`/file/description/${id}`)
 export const updateFileDescription = async (data: { description: string; id: string }) =>
-  fetcher.patch<{ description: string }>(`/file/description`, data)
+  fetcher.patch<{ id: string; description: string }>(`/file/update`, data)

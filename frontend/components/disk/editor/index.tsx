@@ -16,17 +16,28 @@ import Editor from './editor'
 import { useIsMobile } from 'hooks/disk'
 
 interface DescriptionProps {
+  id: string
   content: string | null
 }
 
+const checkIsLexical = (content: string | null) => {
+  try {
+    if (content === null || typeof content !== 'string') return null
+    const parsed = JSON.parse(content)
+    return parsed.hasOwnProperty('root') ? content : null
+  } catch (e) {
+    return null
+  }
+}
+
 export default function Description(props: DescriptionProps) {
-  const { content } = props
+  const { id, content } = props
   const { isMobile } = useIsMobile()
 
   const CustomContent = () => {
     return (
       <div className='flex flex-col h-full bg-white rounded-xl p-1'>
-        {!isMobile && <Editor />}
+        {!isMobile && <Editor id={id} />}
         <ContentEditable className='z-10 w-full h-full focus:outline-none py-4 px-2 overflow-auto overflow-y-auto' />
       </div>
     )
@@ -43,7 +54,7 @@ export default function Description(props: DescriptionProps) {
       console.log('ERROR:', e)
     },
     theme: MyTheme,
-    editorState: content,
+    editorState: checkIsLexical(content),
   }
 
   return (

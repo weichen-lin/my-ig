@@ -1,8 +1,7 @@
 import useScroll from './useScroll'
 import useClickOutside from './useClickOutside'
-import useDebounce from './useDebounce'
 import CookieParser, { TokenProp } from './CookieParser'
-import useSingleAndDoubleClick from './useCheckDoubleClick'
+import useSingleAndDoubleClick, { debounce } from './useCheckDoubleClick'
 export type { TokenProp }
 
-export { useScroll, useClickOutside, useDebounce, CookieParser, useSingleAndDoubleClick }
+export { useScroll, useClickOutside, debounce, CookieParser, useSingleAndDoubleClick }

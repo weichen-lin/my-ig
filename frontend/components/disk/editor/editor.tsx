@@ -16,6 +16,7 @@ import {
   COMMAND_PRIORITY_CRITICAL,
   FORMAT_TEXT_COMMAND,
   TextFormatType,
+  EditorState,
 } from 'lexical'
 import { $getSelectionStyleValueForProperty } from '@lexical/selection'
 import { $isHeadingNode } from '@lexical/rich-text'
@@ -24,10 +25,19 @@ import { $isListNode, ListNode } from '@lexical/list'
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
 
 import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexical/utils'
-
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
 import { getSelectedNode, sanitizeUrl } from './util'
+import { debounce } from 'hooks/utils/useCheckDoubleClick'
 
-export default function Editor() {
+import { updateFileDescription, useFetch } from 'api'
+
+export default function Editor(props: { id: string }) {
+  const { id } = props
+  const { data, run } = useFetch<{ id: string; description: string }, { id: string }>(updateFileDescription, {
+    onSuccess: data => {
+      console.log({ data })
+    },
+  })
   const [editor] = useLexicalComposerContext()
   const [activeEditor, setActiveEditor] = useState(editor)
 
@@ -61,9 +71,6 @@ export default function Editor() {
   }, [editor, isLink])
 
   const $updateToolbar = useCallback(() => {
-    const editorState = editor.getEditorState()
-    const json = editorState.toJSON()
-    console.log(JSON.stringify(json))
     const selection = $getSelection()
     if ($isRangeSelection(selection)) {
       const anchorNode = selection.anchor.getNode()
@@ -110,6 +117,14 @@ export default function Editor() {
       setFontSize($getSelectionStyleValueForProperty(selection, 'font-size', '15px'))
     }
   }, [activeEditor])
+
+  const onChange = useCallback(
+    debounce((editorState: EditorState) => {
+      const updateString = JSON.stringify(editorState)
+      run({ id, description: updateString })
+    }, 3000),
+    [activeEditor],
+  )
 
   useEffect(() => {
     return mergeRegister(
@@ -186,6 +201,7 @@ export default function Editor() {
         />
       </div>
       <FloatingLinkEditorPlugin isLinkEditor={isLink} handleIsLinkEditor={handleIsLink} />
+      <OnChangePlugin onChange={onChange} />
     </div>
   )
 }
