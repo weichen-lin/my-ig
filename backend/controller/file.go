@@ -218,8 +218,6 @@ func (s Controller) UpdateFileDescription(ctx *gin.Context) {
 	q := db.New(tx)
 	defer tx.Commit(ctx)
 
-	fmt.Println(params, userId)
-
 	err = q.UpdateFileDescription(ctx, db.UpdateFileDescriptionParams{
 		ID:          fileId,
 		UserID:      userId,
