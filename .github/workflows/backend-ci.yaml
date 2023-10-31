@@ -1,6 +1,6 @@
 name: CI - Run Go Uni Tests
 
-on: 
+on:
   push:
     paths:
       - backend/**
