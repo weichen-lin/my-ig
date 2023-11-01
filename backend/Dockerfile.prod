@@ -1,0 +1,23 @@
+FROM --platform=linux/amd64 golang:1.21.0-alpine AS builder
+
+WORKDIR /app
+
+ENV KUSHARE_APP_ENV=prod
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN go build -o main.exe
+
+FROM --platform=linux/amd64 alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/main.exe .
+COPY dev.env ./dev.env
+COPY credential.json ./credential.json
+
+LABEL org.opencontainers.image.source https://github.com/weichen-lin/my-ig
+
+ENTRYPOINT [ "./main.exe" ]

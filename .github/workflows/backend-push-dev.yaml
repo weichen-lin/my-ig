@@ -1,0 +1,35 @@
+name: Deploy Images to GHCR
+
+on:
+  workflow_run:
+    workflows:
+      - 'CI - Run Go Uni Tests'
+    branches:
+      - main
+    paths:
+      - backend/**
+    types:
+      - completed
+
+jobs:
+  push-store-image:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './backend'
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN_FOR_GHCR }}
+
+      - name: 'Build Image Develop'
+        run: |
+          echo ${{ secrets.FIREBASE_CREDENTIAL }} | base64 -d > credential.json &&
+          echo ${{ secrets.DEV_ENV }} | base64 -d > dev.env &&
+          make build-dev && make push-dev
