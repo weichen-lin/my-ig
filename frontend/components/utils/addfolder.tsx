@@ -30,7 +30,7 @@ const AddFolder = forwardRef<HTMLInputElement, AddFolderProps>((prop, ref) => {
   const { isLoading, error, run } = useFetch<CreateFolderProps, CreateFolderResponse>(createFolder, {
     onSuccess: res => {
       close()
-      res && setFolders(prev => [...prev, { id: res.id, name: res.name, last_modified_at: Date().toLocaleString() }])
+      res && setFolders(prev => [...prev, { id: res.id, name: res.name, lastModifiedAt: Date().toLocaleString() }])
     },
   })
 
