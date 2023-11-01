@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@lexical/react": "^0.12.2",
-    "@weichen-lin/gdrive-select-and-drag": "^1.0.5",
     "axios": "^1.2.6",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
