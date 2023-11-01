@@ -19,5 +19,5 @@ jobs:
           node-version: 16
       - run: npm install
       - run: |
-          echo ${{ FRONTEND_DEV_ENV }} | base64 -d > .env.local &&
+          echo ${{ secrets.FRONTEND_DEV_ENV }} | base64 -d > .env.local &&
           npm run build
