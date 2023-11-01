@@ -1,6 +1,9 @@
 name: Deploy Images to GHCR
 
 on:
+  push:
+    paths:
+      - backend/**
   workflow_run:
     workflows:
       - 'CI - Run Go Uni Tests'
