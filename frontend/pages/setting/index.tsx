@@ -19,7 +19,7 @@ export default function SettingPage(props: TokenProp) {
         <div className='flex flex-col mb-6 w-full items-start gap-4 mt-4'>
           <p className='uppercase text-gray-500 font-bold'>信箱</p>
           <div className='flex flex-col md:flex-row md:items-center gap-4'>
-            <div className='text-black'>asdfg09487@gmail.com</div>
+            <div className='text-black'></div>
             <div className='flex items-center'>
               <div className='flex items-center gap-x-1 mr-4 bg-green-100 rounded-md p-1 px-2'>
                 <MdOutlineCheck fill='#16a34a' />
