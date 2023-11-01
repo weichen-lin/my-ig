@@ -4,10 +4,6 @@ on:
   workflow_run:
     workflows:
       - 'CI - Run Go Uni Tests'
-    branches:
-      - develop
-    paths:
-      - backend/**
     types:
       - completed
 
@@ -28,7 +24,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN_FOR_GHCR }}
 
-      - name: 'Build Image Develop'
+      - name: 'Build Develop Image'
         run: |
           echo ${{ secrets.FIREBASE_CREDENTIAL }} | base64 -d > credential.json &&
           echo ${{ secrets.DEV_ENV }} | base64 -d > dev.env &&
