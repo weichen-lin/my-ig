@@ -18,4 +18,6 @@ COPY --from=builder /app/main.exe .
 COPY dev.env ./dev.env
 COPY credential.json ./credential.json
 
+LABEL org.opencontainers.image.source https://github.com/weichen-lin/my-ig
+
 ENTRYPOINT [ "./main.exe" ]

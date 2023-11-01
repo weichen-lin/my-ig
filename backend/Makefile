@@ -1,7 +1,8 @@
 GIT_SHA := $(shell git rev-parse --short HEAD)
 NAMESPACE := weichen-lin
-IMAGE_NAME := myig
+REPO_NAME := my-ig
 TAG := $(GIT_SHA)
+IMAGE_BASE := ghcr.io/$(NAMESPACE)/$(REPO_NAME)
 
 run_ig_postgres:
 	docker run -d \
@@ -36,7 +37,7 @@ test:
 	go test -v -cover ./...
 
 build-dev:
-	docker build -t ghcr.io/$(NAMESPACE)/$(IMAGE_NAME)-stg:$(TAG) -f Dockerfile.dev .
+	docker build -t $(IMAGE_BASE):dev -f Dockerfile.dev .
 
 push-dev:
-	docker push ghcr.io/$(NAMESPACE)/$(IMAGE_NAME)-stg:$(TAG)
+	docker push $(IMAGE_BASE):dev
