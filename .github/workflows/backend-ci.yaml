@@ -1,4 +1,4 @@
-name: 'CI - Run Go Uni Tests'
+name: 'Unit tests'
 
 on:
   push:
