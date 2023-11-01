@@ -1,4 +1,3 @@
-import { CiCloudOn, CiLogout } from 'react-icons/ci'
 import { useState, useCallback, useContext } from 'react'
 import Router, { useRouter } from 'next/router'
 import clsx from 'clsx'
@@ -103,12 +102,11 @@ export const Menu = () => {
                 })
                 .then(res => {
                   handleUser('avatar_url', res.data)
-                  AddHints('上傳成功', 'success')
                 })
                 .catch(err => console.log(err))
             }
             img.onerror = e => {
-              AddHints('上傳成功', 'success')
+              console.log(e)
             }
           }
         }),
