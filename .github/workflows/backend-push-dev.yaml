@@ -5,7 +5,7 @@ on:
     workflows:
       - 'CI - Run Go Uni Tests'
     branches:
-      - develop
+      - main
     paths:
       - backend/**
     types:
