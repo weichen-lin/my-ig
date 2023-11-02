@@ -19,7 +19,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install
-      - run: |
+      - name: Install dependencies
+        run: npm install
+      - name: Build for test
+        run: |
           echo ${{ secrets.FRONTEND_DEV_ENV }} | base64 -d > .env.local &&
           npm run build
