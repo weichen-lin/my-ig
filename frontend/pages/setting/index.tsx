@@ -23,7 +23,7 @@ export default function SettingPage(props: TokenProp) {
             <div className='flex items-center'>
               <div className='flex items-center gap-x-1 mr-4 bg-green-100 rounded-md p-1 px-2'>
                 <MdOutlineCheck fill='#16a34a' />
-                已驗證
+                已驗證?
               </div>
               <button className='border p-1 w-16 rounded-md border-blue-300'>編輯</button>
             </div>
