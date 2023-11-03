@@ -4,7 +4,7 @@ import { GetServerSideProps } from 'next'
 import { LayoutHome } from 'components/layout'
 import { CookieParser, TokenProp } from 'hooks/utils'
 
-import { MdUploadFile, MdOutlineCheck } from 'react-icons/md'
+import { MdOutlineCheck } from 'react-icons/md'
 
 import { AuthInput } from 'components/auth'
 

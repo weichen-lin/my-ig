@@ -11,6 +11,9 @@ on:
 
 jobs:
   Deploy-Preview:
+    defaults:
+      run:
+        working-directory: './frontend'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
