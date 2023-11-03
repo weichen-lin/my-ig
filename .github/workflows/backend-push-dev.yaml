@@ -33,3 +33,7 @@ jobs:
           echo ${{ secrets.FIREBASE_CREDENTIAL }} | base64 -d > credential.json &&
           echo ${{ secrets.DEV_ENV }} | base64 -d > dev.env &&
           make build-dev && make push-dev
+
+      - name: 'Deploy Image on render'
+        run: |
+          curl ${{ secrets.DEV_RENDER_URL }}
