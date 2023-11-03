@@ -11,6 +11,7 @@ type Config struct {
 	SecretKey      string `mapstructure:"SecretKey"`
 	FireBaseBucket string `mapstructure:"FireBaseBucket"`
 	IsDev          bool   `mapstructure:"IsDev"`
+	AllowedDomain  string `mapstructure:"AllowedDomain"`
 }
 
 func Loadconfig(path string, env string) (config Config, err error) {

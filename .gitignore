@@ -44,3 +44,7 @@ dist
 **/*/credential.json
 
 deploy/secret.yaml
+
+/tmp
+
+**/tmp/
