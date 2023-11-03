@@ -22,7 +22,8 @@ OauthPage.getLayout = function getLayout(page: JSX.Element) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  console.log(query)
+  // console.log(query)
+
   return {
     props: {
       query,
