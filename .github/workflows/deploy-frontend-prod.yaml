@@ -1,11 +1,11 @@
-name: Deploy Deployment on secrets.VERCEL_TOKEN
+name: Deploy Deployment on Vercel
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 on:
   push:
-    paths:
-      - frontend/**
+    # paths:
+    #   - frontend/**
     branches:
       - main
 
@@ -16,7 +16,7 @@ jobs:
       run:
         working-directory: './frontend'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Vercel CLI
         run: npm install -g vercel
@@ -28,4 +28,4 @@ jobs:
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
