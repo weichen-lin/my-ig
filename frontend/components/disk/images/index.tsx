@@ -31,8 +31,6 @@ export default function ImagePlayground() {
   const files = useRecoilValue(fileState)
   const ref = useRef<HTMLDivElement>(null)
 
-  const current = ref?.current
-
   const handleInfo = (add: boolean) => {
     if (isLoading) return
     setCurrentIndex((prev: number) => {
@@ -65,12 +63,12 @@ export default function ImagePlayground() {
   }
 
   useEffect(() => {
-    if (current) {
-      current.focus()
-      current.addEventListener('keydown', keyEvents)
+    if (ref?.current) {
+      ref?.current.focus()
+      ref?.current.addEventListener('keydown', keyEvents)
     }
     return () => {
-      current?.removeEventListener('keydown', keyEvents)
+      ref?.current?.removeEventListener('keydown', keyEvents)
     }
   }, [])
 

@@ -1,5 +1,3 @@
-import clsx from 'clsx'
-
 export default function Layout(props: { children: JSX.Element }) {
   const { children } = props
   return (

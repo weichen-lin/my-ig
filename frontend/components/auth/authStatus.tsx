@@ -1,5 +1,6 @@
 import clsx from 'clsx'
-import { ErrorIcon, SuccessIcon, IconProps } from 'public/icon/login'
+import { ErrorIcon, SuccessIcon } from 'public/icon/login'
+import { Icon } from '@iconify/react'
 
 interface InputSuccessProps {
   message: string
@@ -13,8 +14,8 @@ interface StatusIcon {
 }
 
 const statusObj: StatusIcon = {
-  success: <SuccessIcon className='h-6 w-6 mx-2 xs:h-8 xs:w-8 xs:m-[10px]' />,
-  failed: <ErrorIcon className='h-[20px] w-[20px] my-[8px] mx-[6px] xs:h-8 xs:w-8 xs:m-[10px]' />,
+  success: <Icon icon='ic:round-check-circle-outline' className='' />,
+  failed: <Icon icon='ic:baseline-error-outline' className='' />,
 }
 
 export default function AuthStatus(props: InputSuccessProps) {
@@ -22,16 +23,13 @@ export default function AuthStatus(props: InputSuccessProps) {
   return (
     <div
       className={clsx(
-        'h-8 text-xl relative mb-8 flex items-center',
-        'md:mx-auto rounded-lg',
-        'w-full max-w-[350px] xs:h-12',
-        `${status === 'success' ? 'bg-green-100' : 'bg-red-100'}`,
+        'py-1 flex items-center justify-start gap-x-3 px-4 rounded-md',
+        'w-full max-w-[350px]',
+        `${status === 'success' ? 'bg-green-100' : 'bg-red-100/80'}`,
       )}
     >
       {statusObj[status]}
-      <span className='ml-[6px] my-[6px] xs:m-[12px] xl:my-[10px] text-base xs:text-lg font-bold md:text-lg'>
-        {message}
-      </span>
+      <span className='font-semibold'>{message}</span>
     </div>
   )
 }
