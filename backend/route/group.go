@@ -75,12 +75,12 @@ func Cors(s string) gin.HandlerFunc {
 		origin := c.Request.Header.Get("Origin")
 
 		if s != "" && !strings.HasSuffix(origin, s) {
-			c.String(http.StatusUnauthorized, "Invalid Source")
+			c.String(http.StatusUnauthorized, "Invalid Source : " + origin)
 			c.Abort()
 			return
 		}
 
-		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Origin", s)
 		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PATCH, PUT, DELETE, UPDATE")
 
 		c.Header("Access-Control-Allow-Headers", "Authorization, Content-Length, X-CSRF-Token, Token,session,X_Requested_With,Accept, Origin, Host, Connection, Accept-Encoding, Accept-Language,DNT, X-CustomHeader, Keep-Alive, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Pragma")
