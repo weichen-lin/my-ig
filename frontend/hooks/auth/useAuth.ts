@@ -13,6 +13,8 @@ export default function useAuth(props: AuthProps) {
   const { token, needRouting } = props
   const [checkAuth, setCheckAuth] = useState(false)
 
+  console.log({ token })
+
   useEffect(() => {
     const authUser = async () => {
       if (!token) {
@@ -32,7 +34,8 @@ export default function useAuth(props: AuthProps) {
         if (res.status === 200) {
           Router.push('/home')
         }
-      } catch {
+      } catch (e) {
+        console.log(e)
         localStorage.clear()
         needRouting ? Router.push('/login') : setCheckAuth(true)
       }
