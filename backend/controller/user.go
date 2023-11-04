@@ -47,8 +47,7 @@ func (s *Controller) ValiedateToken(ctx *gin.Context) {
 
 	_, err = jwtMaker.VerifyToken(cookie)
 	if err != nil {
-		ctx.SetSameSite(http.SameSiteNoneMode)
-		ctx.SetCookie("token", "", -1, "/", ".vercel.app", true, true)
+		ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Domain=.vercel.app; Max-Age=-1; HttpOnly; Secure; SameSite=None", userTokenName, ""))
 		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
@@ -114,8 +113,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetSameSite(http.SameSiteNoneMode)
-	ctx.SetCookie("token", token, 3600, "/", ".vercel.app", true, true)
+	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Domain=.vercel.app; Max-Age=-1; HttpOnly; Secure; SameSite=None", userTokenName, token))
 	ctx.String(http.StatusOK, user.ID.String())
 }
 
@@ -159,9 +157,7 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetSameSite(http.SameSiteNoneMode)
-	ctx.SetCookie("token", token, 3600, "/", ".vercel.app", true, true)
-
+	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Domain=.vercel.app; Max-Age=-1; HttpOnly; Secure; SameSite=None", userTokenName, token))
 	ctx.JSON(http.StatusOK, info.ID)
 }
 
@@ -242,6 +238,6 @@ func (s *Controller) UserLogout(ctx *gin.Context) {
 	}
 
 	ctx.SetSameSite(http.SameSiteNoneMode)
-	ctx.SetCookie("token", "", -1, "/", ".vercel.app", true, true)
+	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Domain=.vercel.app; Max-Age=-1; HttpOnly; Secure; SameSite=None", userTokenName, ""))
 	ctx.JSON(http.StatusOK, "logout success")
 }
