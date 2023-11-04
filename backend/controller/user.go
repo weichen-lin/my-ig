@@ -47,6 +47,7 @@ func (s *Controller) ValiedateToken(ctx *gin.Context) {
 
 	_, err = jwtMaker.VerifyToken(cookie)
 	if err != nil {
+		ctx.SetSameSite(http.SameSiteNoneMode)
 		ctx.SetCookie("token", "", -1, "/", ".vercel.app", true, true)
 		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
@@ -113,6 +114,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
+	ctx.SetSameSite(http.SameSiteNoneMode)
 	ctx.SetCookie("token", token, 3600, "/", ".vercel.app", true, true)
 	ctx.String(http.StatusOK, user.ID.String())
 }
@@ -156,6 +158,8 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+
+	ctx.SetSameSite(http.SameSiteNoneMode)
 	ctx.SetCookie("token", token, 3600, "/", ".vercel.app", true, true)
 
 	ctx.JSON(http.StatusOK, info.ID)
@@ -236,6 +240,8 @@ func (s *Controller) UserLogout(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
+
+	ctx.SetSameSite(http.SameSiteNoneMode)
 	ctx.SetCookie("token", "", -1, "/", ".vercel.app", true, true)
 	ctx.JSON(http.StatusOK, "logout success")
 }
