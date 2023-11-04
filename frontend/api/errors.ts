@@ -20,5 +20,5 @@ export const FolderResponse: FolderResponseInterface = {
   2: '資料夾名稱重複',
   3: '資料夾名稱過長',
   4: '請輸入資料夾名稱',
-  5: '名稱請勿含有特殊字元',
+  5: '名稱請勿含有特殊字元s',
 }

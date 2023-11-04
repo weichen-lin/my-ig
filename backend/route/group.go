@@ -75,7 +75,7 @@ func Cors(s string) gin.HandlerFunc {
 		origin := c.Request.Header.Get("Origin")
 
 		if s != "" && !strings.HasSuffix(origin, s) {
-			c.String(http.StatusUnauthorized, "Invalid Authorization")
+			c.String(http.StatusUnauthorized, "Invalid Source")
 			c.Abort()
 			return
 		}
