@@ -32,7 +32,7 @@ export default function RegisterPage(props: { token: string }) {
       {!checkAuth ? (
         <Loading />
       ) : (
-        <div className='w-4/5 md:min-w-[350px] max-w-[350px] mx-auto flex flex-col gap-y-8 justify-between'>
+        <div className='w-4/5 md:min-w-[350px] max-w-[350px] flex flex-col gap-y-8 justify-between'>
           <AuthInput
             label='email'
             type='text'
