@@ -4,7 +4,6 @@ import clsx from 'clsx'
 import { MdUploadFile } from 'react-icons/md'
 import fetcher from 'api/fetcher'
 import { KushareAuth } from 'context'
-import { useHints } from 'hooks/disk'
 import { Icon } from '@iconify/react'
 
 export interface MenuItemProps {
@@ -49,7 +48,6 @@ export const MenuItem = (props: MenuItemProps) => {
 export const Menu = () => {
   const [isRouting, setIsRouting] = useState(false)
   const { user, isAuth, handleUser } = useContext(KushareAuth)
-  const { AddHints } = useHints()
   const router = useRouter()
 
   const MenuRouting = useCallback((menu: { pathname: string }) => {

@@ -13,8 +13,6 @@ export default function useAuth(props: AuthProps) {
   const { token, needRouting } = props
   const [checkAuth, setCheckAuth] = useState(false)
 
-  console.log({ token })
-
   useEffect(() => {
     const authUser = async () => {
       if (!token) {
