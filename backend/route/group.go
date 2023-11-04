@@ -2,6 +2,7 @@ package route
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -79,6 +80,8 @@ func Cors(s string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
+		fmt.Println("origin from: ", origin)
 
 		c.Header("Access-Control-Allow-Origin", origin)
 		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PATCH, PUT, DELETE, UPDATE")
