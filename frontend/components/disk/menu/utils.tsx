@@ -50,24 +50,27 @@ export const Menu = () => {
   const { user, isAuth, handleUser } = useContext(KushareAuth)
   const router = useRouter()
 
-  const MenuRouting = useCallback((menu: { pathname: string }) => {
-    router.events.on('routeChangeStart', () => {
-      setIsRouting(true)
-    })
+  const MenuRouting = useCallback(
+    (menu: { pathname: string }) => {
+      router.events.on('routeChangeStart', () => {
+        setIsRouting(true)
+      })
 
-    router.events.on('routeChangeComplete', () => {
-      setIsRouting(false)
-    })
-    router.push(`${menu.pathname}`)
+      router.events.on('routeChangeComplete', () => {
+        setIsRouting(false)
+      })
+      router.push(`${menu.pathname}`)
 
-    router.events.off('routeChangeStart', () => {
-      setIsRouting(true)
-    })
+      router.events.off('routeChangeStart', () => {
+        setIsRouting(true)
+      })
 
-    router.events.off('routeChangeComplete', () => {
-      setIsRouting(false)
-    })
-  }, [])
+      router.events.off('routeChangeComplete', () => {
+        setIsRouting(false)
+      })
+    },
+    [router],
+  )
 
   const router_split = router.pathname.split('/')
 
@@ -146,7 +149,7 @@ export const Menu = () => {
       <div className='flex flex-col items-center gap-y-4'>
         <div className='overflow-hidden w-24 h-24 rounded-full border-2'>
           {user && user.avatar_url ? (
-            <img src={user?.avatar_url} className='rounded-full'></img>
+            <img src={user?.avatar_url} className='rounded-full' alt='avatar'></img>
           ) : (
             <Icon icon='pixelarticons:user' className='w-16 h-16 m-4' />
           )}

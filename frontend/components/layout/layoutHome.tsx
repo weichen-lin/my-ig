@@ -4,6 +4,7 @@ import { useIsMobile } from 'hooks/disk'
 import { RxHamburgerMenu } from 'react-icons/rx'
 import { useCallback, useState } from 'react'
 import { KushareAuthProvider } from 'context'
+import Image from 'next/image'
 
 export default function LayoutHome(props: { children: JSX.Element }) {
   const { children } = props
@@ -22,7 +23,7 @@ export default function LayoutHome(props: { children: JSX.Element }) {
           <div className='flex-col md:h-[98%] bg-white md:rounded-lg flex pt-1 max-w-[1280px] w-full justify-around mr-3'>
             <div className='flex w-[90%] mx-auto h-[10%] gap-x-8 items-center'>
               <div className='xss:hidden md:block h-12'>
-                <img className='h-full mx-auto' src='/icon/layout/logo.png'></img>
+                <Image className='h-full' src='/icon/layout/logo.png' alt='logo' width={120} height={48} />
               </div>
               <Search />
             </div>
