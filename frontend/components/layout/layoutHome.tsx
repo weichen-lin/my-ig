@@ -18,7 +18,7 @@ export default function LayoutHome(props: { children: JSX.Element }) {
   return (
     <KushareAuthProvider>
       {isFullScreen ? (
-        <div className='bg-slate-300 flex gap-x-5 h-screen w-full justify-center py-[1%]'>
+        <div className='bg-slate-300 flex gap-x-5 h-screen w-full justify-center py-[1%] xl:px-4'>
           <FullScreenMenu />
           <div className='flex-col bg-white md:rounded-lg flex max-w-[1280px] w-full px-[2%] py-3'>
             <div className='flex gap-x-8 items-center pt-2 pb-5'>

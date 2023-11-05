@@ -28,12 +28,12 @@ import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexi
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
 import { getSelectedNode, sanitizeUrl } from './util'
 import { debounce } from 'hooks/utils/useCheckDoubleClick'
-
+import { Icon } from '@iconify/react'
 import { updateFileDescription, useFetch } from 'api'
 
-export default function Editor(props: { id: string }) {
-  const { id } = props
-  const { run } = useFetch<{ id: string; description: string }, { id: string }>(updateFileDescription)
+export default function Editor(props: { id: string; close: () => void }) {
+  const { id, close } = props
+  const { run, isLoading } = useFetch<{ id: string; description: string }, { id: string }>(updateFileDescription)
   const [editor] = useLexicalComposerContext()
   const [activeEditor, setActiveEditor] = useState(editor)
 
@@ -118,7 +118,7 @@ export default function Editor(props: { id: string }) {
     debounce((editorState: EditorState) => {
       const updateString = JSON.stringify(editorState)
       run({ id, description: updateString })
-    }, 3000),
+    }, 1800),
     [activeEditor],
   )
 
@@ -140,14 +140,19 @@ export default function Editor(props: { id: string }) {
   }, [editor, $updateToolbar])
 
   return (
-    <div className='w-full border-b-[1px] flex h-12 rounded-t-xl items-center'>
-      <History />
-      <Divider />
-      <Paragraph type={blockType} />
-      <Divider />
-      <FontSize size={fontSize} onChange={handleFontSize} />
-      <Divider />
-      <div className='flex flex-1 justify-between'>
+    <div className='w-full border-b-[1px] flex rounded-t-xl justify-start flex-col'>
+      <div className='flex items-center justify-between pr-1'>
+        <div className='flex'>
+          <History />
+          <Divider />
+          <Paragraph type={blockType} />
+          <Divider />
+          <FontSize size={fontSize} onChange={handleFontSize} />
+          <Divider />
+        </div>
+        {isLoading && <Icon icon='eos-icons:bubble-loading' className='w-6 h-6 mr-2 opacity-60' />}
+      </div>
+      <div className='flex justify-between'>
         <div className='flex items-center gap-x-1'>
           <FormatButton
             icon='healthicons:b'
@@ -189,12 +194,19 @@ export default function Editor(props: { id: string }) {
             isactive={isLink}
           />
         </div>
-        <LockButton
-          isLock={isLock}
-          onClick={() => {
-            editor.setEditable(!editor.isEditable())
-          }}
-        />
+        <div className='flex items-center'>
+          <LockButton
+            isLock={isLock}
+            onClick={() => {
+              editor.setEditable(!editor.isEditable())
+            }}
+          />
+          <Icon
+            icon='carbon:close'
+            className='w-6 h-6 mr-2 opacity-60 hover:cursor-pointer hover:bg-slate-100'
+            onClick={() => close()}
+          />
+        </div>
       </div>
       <FloatingLinkEditorPlugin isLinkEditor={isLink} handleIsLinkEditor={handleIsLink} />
       <OnChangePlugin onChange={onChange} />
