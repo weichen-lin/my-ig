@@ -1,16 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getUserInfo, useFetch } from 'api/'
-import { KushareAuth } from './contexts'
+import { KushareAuth, User } from './contexts'
 import Router from 'next/router'
 import { Loading } from 'components/utils'
-
-export interface User {
-  user_id: string
-  email: string
-  user_name: string
-  login_method: string
-  avatar_url: string
-}
 
 export const KushareAuthProvider = (props: { children: JSX.Element }) => {
   const { children } = props
