@@ -113,7 +113,7 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Max-Age=3600; HttpOnly; Secure; SameSite=None", userTokenName, token))
+	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, token))
 	ctx.String(http.StatusOK, user.ID.String())
 }
 
@@ -157,7 +157,7 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Max-Age=3600; HttpOnly; Secure; SameSite=None", userTokenName, token))
+	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, token))
 	ctx.JSON(http.StatusOK, info.ID)
 }
 
