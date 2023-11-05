@@ -23,12 +23,12 @@ export default function KushareDrive() {
   const { isOpen } = useRecoilValue(OpenImageState)
   const { isLoading } = useGdrive()
 
-  if (isLoading) return <KushareDriveBackbone />
+  if (true) return <KushareDriveBackbone />
 
   return files?.length > 0 || folders?.length > 0 ? (
     <div
       className={clsx(
-        'flex w-full select-none flex-col items-start overflow-y-auto',
+        'flex w-full select-none flex-col items-start overflow-y-auto px-[5%] xl:px-0',
         `${listMethod === ListMethod.Lattice ? 'mt-1 gap-y-2 xs:gap-x-6 md:gap-y-3' : ''}`,
       )}
     >

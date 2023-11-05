@@ -70,7 +70,9 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
 
   return isMobile ? (
     <div className='flex items-center'>
-      <Icon icon='ic:baseline-chevron-right' className='w-8 h-8 mr-2 rotate-180' onClick={() => handleMobileBack()} />
+      {breads.length > 0 && (
+        <Icon icon='ic:baseline-chevron-right' className='w-8 h-8 mr-2 rotate-180' onClick={() => handleMobileBack()} />
+      )}
       <BreadCrumbMobile info={breads} />
     </div>
   ) : (

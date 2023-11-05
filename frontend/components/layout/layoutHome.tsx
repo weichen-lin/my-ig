@@ -29,7 +29,7 @@ export default function LayoutHome(props: { children: JSX.Element }) {
           </div>
         </div>
       ) : (
-        <div className='flex flex-col h-screen w-full bg-green-100/30'>
+        <div className='flex flex-col h-screen w-full'>
           <div className='flex px-[5%] gap-x-2 md:gap-x-6 py-2 items-center'>
             <RxHamburgerMenu
               className='hover:bg-slate-300 xl:hidden w-6 h-6 md:w-8 md:h-8'
