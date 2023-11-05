@@ -23,7 +23,7 @@ export default function KushareDrive() {
   const { isOpen } = useRecoilValue(OpenImageState)
   const { isLoading } = useGdrive()
 
-  if (true) return <KushareDriveBackbone />
+  if (isLoading) return <KushareDriveBackbone />
 
   return files?.length > 0 || folders?.length > 0 ? (
     <div
