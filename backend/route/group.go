@@ -73,8 +73,9 @@ func Cors(s string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
 		origin := c.Request.Header.Get("Origin")
+		referer := c.Request.Header.Get("Referer")
 
-		if s != "" && !strings.Contains(origin, s) {
+		if s != "" && !strings.Contains(origin, s) && !strings.Contains(referer, s) {
 			c.String(http.StatusUnauthorized, "Invalid Source : "+origin)
 			c.Abort()
 			return
