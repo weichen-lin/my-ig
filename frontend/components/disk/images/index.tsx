@@ -40,6 +40,10 @@ export default function ImagePlayground() {
     })
   }
 
+  const closeDescription = () => {
+    setOpenState(prev => ({ ...prev, isOpen: false }))
+  }
+
   const keyEvents = (e: KeyboardEvent) => {
     switch (e.key) {
       case 'ArrowLeft':
@@ -55,7 +59,7 @@ export default function ImagePlayground() {
         handleInfo(true)
         break
       case 'Escape':
-        setOpenState(prev => ({ ...prev, isOpen: false }))
+        closeDescription()
         break
       default:
         break
@@ -102,7 +106,11 @@ export default function ImagePlayground() {
           ></img>
         </div>
         <div className='w-full lg:w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative overflow-y-auto'>
-          {isLoading ? <Loading /> : <Description content={editState} id={files[currentIndex].id} />}
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <Description content={editState} id={files[currentIndex].id} close={closeDescription} />
+          )}
         </div>
       </div>
       <div className='hidden lg:h-1/5 lg:block w-full'>

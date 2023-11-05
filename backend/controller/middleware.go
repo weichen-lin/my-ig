@@ -86,7 +86,7 @@ func (c *Controller) AuthMiddlewareWithCookie() gin.HandlerFunc {
 		}
 
 		ctx.Set("userId", payload.UserId)
-
+		
 		ctx.Next()
 	}
 }

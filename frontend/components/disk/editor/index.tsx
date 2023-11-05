@@ -18,6 +18,7 @@ import { useIsMobile } from 'hooks/disk'
 interface DescriptionProps {
   id: string
   content: string | null
+  close: () => void
 }
 
 const checkIsLexical = (content: string | null) => {
@@ -31,20 +32,20 @@ const checkIsLexical = (content: string | null) => {
 }
 
 export default function Description(props: DescriptionProps) {
-  const { id, content } = props
+  const { id, content, close } = props
   const { isMobile } = useIsMobile()
 
   const CustomContent = () => {
     return (
       <div className='flex flex-col h-full bg-white rounded-xl p-1'>
-        {!isMobile && <Editor id={id} />}
+        {!isMobile && <Editor id={id} close={close} />}
         <ContentEditable className='z-10 w-full h-full focus:outline-none py-4 px-2 overflow-auto overflow-y-auto' />
       </div>
     )
   }
 
   const CustomPlaceholder = () => {
-    return isMobile ? <></> : <div className='absolute top-20 left-[30px] text-gray-300'>Enter some text...</div>
+    return isMobile ? <></> : <div className='absolute top-[100px] left-[30px] text-gray-300'>Enter some text...</div>
   }
 
   const lexicalConfig: InitialConfigType = {
