@@ -52,13 +52,13 @@ func GetFirebase(bucketName string) (*storage.BucketHandle, error) {
 
 	bucketHandler, err := client.Bucket(bucketName)
 
-	return bucketHandler, nil
+	return bucketHandler, err
 }
 
 func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, prefix string) (string, int, error) {
 	uploadFile, err := ctx.FormFile("file")
 
-	if uploadFile == nil {
+	if uploadFile == nil || err != nil {
 		return "", http.StatusBadRequest, fmt.Errorf("file not found")
 	}
 

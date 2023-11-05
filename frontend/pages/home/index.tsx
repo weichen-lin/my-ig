@@ -4,6 +4,7 @@ import { RecoilRoot, RecoilEnv } from 'recoil'
 import { GetServerSideProps } from 'next'
 import { CookieParser } from 'hooks/utils'
 import { ToastContainer } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false
@@ -14,7 +15,7 @@ export default function Drive() {
     <RecoilRoot>
       <LayoutHome>
         <div className='flex flex-col h-[90%]'>
-          <div className='flex flex-wrap w-[92%] items-center mx-auto'>
+          <div className='flex flex-wrap w-full items-center gap-y-5 px-[5%] xl:px-0'>
             <Operator />
             <BreadCrumbs />
           </div>

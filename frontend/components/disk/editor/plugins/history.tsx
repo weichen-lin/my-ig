@@ -26,7 +26,7 @@ const History = () => {
       },
       COMMAND_PRIORITY_CRITICAL,
     )
-  }, [])
+  }, [editor])
 
   return (
     <div className='flex gap-x-1 px-1 items-center'>

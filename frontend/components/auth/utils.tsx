@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import clsx from 'clsx'
-import { TickIcon, CancelIcon } from 'public/icon/login'
 import { PwdValidate } from 'hooks/auth'
+import { Icon } from '@iconify/react'
 
 export const PasswordChecker = (props?: { value: string }) => {
   const value = props?.value ?? ''
@@ -34,7 +34,7 @@ export const PasswordChecker = (props?: { value: string }) => {
   return (
     <ul
       className={clsx(
-        'p-2 rounded-md text-sm 2xl:mb-12 md:w-2/3 md:mx-auto mt-4',
+        'p-2 rounded-md text-sm md:w-3/5',
         `${results.every(e => e) ? 'bg-green-300/60' : 'bg-orange-200'}`,
       )}
     >
@@ -48,13 +48,13 @@ export const PasswordChecker = (props?: { value: string }) => {
 const RuleChecker = (props: { status: boolean; rule: string }) => {
   const { status, rule } = props
   return (
-    <li className='flex h-6 items-center'>
+    <li className='flex h-6 items-center gap-2'>
       {status ? (
-        <TickIcon className='w-[14px] h-[14px] mx-[9px]' fill='#18a550' />
+        <Icon icon='ic:baseline-check' className='text-[#18a550]' />
       ) : (
-        <CancelIcon className='w-6 h-6 m-1' fill='#dc4c64' />
+        <Icon icon='ic:baseline-close' className='text-[#dc4c64]' />
       )}
-      <span className={clsx('p-[6px]', `${status ? 'text-green-700' : 'text-amber-700'}`)}>{rule}</span>
+      <span className={`${status ? 'text-green-700' : 'text-amber-700'}`}>{rule}</span>
     </li>
   )
 }

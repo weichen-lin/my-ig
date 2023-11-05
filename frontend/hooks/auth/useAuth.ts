@@ -32,7 +32,8 @@ export default function useAuth(props: AuthProps) {
         if (res.status === 200) {
           Router.push('/home')
         }
-      } catch {
+      } catch (e) {
+        console.log(e)
         localStorage.clear()
         needRouting ? Router.push('/login') : setCheckAuth(true)
       }

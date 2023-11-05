@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import { ChangeEvent } from 'react'
-import type { RegisterKeys } from 'hooks/auth'
 
 interface InputProps<T> {
   label: string
@@ -22,7 +21,7 @@ export default function AuthInput(props: InputProps<string>) {
   const isError = changeFocus()
 
   return (
-    <div>
+    <div className='flex flex-col items-center gap-y-4'>
       <div className={clsx('w-full h-12 text-xl relative mb-1')}>
         <input
           className={clsx(

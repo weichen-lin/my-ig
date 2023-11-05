@@ -63,12 +63,12 @@ export default function ImagePlayground() {
   }
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.focus()
-      ref.current.addEventListener('keydown', keyEvents)
+    if (ref?.current) {
+      ref?.current.focus()
+      ref?.current.addEventListener('keydown', keyEvents)
     }
     return () => {
-      ref.current?.removeEventListener('keydown', keyEvents)
+      ref?.current?.removeEventListener('keydown', keyEvents)
     }
   }, [])
 
@@ -95,7 +95,11 @@ export default function ImagePlayground() {
     >
       <div className='flex h-full lg:h-[70%] flex-col lg:flex-row w-full lg:w-[90%] xl:w-[85%] 2xl:w-[70%] mx-auto lg:mt-[1.25%] bg-white'>
         <div className='flex lg:w-1/2 items-center justify-center overflow-clip lg:rounded-l-lg w-full h-full'>
-          <img className='m-auto h-5/6 lg:h-auto' src={`${baseUrl}/file/${files[currentIndex].id}`}></img>
+          <img
+            className='m-auto h-5/6 lg:h-auto'
+            src={`${baseUrl}/file/${files[currentIndex].id}`}
+            alt={files[currentIndex].name}
+          ></img>
         </div>
         <div className='w-full lg:w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative overflow-y-auto'>
           {isLoading ? <Loading /> : <Description content={editState} id={files[currentIndex].id} />}
@@ -119,7 +123,12 @@ export default function ImagePlayground() {
               }}
               key={`index_${index}`}
             >
-              <img src={`${baseUrl}/file/${e.id}`} draggable={false} className='h-full mx-auto'></img>
+              <img
+                src={`${baseUrl}/file/${e.id}`}
+                draggable={false}
+                className='h-full mx-auto'
+                alt={files[currentIndex].name}
+              ></img>
             </div>
           ))}
           {currentIndex < files.length - 1 && (

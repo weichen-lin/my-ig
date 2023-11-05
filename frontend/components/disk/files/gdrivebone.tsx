@@ -55,7 +55,7 @@ export const KushareDriveBackbone = () => {
   return (
     <div
       className={clsx(
-        'w-[85%] ml-[5%] flex items-center justify-start select-none',
+        'w-full flex items-center justify-start select-none px-[5%] xl:px-0',
         `${listMethod === ListMethod.Lattice ? 'flex-wrap gap-y-2 xs:gap-x-6 md:gap-y-2 mt-2' : 'flex-col mt-4'}`,
       )}
       style={{

@@ -1,30 +1,18 @@
 import { useEffect, useState } from 'react'
 import { getUserInfo, useFetch } from 'api/'
-import { KushareAuth } from './contexts'
-
-export interface User {
-  user_id: string
-  email: string
-  user_name: string
-  login_method: string
-  avatar_url: string
-}
-
-interface TokenCheckerProps {
-  token: string | null
-  current: string | null
-  children: JSX.Element
-}
+import { KushareAuth, User } from './contexts'
+import Router from 'next/router'
+import { Loading } from 'components/utils'
 
 export const KushareAuthProvider = (props: { children: JSX.Element }) => {
   const { children } = props
 
   const handlerError = () => {
     localStorage.clear()
-    // Router.push('/login')
+    Router.push('/login')
   }
 
-  const { data, isLoading, refresh } = useFetch<any, User>(getUserInfo, {
+  const { data, isLoading } = useFetch<any, User>(getUserInfo, {
     onError: handlerError,
     needInitialRun: true,
   })
@@ -58,7 +46,7 @@ export const KushareAuthProvider = (props: { children: JSX.Element }) => {
         handleUser,
       }}
     >
-      {children}
+      {data ? children : <Loading />}
     </KushareAuth.Provider>
   )
 }

@@ -1,11 +1,10 @@
 import { useState, useCallback, useContext } from 'react'
 import Router, { useRouter } from 'next/router'
 import clsx from 'clsx'
-import { MdUploadFile } from 'react-icons/md'
 import fetcher from 'api/fetcher'
 import { KushareAuth } from 'context'
-import { useHints } from 'hooks/disk'
 import { Icon } from '@iconify/react'
+import { uploadAvatar, useFetch } from 'api'
 
 export interface MenuItemProps {
   IconName: string
@@ -13,6 +12,8 @@ export interface MenuItemProps {
   handleRoute?: () => void
   current?: boolean
 }
+
+const tokenName = process.env.NEXT_PUBLIC_COOKIE_NAME
 
 export const Switcher = () => {
   return (
@@ -49,27 +50,34 @@ export const MenuItem = (props: MenuItemProps) => {
 export const Menu = () => {
   const [isRouting, setIsRouting] = useState(false)
   const { user, isAuth, handleUser } = useContext(KushareAuth)
-  const { AddHints } = useHints()
+  const { run } = useFetch(uploadAvatar, {
+    onSuccess: res => {
+      handleUser('avatarUrl', res)
+    },
+  })
   const router = useRouter()
 
-  const MenuRouting = useCallback((menu: { pathname: string }) => {
-    router.events.on('routeChangeStart', () => {
-      setIsRouting(true)
-    })
+  const MenuRouting = useCallback(
+    (menu: { pathname: string }) => {
+      router.events.on('routeChangeStart', () => {
+        setIsRouting(true)
+      })
 
-    router.events.on('routeChangeComplete', () => {
-      setIsRouting(false)
-    })
-    router.push(`${menu.pathname}`)
+      router.events.on('routeChangeComplete', () => {
+        setIsRouting(false)
+      })
+      router.push(`${menu.pathname}`)
 
-    router.events.off('routeChangeStart', () => {
-      setIsRouting(true)
-    })
+      router.events.off('routeChangeStart', () => {
+        setIsRouting(true)
+      })
 
-    router.events.off('routeChangeComplete', () => {
-      setIsRouting(false)
-    })
-  }, [])
+      router.events.off('routeChangeComplete', () => {
+        setIsRouting(false)
+      })
+    },
+    [router],
+  )
 
   const router_split = router.pathname.split('/')
 
@@ -92,18 +100,9 @@ export const Menu = () => {
             img.src = imgReader.result as string
             img.onload = () => {
               const formData = new FormData()
-              formData.append('myfile', file, file.name)
+              formData.append('file', file, file.name)
               formData.append('test', 'test')
-              fetcher
-                .post('http://localhost:8080/file', formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                  },
-                })
-                .then(res => {
-                  handleUser('avatar_url', res.data)
-                })
-                .catch(err => console.log(err))
+              run(formData)
             }
             img.onerror = e => {
               console.log(e)
@@ -119,10 +118,12 @@ export const Menu = () => {
   const handleLogout = async () => {
     try {
       fetcher.delete('/user/logout', { withCredentials: true }).then(() => {
-        localStorage.removeItem('accessToken')
+        localStorage.removeItem(tokenName || 'token')
         Router.push('login')
       })
-    } catch {}
+    } catch {
+      Router.push('login')
+    }
   }
 
   const Menus = [
@@ -146,15 +147,15 @@ export const Menu = () => {
   const Avatar = () => {
     return (
       <div className='flex flex-col items-center gap-y-4'>
-        <div className='overflow-hidden w-24 h-24 rounded-full border-2'>
-          {user && user.avatar_url ? (
-            <img src={user?.avatar_url} className='rounded-full'></img>
+        <div className='overflow-hidden w-24 h-24 rounded-full border-2 flex items-center justify-center'>
+          {user && user.avatarUrl ? (
+            <img src={user?.avatarUrl} className='rounded-full' alt='avatar'></img>
           ) : (
-            <Icon icon='pixelarticons:user' className='w-16 h-16 m-4' />
+            <Icon icon='pixelarticons:user' className='w-16 h-16' />
           )}
         </div>
         <p className='text-lg text-center w-full px-4 truncate max-w-[180px] 4xl:max-w-[260px]'>
-          {user?.user_name ?? <span className='text-gray-400 text-sm select-none'>未設定使用者名稱</span>}
+          {user?.name ?? <span className='text-gray-400 text-sm select-none'>未設定使用者名稱</span>}
         </p>
         <div className='relative w-[100px] h-16 mx-auto'>
           <div
@@ -165,7 +166,7 @@ export const Menu = () => {
             }}
           >
             <div className='flex items-center gap-2 cursor-pointer'>
-              <MdUploadFile className='w-6 h-6 ' />
+              <Icon icon='ic:outline-upload-file' className='w-5 h-5' />
               <span className='text-gray-600 font-medium'>上傳</span>
             </div>
           </div>

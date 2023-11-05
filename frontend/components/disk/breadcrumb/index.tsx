@@ -11,7 +11,7 @@ const BreadCrumbMobile = (props: { info: Breadcrumb[] }) => {
   const lastone = info?.length > 0 ? info[info.length - 1] : null
 
   return (
-    <div className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold'>
+    <div className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-semibold'>
       {lastone && lastone?.name}
     </div>
   )
@@ -21,16 +21,10 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
   const { isMobile } = props
 
   return (
-    <div className='flex items-center flex-1 px-3'>
-      {!isMobile && (
-        <span
-          className={`hover:cursor-pointer max-w-[160px] hover:bg-slate-200 pr-3 rounded-lg truncate select-none font-bold py-1 my-2`}
-        >
-          我的 Kushare
-        </span>
-      )}
-      <Icon icon='ic:baseline-chevron-right' className='w-6 h-6' fill={'gray'} />
-      <div className='ml-4 xss:w-[100px] xs:w-[150px] md:w-[200px] h-9 bg-gray-300/20 animate-pulse rounded-2xl'></div>
+    <div className='flex items-center justify-center py-1 gap-x-2'>
+      {!isMobile && <span className='select-none'>我的 Kushare</span>}
+      <Icon icon='ic:baseline-chevron-right' className='w-6 h-6' fill='gray' />
+      <div className='xss:w-[100px] xs:w-[150px] md:w-[200px] h-9 bg-gray-300/20 animate-pulse rounded-2xl'></div>
     </div>
   )
 }
@@ -45,10 +39,10 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
     const { info, isLastOne } = props
 
     return (
-      <div className='hover:cursor-pointer flex flex-1 items-center'>
-        <Icon icon='ic:baseline-chevron-right' className='w-6 h-6' fill={'gray'} />
+      <div className='hover:cursor-pointer flex items-center'>
+        <Icon icon='ic:baseline-chevron-right' className='w-6 h-6' fill='gray' />
         <span
-          className='max-w-[160px] hover:bg-slate-200 px-3 rounded-lg truncate select-none font-bold py-1'
+          className='hover:bg-slate-100 px-3 rounded-lg truncate select-none font-bold py-1'
           onClick={async () => {
             if (isLastOne) return
             await router.push(`/home?f=${info.id}`, undefined, {
@@ -76,15 +70,17 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
 
   return isMobile ? (
     <div className='flex items-center'>
-      <Icon icon='ic:baseline-chevron-right' className='w-8 h-8 mr-2 rotate-180' onClick={() => handleMobileBack()} />
+      {breads.length > 0 && (
+        <Icon icon='ic:baseline-chevron-right' className='w-8 h-8 mr-2 rotate-180' onClick={() => handleMobileBack()} />
+      )}
       <BreadCrumbMobile info={breads} />
     </div>
   ) : (
     <>
       <span
         className={clsx(
-          'max-w-[160px] px-3 rounded-lg truncate select-none font-bold my-2 py-1',
-          `${!atRoot && 'hover:cursor-pointer hover:bg-slate-200'}`,
+          'max-w-[160px] rounded-lg truncate select-none font-semibold py-1',
+          `${!atRoot && 'hover:cursor-pointer hover:text-gray-500/70'}`,
         )}
         onClick={async () => {
           await router.push('/home')
@@ -104,10 +100,8 @@ export default function BreadCrumbs() {
   const { isLoading, data } = useBreadCrumb()
 
   return (
-    <div className={clsx('flex', `${isMobile ? '' : 'w-[90%] mt-3'}`)}>
-      <div className='font-bold text-xl flex items-center text-gray-500'>
-        {isLoading ? <BreadCrumbBackBone isMobile={isMobile} /> : <BreadCrumbDisplay isMobile={isMobile} data={data} />}
-      </div>
+    <div className='text-md flex text-gray-500 text-lg'>
+      {isLoading ? <BreadCrumbBackBone isMobile={isMobile} /> : <BreadCrumbDisplay isMobile={isMobile} data={data} />}
     </div>
   )
 }

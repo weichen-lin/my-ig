@@ -1,10 +1,10 @@
 import { createContext } from 'react'
 
 export interface User {
-  user_id: string
+  id: string
   email: string
-  user_name: string
-  avatar_url: string
+  name: string
+  avatarUrl: string
 }
 
 interface KushareAuthProps {

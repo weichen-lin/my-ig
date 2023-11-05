@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { LoadingIcon } from 'public/icon/login'
+import { Icon } from '@iconify/react'
 
 interface ButtonProps {
   label: string
@@ -25,11 +25,9 @@ export default function AuthButton(props: ButtonProps) {
           }`,
         )}
         onClick={onClick}
+        disabled={disabled}
       >
-        <span className={`${isRequest ? 'hidden' : ''}`}>{label}</span>
-        <LoadingIcon
-          className={`h-6 w-6 animate-spin transition-opacity ease-out duration-200 ${isRequest ? 'block' : 'hidden'}`}
-        />
+        {isRequest ? <Icon icon='mingcute:loading-fill' className='w-8 h-8 animate-spin' /> : <span>{label}</span>}
       </button>
     </div>
   )

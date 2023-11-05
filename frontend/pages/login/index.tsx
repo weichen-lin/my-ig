@@ -54,16 +54,8 @@ export default function LoginPage(props: { token: string }) {
             <div className='border-r-[1px] border-gray-500 h-full mx-8'></div>
             <IoIosMail className={IconClass} onClick={goRegister} />
           </div>
-          {error && (
-            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
-              <AuthStatus message={errMsg} status='failed' />
-            </div>
-          )}
-          {successMsg && (
-            <div className='mx-auto w-4/5 md:min-w-[350px] max-w-[350px]'>
-              <AuthStatus message={successMsg} status='success' />
-            </div>
-          )}
+          {error && <AuthStatus message={errMsg} status='failed' />}
+          {successMsg && <AuthStatus message={successMsg} status='success' />}
         </div>
       )}
     </Layout>

@@ -27,7 +27,6 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
   }
 
   const onClick = () => {
-    console.log('single click')
     setIsSelect(prev => !prev)
   }
 

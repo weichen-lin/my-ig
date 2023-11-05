@@ -38,3 +38,5 @@ export const uploadFile = async (data: FormData) =>
 export const getFileDescription = async (id: string) => fetcher.get<{ description: string }>(`/file/description/${id}`)
 export const updateFileDescription = async (data: { description: string; id: string }) =>
   fetcher.patch<{ id: string; description: string }>(`/file/update`, data)
+export const uploadAvatar = async (data: FormData) =>
+  fetcher.post<{ id: string }>('/user/avatar', data, { headers: { 'Content-Type': 'multipart/form-data' } })

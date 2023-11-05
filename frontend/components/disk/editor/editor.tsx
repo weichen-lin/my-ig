@@ -33,11 +33,7 @@ import { updateFileDescription, useFetch } from 'api'
 
 export default function Editor(props: { id: string }) {
   const { id } = props
-  const { data, run } = useFetch<{ id: string; description: string }, { id: string }>(updateFileDescription, {
-    onSuccess: data => {
-      console.log({ data })
-    },
-  })
+  const { run } = useFetch<{ id: string; description: string }, { id: string }>(updateFileDescription)
   const [editor] = useLexicalComposerContext()
   const [activeEditor, setActiveEditor] = useState(editor)
 
