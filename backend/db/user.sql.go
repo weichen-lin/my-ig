@@ -12,7 +12,7 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO "user" (email, password, name) VALUES ($1, $2, $3) RETURNING id, email, password, name, avatar_url, created_at, last_modified_at
+INSERT INTO "user" (email, password, name) VALUES ($1, $2, $3) RETURNING id, email, password, name, avatar_url, created_at, last_modified_at, is_validate
 `
 
 type CreateUserParams struct {
@@ -32,12 +32,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.AvatarUrl,
 		&i.CreatedAt,
 		&i.LastModifiedAt,
+		&i.IsValidate,
 	)
 	return i, err
 }
 
 const createUserWithoutName = `-- name: CreateUserWithoutName :one
-INSERT INTO "user" (email, password) VALUES ($1, $2) RETURNING id, email, password, name, avatar_url, created_at, last_modified_at
+INSERT INTO "user" (email, password) VALUES ($1, $2) RETURNING id, email, password, name, avatar_url, created_at, last_modified_at, is_validate
 `
 
 type CreateUserWithoutNameParams struct {
@@ -56,6 +57,7 @@ func (q *Queries) CreateUserWithoutName(ctx context.Context, arg CreateUserWitho
 		&i.AvatarUrl,
 		&i.CreatedAt,
 		&i.LastModifiedAt,
+		&i.IsValidate,
 	)
 	return i, err
 }
@@ -116,8 +118,25 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow
 	return i, err
 }
 
+const selectUserByIdForValidate = `-- name: SelectUserByIdForValidate :one
+SELECT ID, email, is_validate FROM "user" WHERE id = $1 FOR UPDATE
+`
+
+type SelectUserByIdForValidateRow struct {
+	ID         uuid.UUID `json:"id"`
+	Email      string    `json:"email"`
+	IsValidate bool      `json:"isValidate"`
+}
+
+func (q *Queries) SelectUserByIdForValidate(ctx context.Context, id uuid.UUID) (SelectUserByIdForValidateRow, error) {
+	row := q.db.QueryRow(ctx, selectUserByIdForValidate, id)
+	var i SelectUserByIdForValidateRow
+	err := row.Scan(&i.ID, &i.Email, &i.IsValidate)
+	return i, err
+}
+
 const updateUserAvatar = `-- name: UpdateUserAvatar :exec
-UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING id, email, password, name, avatar_url, created_at, last_modified_at
+UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING id, email, password, name, avatar_url, created_at, last_modified_at, is_validate
 `
 
 type UpdateUserAvatarParams struct {
@@ -127,5 +146,19 @@ type UpdateUserAvatarParams struct {
 
 func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error {
 	_, err := q.db.Exec(ctx, updateUserAvatar, arg.AvatarUrl, arg.ID)
+	return err
+}
+
+const updateUserValidate = `-- name: UpdateUserValidate :exec
+UPDATE "user" SET is_validate = $1 WHERE id = $2 RETURNING id, email, password, name, avatar_url, created_at, last_modified_at, is_validate
+`
+
+type UpdateUserValidateParams struct {
+	IsValidate bool      `json:"isValidate"`
+	ID         uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateUserValidate(ctx context.Context, arg UpdateUserValidateParams) error {
+	_, err := q.db.Exec(ctx, updateUserValidate, arg.IsValidate, arg.ID)
 	return err
 }

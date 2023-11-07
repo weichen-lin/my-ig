@@ -178,7 +178,6 @@ func Test_UpdateUserAvatar(t *testing.T) {
 	require.Equal(t, params.ID, user.ID)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_GetUserById(t *testing.T) {
@@ -225,6 +224,65 @@ func Test_CreateUserWithoutName(t *testing.T) {
 	require.NotEmpty(t, user)
 	require.Equal(t, arg.Email, user.Email)
 	require.Nil(t, user.Name)
+
+	tx.Commit(context.Background())
+}
+
+func Test_CreateUserCheckValidate(t *testing.T) {
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	pwdBeforeBcrypt := faker.Password()[:10]
+	hashedPwd, err := util.HashPassword(pwdBeforeBcrypt)
+	require.NoError(t, err)
+
+	arg := CreateUserWithoutNameParams{
+		Email:    faker.Email(),
+		Password: hashedPwd,
+	}
+
+	user, err := q.CreateUserWithoutName(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+	require.Equal(t, arg.Email, user.Email)
+	require.Nil(t, user.Name)
+	require.Equal(t, user.IsValidate, false)
+
+	tx.Commit(context.Background())
+}
+
+func Test_UpdateUserValidate(t *testing.T) {
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	pwdBeforeBcrypt := faker.Password()[:10]
+	hashedPwd, err := util.HashPassword(pwdBeforeBcrypt)
+	require.NoError(t, err)
+
+	arg := CreateUserWithoutNameParams{
+		Email:    faker.Email(),
+		Password: hashedPwd,
+	}
+
+	user, err := q.CreateUserWithoutName(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+	require.Equal(t, arg.Email, user.Email)
+	require.Nil(t, user.Name)
+
+	err = q.UpdateUserValidate(context.Background(), UpdateUserValidateParams{
+		ID: user.ID,
+		IsValidate: true,
+	})
+	require.NoError(t, err)
+
+	userWithValidate, err := q.SelectUserByIdForValidate(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Equal(t, userWithValidate.IsValidate, true)
 
 	tx.Commit(context.Background())
 }

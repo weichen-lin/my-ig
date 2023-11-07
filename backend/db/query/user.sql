@@ -15,3 +15,9 @@ SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1;
 
 -- name: UpdateUserAvatar :exec
 UPDATE "user" SET avatar_url = $1 WHERE id = $2 RETURNING *;
+
+-- name: SelectUserByIdForValidate :one
+SELECT ID, email, is_validate FROM "user" WHERE id = $1 FOR UPDATE;
+
+-- name: UpdateUserValidate :exec
+UPDATE "user" SET is_validate = $1 WHERE id = $2 RETURNING *;
