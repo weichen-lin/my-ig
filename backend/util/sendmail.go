@@ -10,20 +10,20 @@ import (
 	"html/template"
 	"log"
 	"net/smtp"
+	"strconv"
+	"strings"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Sender struct {
-	Email    string
-	Password string
-	Receiver string
+	Email     string
+	Password  string
+	Receiver  string
 	SecretKey string
 }
 
 type UserInfo struct {
-	UserID     uuid.UUID
+	UserID     string
 	ExpireTime time.Time
 }
 
@@ -80,7 +80,8 @@ func EncryptToken(token UserInfo, key []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	tokenBytes := []byte(fmt.Sprintf("%d;%d", token.UserID, token.ExpireTime.Unix()))
+
+	tokenBytes := []byte(fmt.Sprintf("%s;%d", token.UserID, token.ExpireTime.Unix()))
 
 	nonce := make([]byte, gcm.NonceSize())
 	if _, err = rand.Read(nonce); err != nil {
@@ -113,12 +114,21 @@ func DecryptToken(encryptedToken string, key []byte) (UserInfo, error) {
 	}
 
 	data := string(decrypted)
-	var userID uuid.UUID
-	var expireTime int64
-	fmt.Sscanf(data, "%d;%d", &userID, &expireTime)
+	fmt.Printf("data: %s\n", data)
+
+	parts := strings.Split(data, ";")
+	if len(parts) != 2 {
+		return UserInfo{}, fmt.Errorf("invalid token")
+	}
+
+	userID := parts[0]
+	number, err := strconv.ParseInt(parts[1], 10, 64)
+	if err != nil {
+		return UserInfo{}, err
+	}
 
 	return UserInfo{
 		UserID:     userID,
-		ExpireTime: time.Unix(expireTime, 0),
+		ExpireTime: time.Unix(number, 0),
 	}, nil
 }

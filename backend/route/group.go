@@ -51,10 +51,9 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	}
 
 	info := util.UserInfo{
-		UserID:    uuid.New(),
+		UserID:     uuid.New().String(),
 		ExpireTime: time.Now().Add(time.Hour * 24),
 	}
-
 
 	r.GET("/", func(c *gin.Context) {
 		util.SendMail(sender, info)
@@ -62,7 +61,6 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 			"message": "Hello World!",
 		})
 	})
-
 
 	user := r.Group("/user")
 	user.GET("/auth", ctl.ValiedateToken)
