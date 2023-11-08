@@ -430,7 +430,7 @@
 .Editor_embedBlockFocus {
   outline: 2px solid rgb(60, 132, 244);
 }
-.Editor_layoutContaner {
+.Editor_layoutContainer {
   display: grid;
   gap: 10px;
   margin: 10px 0;

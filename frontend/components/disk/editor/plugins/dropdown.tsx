@@ -21,11 +21,11 @@ export default function DropDownList(props: DropDownListProps & { options: Optio
   const ref = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
 
-  const handelClose = () => {
+  const handleClose = () => {
     setOpen(false)
   }
 
-  useClickOutside(ref, handelClose)
+  useClickOutside(ref, handleClose)
 
   return (
     <button
