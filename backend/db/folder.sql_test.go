@@ -7,6 +7,7 @@ import (
 
 	"github.com/bxcodec/faker/v3"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/stretchr/testify/require"
 )
 
@@ -191,11 +192,10 @@ func Test_GetFolder(t *testing.T) {
 
 	folder, err := q.GetFolder(context.Background(), ramdomId)
 	require.Error(t, err)
-	require.Equal(t, "no rows in result set", err.Error())
+	require.Equal(t, pgx.ErrNoRows, err)
 	require.Empty(t, folder)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_CheckFolderExistAtRoot(t *testing.T) {
@@ -313,7 +313,7 @@ func Test_CheckFolderExistInFolder(t *testing.T) {
 	})
 	require.Error(t, err)
 	require.Empty(t, checkFolderNotExist)
-	require.Equal(t, "no rows in result set", err.Error())
+	require.Equal(t, pgx.ErrNoRows, err)
 
 	tx.Commit(context.Background())
 

@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/bxcodec/faker/v3"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/stretchr/testify/require"
 	"github.com/weichen-lin/myig/util"
 )
@@ -283,6 +285,11 @@ func Test_UpdateUserValidate(t *testing.T) {
 	userWithValidate, err := q.SelectUserByIdForValidate(context.Background(), user.ID)
 	require.NoError(t, err)
 	require.Equal(t, userWithValidate.IsValidate, true)
+
+	randomId := uuid.New()
+	userNeedNotExist, err := q.SelectUserByIdForValidate(context.Background(), randomId)
+	require.Equal(t, err, pgx.ErrNoRows)
+	require.Empty(t, userNeedNotExist)
 
 	tx.Commit(context.Background())
 }
