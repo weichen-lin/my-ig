@@ -13,6 +13,7 @@ type Controller struct {
 	Pool          *pgxpool.Pool
 	SecretKey     string
 	BucketHandler *storage.BucketHandle
+	EncryptSecret string
 }
 
 var (

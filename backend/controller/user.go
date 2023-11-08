@@ -241,3 +241,44 @@ func (s *Controller) UserLogout(ctx *gin.Context) {
 	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Max-Age=-1; HttpOnly; Secure; SameSite=None", userTokenName, ""))
 	ctx.JSON(http.StatusOK, "logout success")
 }
+
+func (s *Controller) AccountValidate(ctx *gin.Context) {
+	token:= ctx.Query("token")
+	if token == "" {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrInvalidToken))
+		return
+	}
+
+	user, err := util.DecryptToken(token, []byte(s.EncryptSecret))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrInvalidToken))
+		return
+	}
+
+	userId, err := uuid.Parse(user.UserID)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+	defer tx.Commit(ctx)
+
+	err = q.UpdateUserValidate(ctx, db.UpdateUserValidateParams{
+		ID:         userId,
+		IsValidate: true,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "validate success")
+}

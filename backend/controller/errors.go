@@ -6,6 +6,7 @@ var (
 	ErrUserAlreadyExist = fmt.Errorf("User already exists!")
 	ErrUserNotFound     = fmt.Errorf("User not found!")
 	ErrEmailInvalid     = fmt.Errorf("Email is invalid!")
+	ErrInvalidToken	 = fmt.Errorf("Invalid token!")
 )
 
 var (
