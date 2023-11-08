@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/weichen-lin/myig/db"
 	"github.com/weichen-lin/myig/util"
 )
@@ -53,7 +54,6 @@ func (s *Controller) ValiedateToken(ctx *gin.Context) {
 	}
 
 	ctx.String(http.StatusOK, cookie)
-	return
 }
 
 func (s *Controller) UserRegister(ctx *gin.Context) {
@@ -82,7 +82,12 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+        if err != nil {
+            tx.Rollback(ctx)
+        }
+        tx.Commit(ctx);
+    }()
 
 	arg := db.CreateUserWithoutNameParams{
 		Email:    params.Email,
@@ -131,7 +136,12 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+        if err != nil {
+            tx.Rollback(ctx)
+        }
+        tx.Commit(ctx);
+    }()
 
 	info, err := q.GetUserByEmail(ctx, params.Email)
 	if err == sql.ErrNoRows || err != nil {
@@ -184,7 +194,12 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+        if err != nil {
+            tx.Rollback(ctx)
+        }
+        tx.Commit(ctx);
+    }()
 
 	arg := db.UpdateUserAvatarParams{
 		AvatarUrl: &signedUrl,
@@ -214,15 +229,20 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+        if err != nil {
+            tx.Rollback(ctx)
+        }
+        tx.Commit(ctx);
+    }()
 
 	user, err := q.GetUserById(ctx, userId)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrUserNotFound))
 			return
 		}
-		ctx.JSON(http.StatusNotFound, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	ctx.JSON(http.StatusOK, user)
@@ -268,7 +288,12 @@ func (s *Controller) AccountValidate(ctx *gin.Context) {
 	}
 
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+        if err != nil {
+            tx.Rollback(ctx)
+        }
+        tx.Commit(ctx);
+    }()
 
 	err = q.UpdateUserValidate(ctx, db.UpdateUserValidateParams{
 		ID:         userId,
