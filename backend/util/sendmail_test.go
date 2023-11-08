@@ -21,9 +21,9 @@ func Test_Encrypt_and_Decrypt(t *testing.T) {
 	}, secretKey)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
-	
+
 	userInfo, err := DecryptToken(token, secretKey)
 	require.NoError(t, err)
 	require.Equal(t, id.String(), userInfo.UserID)
-	require.WithinDuration(t, time.Now().Add(time.Minute * 10), userInfo.ExpireTime, time.Second)
+	require.WithinDuration(t, time.Now().Add(time.Minute*10), userInfo.ExpireTime, time.Second)
 }

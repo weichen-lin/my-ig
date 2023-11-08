@@ -183,7 +183,7 @@ func Test_UpdateUserAvatar(t *testing.T) {
 }
 
 func Test_GetUserById(t *testing.T) {
-	tx, err := pool.Begin(context.Background())
+	tx, err := pool.Acquire(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)
@@ -202,8 +202,9 @@ func Test_GetUserById(t *testing.T) {
 	require.Equal(t, userWithPWD.Name, user.Name)
 	require.Equal(t, userWithPWD.ID, user.ID)
 	require.Equal(t, userWithPWD.AvatarUrl, user.AvatarUrl)
+	require.Equal(t, userWithPWD.IsValidate, user.IsValidate)
 
-	tx.Commit(context.Background())
+	tx.Release()
 }
 
 func Test_CreateUserWithoutName(t *testing.T) {
@@ -277,7 +278,7 @@ func Test_UpdateUserValidate(t *testing.T) {
 	require.Nil(t, user.Name)
 
 	err = q.UpdateUserValidate(context.Background(), UpdateUserValidateParams{
-		ID: user.ID,
+		ID:         user.ID,
 		IsValidate: true,
 	})
 	require.NoError(t, err)

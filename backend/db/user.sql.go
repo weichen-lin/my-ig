@@ -96,14 +96,15 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEm
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT ID, email, name, avatar_url FROM "user" WHERE id = $1
+SELECT ID, email, name, avatar_url, is_validate FROM "user" WHERE id = $1
 `
 
 type GetUserByIdRow struct {
-	ID        uuid.UUID `json:"id"`
-	Email     string    `json:"email"`
-	Name      *string   `json:"name"`
-	AvatarUrl *string   `json:"avatarUrl"`
+	ID         uuid.UUID `json:"id"`
+	Email      string    `json:"email"`
+	Name       *string   `json:"name"`
+	AvatarUrl  *string   `json:"avatarUrl"`
+	IsValidate bool      `json:"isValidate"`
 }
 
 func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
@@ -114,6 +115,7 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow
 		&i.Email,
 		&i.Name,
 		&i.AvatarUrl,
+		&i.IsValidate,
 	)
 	return i, err
 }

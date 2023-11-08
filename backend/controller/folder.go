@@ -45,11 +45,11 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	locateAt, err := util.ParseUUID(params.LocateAt)
 	if err != nil {
@@ -133,11 +133,11 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	folder, err := q.GetFolder(ctx, folderId)
 	if err != nil {
@@ -214,11 +214,11 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	err = q.MoveFolderWithId(ctx, db.MoveFolderFuncParams{
 		ID:     currentId,

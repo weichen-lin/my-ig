@@ -54,11 +54,11 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 	}
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	arg := db.CreateFileParams{
 		Url:      signedUrl,
@@ -222,11 +222,11 @@ func (s Controller) UpdateFileDescription(ctx *gin.Context) {
 
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	err = q.UpdateFileDescription(ctx, db.UpdateFileDescriptionParams{
 		ID:          fileId,

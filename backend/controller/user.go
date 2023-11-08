@@ -83,11 +83,11 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 	}
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	arg := db.CreateUserWithoutNameParams{
 		Email:    params.Email,
@@ -137,11 +137,11 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 	}
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	info, err := q.GetUserByEmail(ctx, params.Email)
 	if err == sql.ErrNoRows || err != nil {
@@ -195,11 +195,11 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 	}
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	arg := db.UpdateUserAvatarParams{
 		AvatarUrl: &signedUrl,
@@ -223,18 +223,13 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Pool.Begin(ctx)
+	tx, err := s.Pool.Acquire(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	q := db.New(tx)
-	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+	defer tx.Release()
 
 	user, err := q.GetUserById(ctx, userId)
 	if err != nil {
@@ -263,7 +258,7 @@ func (s *Controller) UserLogout(ctx *gin.Context) {
 }
 
 func (s *Controller) AccountValidate(ctx *gin.Context) {
-	token:= ctx.Query("token")
+	token := ctx.Query("token")
 	if token == "" {
 		ctx.JSON(http.StatusBadRequest, errorResponse(ErrInvalidToken))
 		return
@@ -289,11 +284,11 @@ func (s *Controller) AccountValidate(ctx *gin.Context) {
 
 	q := db.New(tx)
 	defer func() {
-        if err != nil {
-            tx.Rollback(ctx)
-        }
-        tx.Commit(ctx);
-    }()
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	err = q.UpdateUserValidate(ctx, db.UpdateUserValidateParams{
 		ID:         userId,
