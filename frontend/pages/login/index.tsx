@@ -14,7 +14,7 @@ const IconClass = 'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-poi
 
 const IconClassFacebook = 'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 
-const cookieName = process.env.USER_AUTH_COOKIE_NAME ?? ''
+const cookieName = process.env.USER_AUTH_COOKIE_NAME ?? 'token'
 
 export default function LoginPage(props: { token: string }) {
   const { token } = props
@@ -27,7 +27,7 @@ export default function LoginPage(props: { token: string }) {
   return (
     <Layout>
       {!checkAuth ? (
-        <Loading />
+        <></>
       ) : (
         <div className='mx-auto flex flex-col w-4/5 md:min-w-[350px] max-w-[350px] gap-y-8'>
           <AuthInput

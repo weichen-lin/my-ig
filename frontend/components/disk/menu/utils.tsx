@@ -165,10 +165,10 @@ export const Menu = () => {
               handleFileUpload(false)
             }}
           >
-            <div className='flex items-center gap-2 cursor-pointer'>
+            <button className='flex items-center gap-2 cursor-pointer' disabled={user?.isValidate}>
               <Icon icon='ic:outline-upload-file' className='w-5 h-5' />
               <span className='text-gray-600 font-medium'>上傳</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>

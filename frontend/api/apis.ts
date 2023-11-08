@@ -20,8 +20,6 @@ export const userLogin = async (data: AuthBody) =>
     withCredentials: true,
   })
 
-export const authUser = async () => axios.get(`${BaseUrl}/info`, { withCredentials: true })
-
 export const getUserInfo = async () => fetcher.get('/user/info')
 
 export const getDiskData = async (locateAt: string | null) => fetcher.get(locateAt ? `/disk?f=${locateAt}` : '/disk')
@@ -40,3 +38,4 @@ export const updateFileDescription = async (data: { description: string; id: str
   fetcher.patch<{ id: string; description: string }>(`/file/update`, data)
 export const uploadAvatar = async (data: FormData) =>
   fetcher.post<{ id: string }>('/user/avatar', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+export const tokenAuth = async (token: string) => axios.get(`/user/validate?token=${token}`)
