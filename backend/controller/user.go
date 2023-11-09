@@ -316,5 +316,18 @@ func (s *Controller) AccountValidate(ctx *gin.Context) {
 		return
 	}
 
+	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	jwtToken, err := jwtMaker.CreateToken(userId.String(), time.Now().Add(time.Hour*24*3))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, jwtToken))
 	ctx.JSON(http.StatusOK, "validate success")
 }
