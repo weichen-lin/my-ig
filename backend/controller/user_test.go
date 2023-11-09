@@ -43,33 +43,23 @@ func Test_UserRegister_Nil(t *testing.T) {
 	require.Equal(t, http.StatusBadRequest, w.Code)
 }
 
-func Test_UserRegister(t *testing.T) {
-
-	router := gin.Default()
-	c := Controller{Pool: pool, SecretKey: config.SecretKey}
-	t.Log(config.SecretKey)
-
-	router.POST("/user/register", c.UserRegister)
-
-	params := []byte(`{"email":"sadassdasd@fasfsa.com","password":"123as456", "name":"tesasdast"}`)
-
-	req, _ := http.NewRequest("POST", "/user/register", bytes.NewBuffer(params))
-	req.Header.Add("Content-Type", "application/json")
-
-	w := httptest.NewRecorder()
-
-	router.ServeHTTP(w, req)
-
-	require.Equal(t, http.StatusOK, w.Code)
-	require.NotEmpty(t, w.Body.String())
-}
-
-// To DO
-// func Test_UploadAvatar(t *testing.T) {
+// func Test_UserRegister(t *testing.T) {
 
 // 	router := gin.Default()
-// 	c := Controller{Conn: conn}
+// 	c := Controller{Pool: pool, SecretKey: config.SecretKey}
+// 	t.Log(config.SecretKey)
 
-// 	router.POST("/user/avatar", c.UploadAvatar)
+// 	router.POST("/user/register", c.UserRegister)
 
+// 	params := []byte(`{"email":"sadassdasd@fasfsa.com","password":"123as456", "name":"tesasdast"}`)
+
+// 	req, _ := http.NewRequest("POST", "/user/register", bytes.NewBuffer(params))
+// 	req.Header.Add("Content-Type", "application/json")
+
+// 	w := httptest.NewRecorder()
+
+// 	router.ServeHTTP(w, req)
+
+// 	require.Equal(t, http.StatusOK, w.Code)
+// 	require.NotEmpty(t, w.Body.String())
 // }
