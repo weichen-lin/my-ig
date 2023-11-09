@@ -37,10 +37,11 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	}
 
 	ctl := controller.Controller{
-		Pool: pool, 
-		SecretKey: config.SecretKey, BucketHandler: bucketHandler, 
-		EncryptSecret: config.EncryptSecret, 
-		AppPassword: config.AppPassword}
+		Pool:          pool,
+		SecretKey:     config.SecretKey,
+		BucketHandler: bucketHandler,
+		EncryptSecret: config.EncryptSecret,
+		AppPassword:   config.AppPassword}
 
 	if config.IsDev {
 		r.Use(Cors(config.AllowedDomain))

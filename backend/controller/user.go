@@ -106,11 +106,11 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	go func(){
+	go func() {
 		sender := util.Sender{
-			Email:    "kushare09487@gmail.com",
-			Password: s.AppPassword,
-			Receiver: params.Email,
+			Email:     "kushare09487@gmail.com",
+			Password:  s.AppPassword,
+			Receiver:  params.Email,
 			SecretKey: s.EncryptSecret,
 		}
 

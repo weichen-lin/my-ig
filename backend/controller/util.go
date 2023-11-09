@@ -10,8 +10,8 @@ import (
 )
 
 type EmailSetting struct {
-	SecretKey string
-	AppPassword string
+	SecretKey     string
+	AppPassword   string
 	EncryptSecret string
 }
 
