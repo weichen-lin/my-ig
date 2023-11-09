@@ -5,10 +5,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/weichen-lin/myig/controller"
@@ -38,29 +36,15 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	ctl := controller.Controller{Pool: pool, SecretKey: config.SecretKey, BucketHandler: bucketHandler, EncryptSecret: config.EncryptSecret}
+	ctl := controller.Controller{
+		Pool: pool, 
+		SecretKey: config.SecretKey, BucketHandler: bucketHandler, 
+		EncryptSecret: config.EncryptSecret, 
+		AppPassword: config.AppPassword}
 
 	if config.IsDev {
 		r.Use(Cors(config.AllowedDomain))
 	}
-
-	sender := util.Sender{
-		Email:    "kushare09487@gmail.com",
-		Password: config.AppPassword,
-		Receiver: "asdfg09487@gmail.com",
-	}
-
-	info := util.UserInfo{
-		UserID:     uuid.New().String(),
-		ExpireTime: time.Now().Add(time.Hour * 24),
-	}
-
-	r.GET("/", func(c *gin.Context) {
-		util.SendMail(sender, info)
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello World!",
-		})
-	})
 
 	user := r.Group("/user")
 	user.GET("/auth", ctl.ValiedateToken)

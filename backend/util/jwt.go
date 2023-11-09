@@ -25,8 +25,8 @@ type Payload struct {
 }
 
 var (
-	ErrInvalidToken = fmt.Errorf("Invalid token")
-	ErrExpiredToken = fmt.Errorf("Token has expired")
+	ErrInvalidToken = fmt.Errorf("invalid token")
+	ErrExpiredToken = fmt.Errorf("token has expired")
 )
 
 func MakeJWTPayload(userId string, duration time.Time) (*Payload, error) {
@@ -98,7 +98,7 @@ const minSecretKeySize = 32
 
 func NewJWTMaker(secretKey string) (Maker, error) {
 	if len(secretKey) < minSecretKeySize {
-		return nil, fmt.Errorf("Invalid key size: Must be at least %d characters", minSecretKeySize)
+		return nil, fmt.Errorf("invalid key size: Must be at least %d characters", minSecretKeySize)
 	}
 
 	return &JWTMaker{SecretKey: secretKey}, nil

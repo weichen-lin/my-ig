@@ -27,6 +27,10 @@ func (s *Controller) GetDisk(ctx *gin.Context) {
 	}
 
 	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	q := db.New(conn)
 	defer conn.Release()
@@ -35,11 +39,19 @@ func (s *Controller) GetDisk(ctx *gin.Context) {
 		UserID:   userId,
 		LocateAt: locateAt,
 	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	folders, err := q.SelectFolders(ctx, db.SelectFoldersParams{
 		UserID:   userId,
 		LocateAt: locateAt,
 	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"files":   files,

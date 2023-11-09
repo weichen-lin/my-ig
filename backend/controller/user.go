@@ -106,6 +106,22 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
+	go func(){
+		sender := util.Sender{
+			Email:    "kushare09487@gmail.com",
+			Password: s.AppPassword,
+			Receiver: params.Email,
+			SecretKey: s.EncryptSecret,
+		}
+
+		info := util.UserInfo{
+			UserID:     uuid.New().String(),
+			ExpireTime: time.Now().Add(time.Hour * 24),
+		}
+
+		util.SendMail(sender, info)
+	}()
+
 	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

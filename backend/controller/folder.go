@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -183,7 +182,7 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 
 	userId, err := uuid.Parse(id)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 
@@ -252,6 +251,10 @@ func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
 	}
 
 	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	q := db.New(conn)
 	defer conn.Release()
