@@ -28,6 +28,8 @@ type UserInfo struct {
 }
 
 func SendMail(sender Sender, info UserInfo) {
+	config, err := Loadconfig(".", "test")
+
 	smtpHost := "smtp.gmail.com"
 	smtpPort := 587
 	senderEmail := sender.Email
@@ -41,7 +43,7 @@ func SendMail(sender Sender, info UserInfo) {
 	templateData := struct {
 		VerifyLink string
 	}{
-		VerifyLink: fmt.Sprintf("http://localhost:3000/verify?token=%s", token),
+		VerifyLink: fmt.Sprintf("%s/auth?token=%s", config.AllowedDomain, token),
 	}
 
 	templateFile := "template/email_validate.html"
