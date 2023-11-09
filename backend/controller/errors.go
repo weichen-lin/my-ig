@@ -3,30 +3,30 @@ package controller
 import "fmt"
 
 var (
-	ErrUserAlreadyExist = fmt.Errorf("User already exists!")
-	ErrUserNotFound     = fmt.Errorf("User not found!")
-	ErrEmailInvalid     = fmt.Errorf("Email is invalid!")
-	ErrInvalidToken     = fmt.Errorf("Invalid token!")
+	ErrUserAlreadyExist = fmt.Errorf("user already exists")
+	ErrUserNotFound     = fmt.Errorf("user not found")
+	ErrEmailInvalid     = fmt.Errorf("email is invalid")
+	ErrInvalidToken     = fmt.Errorf("invalid token")
 )
 
 var (
-	ErrAuthFailed = fmt.Errorf("Authorization failed")
+	ErrAuthFailed = fmt.Errorf("authorization failed")
 )
 
 var (
-	ErrLocateAtFailed = fmt.Errorf("Invalid lcateAt parameter")
+	ErrLocateAtFailed = fmt.Errorf("invalid locateAt parameter")
 )
 
 var (
-	ErrFileIdInvalid = fmt.Errorf("Invalid fileId parameter")
+	ErrFileIdInvalid = fmt.Errorf("invalid fileId parameter")
 )
 
 var (
-	ErrFolderAlreadyExist = fmt.Errorf("Folder already exists!")
-	ErrFolderNotExist     = fmt.Errorf("Parent folder not exists!")
-	ErrFolderIdInvalid    = fmt.Errorf("Invalid folderId parameter")
+	ErrFolderAlreadyExist = fmt.Errorf("folder already exists")
+	ErrFolderNotExist     = fmt.Errorf("parent folder not exists")
+	ErrFolderIdInvalid    = fmt.Errorf("invalid folderId parameter")
 )
 
 var (
-	ErrInvalidRequest = fmt.Errorf("Invalid request")
+	ErrInvalidRequest = fmt.Errorf("invalid request")
 )
