@@ -14,7 +14,7 @@ const IconClass = 'w-[40px] h-[40px] mx-1 p-1 hover:bg-gray-200 hover:cursor-poi
 
 const IconClassFacebook = 'w-[40px] h-[40px] mx-1 py-[1px] hover:bg-gray-200 hover:cursor-pointer hover:rounded-md'
 
-const cookieName = process.env.USER_AUTH_COOKIE_NAME ?? ''
+const cookieName = process.env.USER_AUTH_COOKIE_NAME ?? 'token'
 
 export default function LoginPage(props: { token: string }) {
   const { token } = props
@@ -24,40 +24,38 @@ export default function LoginPage(props: { token: string }) {
 
   const errMsg = '帳號或密碼錯誤，請重新輸入'
 
-  return (
+  return !checkAuth ? (
+    <Loading />
+  ) : (
     <Layout>
-      {!checkAuth ? (
-        <Loading />
-      ) : (
-        <div className='mx-auto flex flex-col w-4/5 md:min-w-[350px] max-w-[350px] gap-y-8'>
-          <AuthInput
-            label='email'
-            type='text'
-            value={loginInfo.email}
-            onChange={e => {
-              handleAuthInfo('email', e.target.value)
-            }}
-          />
-          <AuthInput
-            label='password'
-            type='password'
-            value={loginInfo.password}
-            onChange={e => {
-              handleAuthInfo('password', e.target.value)
-            }}
-          />
-          <AuthButton label='登入' isRequest={isRequest} onClick={() => run(loginInfo)} disabled={btnDisabled} />
-          <div className='w-full md:w-2/3 mx-auto lg:min-w-[300px] flex justify-center items-center'>
-            <FcGoogle className={IconClass} />
-            <IoLogoFacebook className={IconClassFacebook} fill='#385997' />
-            <IoLogoGithub className={IconClass} />
-            <div className='border-r-[1px] border-gray-500 h-full mx-8'></div>
-            <IoIosMail className={IconClass} onClick={goRegister} />
-          </div>
-          {error && <AuthStatus message={errMsg} status='failed' />}
-          {successMsg && <AuthStatus message={successMsg} status='success' />}
+      <div className='mx-auto flex flex-col w-4/5 md:min-w-[350px] max-w-[350px] gap-y-8'>
+        <AuthInput
+          label='email'
+          type='text'
+          value={loginInfo.email}
+          onChange={e => {
+            handleAuthInfo('email', e.target.value)
+          }}
+        />
+        <AuthInput
+          label='password'
+          type='password'
+          value={loginInfo.password}
+          onChange={e => {
+            handleAuthInfo('password', e.target.value)
+          }}
+        />
+        <AuthButton label='登入' isRequest={isRequest} onClick={() => run(loginInfo)} disabled={btnDisabled} />
+        <div className='w-full md:w-2/3 mx-auto lg:min-w-[300px] flex justify-center items-center'>
+          <FcGoogle className={IconClass} />
+          <IoLogoFacebook className={IconClassFacebook} fill='#385997' />
+          <IoLogoGithub className={IconClass} />
+          <div className='border-r-[1px] border-gray-500 h-full mx-8'></div>
+          <IoIosMail className={IconClass} onClick={goRegister} />
         </div>
-      )}
+        {error && <AuthStatus message={errMsg} status='failed' />}
+        {successMsg && <AuthStatus message={successMsg} status='success' />}
+      </div>
     </Layout>
   )
 }

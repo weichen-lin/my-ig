@@ -36,7 +36,12 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	ctl := controller.Controller{Pool: pool, SecretKey: config.SecretKey, BucketHandler: bucketHandler}
+	ctl := controller.Controller{
+		Pool:          pool,
+		SecretKey:     config.SecretKey,
+		BucketHandler: bucketHandler,
+		EncryptSecret: config.EncryptSecret,
+		AppPassword:   config.AppPassword}
 
 	if config.IsDev {
 		r.Use(Cors(config.AllowedDomain))
@@ -45,6 +50,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	user := r.Group("/user")
 	user.GET("/auth", ctl.ValiedateToken)
 	user.GET("/info", ctl.AuthMiddleware(), ctl.GetUserInfo)
+	user.GET("/validate", ctl.AccountValidate)
 	user.POST("/register", ctl.UserRegister)
 	user.POST("/login", ctl.UserLogin)
 	user.POST("/avatar", ctl.AuthMiddleware(), ctl.UploadAvatar)

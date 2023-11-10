@@ -6,12 +6,28 @@ import { useRecoilValue } from 'recoil'
 import { listMethodState, ListMethod, CommonProps, fileState, folderState, OpenImageState } from 'store'
 import { useGdrive } from 'hooks/disk'
 import { ImagePlayground } from 'components/disk/'
+import Image from 'next/image'
+import { useContext } from 'react'
+import { KushareAuth } from 'context'
 
 const EmptyContent = () => {
+  const { user } = useContext(KushareAuth)
+
   return (
     <div className='xss:mt-[25%] md:mt-[3%] 2xl:mt-[10%] flex h-full w-full flex-col items-center gap-y-12'>
-      <img src='static/empty.jpg' className='h-[300px] w-[350px]'></img>
-      <div className='text-lg font-bold text-gray-500 px-12'>此位置目前無創建任何資料夾或是上傳任何圖片。</div>
+      {user?.isValidate ? (
+        <>
+          <Image src='/static/empty.jpg' width={350} height={300} alt='empty' />
+          <div className='text-lg font-bold text-gray-500 px-12'>此位置目前無創建任何資料夾或是上傳任何圖片。</div>
+        </>
+      ) : (
+        <>
+          <Image src='/icon/layout/sendmail.gif' width={350} height={300} alt='SendMail' />
+          <div className='text-lg font-bold text-gray-500 px-12'>
+            為了您帳戶的安全，請盡快前往您的信箱完成驗證程序，謝謝您的配合！
+          </div>
+        </>
+      )}
     </div>
   )
 }

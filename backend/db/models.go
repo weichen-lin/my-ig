@@ -41,4 +41,5 @@ type User struct {
 	AvatarUrl      *string   `json:"avatarUrl"`
 	CreatedAt      time.Time `json:"createdAt"`
 	LastModifiedAt time.Time `json:"lastModifiedAt"`
+	IsValidate     bool      `json:"isValidate"`
 }

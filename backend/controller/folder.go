@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -44,7 +43,12 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 	}
 
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	locateAt, err := util.ParseUUID(params.LocateAt)
 	if err != nil {
@@ -79,13 +83,6 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 		})
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(ErrFolderNotExist))
-			return
-		}
-
-		err = tx.Commit(ctx)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-			tx.Rollback(ctx)
 			return
 		}
 
@@ -134,7 +131,12 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 	}
 
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	folder, err := q.GetFolder(ctx, folderId)
 	if err != nil {
@@ -180,7 +182,7 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 
 	userId, err := uuid.Parse(id)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(fmt.Errorf("Authorization failed")))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
 		return
 	}
 
@@ -210,7 +212,12 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 	}
 
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	err = q.MoveFolderWithId(ctx, db.MoveFolderFuncParams{
 		ID:     currentId,
@@ -224,7 +231,6 @@ func (s *Controller) MoveFolder(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, "success")
-	return
 }
 
 func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
@@ -245,6 +251,10 @@ func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
 	}
 
 	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	q := db.New(conn)
 	defer conn.Release()

@@ -50,7 +50,7 @@ const MyTheme = {
   image: 'editor-image',
   indent: 'Editor_indent',
   inlineImage: 'inline-editor-image',
-  layoutContainer: 'Editor_layoutContaner',
+  layoutContainer: 'Editor_layoutContainer',
   layoutItem: 'Editor_layoutItem',
   link: 'Editor_link',
   list: {

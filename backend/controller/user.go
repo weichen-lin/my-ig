@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/weichen-lin/myig/db"
 	"github.com/weichen-lin/myig/util"
 )
@@ -53,7 +54,6 @@ func (s *Controller) ValiedateToken(ctx *gin.Context) {
 	}
 
 	ctx.String(http.StatusOK, cookie)
-	return
 }
 
 func (s *Controller) UserRegister(ctx *gin.Context) {
@@ -82,7 +82,12 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	arg := db.CreateUserWithoutNameParams{
 		Email:    params.Email,
@@ -101,6 +106,24 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
+	errCh := make(chan error)
+
+	go func() {
+		sender := util.Sender{
+			Email:     "kushare09487@gmail.com",
+			Password:  s.AppPassword,
+			Receiver:  params.Email,
+			SecretKey: s.EncryptSecret,
+		}
+
+		info := util.UserInfo{
+			UserID:     user.ID.String(),
+			ExpireTime: time.Now().Add(time.Hour * 24),
+		}
+
+		util.SendMail(sender, info, errCh)
+	}()
+
 	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -115,6 +138,11 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 
 	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, token))
 	ctx.String(http.StatusOK, user.ID.String())
+
+	err = <-errCh
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func (s *Controller) UserLogin(ctx *gin.Context) {
@@ -131,7 +159,12 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	info, err := q.GetUserByEmail(ctx, params.Email)
 	if err == sql.ErrNoRows || err != nil {
@@ -184,7 +217,12 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
 
 	arg := db.UpdateUserAvatarParams{
 		AvatarUrl: &signedUrl,
@@ -208,21 +246,21 @@ func (s *Controller) GetUserInfo(ctx *gin.Context) {
 		return
 	}
 
-	tx, err := s.Pool.Begin(ctx)
+	tx, err := s.Pool.Acquire(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	q := db.New(tx)
-	defer tx.Commit(ctx)
+	defer tx.Release()
 
 	user, err := q.GetUserById(ctx, userId)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrUserNotFound))
 			return
 		}
-		ctx.JSON(http.StatusNotFound, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	ctx.JSON(http.StatusOK, user)
@@ -240,4 +278,63 @@ func (s *Controller) UserLogout(ctx *gin.Context) {
 	ctx.SetSameSite(http.SameSiteNoneMode)
 	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; Max-Age=-1; HttpOnly; Secure; SameSite=None", userTokenName, ""))
 	ctx.JSON(http.StatusOK, "logout success")
+}
+
+func (s *Controller) AccountValidate(ctx *gin.Context) {
+	token := ctx.Query("token")
+	if token == "" {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrInvalidToken))
+		return
+	}
+
+	user, err := util.DecryptToken(token, []byte(s.EncryptSecret))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrInvalidToken))
+		return
+	}
+
+	userId, err := uuid.Parse(user.UserID)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
+
+	err = q.UpdateUserValidate(ctx, db.UpdateUserValidateParams{
+		ID:         userId,
+		IsValidate: true,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	jwtToken, err := jwtMaker.CreateToken(userId.String(), time.Now().Add(time.Hour*24*3))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, jwtToken))
+	ctx.JSON(http.StatusOK, userId)
 }

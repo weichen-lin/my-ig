@@ -144,6 +144,8 @@ export const Menu = () => {
     },
   ]
 
+  console.log({ user })
+
   const Avatar = () => {
     return (
       <div className='flex flex-col items-center gap-y-4'>
@@ -158,18 +160,22 @@ export const Menu = () => {
           {user?.name ?? <span className='text-gray-400 text-sm select-none'>未設定使用者名稱</span>}
         </p>
         <div className='relative w-[100px] h-16 mx-auto'>
-          <div
-            className='w-full absolute top-0 left-0 active:top-1 rounded-md border border-gray-100 bg-blue-100 p-1 px-4 shadow-md'
+          <button
+            className={clsx(
+              'w-full absolute top-0 left-0 enabled:active:top-1 rounded-md',
+              'border border-gray-100 bg-blue-100 p-1 px-4 shadow-md',
+              'flex items-center justify-center gap-x-2 cursor-pointer',
+              'disabled:opacity-50 disabled:cursor-not-allowed',
+            )}
             onClick={e => {
               e.preventDefault()
               handleFileUpload(false)
             }}
+            disabled={!user?.isValidate}
           >
-            <div className='flex items-center gap-2 cursor-pointer'>
-              <Icon icon='ic:outline-upload-file' className='w-5 h-5' />
-              <span className='text-gray-600 font-medium'>上傳</span>
-            </div>
-          </div>
+            <Icon icon='ic:outline-upload-file' className='w-5 h-5' />
+            <span className='text-gray-600 font-medium'>上傳</span>
+          </button>
         </div>
       </div>
     )

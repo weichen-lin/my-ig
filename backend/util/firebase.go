@@ -111,7 +111,7 @@ func UploadFile(ctx *gin.Context, bucket *storage.BucketHandle, prefix string) (
 	}
 
 	if urlErr != nil {
-		return "", http.StatusBadRequest, fmt.Errorf("invaid signed url")
+		return "", http.StatusBadRequest, fmt.Errorf("invalid signed url")
 	}
 	return signedUrl, http.StatusOK, nil
 }

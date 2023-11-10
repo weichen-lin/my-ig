@@ -54,7 +54,7 @@ func Test_CreateFolderWithFullPath(t *testing.T) {
 	tx.Commit(context.Background())
 }
 
-func Test_FolderMoveMent(t *testing.T) {
+func Test_FolderMove(t *testing.T) {
 	user, err := CreateUserForTest(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
