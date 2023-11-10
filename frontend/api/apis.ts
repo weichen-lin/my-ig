@@ -38,4 +38,4 @@ export const updateFileDescription = async (data: { description: string; id: str
   fetcher.patch<{ id: string; description: string }>(`/file/update`, data)
 export const uploadAvatar = async (data: FormData) =>
   fetcher.post<{ id: string }>('/user/avatar', data, { headers: { 'Content-Type': 'multipart/form-data' } })
-export const tokenAuth = async (token: string) => axios.get(`/user/validate?token=${token}`)
+export const tokenAuth = async (token: string) => axios.get(`${BaseUrl}/user/validate?token=${token}`)

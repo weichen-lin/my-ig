@@ -8,8 +8,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"html/template"
-	"log"
 	"net/smtp"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -27,8 +27,18 @@ type UserInfo struct {
 	ExpireTime time.Time
 }
 
-func SendMail(sender Sender, info UserInfo) {
-	config, err := Loadconfig(".", "test")
+func SendMail(sender Sender, info UserInfo, errCh chan<- error) {
+	env := os.Getenv("KUSHARE_APP_ENV")
+
+	if env == "" {
+		env = "test"
+	}
+
+	config, err := Loadconfig(".", env)
+	if err != nil {
+		errCh <- err
+		return
+	}
 
 	smtpHost := "smtp.gmail.com"
 	smtpPort := 587
@@ -37,7 +47,8 @@ func SendMail(sender Sender, info UserInfo) {
 
 	token, err := EncryptToken(info, []byte(sender.SecretKey))
 	if err != nil {
-		log.Fatal(err)
+		errCh <- err
+		return
 	}
 
 	templateData := struct {
@@ -49,14 +60,16 @@ func SendMail(sender Sender, info UserInfo) {
 	templateFile := "template/email_validate.html"
 	tmpl, err := template.ParseFiles(templateFile)
 	if err != nil {
-		log.Fatal(err)
+		errCh <- err
+		return
 	}
 
 	auth := smtp.PlainAuth("", senderEmail, senderPassword, smtpHost)
 
 	var body bytes.Buffer
 	if err := tmpl.Execute(&body, templateData); err != nil {
-		log.Fatal(err)
+		errCh <- err
+		return
 	}
 
 	msg := []byte(
@@ -67,9 +80,7 @@ func SendMail(sender Sender, info UserInfo) {
 			"\r\n" + body.String())
 
 	err = smtp.SendMail(smtpHost+":"+fmt.Sprint(smtpPort), auth, senderEmail, []string{sender.Receiver}, msg)
-	if err != nil {
-		log.Fatal(err)
-	}
+	errCh <- err
 }
 
 func EncryptToken(token UserInfo, key []byte) (string, error) {
@@ -116,7 +127,6 @@ func DecryptToken(encryptedToken string, key []byte) (UserInfo, error) {
 	}
 
 	data := string(decrypted)
-	fmt.Printf("data: %s\n", data)
 
 	parts := strings.Split(data, ";")
 	if len(parts) != 2 {

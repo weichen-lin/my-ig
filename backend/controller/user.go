@@ -106,6 +106,8 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
+	errCh := make(chan error)
+
 	go func() {
 		sender := util.Sender{
 			Email:     "kushare09487@gmail.com",
@@ -115,11 +117,11 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		}
 
 		info := util.UserInfo{
-			UserID:     uuid.New().String(),
+			UserID:     user.ID.String(),
 			ExpireTime: time.Now().Add(time.Hour * 24),
 		}
 
-		util.SendMail(sender, info)
+		util.SendMail(sender, info, errCh)
 	}()
 
 	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
@@ -136,6 +138,11 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 
 	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, token))
 	ctx.String(http.StatusOK, user.ID.String())
+
+	err = <-errCh
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func (s *Controller) UserLogin(ctx *gin.Context) {
@@ -329,5 +336,5 @@ func (s *Controller) AccountValidate(ctx *gin.Context) {
 	}
 
 	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, jwtToken))
-	ctx.JSON(http.StatusOK, "validate success")
+	ctx.JSON(http.StatusOK, userId)
 }
