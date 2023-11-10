@@ -19,6 +19,7 @@ EXPOSE 8000
 COPY --from=builder /app/main.exe .
 COPY dev.env ./dev.env
 COPY credential.json ./credential.json
+COPY templates ./templates
 
 LABEL org.opencontainers.image.source https://github.com/weichen-lin/my-ig
 
