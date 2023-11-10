@@ -144,6 +144,8 @@ export const Menu = () => {
     },
   ]
 
+  console.log({ user })
+
   const Avatar = () => {
     return (
       <div className='flex flex-col items-center gap-y-4'>
