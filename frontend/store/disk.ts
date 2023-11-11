@@ -61,3 +61,12 @@ export const OpenImageState = atom({
     index: 0,
   },
 })
+
+export const ContextMenuState = atom({
+  key: 'ContextMenuState',
+  default: {
+    isOpen: false,
+    x: 0,
+    y: 0,
+  },
+})

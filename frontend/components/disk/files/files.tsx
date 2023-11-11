@@ -5,7 +5,7 @@ import { useSingleAndDoubleClick } from 'hooks/utils'
 import { CommonProps, ListMethod } from 'store'
 import { useSetRecoilState } from 'recoil'
 import { OpenImageState } from 'store'
-
+import { useContextMenu } from 'hooks/disk'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 export const File = (props: { info: CommonProps; method: ListMethod; index: number }) => {
@@ -14,6 +14,7 @@ export const File = (props: { info: CommonProps; method: ListMethod; index: numb
   const [isSelect, setIsSelect] = useState(false)
   const setOpenImage = useSetRecoilState(OpenImageState)
 
+  const { open } = useContextMenu()
   const onClick = () => {
     setIsSelect(prev => !prev)
   }
@@ -36,6 +37,12 @@ export const File = (props: { info: CommonProps; method: ListMethod; index: numb
         `${isLattice ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]' : 'mb-[1px] w-full'}`,
       )}
       onClick={handleClick}
+      onContextMenu={e => {
+        e.preventDefault()
+        open(e.clientX, e.clientY, () => {
+          setIsSelect(true)
+        })
+      }}
     >
       <CustomImage id={id} listMethod={method} />
       <div className={clsx('truncate', `${isLattice ? 'my-2 h-8 w-[200px] px-2 text-center' : 'flex-1 px-2'}`)}>

@@ -2,8 +2,17 @@ import clsx from 'clsx'
 import { File } from 'components/disk/files/files'
 import { Folder } from 'components/disk/files/folders'
 import { KushareDriveBackbone } from './gdrivebone'
+import { Options } from './options'
 import { useRecoilValue } from 'recoil'
-import { listMethodState, ListMethod, CommonProps, fileState, folderState, OpenImageState } from 'store'
+import {
+  listMethodState,
+  ListMethod,
+  CommonProps,
+  fileState,
+  folderState,
+  OpenImageState,
+  ContextMenuState,
+} from 'store'
 import { useGdrive } from 'hooks/disk'
 import { ImagePlayground } from 'components/disk/'
 import Image from 'next/image'
@@ -33,6 +42,7 @@ const EmptyContent = () => {
 }
 
 export default function KushareDrive() {
+  const contextMenu = useRecoilValue(ContextMenuState)
   const listMethod = useRecoilValue(listMethodState)
   const files = useRecoilValue(fileState)
   const folders = useRecoilValue(folderState)
@@ -44,9 +54,10 @@ export default function KushareDrive() {
   return files?.length > 0 || folders?.length > 0 ? (
     <div
       className={clsx(
-        'flex w-full select-none flex-col items-start overflow-y-auto px-[5%] xl:px-0',
+        'flex w-full select-none flex-col items-start overflow-y-auto px-[5%] xl:px-0 h-full',
         `${listMethod === ListMethod.Lattice ? 'mt-1 gap-y-2 xs:gap-x-6 md:gap-y-3' : ''}`,
       )}
+      onContextMenu={e => e.preventDefault()}
     >
       {listMethod === ListMethod.Lattice && folders && folders.length > 0 && (
         <p className='mt-2 text-gray-400'>資料夾</p>
@@ -63,6 +74,7 @@ export default function KushareDrive() {
         ))}
       </div>
       {isOpen && <ImagePlayground />}
+      {contextMenu.isOpen && <Options />}
     </div>
   ) : (
     <EmptyContent />

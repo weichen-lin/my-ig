@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
 import { useRouter } from 'next/router'
 import { Icon } from '@iconify/react'
+import { useContextMenu } from 'hooks/disk'
 
 interface CommonProps {
   id: string
@@ -19,6 +20,8 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
   const { name, lastModifiedAt } = info
   const [isSelect, setIsSelect] = useState(false)
   const router = useRouter()
+
+  const { open } = useContextMenu()
 
   const onDoubleClick = async () => {
     await router.push(`/home?f=${info.id}`, undefined, {
@@ -43,6 +46,12 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
         }`,
       )}
       onClick={handleClick}
+      onContextMenu={e => {
+        e.preventDefault()
+        open(e.clientX, e.clientY, () => {
+          setIsSelect(true)
+        })
+      }}
     >
       <div
         className={clsx(
