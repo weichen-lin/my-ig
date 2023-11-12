@@ -1,39 +1,31 @@
 import clsx from 'clsx'
 import { ListMethod, listMethodState } from 'store'
 import { useIsMobile } from 'hooks/disk'
-import { Dialog } from 'components/utils'
 import { PCButton, MobileButton } from './buttons'
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { AddFolder } from 'components/utils'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { SelectedState } from 'store'
 import { useFileUpload } from 'hooks/disk'
+import { SelectRegion } from 'components/disk'
+import { useDialog } from 'hooks/disk'
 
 export default function Operator() {
   const { isMobile } = useIsMobile()
-  const [openDialog, setOpenDialog] = useState(false)
+  const { open } = useDialog()
+  const selected = useRecoilValue(SelectedState)
   const [method, setMethod] = useRecoilState(listMethodState)
   const { handleFileUpload } = useFileUpload()
 
-  const handleCloseDialog = useCallback(() => {
-    setOpenDialog(false)
+  const handleOpenAddFolder = useCallback(() => {
+    open(<AddFolder />)
   }, [])
-
-  const handlOpenDialog = useCallback(() => {
-    setOpenDialog(true)
-  }, [])
-
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    inputRef.current?.select()
-    inputRef.current?.focus()
-  }, [openDialog])
 
   const Buttons = [
     {
       name: 'bx:plus',
       message: '建立',
-      onClick: handlOpenDialog,
+      onClick: handleOpenAddFolder,
     },
     {
       name: 'basil:upload-solid',
@@ -52,17 +44,20 @@ export default function Operator() {
     },
   ]
 
+  const isSelect = selected.files.length + selected.folders.length > 0
+
   return (
     <div className={clsx('flex gap-x-4', `${isMobile ? 'order-last ml-auto' : 'w-full justify-start gap-x-4 my-2'}`)}>
-      {Buttons.map((e, index) =>
-        isMobile ? (
-          <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />
-        ) : (
-          <PCButton name={e.name} onClick={e.onClick} message={e.message} key={`button_${index}`} />
-        ),
-      )}
-      {openDialog && (
-        <Dialog component={<AddFolder ref={inputRef} close={handleCloseDialog} />} close={handleCloseDialog} />
+      {isSelect ? (
+        <SelectRegion />
+      ) : (
+        Buttons.map((e, index) =>
+          isMobile ? (
+            <MobileButton name={e.name} onClick={e.onClick} key={`button_${index}`} />
+          ) : (
+            <PCButton name={e.name} onClick={e.onClick} message={e.message} key={`button_${index}`} />
+          ),
+        )
       )}
     </div>
   )

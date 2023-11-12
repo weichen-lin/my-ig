@@ -8,7 +8,7 @@ export default function SelectRegion() {
 
   const selectedCount = selected.folders.length + selected.files.length
 
-  return selectedCount > 0 ? (
+  return (
     <div className='bg-blue-100/40 w-full px-2 py-[6px] rounded-lg flex gap-x-2 items-center animate-[fadeIn_0.2s_ease-in-out_forwards]'>
       <Icon
         icon='iconoir:cancel'
@@ -24,7 +24,5 @@ export default function SelectRegion() {
       />
       <Icon icon='iconamoon:trash-thin' className='w-7 h-7 p-1 cursor-pointer hover:bg-slate-300 rounded-full' />
     </div>
-  ) : (
-    <></>
   )
 }

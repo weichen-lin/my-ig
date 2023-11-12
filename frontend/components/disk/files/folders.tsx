@@ -45,7 +45,7 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
       onContextMenu={e => {
         open(e.clientX, e.clientY, () => {
           if (isSelect) return
-          select('files', id)
+          select('folders', id)
         })
       }}
     >
