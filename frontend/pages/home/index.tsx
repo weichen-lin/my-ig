@@ -15,7 +15,7 @@ export default function Drive() {
     <RecoilRoot>
       <LayoutHome>
         <div className='flex flex-col h-[90%]'>
-          <div className='flex flex-wrap w-full items-center gap-y-5 px-[5%] xl:px-0'>
+          <div className='flex flex-wrap w-full items-center gap-y-2 xl:gap-y-5 px-[5%] xl:px-0'>
             <Operator />
             <SelectRegion />
             <BreadCrumbs />
