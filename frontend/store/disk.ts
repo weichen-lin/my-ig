@@ -62,11 +62,24 @@ export const OpenImageState = atom({
   },
 })
 
+interface ISelected {
+  folders: string[]
+  files: string[]
+}
+
 export const ContextMenuState = atom({
   key: 'ContextMenuState',
   default: {
     isOpen: false,
     x: 0,
     y: 0,
+  },
+})
+
+export const SelectedState = atom<ISelected>({
+  key: 'Selected',
+  default: {
+    folders: [],
+    files: [],
   },
 })

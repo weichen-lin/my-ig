@@ -22,7 +22,7 @@ export default function LayoutHome(props: { children: JSX.Element }) {
           <FullScreenMenu />
           <div className='flex-col bg-white md:rounded-lg flex max-w-[1280px] w-full px-[2%] py-3'>
             <div className='flex gap-x-8 items-center pt-2 pb-5'>
-              <Image src='/icon/layout/logo.png' alt='logo' width={120} height={48} />
+              <Image src='/icon/layout/logo.png' alt='logo' width={120} height={48} className='w-auto h-auto' />
               <Search />
             </div>
             {children}

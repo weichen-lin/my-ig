@@ -41,9 +41,9 @@ export function Options() {
       ref={ref}
     >
       <Option icon='material-symbols-light:download' text='下載' />
-      <Option icon='material-symbols-light:move-item' text='移動至' />
+      <Option icon='material-symbols-light:drive-file-move-outline-rounded' text='移動至' />
       <Option icon='material-symbols-light:edit' text='重新命名' />
-      <Option icon='material-symbols-light:restore-from-trash-outline' text='刪除' />
+      <Option icon='iconamoon:trash-thin' text='刪除' />
     </div>
   )
 }

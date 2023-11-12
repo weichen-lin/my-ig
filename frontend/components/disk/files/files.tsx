@@ -1,23 +1,26 @@
 import clsx from 'clsx'
-import { useState, useCallback, memo } from 'react'
+import { useState, useCallback } from 'react'
 import { Icon } from '@iconify/react'
 import { useSingleAndDoubleClick } from 'hooks/utils'
-import { CommonProps, ListMethod } from 'store'
-import { useSetRecoilState } from 'recoil'
+import { CommonProps, ListMethod, SelectedState } from 'store'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
 import { OpenImageState } from 'store'
 import { useContextMenu } from 'hooks/disk'
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 export const File = (props: { info: CommonProps; method: ListMethod; index: number }) => {
   const { info, method, index } = props
   const { id, name, lastModifiedAt } = info
-  const [isSelect, setIsSelect] = useState(false)
+
   const setOpenImage = useSetRecoilState(OpenImageState)
 
-  const { open } = useContextMenu()
-  const onClick = () => {
-    setIsSelect(prev => !prev)
-  }
+  const { open, select } = useContextMenu()
+  const selected = useRecoilValue(SelectedState)
+
+  const onClick = useCallback(() => {
+    select('files', id)
+  }, [selected])
 
   const onDoubleClick = () => {
     setOpenImage(prev => ({ ...prev, isOpen: true, index }))
@@ -27,11 +30,13 @@ export const File = (props: { info: CommonProps; method: ListMethod; index: numb
 
   const isLattice = method === ListMethod.Lattice
 
+  const isSelect = selected.files.includes(id)
+
   return (
     <div
       className={clsx(
         'flex w-full cursor-pointer items-center justify-between',
-        `${isSelect ? 'border-[1px] border-blue-400 bg-blue-500/50' : 'hover:bg-slate-200'}`,
+        `${isSelect ? 'border-[1px] border-blue-400 bg-blue-200/70' : 'hover:bg-slate-200'}`,
         `${false ? 'opacity-50' : 'opacity-100'}`,
         `${isLattice ? 'h-[200px] flex-col rounded-lg border-[1px] border-b-2 bg-[#f2f6fc]' : 'h-12 border-b-[1px]'}`,
         `${isLattice ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]' : 'mb-[1px] w-full'}`,
@@ -40,7 +45,8 @@ export const File = (props: { info: CommonProps; method: ListMethod; index: numb
       onContextMenu={e => {
         e.preventDefault()
         open(e.clientX, e.clientY, () => {
-          setIsSelect(true)
+          if (isSelect) return
+          select('files', id)
         })
       }}
     >

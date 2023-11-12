@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { ListMethod } from 'store'
+import { CommonProps, ListMethod, SelectedState } from 'store'
 import { FormatProp, SelectionValue, SelectionStringList } from 'hooks/disk'
 import { FolderData } from 'context'
 import { ListBackBone } from 'components/disk/files/listbackbone'
@@ -8,20 +8,16 @@ import { useSingleAndDoubleClick } from 'hooks/utils'
 import { useRouter } from 'next/router'
 import { Icon } from '@iconify/react'
 import { useContextMenu } from 'hooks/disk'
-
-interface CommonProps {
-  id: string
-  name: string
-  lastModifiedAt: string
-}
+import { useRecoilValue } from 'recoil'
 
 export function Folder(props: { info: CommonProps; method: ListMethod }) {
   const { info, method } = props
-  const { name, lastModifiedAt } = info
-  const [isSelect, setIsSelect] = useState(false)
+  const { id, name, lastModifiedAt } = info
   const router = useRouter()
 
-  const { open } = useContextMenu()
+  const selected = useRecoilValue(SelectedState)
+
+  const { open, select } = useContextMenu()
 
   const onDoubleClick = async () => {
     await router.push(`/home?f=${info.id}`, undefined, {
@@ -30,10 +26,12 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
   }
 
   const onClick = () => {
-    setIsSelect(prev => !prev)
+    select('folders', id)
   }
 
   const { handleClick } = useSingleAndDoubleClick(onClick, onDoubleClick)
+
+  const isSelect = selected.folders.includes(id)
 
   return (
     <div
@@ -47,9 +45,9 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
       )}
       onClick={handleClick}
       onContextMenu={e => {
-        e.preventDefault()
         open(e.clientX, e.clientY, () => {
-          setIsSelect(true)
+          if (isSelect) return
+          select('files', id)
         })
       }}
     >
@@ -58,7 +56,7 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
           'flex h-12 w-full cursor-pointer items-center justify-between rounded-lg',
           `${isSelect ? 'border-[1px] border-blue-400 bg-blue-200/70' : 'hover:bg-slate-200'}`,
           'transition-all duration-300 ease-in-out',
-          `${method === ListMethod.Lattice ? 'border-2' : 'rounded-none border-b-2'}`,
+          `${method === ListMethod.Lattice ? 'border-2' : 'rounded-none mb-[1px]'}`,
           `${false ? 'opacity-50' : 'opacity-100'}`,
         )}
       >

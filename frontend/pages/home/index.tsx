@@ -1,4 +1,4 @@
-import { KushareDrive, Operator, BreadCrumbs } from 'components/disk'
+import { KushareDrive, Operator, BreadCrumbs, SelectRegion } from 'components/disk'
 import { LayoutHome } from 'components/layout'
 import { RecoilRoot, RecoilEnv } from 'recoil'
 import { GetServerSideProps } from 'next'
@@ -17,6 +17,7 @@ export default function Drive() {
         <div className='flex flex-col h-[90%]'>
           <div className='flex flex-wrap w-full items-center gap-y-5 px-[5%] xl:px-0'>
             <Operator />
+            <SelectRegion />
             <BreadCrumbs />
           </div>
           <KushareDrive />

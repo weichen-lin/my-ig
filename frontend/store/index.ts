@@ -7,6 +7,7 @@ import {
   folderState,
   OpenImageState,
   ContextMenuState,
+  SelectedState,
 } from './disk'
 import { ListMethod, CommonProps, Breadcrumb } from './disk'
 
@@ -23,6 +24,7 @@ export {
   folderState,
   OpenImageState,
   ContextMenuState,
+  SelectedState,
 }
 export { ListMethod }
 export type { CommonProps, Breadcrumb, Action, Hint }
