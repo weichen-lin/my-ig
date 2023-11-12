@@ -61,3 +61,5 @@ export const BaseDialog = forwardRef<HTMLInputElement, BaseDialogProps>((props, 
     </div>
   )
 })
+
+BaseDialog.displayName = 'BaseDialog'
