@@ -176,3 +176,49 @@ func Test_UpdateDescription(t *testing.T) {
 	require.NotEmpty(t, description)
 	require.Equal(t, fakeName, *description)
 }
+
+func Test_RenameFolderName(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+	defer tx.Commit(context.Background())
+
+	q := New(tx)
+
+	arg := CreateFileParams{
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	file, err := q.CreateFile(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, file)
+	require.Empty(t, file.Description)
+
+	rename := faker.Name()
+	fileAfterUpdate, err := q.RenameFile(context.Background(), RenameFileParams{
+		ID:             file.ID,
+		UserID:         user.ID,
+		Name:           rename,
+		LastModifiedAt: time.Now(),
+	})
+	
+	require.NoError(t, err)
+	require.NotEmpty(t, fileAfterUpdate)
+	require.NoError(t, err)
+	require.NotEmpty(t, fileAfterUpdate)
+	require.NotEqual(t, file.Name, fileAfterUpdate.Name)
+	require.NotEqual(t, file.LastModifiedAt, fileAfterUpdate.LastModifiedAt)
+	require.Equal(t, file.ID, fileAfterUpdate.ID)
+	require.Equal(t, file.UserID, fileAfterUpdate.UserID)
+	require.Equal(t, file.Url, fileAfterUpdate.Url)
+	require.Equal(t, file.LocateAt, fileAfterUpdate.LocateAt)
+	require.Equal(t, file.CreatedAt, fileAfterUpdate.CreatedAt)
+	require.Equal(t, file.Description, fileAfterUpdate.Description)
+	require.Equal(t, fileAfterUpdate.Name, rename)
+}

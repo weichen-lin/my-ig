@@ -69,6 +69,38 @@ func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) 
 	return i, err
 }
 
+const renameFile = `-- name: RenameFile :one
+UPDATE "file" SET name = $1, last_modified_at = $2 WHERE id = $3 AND user_id = $4 RETURNING id, name, url, created_at, last_modified_at, user_id, locate_at, description
+`
+
+type RenameFileParams struct {
+	Name           string    `json:"name"`
+	LastModifiedAt time.Time `json:"lastModifiedAt"`
+	ID             uuid.UUID `json:"id"`
+	UserID         uuid.UUID `json:"userId"`
+}
+
+func (q *Queries) RenameFile(ctx context.Context, arg RenameFileParams) (File, error) {
+	row := q.db.QueryRow(ctx, renameFile,
+		arg.Name,
+		arg.LastModifiedAt,
+		arg.ID,
+		arg.UserID,
+	)
+	var i File
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Url,
+		&i.CreatedAt,
+		&i.LastModifiedAt,
+		&i.UserID,
+		&i.LocateAt,
+		&i.Description,
+	)
+	return i, err
+}
+
 const selectFileDescription = `-- name: SelectFileDescription :one
 SELECT description FROM "file" WHERE id = $1 AND user_id = $2
 `

@@ -72,6 +72,7 @@ func Test_CreateFolderAtRoot(t *testing.T) {
 	require.NotEmpty(t, folder.LastModifiedAt)
 
 	tx, err := pool.Begin(context.Background())
+	defer tx.Commit(context.Background())
 	require.NoError(t, err)
 
 	q := New(tx)
@@ -82,9 +83,6 @@ func Test_CreateFolderAtRoot(t *testing.T) {
 	require.Equal(t, folder.ID, fullPath[0].Id)
 	require.Equal(t, folder.Name, fullPath[0].Name)
 	require.Equal(t, folder.Depth, fullPath[0].Depth)
-
-	tx.Commit(context.Background())
-
 }
 
 func Test_CreateFolderInFolder(t *testing.T) {
@@ -143,7 +141,6 @@ func Test_CreateFolderInFolder(t *testing.T) {
 	require.Equal(t, folder.Depth, fullPath[0].Depth)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_GetFolder(t *testing.T) {
@@ -316,7 +313,6 @@ func Test_CheckFolderExistInFolder(t *testing.T) {
 	require.Equal(t, pgx.ErrNoRows, err)
 
 	tx.Commit(context.Background())
-
 }
 
 func Test_UpdateFolderName(t *testing.T) {
@@ -345,7 +341,9 @@ func Test_UpdateFolderName(t *testing.T) {
 
 	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
-
+	
+	defer tx.Commit(context.Background())
+	 
 	q := New(tx)
 
 	renameArg := UpdateFolderNameParams{
@@ -359,8 +357,6 @@ func Test_UpdateFolderName(t *testing.T) {
 	require.Equal(t, renameArg.Name, renameFolder.Name)
 	require.WithinDuration(t, renameArg.LastModifiedAt, renameFolder.LastModifiedAt, time.Second)
 	require.Equal(t, renameArg.ID, renameFolder.ID)
-
-	tx.Commit(context.Background())
 }
 
 func Test_MoveFolder_3_to_1(t *testing.T) {
