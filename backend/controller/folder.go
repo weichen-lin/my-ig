@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/weichen-lin/myig/db"
 	"github.com/weichen-lin/myig/util"
 )
@@ -44,7 +45,7 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 
 	q := db.New(tx)
 	defer func() {
-		if err != nil {
+		if err != pgx.ErrNoRows && err != nil {
 			tx.Rollback(ctx)
 		}
 		tx.Commit(ctx)
@@ -73,7 +74,7 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 		Name:     params.Name,
 		UserID:   userId,
 	})
-
+	
 	if err != nil {
 		folder, err := q.CreateFolderWithFullPath(ctx, db.CreateFolderParams{
 			Name:     params.Name,
@@ -81,6 +82,7 @@ func (s *Controller) CreateFolder(ctx *gin.Context) {
 			UserID:   userId,
 			Depth:    depth,
 		})
+
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(ErrFolderNotExist))
 			return
