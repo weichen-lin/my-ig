@@ -8,7 +8,7 @@ import { useSingleAndDoubleClick } from 'hooks/utils'
 import { useRouter } from 'next/router'
 import { Icon } from '@iconify/react'
 import { useContextMenu } from 'hooks/disk'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useResetRecoilState } from 'recoil'
 
 export function Folder(props: { info: CommonProps; method: ListMethod }) {
   const { info, method } = props
@@ -16,10 +16,12 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
   const router = useRouter()
 
   const selected = useRecoilValue(SelectedState)
+  const reset = useResetRecoilState(SelectedState)
 
   const { open, select } = useContextMenu()
 
   const onDoubleClick = async () => {
+    reset()
     await router.push(`/home?f=${info.id}`, undefined, {
       shallow: false,
     })
