@@ -167,7 +167,7 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, "success")
+	ctx.JSON(http.StatusOK, gin.H{"id": folder.ID, "name": params.Name})
 }
 
 type DeleteFolderReq struct {

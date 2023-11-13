@@ -55,12 +55,14 @@ export function Options() {
 
   const openRename = () => {
     if (selectCount !== 1) return
+    const type = selected.files.length > 0 ? 'file' : 'folder'
     const current =
       selected.files.length > 0
         ? files?.find(e => e.id === selected.files[0])
         : folders?.find(e => e.id === selected.folders[0])
+    if (!current) return
 
-    open(<Rename name={current?.name} />)
+    open(<Rename name={current.name} id={current.id} type={type} />)
   }
 
   return (

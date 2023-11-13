@@ -39,3 +39,5 @@ export const updateFileDescription = async (data: { description: string; id: str
 export const uploadAvatar = async (data: FormData) =>
   fetcher.post<{ id: string }>('/user/avatar', data, { headers: { 'Content-Type': 'multipart/form-data' } })
 export const tokenAuth = async (token: string) => axios.get(`${BaseUrl}/user/validate?token=${token}`)
+export const renameFolder = async (data: { id: string; name: string }) => fetcher.patch('/folder/rename', data)
+export const renamFile = async (data: { id: string; name: string }) => fetcher.patch('/file/rename', data)

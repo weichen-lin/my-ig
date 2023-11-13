@@ -1,6 +1,5 @@
 import { useRef, MouseEvent } from 'react'
 import { useDialog } from 'hooks/disk'
-import { BaseDialog } from './dialogs'
 
 const Dialog = () => {
   const { dialogState, close } = useDialog()

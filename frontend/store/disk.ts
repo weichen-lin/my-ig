@@ -79,7 +79,7 @@ export const SelectedState = atom<ISelected>({
 export const DialogState = atom<{ isOpen: boolean; component: JSX.Element | null }>({
   key: 'DialogState',
   default: {
-    isOpen: true,
+    isOpen: false,
     component: null,
   },
 })

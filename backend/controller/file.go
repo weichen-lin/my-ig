@@ -296,5 +296,5 @@ func (s Controller) UpdateFileName(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"id": RenamedFolder.ID})
+	ctx.JSON(http.StatusOK, gin.H{"id": RenamedFolder.ID, "name": RenamedFolder.Name})
 }
