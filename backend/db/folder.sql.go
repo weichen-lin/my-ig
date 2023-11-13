@@ -86,6 +86,20 @@ func (q *Queries) DeleteFolder(ctx context.Context, arg DeleteFolderParams) erro
 	return err
 }
 
+const deleteFolders = `-- name: DeleteFolders :exec
+DELETE FROM "folder" WHERE user_id = $1 AND id IN ($2::uuid[])
+`
+
+type DeleteFoldersParams struct {
+	UserID uuid.UUID   `json:"userId"`
+	Ids    []uuid.UUID `json:"ids"`
+}
+
+func (q *Queries) DeleteFolders(ctx context.Context, arg DeleteFoldersParams) error {
+	_, err := q.db.Exec(ctx, deleteFolders, arg.UserID, arg.Ids)
+	return err
+}
+
 const getFolder = `-- name: GetFolder :one
 SELECT id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id FROM "folder" WHERE id = $1
 `

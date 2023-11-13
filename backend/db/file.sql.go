@@ -44,6 +44,20 @@ func (q *Queries) CreateFile(ctx context.Context, arg CreateFileParams) (File, e
 	return i, err
 }
 
+const deleteFiles = `-- name: DeleteFiles :exec
+DELETE FROM "file" WHERE user_id = $1 AND id IN ($2::uuid[])
+`
+
+type DeleteFilesParams struct {
+	UserID uuid.UUID   `json:"userId"`
+	Ids    []uuid.UUID `json:"ids"`
+}
+
+func (q *Queries) DeleteFiles(ctx context.Context, arg DeleteFilesParams) error {
+	_, err := q.db.Exec(ctx, deleteFiles, arg.UserID, arg.Ids)
+	return err
+}
+
 const getFile = `-- name: GetFile :one
 SELECT id, name, url, created_at, last_modified_at, user_id, locate_at, description FROM "file" WHERE id = $1 and user_id = $2
 `
