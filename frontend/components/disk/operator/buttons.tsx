@@ -31,7 +31,7 @@ export const PCButton = (props: ButtonProps) => {
   return (
     <button
       className={clsx(
-        'h-10 border-2 border-slate-100 enable:hover:bg-slate-100 shadow-lg px-4 rounded-lg',
+        'border-2 border-slate-100 enable:hover:bg-slate-100 shadow-lg px-4 py-1 rounded-lg',
         'transition-colors duration-300',
         'flex items-center justify-between gap-x-2',
         'disabled:opacity-50 disabled:cursor-not-allowed',

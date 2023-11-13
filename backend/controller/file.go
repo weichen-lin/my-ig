@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"time"
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
@@ -240,4 +241,60 @@ func (s Controller) UpdateFileDescription(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"id": fileId})
+}
+
+type UpdateFileNameReq struct {
+	ID   string `json:"id" binding:"required"`
+	Name string `json:"name" binding:"required"`
+}
+
+func (s Controller) UpdateFileName(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	var params UpdateFileNameReq
+
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	fileId, err := uuid.Parse(params.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
+
+	RenamedFolder, err := q.RenameFile(ctx, db.RenameFileParams{
+		ID:             fileId,
+		UserID:         userId,
+		Name:           params.Name,
+		LastModifiedAt: time.Now(),
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"id": RenamedFolder.ID, "name": RenamedFolder.Name})
 }

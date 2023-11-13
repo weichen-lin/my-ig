@@ -30,14 +30,6 @@ export const folderState = atom<CommonProps[]>({
   default: [],
 })
 
-export const driveState = atom({
-  key: 'driveState',
-  default: {
-    files: [],
-    folders: [],
-  },
-})
-
 export interface Breadcrumb {
   id: string
   name: string
@@ -59,5 +51,35 @@ export const OpenImageState = atom({
   default: {
     isOpen: false,
     index: 0,
+  },
+})
+
+interface ISelected {
+  folders: string[]
+  files: string[]
+}
+
+export const ContextMenuState = atom({
+  key: 'ContextMenuState',
+  default: {
+    isOpen: false,
+    x: 0,
+    y: 0,
+  },
+})
+
+export const SelectedState = atom<ISelected>({
+  key: 'Selected',
+  default: {
+    folders: [],
+    files: [],
+  },
+})
+
+export const DialogState = atom<{ isOpen: boolean; component: JSX.Element | null }>({
+  key: 'DialogState',
+  default: {
+    isOpen: false,
+    component: null,
   },
 })

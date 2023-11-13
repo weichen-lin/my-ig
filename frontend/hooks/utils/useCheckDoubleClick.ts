@@ -20,7 +20,7 @@ export default function useSingleAndDoubleClick(onClick: anyfunc, onDoubleClick:
       clicks.current === 1 ? onClick() : onDoubleClick()
       clicks.current = 0
     }, DELAY),
-    [],
+    [onClick, onDoubleClick],
   )
 
   const handleClick = () => {
