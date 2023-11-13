@@ -207,7 +207,7 @@ func Test_RenameFolderName(t *testing.T) {
 		Name:           rename,
 		LastModifiedAt: time.Now(),
 	})
-	
+
 	require.NoError(t, err)
 	require.NotEmpty(t, fileAfterUpdate)
 	require.NoError(t, err)

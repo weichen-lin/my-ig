@@ -66,6 +66,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	file.GET("/:id", ctl.AuthMiddlewareWithCookie(), ctl.GetFile)
 	file.GET("/description/:id", ctl.AuthMiddleware(), ctl.GetFileDescription)
 	file.POST("/create", ctl.AuthMiddleware(), ctl.CreateFile)
+	file.PATCH("/rename", ctl.AuthMiddleware(), ctl.UpdateFileName)
 	file.PATCH("/update", ctl.AuthMiddleware(), ctl.UpdateFileDescription)
 
 	r.GET("/disk", ctl.AuthMiddleware(), ctl.GetDisk)

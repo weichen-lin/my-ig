@@ -341,9 +341,9 @@ func Test_UpdateFolderName(t *testing.T) {
 
 	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
-	
+
 	defer tx.Commit(context.Background())
-	 
+
 	q := New(tx)
 
 	renameArg := UpdateFolderNameParams{
