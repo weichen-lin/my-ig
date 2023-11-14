@@ -14,7 +14,7 @@ SELECT description FROM "file" WHERE id = $1 AND user_id = $2;
 UPDATE "file" SET description = $1 WHERE id = $2 AND user_id = $3;
 
 -- name: RenameFile :one
-UPDATE "file" SET name = $1, last_modified_at = $2 WHERE id = $3 AND user_id = $4 RETURNING *;
+UPDATE "file" SET name = $1, last_modified_at = $2 WHERE id = $3 AND user_id = $4 RETURNING id, name;
 
--- name: DeleteFiles :exec
-DELETE FROM "file" WHERE user_id = $1 AND id IN (sqlc.slice('ids')::uuid[]);
+-- name: UpdateFilesDeleted :exec
+UPDATE "file" SET is_deleted = True WHERE user_id = $1 AND id = any(sqlc.arg('ids')::uuid[]);

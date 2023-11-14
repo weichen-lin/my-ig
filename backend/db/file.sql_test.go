@@ -213,12 +213,6 @@ func Test_RenameFolderName(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, fileAfterUpdate)
 	require.NotEqual(t, file.Name, fileAfterUpdate.Name)
-	require.NotEqual(t, file.LastModifiedAt, fileAfterUpdate.LastModifiedAt)
 	require.Equal(t, file.ID, fileAfterUpdate.ID)
-	require.Equal(t, file.UserID, fileAfterUpdate.UserID)
-	require.Equal(t, file.Url, fileAfterUpdate.Url)
-	require.Equal(t, file.LocateAt, fileAfterUpdate.LocateAt)
-	require.Equal(t, file.CreatedAt, fileAfterUpdate.CreatedAt)
-	require.Equal(t, file.Description, fileAfterUpdate.Description)
 	require.Equal(t, fileAfterUpdate.Name, rename)
 }

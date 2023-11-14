@@ -57,8 +57,14 @@ func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderFuncParam
 		LastModifiedAt: time.Now(),
 		UserID:         args.UserID,
 	})
+	if err != nil {
+		return err
+	}
 
 	fullPath, err := q.GetFolderFullPath(context.Background(), folderAfterMove.ID)
+	if err != nil {
+		return err
+	}
 
 	err = q.UpdateFullPath(context.Background(), UpdateFullPathParams{
 		FullPath: fullPath,
