@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { useContextMenu } from 'hooks/disk'
 import { useRecoilValue } from 'recoil'
 import { SelectedState, fileState, folderState } from 'store'
-import { Rename } from 'components/utils'
+import { Rename, Delete } from 'components/utils'
 import { useDialog } from 'hooks/disk'
 
 interface OptionProps {
@@ -65,6 +65,13 @@ export function Options() {
     open(<Rename name={current.name} id={current.id} type={type} />)
   }
 
+  const openDelete = () => {
+    if (selectCount === 0) return
+    const message = `確定要刪除 ${selectCount} 個項目嗎？`
+
+    open(<Delete message={message} selected={selected} />)
+  }
+
   return (
     <div
       className={clsx(
@@ -84,7 +91,7 @@ export function Options() {
       <Option
         icon='material-symbols-light:drive-file-move-outline-rounded'
         text='移動至'
-        onClick={openRename}
+        onClick={() => {}}
         close={close}
         disabled={false}
       />
@@ -95,7 +102,7 @@ export function Options() {
         close={close}
         disabled={selectCount !== 1}
       />
-      <Option icon='iconamoon:trash-thin' text='刪除' onClick={() => {}} close={close} disabled={false} />
+      <Option icon='iconamoon:trash-thin' text='刪除' onClick={openDelete} close={close} disabled={false} />
     </div>
   )
 }
