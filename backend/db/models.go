@@ -19,6 +19,7 @@ type File struct {
 	UserID         uuid.UUID `json:"userId"`
 	LocateAt       uuid.UUID `json:"locateAt"`
 	Description    *string   `json:"description"`
+	IsDeleted      bool      `json:"isDeleted"`
 }
 
 type Folder struct {

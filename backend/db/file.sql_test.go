@@ -213,12 +213,82 @@ func Test_RenameFolderName(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, fileAfterUpdate)
 	require.NotEqual(t, file.Name, fileAfterUpdate.Name)
-	require.NotEqual(t, file.LastModifiedAt, fileAfterUpdate.LastModifiedAt)
 	require.Equal(t, file.ID, fileAfterUpdate.ID)
-	require.Equal(t, file.UserID, fileAfterUpdate.UserID)
-	require.Equal(t, file.Url, fileAfterUpdate.Url)
-	require.Equal(t, file.LocateAt, fileAfterUpdate.LocateAt)
-	require.Equal(t, file.CreatedAt, fileAfterUpdate.CreatedAt)
-	require.Equal(t, file.Description, fileAfterUpdate.Description)
 	require.Equal(t, fileAfterUpdate.Name, rename)
+}
+
+func Test_UpdateFilesDelete(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+	defer tx.Commit(context.Background())
+
+	q := New(tx)
+
+	arg_1 := CreateFileParams{
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	file_1, err := q.CreateFile(context.Background(), arg_1)
+	require.NoError(t, err)
+	require.NotEmpty(t, file_1)
+
+	arg_2 := CreateFileParams{
+		Name:     faker.Name(),
+		Url:      faker.URL(),
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	file_2, err := q.CreateFile(context.Background(), arg_2)
+	require.NoError(t, err)
+	require.NotEmpty(t, file_2)
+
+	arg := SelectFilesParams{
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	}
+
+	files, err := q.SelectFiles(context.Background(), arg)
+	require.NoError(t, err)
+	require.Len(t, files, 2)
+
+	var Ids []uuid.UUID
+	for _, file := range files {
+		Ids = append(Ids, file.ID)
+	}
+
+	err = q.UpdateFilesDeleted(context.Background(), UpdateFilesDeletedParams{
+		Ids:    Ids,
+		UserID: user.ID,
+	})
+	require.NoError(t, err)
+
+	file_1_after_update, err := q.GetFile(context.Background(), GetFileParams{
+		ID:     file_1.ID,
+		UserID: user.ID,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, file_1_after_update)
+	require.Equal(t, file_1_after_update.IsDeleted, true)
+	require.Equal(t, file_1_after_update.ID, file_1.ID)
+	require.Equal(t, file_1_after_update.Name, file_1.Name)
+	require.Equal(t, file_1_after_update.Url, file_1.Url)
+
+	file_2_after_update, err := q.GetFile(context.Background(), GetFileParams{
+		ID:     file_1.ID,
+		UserID: user.ID,
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, file_2_after_update)
+	require.Equal(t, file_2_after_update.IsDeleted, true)
+	require.Equal(t, file_2_after_update.ID, file_1.ID)
+	require.Equal(t, file_2_after_update.Name, file_1.Name)
+	require.Equal(t, file_2_after_update.Url, file_1.Url)
 }

@@ -13,7 +13,7 @@ import (
 )
 
 const createFile = `-- name: CreateFile :one
-INSERT INTO "file" (name, url, user_id, locate_at) VALUES ($1, $2, $3, $4) RETURNING id, name, url, created_at, last_modified_at, user_id, locate_at, description
+INSERT INTO "file" (name, url, user_id, locate_at) VALUES ($1, $2, $3, $4) RETURNING id, name, url, created_at, last_modified_at, user_id, locate_at, description, is_deleted
 `
 
 type CreateFileParams struct {
@@ -40,12 +40,13 @@ func (q *Queries) CreateFile(ctx context.Context, arg CreateFileParams) (File, e
 		&i.UserID,
 		&i.LocateAt,
 		&i.Description,
+		&i.IsDeleted,
 	)
 	return i, err
 }
 
 const getFile = `-- name: GetFile :one
-SELECT id, name, url, created_at, last_modified_at, user_id, locate_at, description FROM "file" WHERE id = $1 and user_id = $2
+SELECT id, name, url, created_at, last_modified_at, user_id, locate_at, description, is_deleted FROM "file" WHERE id = $1 and user_id = $2
 `
 
 type GetFileParams struct {
@@ -65,12 +66,13 @@ func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) 
 		&i.UserID,
 		&i.LocateAt,
 		&i.Description,
+		&i.IsDeleted,
 	)
 	return i, err
 }
 
 const renameFile = `-- name: RenameFile :one
-UPDATE "file" SET name = $1, last_modified_at = $2 WHERE id = $3 AND user_id = $4 RETURNING id, name, url, created_at, last_modified_at, user_id, locate_at, description
+UPDATE "file" SET name = $1, last_modified_at = $2 WHERE id = $3 AND user_id = $4 RETURNING id, name
 `
 
 type RenameFileParams struct {
@@ -80,24 +82,20 @@ type RenameFileParams struct {
 	UserID         uuid.UUID `json:"userId"`
 }
 
-func (q *Queries) RenameFile(ctx context.Context, arg RenameFileParams) (File, error) {
+type RenameFileRow struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+func (q *Queries) RenameFile(ctx context.Context, arg RenameFileParams) (RenameFileRow, error) {
 	row := q.db.QueryRow(ctx, renameFile,
 		arg.Name,
 		arg.LastModifiedAt,
 		arg.ID,
 		arg.UserID,
 	)
-	var i File
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Url,
-		&i.CreatedAt,
-		&i.LastModifiedAt,
-		&i.UserID,
-		&i.LocateAt,
-		&i.Description,
-	)
+	var i RenameFileRow
+	err := row.Scan(&i.ID, &i.Name)
 	return i, err
 }
 
@@ -118,7 +116,7 @@ func (q *Queries) SelectFileDescription(ctx context.Context, arg SelectFileDescr
 }
 
 const selectFiles = `-- name: SelectFiles :many
-SELECT id, name, last_modified_at FROM "file" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC
+SELECT id, name, last_modified_at FROM "file" WHERE locate_at = $1 AND user_id = $2 AND is_deleted = FALSE ORDER BY last_modified_at ASC
 `
 
 type SelectFilesParams struct {
@@ -164,5 +162,19 @@ type UpdateFileDescriptionParams struct {
 
 func (q *Queries) UpdateFileDescription(ctx context.Context, arg UpdateFileDescriptionParams) error {
 	_, err := q.db.Exec(ctx, updateFileDescription, arg.Description, arg.ID, arg.UserID)
+	return err
+}
+
+const updateFilesDeleted = `-- name: UpdateFilesDeleted :exec
+UPDATE "file" SET is_deleted = True WHERE user_id = $1 AND id = any($2::uuid[])
+`
+
+type UpdateFilesDeletedParams struct {
+	UserID uuid.UUID   `json:"userId"`
+	Ids    []uuid.UUID `json:"ids"`
+}
+
+func (q *Queries) UpdateFilesDeleted(ctx context.Context, arg UpdateFilesDeletedParams) error {
+	_, err := q.db.Exec(ctx, updateFilesDeleted, arg.UserID, arg.Ids)
 	return err
 }

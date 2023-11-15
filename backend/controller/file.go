@@ -298,3 +298,60 @@ func (s Controller) UpdateFileName(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"id": RenamedFolder.ID, "name": RenamedFolder.Name})
 }
+
+type DeleteFilesReq struct {
+	IDs []string `json:"ids" binding:"required"`
+}
+
+func (s Controller) DeleteFiles(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	var params DeleteFilesReq
+
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	idsToUUIDs := make([]uuid.UUID, len(params.IDs))
+	for i, id := range params.IDs {
+		uuid, err := uuid.Parse(id)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+		idsToUUIDs[i] = uuid
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
+
+	err = q.UpdateFilesDeleted(ctx, db.UpdateFilesDeletedParams{
+		Ids:    idsToUUIDs,
+		UserID: userId,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "success")
+}

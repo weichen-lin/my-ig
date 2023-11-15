@@ -153,7 +153,7 @@ func (q *Queries) MoveFolder(ctx context.Context, arg MoveFolderParams) (Folder,
 }
 
 const selectFolders = `-- name: SelectFolders :many
-SELECT id, name, last_modified_at FROM "folder" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC
+SELECT id, name, last_modified_at FROM "folder" WHERE locate_at = $1 AND user_id = $2 AND is_deleted = FALSE ORDER BY last_modified_at ASC
 `
 
 type SelectFoldersParams struct {
@@ -212,6 +212,20 @@ func (q *Queries) UpdateFolderName(ctx context.Context, arg UpdateFolderNamePara
 		&i.UserID,
 	)
 	return i, err
+}
+
+const updateFoldersDeleted = `-- name: UpdateFoldersDeleted :exec
+UPDATE "folder" SET is_deleted = True WHERE user_id = $1 AND id = any($2::uuid[])
+`
+
+type UpdateFoldersDeletedParams struct {
+	UserID uuid.UUID   `json:"userId"`
+	Ids    []uuid.UUID `json:"ids"`
+}
+
+func (q *Queries) UpdateFoldersDeleted(ctx context.Context, arg UpdateFoldersDeletedParams) error {
+	_, err := q.db.Exec(ctx, updateFoldersDeleted, arg.UserID, arg.Ids)
+	return err
 }
 
 const updateFullPath = `-- name: UpdateFullPath :exec

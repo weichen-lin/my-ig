@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { folderState, fileState } from 'store'
 import { useRecoilState } from 'recoil'
-import { BaseDialog } from './dialogs'
+import { BaseDialog } from '.'
 import { useDialog } from 'hooks/disk'
 import { renamFile, renameFolder, useFetch } from 'api'
 

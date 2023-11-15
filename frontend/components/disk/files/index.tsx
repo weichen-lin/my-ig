@@ -16,9 +16,8 @@ import {
 import { useGdrive } from 'hooks/disk'
 import { ImagePlayground } from 'components/disk/'
 import Image from 'next/image'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { KushareAuth } from 'context'
-import { Dialog, Rename } from 'components/utils'
 
 const EmptyContent = () => {
   const { user } = useContext(KushareAuth)
@@ -49,10 +48,6 @@ export default function KushareDrive() {
   const folders = useRecoilValue(folderState)
   const { isOpen } = useRecoilValue(OpenImageState)
   const { isLoading } = useGdrive()
-  const [openDialog, setOpenDialog] = useState(true)
-  const [component, setComponent] = useState<JSX.Element | null>(null)
-
-  // const
 
   if (isLoading) return <KushareDriveBackbone />
 
@@ -80,7 +75,6 @@ export default function KushareDrive() {
       </div>
       {isOpen && <ImagePlayground />}
       {contextMenu.isOpen && <Options />}
-      <Dialog />
     </div>
   ) : (
     <EmptyContent />

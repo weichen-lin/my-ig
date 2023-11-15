@@ -170,10 +170,6 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"id": folder.ID, "name": params.Name})
 }
 
-type DeleteFolderReq struct {
-	ID string `json:"id" binding:"required"`
-}
-
 type MoveFolderReq struct {
 	ID       string `json:"id" binding:"required"`
 	LocateAt string `json:"locateAt" binding:"required"`
@@ -273,4 +269,61 @@ func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, folder.FullPath)
+}
+
+type DeleteFolderReq struct {
+	IDs []string `json:"ids" binding:"required"`
+}
+
+func (s *Controller) DeleteFolders(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	var params DeleteFolderReq
+
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	idsToUUIDs := make([]uuid.UUID, len(params.IDs))
+	for i, id := range params.IDs {
+		uuid, err := uuid.Parse(id)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+		idsToUUIDs[i] = uuid
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
+
+	err = q.UpdateFoldersDeleted(ctx, db.UpdateFoldersDeletedParams{
+		Ids:    idsToUUIDs,
+		UserID: userId,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "success")
 }

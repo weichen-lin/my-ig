@@ -424,6 +424,7 @@ func Test_MoveFolder_3_to_1(t *testing.T) {
 		FullPath: fullPath,
 		ID:       moveFolderArg.ID,
 	})
+	require.NoError(t, err)
 
 	finalFolder, err := q.GetFolder(context.Background(), moveFolder.ID)
 	require.NoError(t, err)
@@ -517,6 +518,7 @@ func Test_DeleteFolder(t *testing.T) {
 	}
 
 	folder, err := CreateFolderWithFullPathAtTest(context.Background(), arg)
+	require.NoError(t, err)
 
 	tx, err := pool.Begin(context.Background())
 	require.NoError(t, err)
@@ -569,4 +571,72 @@ func Test_GetFolders(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Len(t, folders, 2)
+}
+
+func Test_UpdateFoldersDeleted(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg_1 := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: uuid.Nil,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	folder_1, err := CreateFolderWithFullPathAtTest(context.Background(), arg_1)
+	require.NoError(t, err)
+	require.NotEmpty(t, folder_1)
+
+	arg_2 := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: uuid.Nil,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	folder_2, err := CreateFolderWithFullPathAtTest(context.Background(), arg_2)
+	require.NoError(t, err)
+	require.NotEmpty(t, folder_2)
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	folders, err := q.SelectFolders(context.Background(), SelectFoldersParams{
+		UserID:   user.ID,
+		LocateAt: uuid.Nil,
+	})
+	require.NoError(t, err)
+	require.Len(t, folders, 2)
+
+	var Ids []uuid.UUID
+
+	for i := 0; i < len(folders); i++ {
+		Ids = append(Ids, folders[i].ID)
+	}
+
+	err = q.UpdateFoldersDeleted(context.Background(), UpdateFoldersDeletedParams{
+		Ids:    Ids,
+		UserID: user.ID,
+	})
+	require.NoError(t, err)
+
+	folder_1_afterUpdate, err := q.GetFolder(context.Background(), folder_1.ID)
+	require.NoError(t, err)
+	require.Equal(t, true, folder_1_afterUpdate.IsDeleted)
+	require.Equal(t, folder_1.ID, folder_1_afterUpdate.ID)
+	require.Equal(t, folder_1.Name, folder_1_afterUpdate.Name)
+	require.Equal(t, folder_1.LocateAt, folder_1_afterUpdate.LocateAt)
+
+	folder_2_afterUpdate, err := q.GetFolder(context.Background(), folder_2.ID)
+	require.NoError(t, err)
+	require.Equal(t, true, folder_2_afterUpdate.IsDeleted)
+	require.Equal(t, folder_2.ID, folder_2_afterUpdate.ID)
+	require.Equal(t, folder_2.Name, folder_2_afterUpdate.Name)
+	require.Equal(t, folder_2.LocateAt, folder_2_afterUpdate.LocateAt)
+
+	tx.Commit(context.Background())
 }
