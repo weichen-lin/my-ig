@@ -275,7 +275,7 @@ type DeleteFolderReq struct {
 	IDs []string `json:"ids" binding:"required"`
 }
 
-func (s *Controller) DeleteFolders(ctx *gin.Context){
+func (s *Controller) DeleteFolders(ctx *gin.Context) {
 	id := ctx.Value("userId").(string)
 
 	userId, err := uuid.Parse(id)

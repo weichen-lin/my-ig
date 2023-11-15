@@ -71,7 +71,6 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	file.PATCH("/update", ctl.AuthMiddleware(), ctl.UpdateFileDescription)
 	file.DELETE("/delete", ctl.AuthMiddleware(), ctl.DeleteFiles)
 
-
 	r.GET("/disk", ctl.AuthMiddleware(), ctl.GetDisk)
 	disk := r.Group("/disk")
 	disk.GET("/breadcrumb", ctl.AuthMiddleware(), ctl.GetBreadCrumbs)

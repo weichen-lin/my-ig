@@ -613,13 +613,13 @@ func Test_UpdateFoldersDeleted(t *testing.T) {
 	require.Len(t, folders, 2)
 
 	var Ids []uuid.UUID
-	
+
 	for i := 0; i < len(folders); i++ {
 		Ids = append(Ids, folders[i].ID)
 	}
-		
+
 	err = q.UpdateFoldersDeleted(context.Background(), UpdateFoldersDeletedParams{
-		Ids:     Ids,
+		Ids:    Ids,
 		UserID: user.ID,
 	})
 	require.NoError(t, err)

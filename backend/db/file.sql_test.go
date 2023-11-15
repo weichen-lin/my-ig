@@ -265,8 +265,8 @@ func Test_UpdateFilesDelete(t *testing.T) {
 	}
 
 	err = q.UpdateFilesDeleted(context.Background(), UpdateFilesDeletedParams{
-		Ids:            Ids,
-		UserID:         user.ID,
+		Ids:    Ids,
+		UserID: user.ID,
 	})
 	require.NoError(t, err)
 
@@ -280,7 +280,6 @@ func Test_UpdateFilesDelete(t *testing.T) {
 	require.Equal(t, file_1_after_update.ID, file_1.ID)
 	require.Equal(t, file_1_after_update.Name, file_1.Name)
 	require.Equal(t, file_1_after_update.Url, file_1.Url)
-
 
 	file_2_after_update, err := q.GetFile(context.Background(), GetFileParams{
 		ID:     file_1.ID,
