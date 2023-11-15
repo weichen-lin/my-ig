@@ -5,6 +5,7 @@ import { RxHamburgerMenu } from 'react-icons/rx'
 import { useCallback, useState } from 'react'
 import { KushareAuthProvider } from 'context'
 import Image from 'next/image'
+import { Dialog } from 'components/utils'
 
 export default function LayoutHome(props: { children: JSX.Element }) {
   const { children } = props
@@ -27,6 +28,7 @@ export default function LayoutHome(props: { children: JSX.Element }) {
             </div>
             {children}
           </div>
+          <Dialog />
         </div>
       ) : (
         <div className='flex flex-col h-screen w-full'>
@@ -39,6 +41,7 @@ export default function LayoutHome(props: { children: JSX.Element }) {
           </div>
           <MobileMenu isOpen={openMenu} close={closeMenu} />
           {children}
+          <Dialog />
         </div>
       )}
     </KushareAuthProvider>

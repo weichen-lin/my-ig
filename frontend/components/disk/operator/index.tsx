@@ -2,7 +2,6 @@ import clsx from 'clsx'
 import { ListMethod, listMethodState } from 'store'
 import { useIsMobile } from 'hooks/disk'
 import { PCButton, MobileButton } from './buttons'
-import { useCallback } from 'react'
 import { AddFolder } from 'components/utils'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { SelectedState } from 'store'
@@ -17,15 +16,13 @@ export default function Operator() {
   const [method, setMethod] = useRecoilState(listMethodState)
   const { handleFileUpload } = useFileUpload()
 
-  const handleOpenAddFolder = useCallback(() => {
-    open(<AddFolder />)
-  }, [])
-
   const Buttons = [
     {
       name: 'bx:plus',
       message: '建立',
-      onClick: handleOpenAddFolder,
+      onClick: () => {
+        open(<AddFolder />)
+      },
     },
     {
       name: 'basil:upload-solid',
