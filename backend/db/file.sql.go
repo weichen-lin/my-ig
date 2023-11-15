@@ -116,7 +116,7 @@ func (q *Queries) SelectFileDescription(ctx context.Context, arg SelectFileDescr
 }
 
 const selectFiles = `-- name: SelectFiles :many
-SELECT id, name, last_modified_at FROM "file" WHERE locate_at = $1 AND user_id = $2 ORDER BY last_modified_at ASC
+SELECT id, name, last_modified_at FROM "file" WHERE locate_at = $1 AND user_id = $2 AND is_deleted = FALSE ORDER BY last_modified_at ASC
 `
 
 type SelectFilesParams struct {
