@@ -59,7 +59,6 @@ func (s *Controller) GetDisk(ctx *gin.Context) {
 	})
 }
 
-
 type DeleteFilesAndFoldersParams struct {
 	FileIDs   []string `json:"fileIds"`
 	FolderIDs []string `json:"folderIds"`

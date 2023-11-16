@@ -170,67 +170,6 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"id": folder.ID, "name": params.Name})
 }
 
-type MoveFolderReq struct {
-	ID       string `json:"id" binding:"required"`
-	LocateAt string `json:"locateAt" binding:"required"`
-}
-
-func (s *Controller) MoveFolder(ctx *gin.Context) {
-	id := ctx.Value("userId").(string)
-
-	userId, err := uuid.Parse(id)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
-		return
-	}
-
-	var params MoveFolderReq
-
-	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	currentId, err := uuid.Parse(params.ID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	moveToId, err := uuid.Parse(params.LocateAt)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	tx, err := s.Pool.Begin(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	q := db.New(tx)
-	defer func() {
-		if err != nil {
-			tx.Rollback(ctx)
-		}
-		tx.Commit(ctx)
-	}()
-
-	err = q.MoveFolderWithId(ctx, db.MoveFolderFuncParams{
-		ID:     currentId,
-		MoveTo: moveToId,
-		UserID: userId,
-	})
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, "success")
-}
-
 func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
 	id_from_param := ctx.DefaultQuery("id", "")
 
