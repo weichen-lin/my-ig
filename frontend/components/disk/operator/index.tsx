@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { ListMethod, listMethodState } from 'store'
 import { useIsMobile } from 'hooks/disk'
 import { PCButton, MobileButton } from './buttons'
-import { AddFolder } from 'components/utils'
+import { AddFolder, Select } from 'components/utils'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { SelectedState } from 'store'
 import { useFileUpload } from 'hooks/disk'
@@ -21,7 +21,7 @@ export default function Operator() {
       name: 'bx:plus',
       message: '建立',
       onClick: () => {
-        open(<AddFolder />)
+        open(<Select />)
       },
     },
     {

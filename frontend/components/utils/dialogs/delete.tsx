@@ -1,6 +1,6 @@
 import { folderState, fileState } from 'store'
 import { useRecoilState } from 'recoil'
-import { ConfirmDialog } from './confirm'
+import ConfirmDialog from './confirm'
 import { useDialog } from 'hooks/disk'
 import { deleteDisk, useFetch } from 'api'
 import { useResetRecoilState } from 'recoil'
