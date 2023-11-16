@@ -41,5 +41,5 @@ export const uploadAvatar = async (data: FormData) =>
 export const tokenAuth = async (token: string) => axios.get(`${BaseUrl}/user/validate?token=${token}`)
 export const renameFolder = async (data: { id: string; name: string }) => fetcher.patch('/folder/rename', data)
 export const renamFile = async (data: { id: string; name: string }) => fetcher.patch('/file/rename', data)
-export const deleteFolders = async (data: { ids: string[] }) => fetcher.patch('/folder/delete', data)
-export const deleteFiles = async (data: { ids: string[] }) => fetcher.patch('/file/delete', data)
+export const deleteDisk = async (data: { fileIds: string[]; folderIds: string[] }) =>
+  fetcher.patch('/disk/delete', data)
