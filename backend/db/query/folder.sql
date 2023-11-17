@@ -19,6 +19,9 @@ DELETE FROM "folder" WHERE id = $1 and user_id = $2;
 -- name: SelectFolders :many
 SELECT id, name, last_modified_at FROM "folder" WHERE locate_at = $1 AND user_id = $2 AND is_deleted = FALSE ORDER BY last_modified_at ASC;
 
+-- name: SelectAllFoldersWithOffset :many
+SELECT id, name FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE ORDER BY last_modified_at ASC LIMIT 10 OFFSET $2;
+
 -- name: UpdateFoldersDeleted :exec
 UPDATE "folder" SET is_deleted = True WHERE user_id = $1 AND id = any(sqlc.arg('ids')::uuid[]);
 

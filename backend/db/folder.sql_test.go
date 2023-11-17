@@ -494,3 +494,36 @@ func Test_UpdateFoldersDeleted(t *testing.T) {
 
 	tx.Commit(context.Background())
 }
+
+func Test_SelectAllFoldersWithOffset(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	for i := 0; i < 100; i++ {
+		arg := CreateFolderParams{
+			Name:     faker.Name(),
+			LocateAt: uuid.Nil,
+			Depth:    1,
+			UserID:   user.ID,
+		}
+
+		folder, err := CreateFolderWithFullPathAtTest(context.Background(), arg)
+		require.NoError(t, err)
+		require.NotEmpty(t, folder)
+	}
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+
+	selectedFolders, err := q.SelectAllFoldersWithOffset(context.Background(), SelectAllFoldersWithOffsetParams{
+		UserID: user.ID,
+		Offset: 10,
+	})
+	require.NoError(t, err)
+	require.Len(t, selectedFolders, 10)
+
+	tx.Commit(context.Background())
+}

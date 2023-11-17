@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -265,4 +266,41 @@ func (s *Controller) DeleteFolders(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, "success")
+}
+
+func (s *Controller) GetFolderList(ctx *gin.Context) {
+	f := ctx.DefaultQuery("p", "")
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(conn)
+	defer conn.Release()
+
+	offset, err := strconv.ParseInt(f, 10, 32)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	folders, err := q.SelectAllFoldersWithOffset(ctx, db.SelectAllFoldersWithOffsetParams{
+		UserID: userId,
+		Offset: int32(offset),
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, folders)
 }

@@ -165,6 +165,40 @@ func (q *Queries) MoveFolders(ctx context.Context, arg MoveFoldersParams) error 
 	return err
 }
 
+const selectAllFoldersWithOffset = `-- name: SelectAllFoldersWithOffset :many
+SELECT id, name FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE ORDER BY last_modified_at ASC LIMIT 10 OFFSET $2
+`
+
+type SelectAllFoldersWithOffsetParams struct {
+	UserID uuid.UUID `json:"userId"`
+	Offset int32     `json:"offset"`
+}
+
+type SelectAllFoldersWithOffsetRow struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+func (q *Queries) SelectAllFoldersWithOffset(ctx context.Context, arg SelectAllFoldersWithOffsetParams) ([]SelectAllFoldersWithOffsetRow, error) {
+	rows, err := q.db.Query(ctx, selectAllFoldersWithOffset, arg.UserID, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectAllFoldersWithOffsetRow
+	for rows.Next() {
+		var i SelectAllFoldersWithOffsetRow
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectFolders = `-- name: SelectFolders :many
 SELECT id, name, last_modified_at FROM "folder" WHERE locate_at = $1 AND user_id = $2 AND is_deleted = FALSE ORDER BY last_modified_at ASC
 `

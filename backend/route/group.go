@@ -58,9 +58,10 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 
 	folder := r.Group("/folder")
 	folder.GET("/:id", ctl.AuthMiddleware(), ctl.GetBreadCrumbs)
+	folder.GET("/list", ctl.AuthMiddleware(), ctl.GetFolderList)
 	folder.POST("/create", ctl.AuthMiddleware(), ctl.CreateFolder)
 	folder.PATCH("/rename", ctl.AuthMiddleware(), ctl.UpdateFolderName)
-
+	
 	file := r.Group("/file")
 	file.GET("/:id", ctl.AuthMiddlewareWithCookie(), ctl.GetFile)
 	file.GET("/description/:id", ctl.AuthMiddleware(), ctl.GetFileDescription)
@@ -73,6 +74,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 	disk := r.Group("/disk")
 	disk.GET("/breadcrumb", ctl.AuthMiddleware(), ctl.GetBreadCrumbs)
 	disk.PATCH("/delete", ctl.AuthMiddleware(), ctl.DeleteFilesAndFolders)
+	disk.PATCH("/move", ctl.AuthMiddleware(), ctl.MoveFilesAndFolders)
 
 	return r
 }
