@@ -201,7 +201,7 @@ func (q *Queries) SelectFolders(ctx context.Context, arg SelectFoldersParams) ([
 }
 
 const selectFoldersForMove = `-- name: SelectFoldersForMove :many
-SELECT id FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE AND id = any($2::uuid[])
+SELECT id, locate_at, full_path FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE AND id = any($2::uuid[])
 `
 
 type SelectFoldersForMoveParams struct {
@@ -209,19 +209,25 @@ type SelectFoldersForMoveParams struct {
 	Ids    []uuid.UUID `json:"ids"`
 }
 
-func (q *Queries) SelectFoldersForMove(ctx context.Context, arg SelectFoldersForMoveParams) ([]uuid.UUID, error) {
+type SelectFoldersForMoveRow struct {
+	ID       uuid.UUID `json:"id"`
+	LocateAt uuid.UUID `json:"locateAt"`
+	FullPath []Path    `json:"fullPath"`
+}
+
+func (q *Queries) SelectFoldersForMove(ctx context.Context, arg SelectFoldersForMoveParams) ([]SelectFoldersForMoveRow, error) {
 	rows, err := q.db.Query(ctx, selectFoldersForMove, arg.UserID, arg.Ids)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []uuid.UUID
+	var items []SelectFoldersForMoveRow
 	for rows.Next() {
-		var id uuid.UUID
-		if err := rows.Scan(&id); err != nil {
+		var i SelectFoldersForMoveRow
+		if err := rows.Scan(&i.ID, &i.LocateAt, &i.FullPath); err != nil {
 			return nil, err
 		}
-		items = append(items, id)
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

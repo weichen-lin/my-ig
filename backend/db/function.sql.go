@@ -96,20 +96,20 @@ func (q *Queries) MoveFoldersWithIds(ctx context.Context, args MoveFolderWithIds
 		return err
 	}
 
-	firstFolderAfterMove, err := q.GetFolder(ctx, args.Ids[0])
-	if err != nil {
-		return err
-	}
+	for _, folder := range folders {
+		fullPath, err := q.GetFolderFullPath(ctx, folder.ID)
+		if err != nil {
+			return err
+		}
 
-	fullPath, err := q.GetFolderFullPath(ctx, firstFolderAfterMove.ID)
-	if err != nil {
-		return err
+		err = q.UpdateFullPath(ctx, UpdateFullPathParams{
+			FullPath: fullPath,
+			ID:       folder.ID,
+		})
+		if err != nil {
+			return err
+		}
 	}
-
-	err = q.UpdateFoldersFullPath(ctx, UpdateFoldersFullPathParams{
-		FullPath: fullPath,
-		Ids:      args.Ids,
-	})
 
 	return err
 }

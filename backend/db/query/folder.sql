@@ -23,7 +23,7 @@ SELECT id, name, last_modified_at FROM "folder" WHERE locate_at = $1 AND user_id
 UPDATE "folder" SET is_deleted = True WHERE user_id = $1 AND id = any(sqlc.arg('ids')::uuid[]);
 
 -- name: SelectFoldersForMove :many
-SELECT id FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE AND id = any(sqlc.arg('ids')::uuid[]);
+SELECT id, locate_at, full_path FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE AND id = any(sqlc.arg('ids')::uuid[]);
 
 -- name: GetFoldersForSelectMoveTo :many
 SELECT id, name FROM "folder" WHERE locate_at = $1 AND user_id = $2 AND is_deleted = FALSE ORDER BY last_modified_at ASC LIMIT 10 OFFSET $3;

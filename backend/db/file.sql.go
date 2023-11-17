@@ -172,7 +172,7 @@ func (q *Queries) SelectFiles(ctx context.Context, arg SelectFilesParams) ([]Sel
 }
 
 const selectFilesForMove = `-- name: SelectFilesForMove :many
-SELECT id FROM "file" WHERE user_id = $1 AND is_deleted = FALSE AND id = any($2::uuid[])
+SELECT id, locate_at FROM "file" WHERE user_id = $1 AND is_deleted = FALSE AND id = any($2::uuid[])
 `
 
 type SelectFilesForMoveParams struct {
@@ -180,19 +180,24 @@ type SelectFilesForMoveParams struct {
 	Ids    []uuid.UUID `json:"ids"`
 }
 
-func (q *Queries) SelectFilesForMove(ctx context.Context, arg SelectFilesForMoveParams) ([]uuid.UUID, error) {
+type SelectFilesForMoveRow struct {
+	ID       uuid.UUID `json:"id"`
+	LocateAt uuid.UUID `json:"locateAt"`
+}
+
+func (q *Queries) SelectFilesForMove(ctx context.Context, arg SelectFilesForMoveParams) ([]SelectFilesForMoveRow, error) {
 	rows, err := q.db.Query(ctx, selectFilesForMove, arg.UserID, arg.Ids)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []uuid.UUID
+	var items []SelectFilesForMoveRow
 	for rows.Next() {
-		var id uuid.UUID
-		if err := rows.Scan(&id); err != nil {
+		var i SelectFilesForMoveRow
+		if err := rows.Scan(&i.ID, &i.LocateAt); err != nil {
 			return nil, err
 		}
-		items = append(items, id)
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
