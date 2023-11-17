@@ -43,3 +43,4 @@ export const renameFolder = async (data: { id: string; name: string }) => fetche
 export const renamFile = async (data: { id: string; name: string }) => fetcher.patch('/file/rename', data)
 export const deleteDisk = async (data: { fileIds: string[]; folderIds: string[] }) =>
   fetcher.patch('/disk/delete', data)
+export const getFolders = async (nums: number) => fetcher.get(`/folder/list?p=${nums}`)

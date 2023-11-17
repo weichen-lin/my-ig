@@ -292,7 +292,7 @@ func (s *Controller) GetFolderList(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-
+	
 	folders, err := q.SelectAllFoldersWithOffset(ctx, db.SelectAllFoldersWithOffsetParams{
 		UserID: userId,
 		Offset: int32(offset),

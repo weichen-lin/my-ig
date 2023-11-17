@@ -19,7 +19,7 @@ export default function useFetch<T, V>(
   const [error, setError] = useState<Error | null>(null)
   const [refreshControl, setRefreshControl] = useState<boolean>(false)
   const [needRefresh, setNeedRefresh] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(props?.needInitialRun ?? false)
 
   const run = (params: T) => {
     const fetchData = async () => {
