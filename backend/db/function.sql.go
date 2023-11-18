@@ -78,10 +78,20 @@ func (q *Queries) MoveFoldersWithIds(ctx context.Context, args MoveFolderWithIds
 		return errors.New("some folders not found")
 	}
 
-	targetFolder, err := q.GetFolder(ctx, args.MoveTo)
+	var targetFolder Folder
 
-	if err != nil || targetFolder.UserID != args.UserID {
-		return ErrTargetFolderNotFound
+	if args.MoveTo == uuid.Nil {
+		targetFolder = Folder{
+			ID:     uuid.Nil,
+			UserID: args.UserID,
+			Depth:  0,
+		}
+	} else {
+		targetFolder, err := q.GetFolder(ctx, args.MoveTo)
+
+		if err != nil || targetFolder.UserID != args.UserID {
+			return ErrTargetFolderNotFound
+		}
 	}
 
 	err = q.MoveFolders(ctx, MoveFoldersParams{
@@ -134,10 +144,12 @@ func (q *Queries) MoveFileWithIds(ctx context.Context, args MoveFileWithIdsParam
 		return errors.New("some files not found")
 	}
 
-	targetFolder, err := q.GetFolder(ctx, args.MoveTo)
+	if args.MoveTo != uuid.Nil {
+		targetFolder, err := q.GetFolder(ctx, args.MoveTo)
 
-	if err != nil || targetFolder.UserID != args.UserID {
-		return ErrTargetFolderNotFound
+		if err != nil || targetFolder.UserID != args.UserID {
+			return ErrTargetFolderNotFound
+		}
 	}
 
 	err = q.MoveFiles(ctx, MoveFilesParams{

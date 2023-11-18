@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { useContextMenu } from 'hooks/disk'
 import { useRecoilValue } from 'recoil'
 import { SelectedState, fileState, folderState } from 'store'
-import { Rename, Delete } from 'components/utils'
+import { Rename, Delete, Move } from 'components/utils'
 import { useDialog } from 'hooks/disk'
 
 interface OptionProps {
@@ -72,6 +72,10 @@ export function Options() {
     open(<Delete message={message} selected={selected} />)
   }
 
+  const openMove = () => {
+    open(<Move selected={selected} />)
+  }
+
   return (
     <div
       className={clsx(
@@ -91,7 +95,7 @@ export function Options() {
       <Option
         icon='material-symbols-light:drive-file-move-outline-rounded'
         text='移動至'
-        onClick={() => {}}
+        onClick={openMove}
         close={close}
         disabled={false}
       />

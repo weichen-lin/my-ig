@@ -13,7 +13,6 @@ export default function useContextMenu() {
   }
 
   const open = (x: number, y: number, cb?: (...args: any) => any) => {
-    console.log({ x, y })
     setMenu(prev => ({ ...prev, isOpen: true, x, y }))
     cb && cb()
   }

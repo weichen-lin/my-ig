@@ -189,10 +189,15 @@ func (s *Controller) MoveFilesAndFolders(ctx *gin.Context) {
 		fileIdsToUUIDs[i] = uuid
 	}
 
-	targetIdToUUID, err := uuid.Parse(params.TargetID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
+	var targetIdToUUID uuid.UUID
+	if params.TargetID != "root" {
+		targetIdToUUID, err = uuid.Parse(params.TargetID)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+	} else {
+		targetIdToUUID = uuid.Nil
 	}
 	
 	err = q.MoveFoldersWithIds(ctx, db.MoveFolderWithIdsParams{

@@ -3,6 +3,6 @@ import AddFolder from './addfolder'
 import ConfirmDialog from './confirm'
 import Rename from './rename'
 import Delete from './delete'
-import Select from './select'
+import Move from './move'
 
-export { AddFolder, BaseDialog, ConfirmDialog, Rename, Delete, Select }
+export { AddFolder, BaseDialog, ConfirmDialog, Rename, Delete, Move }

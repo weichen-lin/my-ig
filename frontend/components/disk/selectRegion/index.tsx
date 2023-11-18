@@ -2,7 +2,7 @@ import { useRecoilValue, useResetRecoilState } from 'recoil'
 import { SelectedState } from 'store'
 import { Icon } from '@iconify/react'
 import { useDialog } from 'hooks/disk'
-import { Delete, Select } from 'components/utils'
+import { Delete, Move } from 'components/utils'
 
 export default function SelectRegion() {
   const selected = useRecoilValue(SelectedState)
@@ -21,7 +21,7 @@ export default function SelectRegion() {
   const openMove = () => {
     if (selectedCount === 0) return
 
-    open(<Select selected={selected} />)
+    open(<Move selected={selected} />)
   }
 
   return (

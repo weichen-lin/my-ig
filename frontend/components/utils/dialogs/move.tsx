@@ -12,13 +12,13 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 
-interface SelectProps {
+interface MoveProps {
   selected: { files: string[]; folders: string[] }
 }
 
 const BackBoneNumber = 5
 
-const Select = (props: SelectProps) => {
+const Move = (props: MoveProps) => {
   const { selected } = props
   const { close } = useDialog()
   const router = useRouter()
@@ -51,7 +51,7 @@ const Select = (props: SelectProps) => {
   const { run: runMove, isLoading: moveLoading } = useFetch(moveDisk, {
     onSuccess: data => {
       if (data) {
-        toast.success('移動成功')
+        toast.success('移動成功', { position: 'bottom-left' })
         reset()
         const remainFiles = files.filter(file => !selected.files.includes(file.id))
         const remainFolders = folders.filter(folder => !selected.folders.includes(folder.id))
@@ -59,6 +59,9 @@ const Select = (props: SelectProps) => {
         setFolders(remainFolders)
         close()
       }
+    },
+    onError: () => {
+      toast.error('移動失敗', { position: 'bottom-left' })
     },
   })
 
@@ -75,6 +78,9 @@ const Select = (props: SelectProps) => {
   const selectedCount = selected.files.length + selected.folders.length
   const message = selectedCount === 1 ? `移動 「 ${getName()} 」` : `移動 ${selectedCount} 個項目`
   const canMoveFolders = folderCanMoves.filter(e => e.id !== router.query.f && !selected.folders.includes(e.id))
+  if (currentFolder?.name !== '根目錄') {
+    canMoveFolders.push({ id: 'root', name: '根目錄' })
+  }
 
   useEffect(() => {
     if (currentFolderId) {
@@ -110,18 +116,20 @@ const Select = (props: SelectProps) => {
             <span className='text-sm font-semibold text-slate-500/60'>目前暫無可移動之資料夾</span>
           </div>
         ) : (
-          canMoveFolders?.map(e => (
-            <Option
-              key={`option-${e.id}`}
-              id={e.id}
-              name={e.name}
-              isSelect={isSelect}
-              onClick={() => {
-                setIsSelect(e.id)
-              }}
-              onDoubleClick={onDoubleClick}
-            />
-          ))
+          canMoveFolders
+            ?.sort(e => (e.name === '根目錄' ? -1 : 1))
+            .map(e => (
+              <Option
+                key={`option-${e.id}`}
+                id={e.id}
+                name={e.name}
+                isSelect={isSelect}
+                onClick={() => {
+                  setIsSelect(e.id)
+                }}
+                onDoubleClick={onDoubleClick}
+              />
+            ))
         )}
       </div>
       <div className='flex justify-end gap-x-2'>
@@ -180,5 +188,5 @@ const BackBone = () => {
   )
 }
 
-Select.displayName = 'Select'
-export default Select
+Move.displayName = 'Select'
+export default Move
