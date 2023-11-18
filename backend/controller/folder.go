@@ -268,6 +268,49 @@ func (s *Controller) DeleteFolders(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, "success")
 }
 
+func (s *Controller) GetFolderDetail(ctx *gin.Context){
+	id := ctx.DefaultQuery("id", "")
+
+	folderId, err := util.ParseUUID(id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrFolderIdInvalid))
+		return
+	}
+
+	id_from_ctx := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id_from_ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(conn)
+	defer conn.Release()
+
+	folder, err := q.GetFolder(ctx, folderId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if folder.UserID != userId {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"id": folder.ID,
+		"name": folder.Name,
+	})
+}
+
 func (s *Controller) GetFolderList(ctx *gin.Context) {
 	f := ctx.DefaultQuery("p", "")
 	id := ctx.Value("userId").(string)

@@ -168,7 +168,7 @@ func (s *Controller) MoveFilesAndFolders(ctx *gin.Context) {
 		}
 		tx.Commit(ctx)
 	}()
-
+		
 	folderIdsToUUIDs := make([]uuid.UUID, len(params.FolderIDs))
 	for i, id := range params.FolderIDs {
 		uuid, err := uuid.Parse(id)
@@ -196,7 +196,7 @@ func (s *Controller) MoveFilesAndFolders(ctx *gin.Context) {
 	}
 	
 	err = q.MoveFoldersWithIds(ctx, db.MoveFolderWithIdsParams{
-		Ids:    fileIdsToUUIDs,
+		Ids:    folderIdsToUUIDs,
 		UserID: userId,
 		MoveTo: targetIdToUUID,
 	})

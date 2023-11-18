@@ -2,7 +2,7 @@ import { useRecoilValue, useResetRecoilState } from 'recoil'
 import { SelectedState } from 'store'
 import { Icon } from '@iconify/react'
 import { useDialog } from 'hooks/disk'
-import { Delete } from 'components/utils'
+import { Delete, Select } from 'components/utils'
 
 export default function SelectRegion() {
   const selected = useRecoilValue(SelectedState)
@@ -18,6 +18,12 @@ export default function SelectRegion() {
     open(<Delete message={message} selected={selected} />)
   }
 
+  const openMove = () => {
+    if (selectedCount === 0) return
+
+    open(<Select selected={selected} />)
+  }
+
   return (
     <div className='bg-blue-100/40 w-full px-2 py-[6px] rounded-lg flex gap-x-2 items-center animate-[fadeIn_0.2s_ease-in-out_forwards]'>
       <Icon
@@ -31,6 +37,7 @@ export default function SelectRegion() {
       <Icon
         icon='material-symbols-light:drive-file-move-outline-rounded'
         className='w-7 h-7 p-1 cursor-pointer hover:bg-slate-300 rounded-full'
+        onClick={() => openMove()}
       />
       <Icon
         icon='iconamoon:trash-thin'

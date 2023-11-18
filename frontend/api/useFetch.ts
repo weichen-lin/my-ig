@@ -21,12 +21,12 @@ export default function useFetch<T, V>(
   const [needRefresh, setNeedRefresh] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(props?.needInitialRun ?? false)
 
-  const run = (params: T) => {
+  const run = (params?: T) => {
     const fetchData = async () => {
       setIsLoading(true)
       setError(null)
       try {
-        const res = await api(params)
+        const res = await api(params!)
         setData(res.data)
         props?.onSuccess && props.onSuccess(res.data)
       } catch (e) {
@@ -51,7 +51,7 @@ export default function useFetch<T, V>(
 
   useEffect(() => {
     if (props?.needInitialRun || needRefresh) {
-      run({} as T)
+      run()
       if (needRefresh) setNeedRefresh(false)
     }
   }, [refreshControl])

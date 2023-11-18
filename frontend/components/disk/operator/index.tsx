@@ -21,7 +21,7 @@ export default function Operator() {
       name: 'bx:plus',
       message: '建立',
       onClick: () => {
-        open(<Select />)
+        open(<AddFolder />)
       },
     },
     {
