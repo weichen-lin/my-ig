@@ -16,5 +16,11 @@ UPDATE "file" SET description = $1 WHERE id = $2 AND user_id = $3;
 -- name: RenameFile :one
 UPDATE "file" SET name = $1, last_modified_at = $2 WHERE id = $3 AND user_id = $4 RETURNING id, name;
 
+-- name: SelectFilesForMove :many
+SELECT id, locate_at FROM "file" WHERE user_id = $1 AND is_deleted = FALSE AND id = any(sqlc.arg('ids')::uuid[]);
+
 -- name: UpdateFilesDeleted :exec
 UPDATE "file" SET is_deleted = True WHERE user_id = $1 AND id = any(sqlc.arg('ids')::uuid[]);
+
+-- name: MoveFiles :exec
+UPDATE "file" SET locate_at = $1, last_modified_at = $2 WHERE user_id = $3 AND id = any(sqlc.arg('ids')::uuid[]);

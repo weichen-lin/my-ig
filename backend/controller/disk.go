@@ -59,7 +59,6 @@ func (s *Controller) GetDisk(ctx *gin.Context) {
 	})
 }
 
-
 type DeleteFilesAndFoldersParams struct {
 	FileIDs   []string `json:"fileIds"`
 	FolderIDs []string `json:"folderIds"`
@@ -126,6 +125,90 @@ func (s *Controller) DeleteFilesAndFolders(ctx *gin.Context) {
 	err = q.UpdateFoldersDeleted(ctx, db.UpdateFoldersDeletedParams{
 		Ids:    folderIdsToUUIDs,
 		UserID: userId,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "success")
+}
+
+type MoveFilesAndFoldersParams struct {
+	FileIDs   []string `json:"fileIds"`
+	FolderIDs []string `json:"folderIds"`
+	TargetID  string   `json:"targetId"`
+}
+
+func (s *Controller) MoveFilesAndFolders(ctx *gin.Context) {
+	var params MoveFilesAndFoldersParams
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrInvalidRequest))
+		return
+	}
+
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(tx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		}
+		tx.Commit(ctx)
+	}()
+		
+	folderIdsToUUIDs := make([]uuid.UUID, len(params.FolderIDs))
+	for i, id := range params.FolderIDs {
+		uuid, err := uuid.Parse(id)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+		folderIdsToUUIDs[i] = uuid
+	}
+
+	fileIdsToUUIDs := make([]uuid.UUID, len(params.FileIDs))
+	for i, id := range params.FileIDs {
+		uuid, err := uuid.Parse(id)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+		fileIdsToUUIDs[i] = uuid
+	}
+
+	targetIdToUUID, err := uuid.Parse(params.TargetID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	err = q.MoveFoldersWithIds(ctx, db.MoveFolderWithIdsParams{
+		Ids:    folderIdsToUUIDs,
+		UserID: userId,
+		MoveTo: targetIdToUUID,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	err = q.MoveFileWithIds(ctx, db.MoveFileWithIdsParams{
+		Ids:    fileIdsToUUIDs,
+		UserID: userId,
+		MoveTo: targetIdToUUID,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

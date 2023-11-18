@@ -12,15 +12,11 @@ module.exports = {
       '4xl': '1800px',
       ...defaultTheme.screens,
     },
-    extend: {},
+    extend: {
+      backgroundColor: {
+        googleDriveGray: '#ededed',
+      },
+    },
   },
   plugins: [],
 }
-
-// 'sm' | 'md' | 'lg' | 'xl' | '2xl'
-// screens: {
-//       sm: '480px',
-//       md: '768px',
-//       lg: '976px',
-//       xl: '1440px',
-//     },

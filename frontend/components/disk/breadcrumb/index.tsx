@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 import { Icon } from '@iconify/react'
 import { useBreadCrumb } from 'hooks/disk'
 import { Breadcrumb } from 'store'
+import { useResetRecoilState } from 'recoil'
+import { SelectedState } from 'store'
 
 const BreadCrumbMobile = (props: { info: Breadcrumb[] }) => {
   const { info } = props
@@ -32,6 +34,7 @@ const BreadCrumbBackBone = (props: { isMobile: boolean }) => {
 const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => {
   const { isMobile, data } = props
   const router = useRouter()
+  const reset = useResetRecoilState(SelectedState)
 
   const atRoot = data?.length === 0
 
@@ -57,6 +60,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
   }
 
   const handleMobileBack = async () => {
+    reset()
     if (Array.isArray(data) && data.length > 0) {
       if (data.length === 1) {
         await router.push('/home')
@@ -83,6 +87,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
           `${!atRoot && 'hover:cursor-pointer hover:text-gray-500/70'}`,
         )}
         onClick={async () => {
+          reset()
           await router.push('/home')
         }}
       >

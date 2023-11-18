@@ -35,49 +35,6 @@ var (
 	ErrFolderMoveToItself    = errors.New("can't move folder to itself")
 )
 
-func (q *Queries) MoveFolderWithId(ctx context.Context, args MoveFolderFuncParams) error {
-	folder, err := q.GetFolder(ctx, args.ID)
-	if err != nil || folder.UserID != args.UserID {
-		return ErrCurrentFolderNotFound
-	}
-
-	folderMoveTo, err := q.GetFolder(ctx, args.MoveTo)
-	if err != nil || folderMoveTo.UserID != args.UserID {
-		return ErrTargetFolderNotFound
-	}
-
-	if folder.LocateAt == args.MoveTo {
-		return ErrFolderMoveToItself
-	}
-
-	folderAfterMove, err := q.MoveFolder(ctx, MoveFolderParams{
-		ID:             args.ID,
-		LocateAt:       args.MoveTo,
-		Depth:          folderMoveTo.Depth + 1,
-		LastModifiedAt: time.Now(),
-		UserID:         args.UserID,
-	})
-	if err != nil {
-		return err
-	}
-
-	fullPath, err := q.GetFolderFullPath(context.Background(), folderAfterMove.ID)
-	if err != nil {
-		return err
-	}
-
-	err = q.UpdateFullPath(context.Background(), UpdateFullPathParams{
-		FullPath: fullPath,
-		ID:       folderAfterMove.ID,
-	})
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (q *Queries) CreateFolderWithFullPath(ctx context.Context, args CreateFolderParams) (Folder, error) {
 	folder, err := q.CreateFolder(ctx, args)
 	if err != nil {
@@ -99,4 +56,96 @@ func (q *Queries) CreateFolderWithFullPath(ctx context.Context, args CreateFolde
 	}
 
 	return folder, nil
+}
+
+type MoveFolderWithIdsParams struct {
+	Ids    []uuid.UUID `json:"ids"`
+	MoveTo uuid.UUID   `json:"moveTo"`
+	UserID uuid.UUID   `json:"userId"`
+}
+
+func (q *Queries) MoveFoldersWithIds(ctx context.Context, args MoveFolderWithIdsParams) error {
+	folders, err := q.SelectFoldersForMove(ctx, SelectFoldersForMoveParams{
+		Ids:    args.Ids,
+		UserID: args.UserID,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if len(folders) != len(args.Ids) {
+		return errors.New("some folders not found")
+	}
+
+	targetFolder, err := q.GetFolder(ctx, args.MoveTo)
+
+	if err != nil || targetFolder.UserID != args.UserID {
+		return ErrTargetFolderNotFound
+	}
+
+	err = q.MoveFolders(ctx, MoveFoldersParams{
+		Ids:            args.Ids,
+		UserID:         args.UserID,
+		Depth:          targetFolder.Depth + 1,
+		LocateAt:       args.MoveTo,
+		LastModifiedAt: time.Now(),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	for _, folder := range folders {
+		fullPath, err := q.GetFolderFullPath(ctx, folder.ID)
+		if err != nil {
+			return err
+		}
+
+		err = q.UpdateFullPath(ctx, UpdateFullPathParams{
+			FullPath: fullPath,
+			ID:       folder.ID,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
+}
+
+type MoveFileWithIdsParams struct {
+	Ids    []uuid.UUID `json:"ids"`
+	MoveTo uuid.UUID   `json:"moveTo"`
+	UserID uuid.UUID   `json:"userId"`
+}
+
+func (q *Queries) MoveFileWithIds(ctx context.Context, args MoveFileWithIdsParams) error {
+	files, err := q.SelectFilesForMove(ctx, SelectFilesForMoveParams{
+		Ids:    args.Ids,
+		UserID: args.UserID,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if len(files) != len(args.Ids) {
+		return errors.New("some files not found")
+	}
+
+	targetFolder, err := q.GetFolder(ctx, args.MoveTo)
+
+	if err != nil || targetFolder.UserID != args.UserID {
+		return ErrTargetFolderNotFound
+	}
+
+	err = q.MoveFiles(ctx, MoveFilesParams{
+		Ids:            args.Ids,
+		UserID:         args.UserID,
+		LocateAt:       args.MoveTo,
+		LastModifiedAt: time.Now(),
+	})
+
+	return err
 }

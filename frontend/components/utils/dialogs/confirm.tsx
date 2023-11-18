@@ -9,7 +9,7 @@ interface ConfirmDialogProps {
   close: () => void
 }
 
-export const ConfirmDialog = (props: ConfirmDialogProps) => {
+export default function ConfirmDialog(props: ConfirmDialogProps) {
   const { submit, disabled, message, onClick, error, close } = props
 
   const Error = ({ message }: { message: string }) => {

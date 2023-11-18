@@ -71,6 +71,27 @@ func (q *Queries) GetFile(ctx context.Context, arg GetFileParams) (File, error) 
 	return i, err
 }
 
+const moveFiles = `-- name: MoveFiles :exec
+UPDATE "file" SET locate_at = $1, last_modified_at = $2 WHERE user_id = $3 AND id = any($4::uuid[])
+`
+
+type MoveFilesParams struct {
+	LocateAt       uuid.UUID   `json:"locateAt"`
+	LastModifiedAt time.Time   `json:"lastModifiedAt"`
+	UserID         uuid.UUID   `json:"userId"`
+	Ids            []uuid.UUID `json:"ids"`
+}
+
+func (q *Queries) MoveFiles(ctx context.Context, arg MoveFilesParams) error {
+	_, err := q.db.Exec(ctx, moveFiles,
+		arg.LocateAt,
+		arg.LastModifiedAt,
+		arg.UserID,
+		arg.Ids,
+	)
+	return err
+}
+
 const renameFile = `-- name: RenameFile :one
 UPDATE "file" SET name = $1, last_modified_at = $2 WHERE id = $3 AND user_id = $4 RETURNING id, name
 `
@@ -140,6 +161,40 @@ func (q *Queries) SelectFiles(ctx context.Context, arg SelectFilesParams) ([]Sel
 	for rows.Next() {
 		var i SelectFilesRow
 		if err := rows.Scan(&i.ID, &i.Name, &i.LastModifiedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const selectFilesForMove = `-- name: SelectFilesForMove :many
+SELECT id, locate_at FROM "file" WHERE user_id = $1 AND is_deleted = FALSE AND id = any($2::uuid[])
+`
+
+type SelectFilesForMoveParams struct {
+	UserID uuid.UUID   `json:"userId"`
+	Ids    []uuid.UUID `json:"ids"`
+}
+
+type SelectFilesForMoveRow struct {
+	ID       uuid.UUID `json:"id"`
+	LocateAt uuid.UUID `json:"locateAt"`
+}
+
+func (q *Queries) SelectFilesForMove(ctx context.Context, arg SelectFilesForMoveParams) ([]SelectFilesForMoveRow, error) {
+	rows, err := q.db.Query(ctx, selectFilesForMove, arg.UserID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectFilesForMoveRow
+	for rows.Next() {
+		var i SelectFilesForMoveRow
+		if err := rows.Scan(&i.ID, &i.LocateAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

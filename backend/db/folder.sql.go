@@ -107,49 +107,96 @@ func (q *Queries) GetFolder(ctx context.Context, id uuid.UUID) (Folder, error) {
 	return i, err
 }
 
-const moveFolder = `-- name: MoveFolder :one
-UPDATE
-	"folder"
-SET
-	locate_at = $1,
-	depth = $2,
-	last_modified_at = $3
-WHERE
-	id = $4
-	AND user_id = $5
-RETURNING
-	id, name, locate_at, full_path, depth, is_deleted, created_at, last_modified_at, user_id
+const getFoldersForSelectMoveTo = `-- name: GetFoldersForSelectMoveTo :many
+SELECT id, name FROM "folder" WHERE locate_at = $1 AND user_id = $2 AND is_deleted = FALSE ORDER BY last_modified_at ASC LIMIT 10 OFFSET $3
 `
 
-type MoveFolderParams struct {
-	LocateAt       uuid.UUID `json:"locateAt"`
-	Depth          int32     `json:"depth"`
-	LastModifiedAt time.Time `json:"lastModifiedAt"`
-	ID             uuid.UUID `json:"id"`
-	UserID         uuid.UUID `json:"userId"`
+type GetFoldersForSelectMoveToParams struct {
+	LocateAt uuid.UUID `json:"locateAt"`
+	UserID   uuid.UUID `json:"userId"`
+	Offset   int32     `json:"offset"`
 }
 
-func (q *Queries) MoveFolder(ctx context.Context, arg MoveFolderParams) (Folder, error) {
-	row := q.db.QueryRow(ctx, moveFolder,
+type GetFoldersForSelectMoveToRow struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+func (q *Queries) GetFoldersForSelectMoveTo(ctx context.Context, arg GetFoldersForSelectMoveToParams) ([]GetFoldersForSelectMoveToRow, error) {
+	rows, err := q.db.Query(ctx, getFoldersForSelectMoveTo, arg.LocateAt, arg.UserID, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetFoldersForSelectMoveToRow
+	for rows.Next() {
+		var i GetFoldersForSelectMoveToRow
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const moveFolders = `-- name: MoveFolders :exec
+UPDATE "folder" SET locate_at = $1, depth = $2, last_modified_at = $3 WHERE user_id = $4 AND id = any($5::uuid[])
+`
+
+type MoveFoldersParams struct {
+	LocateAt       uuid.UUID   `json:"locateAt"`
+	Depth          int32       `json:"depth"`
+	LastModifiedAt time.Time   `json:"lastModifiedAt"`
+	UserID         uuid.UUID   `json:"userId"`
+	Ids            []uuid.UUID `json:"ids"`
+}
+
+func (q *Queries) MoveFolders(ctx context.Context, arg MoveFoldersParams) error {
+	_, err := q.db.Exec(ctx, moveFolders,
 		arg.LocateAt,
 		arg.Depth,
 		arg.LastModifiedAt,
-		arg.ID,
 		arg.UserID,
+		arg.Ids,
 	)
-	var i Folder
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.LocateAt,
-		&i.FullPath,
-		&i.Depth,
-		&i.IsDeleted,
-		&i.CreatedAt,
-		&i.LastModifiedAt,
-		&i.UserID,
-	)
-	return i, err
+	return err
+}
+
+const selectAllFoldersWithOffset = `-- name: SelectAllFoldersWithOffset :many
+SELECT id, name FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE ORDER BY last_modified_at ASC LIMIT 10 OFFSET $2
+`
+
+type SelectAllFoldersWithOffsetParams struct {
+	UserID uuid.UUID `json:"userId"`
+	Offset int32     `json:"offset"`
+}
+
+type SelectAllFoldersWithOffsetRow struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+func (q *Queries) SelectAllFoldersWithOffset(ctx context.Context, arg SelectAllFoldersWithOffsetParams) ([]SelectAllFoldersWithOffsetRow, error) {
+	rows, err := q.db.Query(ctx, selectAllFoldersWithOffset, arg.UserID, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectAllFoldersWithOffsetRow
+	for rows.Next() {
+		var i SelectAllFoldersWithOffsetRow
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const selectFolders = `-- name: SelectFolders :many
@@ -177,6 +224,41 @@ func (q *Queries) SelectFolders(ctx context.Context, arg SelectFoldersParams) ([
 	for rows.Next() {
 		var i SelectFoldersRow
 		if err := rows.Scan(&i.ID, &i.Name, &i.LastModifiedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const selectFoldersForMove = `-- name: SelectFoldersForMove :many
+SELECT id, locate_at, full_path FROM "folder" WHERE user_id = $1 AND is_deleted = FALSE AND id = any($2::uuid[])
+`
+
+type SelectFoldersForMoveParams struct {
+	UserID uuid.UUID   `json:"userId"`
+	Ids    []uuid.UUID `json:"ids"`
+}
+
+type SelectFoldersForMoveRow struct {
+	ID       uuid.UUID `json:"id"`
+	LocateAt uuid.UUID `json:"locateAt"`
+	FullPath []Path    `json:"fullPath"`
+}
+
+func (q *Queries) SelectFoldersForMove(ctx context.Context, arg SelectFoldersForMoveParams) ([]SelectFoldersForMoveRow, error) {
+	rows, err := q.db.Query(ctx, selectFoldersForMove, arg.UserID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectFoldersForMoveRow
+	for rows.Next() {
+		var i SelectFoldersForMoveRow
+		if err := rows.Scan(&i.ID, &i.LocateAt, &i.FullPath); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -225,6 +307,21 @@ type UpdateFoldersDeletedParams struct {
 
 func (q *Queries) UpdateFoldersDeleted(ctx context.Context, arg UpdateFoldersDeletedParams) error {
 	_, err := q.db.Exec(ctx, updateFoldersDeleted, arg.UserID, arg.Ids)
+	return err
+}
+
+const updateFoldersFullPath = `-- name: UpdateFoldersFullPath :exec
+UPDATE "folder" SET full_path = $1 WHERE user_id = $2 AND id = any($3::uuid[])
+`
+
+type UpdateFoldersFullPathParams struct {
+	FullPath []Path      `json:"fullPath"`
+	UserID   uuid.UUID   `json:"userId"`
+	Ids      []uuid.UUID `json:"ids"`
+}
+
+func (q *Queries) UpdateFoldersFullPath(ctx context.Context, arg UpdateFoldersFullPathParams) error {
+	_, err := q.db.Exec(ctx, updateFoldersFullPath, arg.FullPath, arg.UserID, arg.Ids)
 	return err
 }
 

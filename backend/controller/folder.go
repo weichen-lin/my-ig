@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -170,67 +171,6 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"id": folder.ID, "name": params.Name})
 }
 
-type MoveFolderReq struct {
-	ID       string `json:"id" binding:"required"`
-	LocateAt string `json:"locateAt" binding:"required"`
-}
-
-func (s *Controller) MoveFolder(ctx *gin.Context) {
-	id := ctx.Value("userId").(string)
-
-	userId, err := uuid.Parse(id)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
-		return
-	}
-
-	var params MoveFolderReq
-
-	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	currentId, err := uuid.Parse(params.ID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	moveToId, err := uuid.Parse(params.LocateAt)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	tx, err := s.Pool.Begin(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	q := db.New(tx)
-	defer func() {
-		if err != nil {
-			tx.Rollback(ctx)
-		}
-		tx.Commit(ctx)
-	}()
-
-	err = q.MoveFolderWithId(ctx, db.MoveFolderFuncParams{
-		ID:     currentId,
-		MoveTo: moveToId,
-		UserID: userId,
-	})
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, "success")
-}
-
 func (s *Controller) GetBreadCrumbs(ctx *gin.Context) {
 	id_from_param := ctx.DefaultQuery("id", "")
 
@@ -326,4 +266,84 @@ func (s *Controller) DeleteFolders(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, "success")
+}
+
+func (s *Controller) GetFolderDetail(ctx *gin.Context){
+	id := ctx.DefaultQuery("id", "")
+
+	folderId, err := util.ParseUUID(id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrFolderIdInvalid))
+		return
+	}
+
+	id_from_ctx := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id_from_ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(conn)
+	defer conn.Release()
+
+	folder, err := q.GetFolder(ctx, folderId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if folder.UserID != userId {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"id": folder.ID,
+		"name": folder.Name,
+	})
+}
+
+func (s *Controller) GetFolderList(ctx *gin.Context) {
+	f := ctx.DefaultQuery("p", "")
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	q := db.New(conn)
+	defer conn.Release()
+
+	offset, err := strconv.ParseInt(f, 10, 32)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	folders, err := q.SelectAllFoldersWithOffset(ctx, db.SelectAllFoldersWithOffsetParams{
+		UserID: userId,
+		Offset: int32(offset),
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, folders)
 }
