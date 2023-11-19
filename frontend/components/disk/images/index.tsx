@@ -17,6 +17,8 @@ declare module 'react' {
   }
 }
 
+const blockNoteKeys = ['id', 'type', 'props', 'content', 'children']
+
 export default function ImagePlayground() {
   const [openState, setOpenState] = useRecoilState(OpenImageState)
   const [currentIndex, setCurrentIndex] = useState(openState.index)
@@ -24,8 +26,16 @@ export default function ImagePlayground() {
   const [block, setBlock] = useState<Block[]>([])
   const { run, isLoading } = useFetch<string, { description: string }>(getFileDescription, {
     onSuccess: data => {
-      const blocks = JSON.parse(data.description)
-      setBlock(blocks)
+      try {
+        const blocks = JSON.parse(data)
+        if (!Array.isArray(blocks)) throw new Error('invalid block type')
+        blocks.forEach(e => {
+          if (!blockNoteKeys.every(key => key in e)) throw new Error('invalid block type')
+        })
+        setBlock(blocks)
+      } catch (e) {
+        setBlock([])
+      }
     },
   })
 
