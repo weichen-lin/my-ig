@@ -1,4 +1,5 @@
-import Description from 'components/disk/editor'
+import { Block } from '@blocknote/core'
+import BlockNote from 'components/disk/blocknote'
 import { useState, useRef, useEffect } from 'react'
 import clsx from 'clsx'
 import { useRecoilValue, useRecoilState } from 'recoil'
@@ -16,17 +17,27 @@ declare module 'react' {
   }
 }
 
+const blockNoteKeys = ['id', 'type', 'props', 'content', 'children']
+
 export default function ImagePlayground() {
   const [openState, setOpenState] = useRecoilState(OpenImageState)
   const [currentIndex, setCurrentIndex] = useState(openState.index)
 
-  const { data, run, isLoading } = useFetch<string, { description: string }>(getFileDescription, {
+  const [block, setBlock] = useState<Block[]>([])
+  const { run, isLoading } = useFetch<string, { description: string }>(getFileDescription, {
     onSuccess: data => {
-      setEditState(data.description)
+      try {
+        const blocks = JSON.parse(data.description)
+        if (!Array.isArray(blocks)) throw new Error('invalid block type')
+        blocks.forEach(e => {
+          if (!blockNoteKeys.every(key => key in e)) throw new Error('invalid block type')
+        })
+        setBlock(blocks)
+      } catch (e) {
+        setBlock([])
+      }
     },
   })
-
-  const [editState, setEditState] = useState<string | null>(data?.description ?? null)
 
   const files = useRecoilValue(fileState)
   const ref = useRef<HTMLDivElement>(null)
@@ -46,18 +57,18 @@ export default function ImagePlayground() {
 
   const keyEvents = (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'ArrowLeft':
-        handleInfo(false)
-        break
-      case 'ArrowRight':
-        handleInfo(true)
-        break
-      case 'ArrowUp':
-        handleInfo(false)
-        break
-      case 'ArrowDown':
-        handleInfo(true)
-        break
+      // case 'ArrowLeft':
+      //   handleInfo(false)
+      //   break
+      // case 'ArrowRight':
+      //   handleInfo(true)
+      //   break
+      // case 'ArrowUp':
+      //   handleInfo(false)
+      //   break
+      // case 'ArrowDown':
+      //   handleInfo(true)
+      //   break
       case 'Escape':
         closeDescription()
         break
@@ -105,12 +116,8 @@ export default function ImagePlayground() {
             alt={files[currentIndex].name}
           ></img>
         </div>
-        <div className='w-full lg:w-1/2 border-l-[1px] h-full p-4 bg-[#eeeeee] relative overflow-y-auto'>
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <Description content={editState} id={files[currentIndex].id} close={closeDescription} />
-          )}
+        <div className='w-full lg:w-1/2 border-l-[1px] h-full p-4 relative overflow-y-auto'>
+          {isLoading ? <Loading /> : <BlockNote id={files[currentIndex].id} block={block} />}
         </div>
       </div>
       <div className='hidden lg:h-1/5 lg:block w-full'>
