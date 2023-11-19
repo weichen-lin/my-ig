@@ -27,7 +27,7 @@ export default function ImagePlayground() {
   const { run, isLoading } = useFetch<string, { description: string }>(getFileDescription, {
     onSuccess: data => {
       try {
-        const blocks = JSON.parse(data)
+        const blocks = JSON.parse(data.description)
         if (!Array.isArray(blocks)) throw new Error('invalid block type')
         blocks.forEach(e => {
           if (!blockNoteKeys.every(key => key in e)) throw new Error('invalid block type')
