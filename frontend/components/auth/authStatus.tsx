@@ -23,7 +23,7 @@ export default function AuthStatus(props: InputSuccessProps) {
   return (
     <div
       className={clsx(
-        'py-1 flex items-center justify-start gap-x-3 px-4 rounded-md',
+        'py-2 flex items-center justify-start gap-x-3 px-4 rounded-md',
         'w-full max-w-[350px]',
         `${status === 'success' ? 'bg-green-100' : 'bg-red-100/80'}`,
       )}
