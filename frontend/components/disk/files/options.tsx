@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil'
 import { SelectedState, fileState, folderState } from 'store'
 import { Rename, Delete, Move } from 'components/utils'
 import { useDialog } from 'hooks/disk'
+import { useFetch, downloadFiles } from 'api'
 
 interface OptionProps {
   icon: string
@@ -46,6 +47,7 @@ export function Options() {
 
   const files = useRecoilValue(fileState)
   const folders = useRecoilValue(folderState)
+  const { run } = useFetch(downloadFiles)
 
   useClickOutside(ref, close)
 
@@ -91,7 +93,15 @@ export function Options() {
       }}
       ref={ref}
     >
-      <Option icon='material-symbols-light:download' text='下載' onClick={() => {}} close={close} disabled={false} />
+      <Option
+        icon='material-symbols-light:download'
+        text='下載'
+        onClick={() => {
+          run({ fileIds: selected.files })
+        }}
+        close={close}
+        disabled={false}
+      />
       <Option
         icon='material-symbols-light:drive-file-move-outline-rounded'
         text='移動至'

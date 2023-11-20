@@ -405,6 +405,7 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 		go func(id uuid.UUID) {
 			conn, err := s.Pool.Acquire(ctx)
 			if err != nil {
+				fmt.Println(err)
 				return
 			}
 
@@ -427,6 +428,7 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 
 			buffer, err := util.DownLoadFile(file.Url)
 			if err != nil {
+				fmt.Println(err)
 				return
 			}
 			
@@ -437,16 +439,15 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 		}(id)
 	}
 
-	go func() {
-		wg.Wait()
-		close(fileCh)
-	}()
+	wg.Wait()
+	close(fileCh)
 
 	if len(fileCh) == 1 {
 		file := <-fileCh
 		mimetype := mimetype.Detect(file.Data)
-		ctx.Header("Content-Disposition", "attachment; filename="+file.Name)
+		ctx.Header("Content-Disposition", "attachment; filename=" + file.Name)
 		ctx.Header("Content-Type", mimetype.String())
+		ctx.Header("Content-Length", fmt.Sprintf("%d", len(file.Data)))
 		ctx.Writer.Write(file.Data)
 		return
 	}
