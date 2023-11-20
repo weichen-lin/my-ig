@@ -112,6 +112,60 @@ func Test_MoveFoldersWithIds(t *testing.T) {
 	}
 }
 
+func Test_MoveAllRootFoldersWithIds(t *testing.T) {
+	user, err := CreateUserForTest(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
+
+	arg := CreateFolderParams{
+		Name:     faker.Name(),
+		LocateAt: uuid.Nil,
+		Depth:    1,
+		UserID:   user.ID,
+	}
+
+	tx, err := pool.Begin(context.Background())
+	require.NoError(t, err)
+
+	q := New(tx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(context.Background())
+			return
+		}
+		tx.Commit(context.Background())
+	}()
+
+	rootFolder, err := q.CreateFolderWithFullPath(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, rootFolder)
+
+	folderIds := make([]uuid.UUID, 5)
+
+	for i := 0; i < 5; i++ {
+		folder, err := q.CreateFolderWithFullPath(context.Background(), CreateFolderParams{
+			Name:     faker.Name(),
+			LocateAt: rootFolder.ID,
+			Depth:    2,
+			UserID:   user.ID,
+		})
+		require.NoError(t, err)
+		require.NotEmpty(t, folder)
+
+		folderIds[i] = folder.ID
+	}
+
+	Ids := make([]uuid.UUID, 1)
+	Ids[0] = rootFolder.ID
+
+	err = q.MoveFoldersWithIds(context.Background(), MoveFolderWithIdsParams{
+		Ids:    Ids,
+		MoveTo: folderIds[0],
+		UserID: user.ID,
+	})
+	require.Error(t, err)
+}
+
 func Test_MoveFilesWithIds(t *testing.T) {
 	user, err := CreateUserForTest(context.Background())
 	require.NoError(t, err)

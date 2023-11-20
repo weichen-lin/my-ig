@@ -22,9 +22,10 @@ var (
 )
 
 var (
-	ErrFolderAlreadyExist = fmt.Errorf("folder already exists")
-	ErrFolderNotExist     = fmt.Errorf("parent folder not exists")
-	ErrFolderIdInvalid    = fmt.Errorf("invalid folderId parameter")
+	ErrFolderAlreadyExist  = fmt.Errorf("folder already exists")
+	ErrFolderNotExist      = fmt.Errorf("parent folder not exists")
+	ErrFolderIdInvalid     = fmt.Errorf("invalid folderId parameter")
+	ErrRootFolderCantEmpty = fmt.Errorf("root folder can't be empty")
 )
 
 var (

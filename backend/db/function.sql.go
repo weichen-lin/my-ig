@@ -106,6 +106,15 @@ func (q *Queries) MoveFoldersWithIds(ctx context.Context, args MoveFolderWithIds
 		return err
 	}
 
+	rootFolders, err := q.SelectFolders(ctx, SelectFoldersParams{
+		UserID:   args.UserID,
+		LocateAt: uuid.Nil,
+	})
+
+	if err != nil || len(rootFolders) == 0 {
+		return errors.New("root folder can't be empty")
+	}
+
 	for _, folder := range folders {
 		fullPath, err := q.GetFolderFullPath(ctx, folder.ID)
 		if err != nil {
