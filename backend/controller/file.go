@@ -377,15 +377,15 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 		return
 	}
 
-	var params DeleteFilesReq
+	var params DownloadFilesReq
 
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	idsToUUIDs := make([]uuid.UUID, len(params.IDs))
-	for i, id := range params.IDs {
+	idsToUUIDs := make([]uuid.UUID, len(params.FileIds))
+	for i, id := range params.FileIds {
 		uuid, err := uuid.Parse(id)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -457,7 +457,6 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 	for file := range fileCh {
 		fileWriter, err := zipWriter.Create(file.Name)
 		if err != nil {
-			fmt.Printf("Error creating file in zip: %v\n", err)
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
