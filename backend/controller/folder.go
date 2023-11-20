@@ -268,7 +268,7 @@ func (s *Controller) DeleteFolders(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, "success")
 }
 
-func (s *Controller) GetFolderDetail(ctx *gin.Context){
+func (s *Controller) GetFolderDetail(ctx *gin.Context) {
 	id := ctx.DefaultQuery("id", "")
 
 	folderId, err := util.ParseUUID(id)
@@ -306,7 +306,7 @@ func (s *Controller) GetFolderDetail(ctx *gin.Context){
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"id": folder.ID,
+		"id":   folder.ID,
 		"name": folder.Name,
 	})
 }
@@ -335,7 +335,7 @@ func (s *Controller) GetFolderList(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	folders, err := q.SelectAllFoldersWithOffset(ctx, db.SelectAllFoldersWithOffsetParams{
 		UserID: userId,
 		Offset: int32(offset),
