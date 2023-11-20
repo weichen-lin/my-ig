@@ -47,3 +47,4 @@ export const getFolders = async (nums: number) => fetcher.get(`/folder/list?p=${
 export const getCurrentFolder = async (id: string) => fetcher.get(`/folder/detail?id=${id}`)
 export const moveDisk = async (data: { fileIds: string[]; folderIds: string[]; targetId: string | null }) =>
   fetcher.patch('/disk/move', data)
+export const downloadFiles = async (data: { fileIds: string[] }) => fetcher.post(`/file/download`, data)

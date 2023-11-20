@@ -1,9 +1,12 @@
 package controller
 
 import (
+	"archive/zip"
+	"bytes"
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
@@ -354,4 +357,125 @@ func (s Controller) DeleteFiles(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, "success")
+}
+
+type DownloadFilesReq struct {
+	FileIds []string `json:"fileIds" binding:"required"`
+}
+
+type FilesToZip struct {
+	Data []byte
+	Name string
+}
+
+func (s Controller) DownloadFiles(ctx *gin.Context) {
+	id := ctx.Value("userId").(string)
+
+	userId, err := uuid.Parse(id)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrAuthFailed))
+		return
+	}
+
+	var params DownloadFilesReq
+
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	idsToUUIDs := make([]uuid.UUID, len(params.FileIds))
+	for i, id := range params.FileIds {
+		uuid, err := uuid.Parse(id)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+		idsToUUIDs[i] = uuid
+	}
+
+	var wg sync.WaitGroup
+
+	fileCh := make(chan FilesToZip, len(idsToUUIDs))
+
+	for _, id := range idsToUUIDs {
+		
+		wg.Add(1)
+
+		go func(id uuid.UUID) {
+			conn, err := s.Pool.Acquire(ctx)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			q := db.New(conn)
+			defer func() {
+				conn.Release()
+				wg.Done()
+			}()
+
+			arg := db.GetFileParams{
+				ID:     id,
+				UserID: userId,
+			}
+
+			file, err := q.GetFile(ctx, arg)
+
+			if err != nil {
+				return
+			}
+
+			buffer, err := util.DownLoadFile(file.Url)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			
+			fileCh <- FilesToZip{
+				Data: buffer,
+				Name: file.Name,
+			}
+		}(id)
+	}
+
+	wg.Wait()
+	close(fileCh)
+
+	if len(fileCh) == 1 {
+		file := <-fileCh
+		mimetype := mimetype.Detect(file.Data)
+		ctx.Header("Content-Disposition", "attachment; filename=" + file.Name)
+		ctx.Header("Content-Type", mimetype.String())
+		ctx.Header("Content-Length", fmt.Sprintf("%d", len(file.Data)))
+		ctx.Writer.Write(file.Data)
+		return
+	}
+
+	var zipBuffer bytes.Buffer
+	zipWriter := zip.NewWriter(&zipBuffer)
+
+	for file := range fileCh {
+		fileWriter, err := zipWriter.Create(file.Name)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		_, err = fileWriter.Write(file.Data)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+	}
+
+	err = zipWriter.Close()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.Header("Content-Disposition", "attachment; filename=download.zip")
+	ctx.Header("Content-Type", "application/zip")
+	ctx.Writer.Write(zipBuffer.Bytes())
 }
