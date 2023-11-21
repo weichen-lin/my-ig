@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil'
 import { SelectedState, fileState, folderState } from 'store'
 import { Rename, Delete, Move } from 'components/utils'
 import { useDialog } from 'hooks/disk'
-import { useFetch, downloadFiles } from 'api'
+import fetcher from 'api/fetcher'
 
 interface OptionProps {
   icon: string
@@ -47,7 +47,7 @@ export function Options() {
 
   const files = useRecoilValue(fileState)
   const folders = useRecoilValue(folderState)
-  const { run } = useFetch(downloadFiles)
+  // const { run } = useFetch(downloadFiles)
 
   useClickOutside(ref, close)
 
@@ -96,8 +96,22 @@ export function Options() {
       <Option
         icon='material-symbols-light:download'
         text='下載'
-        onClick={() => {
-          run({ fileIds: selected.files })
+        onClick={async () => {
+          const res = await fetcher.post(`/file/download`, { fileIds: selected.files }, { responseType: 'blob' })
+          const contentDisposition = res.headers['content-disposition'] as string
+
+          if (contentDisposition) {
+            const fileNameMatch = contentDisposition.split('filename=')
+
+            if (fileNameMatch && fileNameMatch.length === 2) {
+              const fileName = fileNameMatch[1]
+              const blob = new Blob([res.data], { type: res.headers['content-type'] })
+              const link = document.createElement('a')
+              link.href = window.URL.createObjectURL(blob)
+              link.download = fileName
+              link.click()
+            }
+          }
         }}
         close={close}
         disabled={false}
