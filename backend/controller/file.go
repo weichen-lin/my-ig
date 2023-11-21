@@ -456,7 +456,8 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 	zipWriter := zip.NewWriter(&zipBuffer)
 
 	for file := range fileCh {
-		fileWriter, err := zipWriter.Create(file.Name)
+		mimetype := mimetype.Detect(file.Data)
+		fileWriter, err := zipWriter.Create(file.Name + mimetype.Extension())
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
