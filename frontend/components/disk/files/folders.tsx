@@ -23,18 +23,14 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
     })
   }
 
-  const onClick = () => {
-    select('folders', id)
-  }
-
-  const { handleClick } = useSingleAndDoubleClick(onClick, onDoubleClick)
+  const { handleClick } = useSingleAndDoubleClick(() => {}, onDoubleClick)
 
   const isSelect = selected.folders.includes(id)
 
   return (
     <div
       className={clsx(
-        'flex transition-all duration-300 ease-in-out',
+        'flex transition-all duration-300 ease-in-out selectable',
         `${
           method === ListMethod.Lattice
             ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]'
@@ -44,10 +40,10 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
       onClick={handleClick}
       onContextMenu={e => {
         open(e.clientX, e.clientY, () => {
-          if (isSelect) return
           select('folders', id)
         })
       }}
+      data-key={`folder-${id}`}
     >
       <div
         className={clsx(
