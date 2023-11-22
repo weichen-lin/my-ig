@@ -3,7 +3,7 @@ import { File } from 'components/disk/files/files'
 import { Folder } from 'components/disk/files/folders'
 import { KushareDriveBackbone } from './gdrivebone'
 import { Options } from './options'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
   listMethodState,
   ListMethod,
@@ -19,6 +19,8 @@ import { ImagePlayground } from 'components/disk/'
 import Image from 'next/image'
 import { useContext, useRef, useEffect } from 'react'
 import { KushareAuth } from 'context'
+// import Selectable, { DragStatus } from 'selection'
+import { useDrag } from 'hooks/disk'
 
 const EmptyContent = () => {
   const { user } = useContext(KushareAuth)
@@ -52,28 +54,39 @@ export default function KushareDrive() {
   const ref = useRef<HTMLDivElement>(null)
   const setSelected = useSetRecoilState(SelectedState)
 
-  useEffect(() => {
-    if (isLoading) return
+  const { isDrag, startDrag, endDrag, currentFolder, setCurrentFolder } = useDrag()
 
-    // const selection = new Selectable({
-    //   canStartSelect: true,
-    //   boundary: ref?.current as HTMLDivElement,
-    //   selectAreaClassName: 'selection-area',
-    //   selectablePrefix: 'selectable',
-    //   select_cb: s => {
-    //     const files = s.stored.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
-    //     const folders = s.stored
-    //       .filter((e: string) => e.startsWith('folder-'))
-    //       .map((e: string) => e.replace('folder-', ''))
-    //     setSelected({ files: [...files], folders: [...folders] })
-    //   },
-    //   drag_cb: () => console.log('dragging'),
-    // })
+  // useEffect(() => {
+  //   if (isLoading) return
 
-    // return () => selection.destroy()
-  }, [isLoading, ref?.current])
+  //   const selection = new Selectable({
+  //     canStartSelect: true,
+  //     boundary: ref?.current as HTMLDivElement,
+  //     selectAreaClassName: 'selection-area',
+  //     selectablePrefix: 'selectable',
+  //     select_cb: s => {
+  //       const files = s.stored.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
+  //       const folders = s.stored
+  //         .filter((e: string) => e.startsWith('folder-'))
+  //         .map((e: string) => e.replace('folder-', ''))
+  //       setSelected({ files: [...files], folders: [...folders] })
+  //     },
+  //     drag_cb: (s, status) => {
+  //       const files = s?.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
+  //       const folders = s?.filter((e: string) => e.startsWith('folder-')).map((e: string) => e.replace('folder-', ''))
+  //       console.log({ files, folders })
+  //       if (status === DragStatus.Start) {
+  //         startDrag()
+  //       }
 
-  if (isLoading) return <KushareDriveBackbone />
+  //       if (status === DragStatus.End) {
+  //         endDrag(currentFolder)
+  //       }
+  //     },
+  //   })
+
+  //   return () => selection.destroy()
+  // }, [isLoading])
 
   const haveContent = files?.length > 0 || folders?.length > 0
 
@@ -94,7 +107,14 @@ export default function KushareDrive() {
           )}
           <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
             {folders?.map((e: CommonProps) => (
-              <Folder info={e} method={listMethod} key={`folder_index_${e.id}`} />
+              <Folder
+                info={e}
+                method={listMethod}
+                key={`folder_index_${e.id}`}
+                isDrag={isDrag}
+                targetFolder={currentFolder}
+                setTargetFolder={setCurrentFolder}
+              />
             ))}
           </div>
           {listMethod === ListMethod.Lattice && files && files.length > 0 && <p className='text-gray-400'>檔案</p>}
