@@ -18,15 +18,11 @@ export const File = (props: { info: CommonProps; method: ListMethod; index: numb
   const { open, select } = useContextMenu()
   const selected = useRecoilValue(SelectedState)
 
-  const onClick = useCallback(() => {
-    select('files', id)
-  }, [selected])
-
   const onDoubleClick = () => {
     setOpenImage(prev => ({ ...prev, isOpen: true, index }))
   }
 
-  const { handleClick } = useSingleAndDoubleClick(onClick, onDoubleClick)
+  const { handleClick } = useSingleAndDoubleClick(() => {}, onDoubleClick)
 
   const isLattice = method === ListMethod.Lattice
 
@@ -35,7 +31,7 @@ export const File = (props: { info: CommonProps; method: ListMethod; index: numb
   return (
     <div
       className={clsx(
-        'flex w-full cursor-pointer items-center justify-between',
+        'flex w-full cursor-pointer items-center justify-between selectable',
         `${isSelect ? 'border-[1px] border-blue-400 bg-blue-200/70' : 'hover:bg-slate-200'}`,
         `${false ? 'opacity-50' : 'opacity-100'}`,
         `${isLattice ? 'h-[200px] flex-col rounded-lg border-[1px] border-b-2 bg-[#f2f6fc]' : 'h-12 border-b-[1px]'}`,
@@ -45,10 +41,10 @@ export const File = (props: { info: CommonProps; method: ListMethod; index: numb
       onContextMenu={e => {
         e.preventDefault()
         open(e.clientX, e.clientY, () => {
-          if (isSelect) return
           select('files', id)
         })
       }}
+      data-key={`file-${id}`}
     >
       <CustomImage id={id} listMethod={method} />
       <div className={clsx('truncate', `${isLattice ? 'my-2 h-8 w-[200px] px-2 text-center' : 'flex-1 px-2'}`)}>

@@ -1,5 +1,6 @@
 import { KushareDrive, Operator, BreadCrumbs } from 'components/disk'
 import { LayoutHome } from 'components/layout'
+import { SelectArea } from 'components/disk'
 import { RecoilRoot, RecoilEnv } from 'recoil'
 import { GetServerSideProps } from 'next'
 import { CookieParser } from 'hooks/utils'
@@ -19,7 +20,9 @@ export default function Drive() {
             <Operator />
             <BreadCrumbs />
           </div>
-          <KushareDrive />
+          <SelectArea>
+            <KushareDrive />
+          </SelectArea>
           <ToastContainer />
         </div>
       </LayoutHome>

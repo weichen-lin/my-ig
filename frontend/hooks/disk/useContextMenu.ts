@@ -1,10 +1,8 @@
 import { ContextMenuState, SelectedState } from 'store'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 
 export default function useContextMenu() {
-  const selected = useRecoilValue(SelectedState)
-  const setSelected = useSetRecoilState(SelectedState)
-
+  const [selected, setSelected] = useRecoilState(SelectedState)
   const [menu, setMenu] = useRecoilState(ContextMenuState)
 
   const close = (cb?: (...args: any) => any) => {
@@ -19,13 +17,7 @@ export default function useContextMenu() {
 
   const select = (type: 'folders' | 'files', id: string) => {
     const isSelected = selected[type].includes(id)
-    if (isSelected) {
-      const index = selected[type].indexOf(id)
-      setSelected(prev => ({
-        ...prev,
-        [type]: [...prev[type].slice(0, index), ...prev[type].slice(index + 1)],
-      }))
-    } else {
+    if (!isSelected) {
       setSelected(prev => ({ ...prev, [type]: [...prev[type], id] }))
     }
   }

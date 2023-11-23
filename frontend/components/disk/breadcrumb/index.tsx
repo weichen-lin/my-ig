@@ -70,7 +70,8 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
     }
   }
 
-  const breads = Array.isArray(data) && data.length > 0 ? data.slice().sort((a, b) => a.depth - b.depth) : []
+  const breads =
+    Array.isArray(data) && data.length > 0 ? data.slice().sort((a, b) => (a.depth - b.depth > 1 ? 1 : -1)) : []
 
   return isMobile ? (
     <div className='flex items-center'>

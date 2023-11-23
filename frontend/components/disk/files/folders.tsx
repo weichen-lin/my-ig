@@ -1,12 +1,17 @@
 import clsx from 'clsx'
-import { CommonProps, ListMethod, SelectedState } from 'store'
+import { CommonProps, ListMethod, SelectedState, DragState } from 'store'
 import { useSingleAndDoubleClick } from 'hooks/utils'
 import { useRouter } from 'next/router'
 import { Icon } from '@iconify/react'
-import { useContextMenu } from 'hooks/disk'
-import { useRecoilValue, useResetRecoilState } from 'recoil'
+import { useContextMenu, useDrag } from 'hooks/disk'
+import { useRecoilValue, useResetRecoilState, useRecoilState } from 'recoil'
 
-export function Folder(props: { info: CommonProps; method: ListMethod }) {
+interface FolderProps {
+  info: CommonProps
+  method: ListMethod
+}
+
+export function Folder(props: FolderProps) {
   const { info, method } = props
   const { id, name, lastModifiedAt } = info
   const router = useRouter()
@@ -15,6 +20,8 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
   const reset = useResetRecoilState(SelectedState)
 
   const { open, select } = useContextMenu()
+  const { dragState, setTargetFolder } = useDrag()
+  const { isDrag, targetFolder } = dragState
 
   const onDoubleClick = async () => {
     reset()
@@ -23,18 +30,14 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
     })
   }
 
-  const onClick = () => {
-    select('folders', id)
-  }
-
-  const { handleClick } = useSingleAndDoubleClick(onClick, onDoubleClick)
+  const { handleClick } = useSingleAndDoubleClick(() => {}, onDoubleClick)
 
   const isSelect = selected.folders.includes(id)
 
   return (
     <div
       className={clsx(
-        'flex transition-all duration-300 ease-in-out',
+        'flex transition-all duration-300 ease-in-out selectable',
         `${
           method === ListMethod.Lattice
             ? 'mb-4 w-[250px] xs:w-[44%] md:w-[31%] lg:w-[23%] xl:w-[18%]'
@@ -44,15 +47,24 @@ export function Folder(props: { info: CommonProps; method: ListMethod }) {
       onClick={handleClick}
       onContextMenu={e => {
         open(e.clientX, e.clientY, () => {
-          if (isSelect) return
           select('folders', id)
         })
+      }}
+      data-key={`folder-${id}`}
+      onMouseEnter={() => {
+        if (isSelect || !isDrag) return
+        setTargetFolder(id)
+      }}
+      onMouseLeave={() => {
+        if (isSelect || !isDrag) return
+        setTargetFolder(null)
       }}
     >
       <div
         className={clsx(
           'flex h-12 w-full cursor-pointer items-center justify-between rounded-lg',
           `${isSelect ? 'border-[1px] border-blue-400 bg-blue-200/70' : 'hover:bg-slate-200'}`,
+          `${isDrag && targetFolder === id && !isSelect && 'border-[2px] border-slate-700 cursor-move'}`,
           'transition-all duration-300 ease-in-out',
           `${method === ListMethod.Lattice ? 'border-2' : 'rounded-none mb-[1px]'}`,
           `${false ? 'opacity-50' : 'opacity-100'}`,

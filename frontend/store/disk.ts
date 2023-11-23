@@ -83,3 +83,11 @@ export const DialogState = atom<{ isOpen: boolean; component: JSX.Element | null
     component: null,
   },
 })
+
+export const DragState = atom<{ isDrag: boolean; targetFolder: string | null }>({
+  key: 'DragState',
+  default: {
+    isDrag: false,
+    targetFolder: null,
+  },
+})
