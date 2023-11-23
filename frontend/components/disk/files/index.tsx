@@ -53,40 +53,34 @@ export default function KushareDrive() {
   const { isLoading } = useGdrive()
   const ref = useRef<HTMLDivElement>(null)
   const setSelected = useSetRecoilState(SelectedState)
+  const { startDrag, endDrag } = useDrag()
+  const selectRef = useRef()
 
-  const { isDrag, startDrag, endDrag, currentFolder, setCurrentFolder } = useDrag()
+  useEffect(() => {
+    if (!ref.current) return
+    // selectRef.current = new Selectable({
+    //   canStartSelect: true,
+    //   boundary: ref?.current as HTMLDivElement,
+    //   selectAreaClassName: 'selection-area',
+    //   selectablePrefix: 'selectable',
+    //   select_cb: s => {
+    //     const files = s.stored.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
+    //     const folders = s.stored
+    //       .filter((e: string) => e.startsWith('folder-'))
+    //       .map((e: string) => e.replace('folder-', ''))
+    //     setSelected({ files: [...files], folders: [...folders] })
+    //   },
+    //   drag_cb: (stored, status, dragOnEle) => {
+    //     if (status === DragStatus.Start) {
+    //       startDrag()
+    //     }
 
-  // useEffect(() => {
-  //   if (isLoading) return
-
-  //   const selection = new Selectable({
-  //     canStartSelect: true,
-  //     boundary: ref?.current as HTMLDivElement,
-  //     selectAreaClassName: 'selection-area',
-  //     selectablePrefix: 'selectable',
-  //     select_cb: s => {
-  //       const files = s.stored.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
-  //       const folders = s.stored
-  //         .filter((e: string) => e.startsWith('folder-'))
-  //         .map((e: string) => e.replace('folder-', ''))
-  //       setSelected({ files: [...files], folders: [...folders] })
-  //     },
-  //     drag_cb: (s, status) => {
-  //       const files = s?.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
-  //       const folders = s?.filter((e: string) => e.startsWith('folder-')).map((e: string) => e.replace('folder-', ''))
-  //       console.log({ files, folders })
-  //       if (status === DragStatus.Start) {
-  //         startDrag()
-  //       }
-
-  //       if (status === DragStatus.End) {
-  //         endDrag(currentFolder)
-  //       }
-  //     },
-  //   })
-
-  //   return () => selection.destroy()
-  // }, [isLoading])
+    //     if (status === DragStatus.End) {
+    //       endDrag({ stored, dragOnEle })
+    //     }
+    //   },
+    // })
+  }, [isLoading])
 
   const haveContent = files?.length > 0 || folders?.length > 0
 
@@ -107,14 +101,7 @@ export default function KushareDrive() {
           )}
           <div className='mx-auto flex w-full flex-col items-center gap-x-4 xs:flex-row xs:flex-wrap'>
             {folders?.map((e: CommonProps) => (
-              <Folder
-                info={e}
-                method={listMethod}
-                key={`folder_index_${e.id}`}
-                isDrag={isDrag}
-                targetFolder={currentFolder}
-                setTargetFolder={setCurrentFolder}
-              />
+              <Folder info={e} method={listMethod} key={`folder_index_${e.id}`} />
             ))}
           </div>
           {listMethod === ListMethod.Lattice && files && files.length > 0 && <p className='text-gray-400'>檔案</p>}
