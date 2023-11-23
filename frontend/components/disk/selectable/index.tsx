@@ -1,28 +1,40 @@
-import { useRef } from 'react'
-import { useDrag } from 'hooks/disk'
+import { useEffect, useMemo, useRef } from 'react'
+// import { useDrag } from 'hooks/disk'
 // import Selectable, { DragStatus } from 'selection'
 
-export default function SelectArea() {
-  const { startDrag, endDrag } = useDrag()
+export default function SelectArea(props: { children: JSX.Element }) {
+  const { children } = props
+  // const { startDrag, endDrag, selectDisk } = useDrag()
   const ref = useRef<HTMLDivElement>(null)
-  //   const selectRef = useRef(
-  //     new Selectable({
-  //       canStartSelect: true,
-  //       boundary: ref?.current as HTMLDivElement,
-  //       selectAreaClassName: 'selection-area',
-  //       selectablePrefix: 'selectable',
-  //       select_cb: () => {},
-  //       drag_cb: (stored, status, dragOnEle) => {
-  //         if (status === DragStatus.Start) {
-  //           startDrag()
-  //         }
 
-  //         if (status === DragStatus.End) {
-  //           endDrag({ stored, dragOnEle })
-  //         }
-  //       },
-  //     }),
-  //   ).current
+  // const selectable = useMemo(() => {
+  //   return new Selectable({
+  //     canStartSelect: true,
+  //     selectAreaClassName: 'selection-area',
+  //     selectablePrefix: 'selectable',
+  //     select_cb: selected => {
+  //       selectDisk(selected)
+  //     },
+  //   })
+  // }, [])
 
-  return <div ref={ref}></div>
+  // const selectRef = useRef(selectable).current
+
+  // useEffect(() => {
+  //   if (ref?.current && selectable.selectBoundary !== ref?.current) {
+  //     selectRef.init(ref?.current)
+  //   }
+
+  //   selectable.drag_cb = (stored, status, dragOnEle) => {
+  //     if (status === DragStatus.Start) {
+  //       startDrag()
+  //     }
+
+  //     if (status === DragStatus.End) {
+  //       endDrag({ stored, dragOnEle })
+  //     }
+  //   }
+  // }, [startDrag, endDrag, ref?.current])
+
+  return <div ref={ref}>{children}</div>
 }
