@@ -163,6 +163,16 @@ func (s *Controller) UpdateFolderName(ctx *gin.Context) {
 		LastModifiedAt: time.Now(),
 	})
 
+	fullPath, err := q.GetFolderFullPath(ctx, folderId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	err = q.UpdateFullPath(ctx, db.UpdateFullPathParams{
+		FullPath: fullPath,
+		ID:       folderId,
+	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
