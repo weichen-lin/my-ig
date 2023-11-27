@@ -52,35 +52,6 @@ export default function KushareDrive() {
   const { isOpen } = useRecoilValue(OpenImageState)
   const { isLoading } = useGdrive()
   const ref = useRef<HTMLDivElement>(null)
-  const setSelected = useSetRecoilState(SelectedState)
-  const { startDrag, endDrag } = useDrag()
-  const selectRef = useRef()
-
-  useEffect(() => {
-    if (!ref.current) return
-    // selectRef.current = new Selectable({
-    //   canStartSelect: true,
-    //   boundary: ref?.current as HTMLDivElement,
-    //   selectAreaClassName: 'selection-area',
-    //   selectablePrefix: 'selectable',
-    //   select_cb: s => {
-    //     const files = s.stored.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
-    //     const folders = s.stored
-    //       .filter((e: string) => e.startsWith('folder-'))
-    //       .map((e: string) => e.replace('folder-', ''))
-    //     setSelected({ files: [...files], folders: [...folders] })
-    //   },
-    //   drag_cb: (stored, status, dragOnEle) => {
-    //     if (status === DragStatus.Start) {
-    //       startDrag()
-    //     }
-
-    //     if (status === DragStatus.End) {
-    //       endDrag({ stored, dragOnEle })
-    //     }
-    //   },
-    // })
-  }, [isLoading])
 
   const haveContent = files?.length > 0 || folders?.length > 0
 

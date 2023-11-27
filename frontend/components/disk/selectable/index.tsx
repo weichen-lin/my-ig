@@ -15,6 +15,7 @@ export default function SelectArea(props: { children: JSX.Element }) {
       select_cb: selected => {
         selectDisk(selected)
       },
+      elementsExclude: ['context-menu'],
     })
   }, [])
 
