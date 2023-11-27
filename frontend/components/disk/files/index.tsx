@@ -3,14 +3,13 @@ import { File } from 'components/disk/files/files'
 import { Folder } from 'components/disk/files/folders'
 import { KushareDriveBackbone } from './gdrivebone'
 import { Options } from './options'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import {
   listMethodState,
   ListMethod,
   CommonProps,
   fileState,
   folderState,
-  SelectedState,
   OpenImageState,
   ContextMenuState,
 } from 'store'
@@ -19,8 +18,6 @@ import { ImagePlayground } from 'components/disk/'
 import Image from 'next/image'
 import { useContext, useRef, useEffect } from 'react'
 import { KushareAuth } from 'context'
-// import Selectable, { DragStatus } from 'selection'
-import { useDrag } from 'hooks/disk'
 
 const EmptyContent = () => {
   const { user } = useContext(KushareAuth)
