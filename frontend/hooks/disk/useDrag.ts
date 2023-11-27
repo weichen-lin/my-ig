@@ -32,6 +32,9 @@ export default function useDrag() {
   }
 
   const selectDisk = (s: string[]) => {
+    if (s.length === 0) {
+      setDragState(prev => ({ ...prev, isDrag: false }))
+    }
     const files = s.filter((e: string) => e.startsWith('file-')).map((e: string) => e.replace('file-', ''))
     const folders = s.filter((e: string) => e.startsWith('folder-')).map((e: string) => e.replace('folder-', ''))
     setSelected({ files: [...files], folders: [...folders] })
