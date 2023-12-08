@@ -48,6 +48,7 @@ const BreadCrumbDisplay = (props: { isMobile: boolean; data: Breadcrumb[] }) => 
           className='hover:bg-slate-100 px-3 rounded-lg truncate select-none font-bold py-1'
           onClick={async () => {
             if (isLastOne) return
+            reset()
             await router.push(`/home?f=${info.id}`, undefined, {
               shallow: false,
             })

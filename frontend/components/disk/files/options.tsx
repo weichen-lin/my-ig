@@ -92,6 +92,7 @@ export function Options() {
         left: `${x}px`,
       }}
       ref={ref}
+      id='context-menu'
     >
       <Option
         icon='material-symbols-light:download'

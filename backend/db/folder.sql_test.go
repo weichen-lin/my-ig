@@ -357,6 +357,21 @@ func Test_UpdateFolderName(t *testing.T) {
 	require.Equal(t, renameArg.Name, renameFolder.Name)
 	require.WithinDuration(t, renameArg.LastModifiedAt, renameFolder.LastModifiedAt, time.Second)
 	require.Equal(t, renameArg.ID, renameFolder.ID)
+	require.NotEqual(t, rootFolder.FullPath, renameFolder.FullPath)
+
+	fullPath, err := q.GetFolderFullPath(context.Background(), renameFolder.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, fullPath)
+	require.Equal(t, 1, len(fullPath))
+	require.Equal(t, renameFolder.ID, fullPath[0].Id)
+	require.Equal(t, renameFolder.Name, fullPath[0].Name)
+	require.Equal(t, renameFolder.Depth, fullPath[0].Depth)
+
+	err = q.UpdateFullPath(context.Background(), UpdateFullPathParams{
+		FullPath: fullPath,
+		ID:       renameFolder.ID,
+	})
+	require.NoError(t, err)
 }
 
 func Test_DeleteFolder(t *testing.T) {
