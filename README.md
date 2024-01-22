@@ -16,4 +16,4 @@ Here's a brief overview of the tech stack that's used to build Reactive Resume.
 
 ### Backend Structure
 
-<img src="https://i.imgur.com/Ym9gARP.png" width="350px" />
+<img src="https://i.imgur.com/ZFVnu37.png" width="350px" />
