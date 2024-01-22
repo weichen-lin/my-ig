@@ -2,23 +2,18 @@
 
 ### For my personal instagram
 
-Todos:
+The goal of this project is to integrate Google Drive and Instagram, providing users with a more convenient file management and social media experience.
 
-[ ] 試試看自己實作一個類似 recoil 的狀態共享 -> [參考資料](https://blog.csdn.net/yunfeihe233/article/details/108904918)
-[ ] Draggable
+## Infrastructure
 
-Future API Design:
+Here's a brief overview of the tech stack that's used to build Reactive Resume.
 
-1. 資料夾與檔案分開 request (因為要實作 drag & drop)
+- React (Next.js), as the frontend
+- Golang, as the backend
+- PostgreSQL, as the primary database
+- Redis, mostly for caching
+- Minio, an open-source S3 alternative to store objects
 
-=> ICON 全面改成 react-icons
-https://react-icons.github.io/react-icons/icons?name=ci
+### Backend Structure
 
-notification 工具
-https://react-hot-toast.com/
-
-alert
-https://sweetalert.js.org/docs/
-
-select
-https://juejin.cn/post/7036162494573838367
+<img src="https://i.imgur.com/Ym9gARP.png" width="350px" />
