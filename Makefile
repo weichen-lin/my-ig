@@ -33,3 +33,12 @@ build-prod-image:
 
 push-prod-image:
 	docker push ${BACKEND_IMAGE}:latest
+
+run-minio-local:
+	docker run \
+	-p 9000:9000 -p 9001:9001 \
+	-v $$HOME/Desktop/minio:/data \
+	minio/minio:RELEASE.2023-08-16T20-17-30Z.hotfix.a51234923 \
+	server \
+	/data \
+	--console-address ":9001"
