@@ -1,15 +1,15 @@
 name: Deploy Images to GHCR
 
-on:
-  workflow_run:
-    workflows:
-      - 'CI - Run Go Uni Tests'
-    branches:
-      - main
-    paths:
-      - backend/**
-    types:
-      - completed
+# on:
+#   workflow_run:
+#     workflows:
+#       - 'CI - Run Go Uni Tests'
+#     branches:
+#       - main
+#     paths:
+#       - backend/**
+#     types:
+#       - completed
 
 jobs:
   push-store-image:
