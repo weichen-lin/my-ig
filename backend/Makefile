@@ -23,7 +23,7 @@ migrate-up:
 migrate-down:
 	migrate \
 	-path db/migration \
-	-database "postgresql://root:test_local@localhost:5432/myig?sslmode=disable" \
+	-database "postgresql://myigroot:myigrootpwd@localhost:5432/development?sslmode=disable" \
 	-verbose \
 	down
 

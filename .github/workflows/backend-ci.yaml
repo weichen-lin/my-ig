@@ -14,9 +14,9 @@ jobs:
       postgres:
         image: postgres:13-alpine
         env:
-          POSTGRES_USER: root
-          POSTGRES_PASSWORD: test_local
-          POSTGRES_DB: myig
+          POSTGRES_USER: myigroot
+          POSTGRES_PASSWORD: myigrootpwd
+          POSTGRES_DB: development
         ports:
           - 5432:5432
         options: >-
