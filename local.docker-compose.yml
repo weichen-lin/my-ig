@@ -13,9 +13,9 @@ services:
       - backend-network
     build:
       context: ./backend
-      dockerfile: ./dev.Dockerfile
-    # volumes:
-    #   - ./backend:/app
+      dockerfile: ./local.Dockerfile
+    volumes:
+      - ./backend:/app
     environment: &db_config
       - POSTGRES_HOST=${MYIG_DB_HOST}
       - POSTGRES_DB=${MYIG_DB_NAME}

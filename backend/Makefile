@@ -16,7 +16,7 @@ run_ig_postgres:
 migrate-up:
 	migrate \
 	-path db/migration \
-	-database "postgresql://root:test_local@localhost:5432/myig?sslmode=disable" \
+	-database "postgresql://myigroot:myigrootpwd@localhost:5432/development?sslmode=disable" \
 	-verbose \
 	up
 
@@ -37,7 +37,7 @@ test:
 	go test -v -cover ./...
 
 build-dev:
-	docker build -t $(IMAGE_BASE):dev -f Dockerfile.dev .
+	docker build -t $(IMAGE_BASE):dev -f dev.Dockerfile.dev .
 
 push-dev:
 	docker push $(IMAGE_BASE):dev

@@ -43,7 +43,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		EncryptSecret: config.EncryptSecret,
 		AppPassword:   config.AppPassword}
 
-	if config.IsDev {
+	if !config.IsDev {
 		r.Use(Cors(config.AllowedDomain))
 	}
 
