@@ -1,0 +1,108 @@
+version: '3.7'
+
+volumes:
+  my-ig-postgre: {}
+  my-ig-frontend-module: {}
+  my-ig-minio: {}
+
+services:
+  apiserver:
+    container_name: myig-apiserver
+    image: myig-apiserver
+    networks:
+      - backend-network
+    build:
+      context: ./backend
+      dockerfile: ./dev.Dockerfile
+    # volumes:
+    #   - ./backend:/app
+    environment: &db_config
+      - POSTGRES_HOST=${MYIG_DB_HOST}
+      - POSTGRES_DB=${MYIG_DB_NAME}
+      - POSTGRES_USER=${MYIG_DB_USER}
+      - POSTGRES_PASSWORD=${MYIG_DB_PASSWORD}
+      - POSTGRES_PORT=${MYIG_DB_PORT}
+    env_file: .env.local
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+      - redis
+      - minio
+
+  postgres:
+    container_name: ${MYIG_DB_HOST}
+    image: postgres:13-alpine
+    networks:
+      - backend-network
+    volumes:
+      - my-ig-postgre:/var/lib/postgresql/data
+    environment: *db_config
+    env_file: .env.local
+    ports:
+      # Only for development, can connect to postgres with localhost:5432
+      - '5432:5432'
+
+  redis:
+    container_name: my-app-redis
+    image: redis:latest
+    networks:
+      - backend-network
+    environment:
+      - REDIS_HOST=${MYIG_REDIS_HOST}
+      - REDIS_PORT=${MYIG_REDIS_PORT}
+    env_file: .env.local
+    ports:
+      # Only for development, can connect to postgres with localhost:6379
+      - '6379:6379'
+
+  minio:
+    image: minio/minio:latest
+    networks:
+      - backend-network
+    ports:
+      - '9000'
+      # Only for development, can connect to minio dashboard with localhost:9001
+      - '9001:9001'
+    volumes:
+      - my-ig-minio:/data
+    environment:
+      MINIO_ACCESS_KEY: ${MYIG_MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MYIG_MINIO_SECRET_KEY}
+    env_file: .env.local
+    command: server /data --console-address ":9001"
+
+  frontend:
+    container_name: myig-frontend
+    image: myig-frontend
+    networks:
+      - frontend-network
+    build:
+      context: ./frontend
+      dockerfile: ./dev.Dockerfile
+    volumes:
+      - ./frontend:/app
+      - my-ig-frontend-module:/app/node_modules
+    ports:
+      - '3000'
+    depends_on:
+      - apiserver
+    restart: on-failure
+
+  nginx:
+    container_name: myig-nginx
+    image: nginx:alpine
+    networks:
+      - frontend-network
+      - backend-network
+    ports:
+      - '80:80'
+    depends_on:
+      - apiserver
+      - frontend
+    volumes:
+      - ./dev.conf:/etc/nginx/nginx.conf:ro
+
+networks:
+  frontend-network:
+  backend-network:

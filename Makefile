@@ -1,7 +1,4 @@
-include .dev.env
-
-BACKEND_IMAGE=asia.gcr.io/my-ig-375608/ig-backend
-FRONTEND_IMAGE=asia.gcr.io/my-ig-375608/ig-frontend
+include .env.local
 
 run-postgre:
 	docker run --rm -v my-ig:/var/lib/postgresql/data -it -dp 5432:5432 --name myig-sql -e POSTGRES_PASSWORD=yourasdasdaspassword postgres:13-alpine
@@ -38,7 +35,10 @@ run-minio-local:
 	docker run \
 	-p 9000:9000 -p 9001:9001 \
 	-v $$HOME/Desktop/minio:/data \
-	minio/minio:RELEASE.2023-08-16T20-17-30Z.hotfix.a51234923 \
+	minio/minio:latest \
 	server \
 	/data \
 	--console-address ":9001"
+
+local-up:
+	docker compose -f local.docker-compose.yml --env-file .env.local up
