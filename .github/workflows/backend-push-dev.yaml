@@ -1,4 +1,4 @@
-name: Deploy Images to GHCR
+# name: Deploy Images to GHCR
 
 # on:
 #   workflow_run:
@@ -11,29 +11,29 @@ name: Deploy Images to GHCR
 #     types:
 #       - completed
 
-jobs:
-  push-store-image:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: './backend'
-    steps:
-      - name: 'Checkout GitHub Action'
-        uses: actions/checkout@main
+# jobs:
+#   push-store-image:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: './backend'
+#     steps:
+#       - name: 'Checkout GitHub Action'
+#         uses: actions/checkout@main
 
-      - name: 'Login to GitHub Container Registry'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.TOKEN_FOR_GHCR }}
+#       - name: 'Login to GitHub Container Registry'
+#         uses: docker/login-action@v3
+#         with:
+#           registry: ghcr.io
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.TOKEN_FOR_GHCR }}
 
-      - name: 'Build Image Develop'
-        run: |
-          echo ${{ secrets.FIREBASE_CREDENTIAL }} | base64 -d > credential.json &&
-          echo ${{ secrets.DEV_ENV }} | base64 -d > dev.env &&
-          make build-dev && make push-dev
+#       - name: 'Build Image Develop'
+#         run: |
+#           echo ${{ secrets.FIREBASE_CREDENTIAL }} | base64 -d > credential.json &&
+#           echo ${{ secrets.DEV_ENV }} | base64 -d > dev.env &&
+#           make build-dev && make push-dev
 
-      - name: 'Deploy Image on render'
-        run: |
-          curl ${{ secrets.DEV_RENDER_URL }}
+#       - name: 'Deploy Image on render'
+#         run: |
+#           curl ${{ secrets.DEV_RENDER_URL }}
