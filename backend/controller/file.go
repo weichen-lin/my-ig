@@ -45,7 +45,7 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 
 	prefix := fmt.Sprintf("%s/files", userId)
 
-	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, prefix)
+	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, s.BucketName, prefix)
 	if err != nil {
 		ctx.JSON(httpStatus, errorResponse(err))
 		return
@@ -59,6 +59,7 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 	q := db.New(tx)
 	defer func() {
 		if err != nil {
+			fmt.Println(err)
 			tx.Rollback(ctx)
 		}
 		tx.Commit(ctx)
@@ -73,6 +74,7 @@ func (s Controller) CreateFile(ctx *gin.Context) {
 
 	file, err := q.CreateFile(ctx, arg)
 	if err != nil {
+		fmt.Println(err)
 		_ = tx.Rollback(ctx)
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -130,7 +132,7 @@ func (s Controller) GetFile(ctx *gin.Context) {
 		return
 	}
 
-	buffer, err := util.DownLoadFile(file.Url)
+	buffer, status, err := util.GetFileFromBucket(ctx, s.BucketHandler, s.BucketName, file.Url)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -138,7 +140,7 @@ func (s Controller) GetFile(ctx *gin.Context) {
 
 	mimetype := mimetype.Detect(buffer)
 	ctx.Header("Cache-Control", "max-age=31536000")
-	ctx.Data(http.StatusOK, mimetype.String(), buffer)
+	ctx.Data(status, mimetype.String(), buffer)
 }
 
 type GetFileDescriptionReq struct {
@@ -399,7 +401,7 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 	fileCh := make(chan FilesToZip, len(idsToUUIDs))
 
 	for _, id := range idsToUUIDs {
-		
+
 		wg.Add(1)
 
 		go func(id uuid.UUID) {
@@ -431,7 +433,7 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 				fmt.Println(err)
 				return
 			}
-			
+
 			fileCh <- FilesToZip{
 				Data: buffer,
 				Name: file.Name,
@@ -445,7 +447,7 @@ func (s Controller) DownloadFiles(ctx *gin.Context) {
 	if len(fileCh) == 1 {
 		file := <-fileCh
 		mimetype := mimetype.Detect(file.Data)
-		ctx.Header("Content-Disposition", "attachment; filename=" + file.Name)
+		ctx.Header("Content-Disposition", "attachment; filename="+file.Name)
 		ctx.Header("Content-Type", mimetype.String())
 		ctx.Header("Content-Length", fmt.Sprintf("%d", len(file.Data)))
 		ctx.Writer.Write(file.Data)

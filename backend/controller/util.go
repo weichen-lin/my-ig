@@ -3,10 +3,9 @@ package controller
 import (
 	"errors"
 
-	"cloud.google.com/go/storage"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/minio/minio-go/v7"
 )
 
 type EmailSetting struct {
@@ -18,7 +17,8 @@ type EmailSetting struct {
 type Controller struct {
 	Pool          *pgxpool.Pool
 	SecretKey     string
-	BucketHandler *storage.BucketHandle
+	BucketHandler *minio.Client
+	BucketName    string
 	AppPassword   string
 	EncryptSecret string
 }

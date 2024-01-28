@@ -5,15 +5,28 @@ import (
 )
 
 type Config struct {
-	DBDriver       string `mapstructure:"DBDriver"`
-	DBSource       string `mapstructure:"DBSource"`
-	ServerAddress  string `mapstructure:"ServerAddress"`
-	SecretKey      string `mapstructure:"SecretKey"`
-	FireBaseBucket string `mapstructure:"FireBaseBucket"`
-	IsDev          bool   `mapstructure:"IsDev"`
-	AllowedDomain  string `mapstructure:"AllowedDomain"`
-	AppPassword    string `mapstructure:"AppPassword"`
-	EncryptSecret  string `mapstructure:"EncryptSecret"`
+	// postgresql
+	DBDriver string `mapstructure:"DBDriver"`
+	DBSource string `mapstructure:"DBSource"`
+
+	ServerAddress string `mapstructure:"ServerAddress"`
+
+	// JWT token
+	SecretKey     string `mapstructure:"SecretKey"`
+	EncryptSecret string `mapstructure:"EncryptSecret"`
+
+	// CORS
+	IsDev         bool   `mapstructure:"IsDev"`
+	AllowedDomain string `mapstructure:"AllowedDomain"`
+
+	// send email
+	AppPassword string `mapstructure:"AppPassword"`
+
+	// minio
+	MyIGBucketName string `mapstructure:"MyIGBucketName"`
+	MinioEndpoint  string `mapstructure:"MinioEndpoint"`
+	MinioAccessKey string `mapstructure:"MinioAccessKey"`
+	MinioSecretKey string `mapstructure:"MinioSecretKey"`
 }
 
 func Loadconfig(path string, env string) (config Config, err error) {
