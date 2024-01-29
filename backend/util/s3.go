@@ -80,7 +80,7 @@ func UploadFile(ctx *gin.Context, minioClient *minio.Client, bucketName string, 
 	}
 
 	file, err := uploadFile.Open()
-	
+
 	if err != nil {
 		return "", http.StatusBadRequest, fmt.Errorf("open file error")
 	}
