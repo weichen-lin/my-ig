@@ -49,6 +49,9 @@ func NewMinioClient(config *MinioConfig) (*minio.Client, error) {
 		Creds:  credentials.NewStaticV4(config.AccessKeyID, config.SecretAccessKey, ""),
 		Secure: config.UseSSL,
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	exists, err := minioClient.BucketExists(context.Background(), config.BucketName)
 	if err != nil {
@@ -77,7 +80,16 @@ func UploadFile(ctx *gin.Context, minioClient *minio.Client, bucketName string, 
 	}
 
 	file, err := uploadFile.Open()
-	defer file.Close()
+	
+	if err != nil {
+		return "", http.StatusBadRequest, fmt.Errorf("open file error")
+	}
+
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}()
 
 	fileBytes := make([]byte, uploadFile.Size)
 

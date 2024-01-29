@@ -1,5 +1,5 @@
 #!/bin/sh
 
-/app/migrate.sh
+./migrate.sh
 
 exec air
