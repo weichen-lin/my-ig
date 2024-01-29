@@ -12,12 +12,12 @@ import (
 var pool *pgxpool.Pool
 
 func TestMain(m *testing.M) {
-	config, err := util.Loadconfig("../", "test")
+	_, err := util.Loadconfig("../", "test")
 	if err != nil {
 		panic(err)
 	}
 
-	pool, err = pgxpool.New(context.Background(), config.DBSource)
+	pool, err = pgxpool.New(context.Background(), "postgresql://myigroot:myigrootpwd@localhost:5432/development?sslmode=disable")
 	if err != nil {
 		panic(err)
 	}

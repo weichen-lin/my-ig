@@ -41,3 +41,17 @@ build-dev:
 
 push-dev:
 	docker push $(IMAGE_BASE):dev
+
+run-dev:
+	docker run -it --rm \
+	--name myig-dev \
+	-v $(PWD):/app \
+	-p 8080:8080 \
+	-e POSTGRES_USERNAME=myigroot \
+	-e POSTGRES_PASSWORD=myigrootpwd \
+	-e POSTGRES_NAME=development \
+	-e POSTGRES_HOST=localhost \
+	-e POSTGRES_PORT=5432 \
+	-e POSTGRES_SSLMODE=disable \
+	golang:1.21.0-alpine \
+	sh

@@ -44,7 +44,7 @@ services:
       - '5432:5432'
 
   redis:
-    container_name: my-app-redis
+    container_name: ${MYIG_REDIS_HOST}
     image: redis:latest
     networks:
       - backend-network
@@ -57,6 +57,7 @@ services:
       - '6379:6379'
 
   minio:
+    container_name: ${MYIG_MINIO_HOST}
     image: minio/minio:latest
     networks:
       - backend-network
@@ -102,6 +103,8 @@ services:
       - frontend
     volumes:
       - ./dev.conf:/etc/nginx/nginx.conf:ro
+    logging:
+      driver: none
 
 networks:
   frontend-network:

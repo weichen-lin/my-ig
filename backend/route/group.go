@@ -31,7 +31,14 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		panic(err)
 	}
 
-	bucketHandler, err := util.GetFirebase(config.FireBaseBucket)
+	bucketHandler, err := util.NewMinioClient(&util.MinioConfig{
+		BucketName:      config.MyIGBucketName,
+		Endpoint:        config.MinioEndpoint,
+		AccessKeyID:     config.MinioAccessKey,
+		SecretAccessKey: config.MinioSecretKey,
+		UseSSL:          false,
+	})
+
 	if err != nil {
 		panic(err)
 	}
@@ -40,6 +47,7 @@ func PathRoute(r *gin.Engine) *gin.Engine {
 		Pool:          pool,
 		SecretKey:     config.SecretKey,
 		BucketHandler: bucketHandler,
+		BucketName:    config.MyIGBucketName,
 		EncryptSecret: config.EncryptSecret,
 		AppPassword:   config.AppPassword}
 

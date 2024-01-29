@@ -50,7 +50,13 @@ export default function useFileUpload() {
       })
 
       const toastId = toast.loading(`正在上傳 ${FileHandlers.length} 份檔案`, { position: 'bottom-left' })
-      const results = await Promise.all(FileHandlers.map(e => filehandle(e).catch(err => err)))
+      const results = await Promise.all(
+        FileHandlers.map(e =>
+          filehandle(e).catch(() => {
+            return FileUploadStatus.FAILED
+          }),
+        ),
+      )
       const successFile = results.filter(e => e === FileUploadStatus.SUCCESS)
       toast.update(toastId, {
         render: successFile.length > 0 ? `成功上傳 ${successFile.length}份檔案` : `上傳所有檔案失敗`,

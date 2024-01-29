@@ -106,23 +106,23 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	errCh := make(chan error)
+	// errCh := make(chan error)
 
-	go func() {
-		sender := util.Sender{
-			Email:     "kushare09487@gmail.com",
-			Password:  s.AppPassword,
-			Receiver:  params.Email,
-			SecretKey: s.EncryptSecret,
-		}
+	// go func() {
+	// 	sender := util.Sender{
+	// 		Email:     "kushare09487@gmail.com",
+	// 		Password:  s.AppPassword,
+	// 		Receiver:  params.Email,
+	// 		SecretKey: s.EncryptSecret,
+	// 	}
 
-		info := util.UserInfo{
-			UserID:     user.ID.String(),
-			ExpireTime: time.Now().Add(time.Hour * 24),
-		}
+	// 	info := util.UserInfo{
+	// 		UserID:     user.ID.String(),
+	// 		ExpireTime: time.Now().Add(time.Hour * 24),
+	// 	}
 
-		util.SendMail(sender, info, errCh)
-	}()
+	// 	util.SendMail(sender, info, errCh)
+	// }()
 
 	jwtMaker, err := util.NewJWTMaker(s.SecretKey)
 	if err != nil {
@@ -139,10 +139,10 @@ func (s *Controller) UserRegister(ctx *gin.Context) {
 	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, token))
 	ctx.String(http.StatusOK, user.ID.String())
 
-	err = <-errCh
-	if err != nil {
-		fmt.Println(err)
-	}
+	// err = <-errCh
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 }
 
 func (s *Controller) UserLogin(ctx *gin.Context) {
@@ -191,7 +191,7 @@ func (s *Controller) UserLogin(ctx *gin.Context) {
 	}
 
 	ctx.Header("Set-Cookie", fmt.Sprintf("%s=%s; Path=/; HttpOnly; Secure; SameSite=None", userTokenName, token))
-	ctx.JSON(http.StatusOK, info.ID)
+	ctx.String(http.StatusOK, info.ID.String())
 }
 
 func (s *Controller) UploadAvatar(ctx *gin.Context) {
@@ -205,7 +205,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 
 	fullName := fmt.Sprintf("%s/avatar", userId)
 
-	signedUrl, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, fullName)
+	fileSite, httpStatus, err := util.UploadFile(ctx, s.BucketHandler, s.BucketName, fullName)
 	if err != nil {
 		ctx.JSON(httpStatus, errorResponse(err))
 		return
@@ -225,7 +225,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 	}()
 
 	arg := db.UpdateUserAvatarParams{
-		AvatarUrl: &signedUrl,
+		AvatarUrl: &fileSite,
 		ID:        userId,
 	}
 
@@ -234,7 +234,7 @@ func (s *Controller) UploadAvatar(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
-	ctx.JSON(http.StatusOK, signedUrl)
+	ctx.JSON(http.StatusOK, fileSite)
 }
 
 func (s *Controller) GetUserInfo(ctx *gin.Context) {
