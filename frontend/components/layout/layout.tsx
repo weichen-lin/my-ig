@@ -6,7 +6,7 @@ export default function Layout(props: { children: JSX.Element }) {
         <img className='h-[80px] md:h-[120px]' src='/icon/layout/logo.png'></img>
         {children}
       </div>
-      <div className='w-full text-center p-2'>© WeiChen Lin 2023</div>
+      <div className='w-full text-center p-2'>© WeiChen Lin 2024</div>
     </div>
   )
 }
